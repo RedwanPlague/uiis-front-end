@@ -1,5 +1,7 @@
 <template>
-    $END$
+  <div class="absolute-center">
+  <h1>Scrutinize Script</h1>
+  </div>
 </template>
 
 <script>

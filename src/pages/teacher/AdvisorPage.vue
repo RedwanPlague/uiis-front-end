@@ -1,5 +1,7 @@
 <template>
-    $END$
+  <div class="absolute-center">
+  <h1>Advisor</h1>
+  </div>
 </template>
 
 <script>

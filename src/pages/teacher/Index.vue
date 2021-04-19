@@ -1,5 +1,8 @@
 <template>
-    $END$
+  <div class="absolute-center">
+  <h3>Hello</h3>
+  <p>Zawad Zawad Zawad</p>
+  </div>
 </template>
 
 <script>
