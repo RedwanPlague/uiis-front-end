@@ -15,7 +15,6 @@
           UIIS
         </q-toolbar-title>
 
-
         <q-btn
           round
           color="primary"
@@ -23,16 +22,12 @@
           unelevated
           stack
           padding="0px"
-          dense>
+          dense
+        >
           <q-icon name="account_circle" style="font-size:60px"></q-icon>
         </q-btn>
 
-        <q-btn-dropdown
-          color="primary"
-          text-color="white"
-          dense
-          flat
-        >
+        <q-btn-dropdown color="primary" text-color="white" dense flat>
           <q-list>
             <q-item clickable v-close-popup @click="onItemClick">
               <q-item-section>
@@ -63,10 +58,7 @@
       content-class="bg-grey-1"
     >
       <q-list>
-        <q-item-label
-          header
-          class="text-grey-8"
-        >
+        <q-item-label header class="text-grey-8">
           Teacher Side
         </q-item-label>
         <SidebarOption
@@ -78,56 +70,64 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view/>
+      <router-view />
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
-  import SidebarOption from "components/SidebarOption";
+import SidebarOption from "components/SidebarOption";
 
-  const menuOptions = [
-    {
-      title: 'Classes',
-      icon: 'school',
-      path: '/teacher/classes'
-    },
-    {
-      title: 'Examining Scripts',
-      icon: 'quiz',
-      path: '/teacher/examine'
-    },
-    {
-      title: 'Scrutinizing Scripts',
-      icon: 'manage_search',
-      path: '/teacher/scrutinize'
-    },
-    {
-      title: 'Advisor\'s Corner',
-      icon: 'sports_kabaddi',
-      path: '/teacher/advisor'
-    },
-    {
-      title: 'Head of Dept Corner',
-      icon: 'escalator_warning',
-      path: '/teacher/head'
-    }
-  ];
-  const linksData = [];
-
-  export default {
-    name: 'MainLayout',
-    components: { SidebarOption },
-    methods: {
-      onItemClick() {
-
-      }
-    },
-    data () {
-      return {
-        leftDrawerOpen: false,
-        menuOptions
-      }
-    }
+const menuOptions = [
+  {
+    title: "Home",
+    icon: "home",
+    path: "/teacher"
+  },
+  {
+    title: "Profile",
+    icon: "human",
+    path: "/teacher/profile"
+  },
+  {
+    title: "Courses",
+    icon: "manage_search",
+    path: "/teacher/courses"
+  },
+  {
+    title: "Advisor",
+    icon: "sports_kabaddi",
+    path: "/teacher/advisor"
+  },
+  {
+    title: "Department Head",
+    icon: "escalator_warning",
+    path: "/teacher/head"
+  },
+  {
+    title: "Examiner",
+    icon: "escalator_warning",
+    path: "/teacher/examiner"
+  },
+  {
+    title: "Scrutinizer",
+    icon: "escalator_warning",
+    path: "/teacher/scrutinizer"
   }
+];
+const linksData = [];
+
+export default {
+  name: "MainLayout",
+  components: { SidebarOption },
+  methods: {
+    onItemClick() {}
+  },
+  data() {
+    return {
+      leftDrawerOpen: false,
+      menuOptions
+    };
+  }
+};
 </script>

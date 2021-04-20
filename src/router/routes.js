@@ -1,4 +1,3 @@
-
 const routes = [
   {
     path: '/',
@@ -11,17 +10,20 @@ const routes = [
     path: '/teacher',
     component: () => import('layouts/TeacherLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/teacher/Index.vue') },
-      { path: 'classes', component: () => import('pages/teacher/ClassPage.vue') },
-      { path: 'examine', component: () => import('pages/teacher/ExaminePage.vue') },
-      { path: 'scrutinize', component: () => import('pages/teacher/ScrutinizePage.vue') },
+      { path: '', component: () => import('src/pages/teacher/Home.vue') },
+      { path: 'profile', component: () => import('src/pages/teacher/PersonalProfilePage.vue') },
+      { path: 'courses', component: () => import('src/pages/teacher/CoursesPage.vue') },
       { path: 'advisor', component: () => import('pages/teacher/AdvisorPage.vue') },
       { path: 'head', component: () => import('pages/teacher/HeadPage.vue') },
+      { path: 'examiner', component: () => import('src/pages/teacher/ExaminerPage.vue') },
+      { path: 'scrutinizer', component: () => import('src/pages/teacher/ScrutinizerPage.vue') }
     ]
   },
 
-  // Always leave this as last one,
-  // but you can also remove it
+  /* 
+      Always leave this as last one,
+      but you can also remove it
+  */
   {
     path: '*',
     component: () => import('pages/Error404.vue')
