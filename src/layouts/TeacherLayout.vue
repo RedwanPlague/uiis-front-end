@@ -15,35 +15,31 @@
           UIIS
         </q-toolbar-title>
 
-        <q-btn
-          round
-          color="primary"
-          style="font-size: 30px"
-          unelevated
-          stack
-          padding="0px"
-          dense
-        >
-          <q-icon name="account_circle" style="font-size:60px"></q-icon>
-        </q-btn>
+        <!--
+          <q-btn
+            round
+            color="primary"
+            style="font-size: 30px"
+            unelevated
+            stack
+            padding="0px"
+            dense
+          >
+            <q-icon name="account_circle" style="font-size:60px"></q-icon>
+          </q-btn>
+        -->
 
         <q-btn-dropdown color="primary" text-color="white" dense flat>
           <q-list>
-            <q-item clickable v-close-popup @click="onItemClick">
+            <q-item clickable v-close-popup @click="$router.replace('/teacher/profile')">
               <q-item-section>
-                <q-item-label>Photos</q-item-label>
+                <q-item-label>Profile</q-item-label>
               </q-item-section>
             </q-item>
 
-            <q-item clickable v-close-popup @click="onItemClick">
+            <q-item clickable v-close-popup @click="$router.replace('/')">
               <q-item-section>
-                <q-item-label>Videos</q-item-label>
-              </q-item-section>
-            </q-item>
-
-            <q-item clickable v-close-popup @click="onItemClick">
-              <q-item-section>
-                <q-item-label>Articles</q-item-label>
+                <q-item-label>Logout</q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
@@ -86,42 +82,40 @@ const menuOptions = [
   },
   {
     title: "Profile",
-    icon: "human",
+    icon: "account_circle",
     path: "/teacher/profile"
   },
   {
     title: "Courses",
-    icon: "manage_search",
+    icon: "class",
     path: "/teacher/courses"
   },
   {
     title: "Advisor",
-    icon: "sports_kabaddi",
+    icon: "school",
     path: "/teacher/advisor"
   },
   {
     title: "Department Head",
-    icon: "escalator_warning",
+    icon: "school",
     path: "/teacher/head"
   },
   {
     title: "Examiner",
-    icon: "escalator_warning",
+    icon: "quiz",
     path: "/teacher/examiner"
   },
   {
     title: "Scrutinizer",
-    icon: "escalator_warning",
+    icon: "auto_stories",
     path: "/teacher/scrutinizer"
   }
 ];
-const linksData = [];
 
 export default {
   name: "MainLayout",
   components: { SidebarOption },
   methods: {
-    onItemClick() {}
   },
   data() {
     return {
