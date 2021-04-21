@@ -1,12 +1,14 @@
 <template>
-  <div class="absolute-center">
-    <h3>
-      Scrutinizer
-    </h3>
-    <p>
-      Allah Vorosha.
-    </p>
-  </div>
+  <q-page padding>
+    <div class="q-pa-sm absolute-center">
+      <h3>
+        Scrutinizer
+      </h3>
+      <p>
+        Allah Vorosha.
+      </p>
+    </div>
+  </q-page>
 </template>
 
 <script>

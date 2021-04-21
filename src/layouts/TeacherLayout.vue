@@ -65,8 +65,18 @@
       </q-list>
     </q-drawer>
 
+    <q-footer elevated class="bg-secondary">
+      <q-toolbar>
+        <q-toolbar-title>
+          Footer
+        </q-toolbar-title>
+      </q-toolbar>
+    </q-footer>
+
     <q-page-container>
-      <router-view />
+      <keep-alive>
+        <router-view />
+      </keep-alive>
     </q-page-container>
   </q-layout>
 </template>
