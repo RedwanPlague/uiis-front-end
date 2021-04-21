@@ -47,6 +47,14 @@
       </q-toolbar>
     </q-header>
 
+    <q-footer elevated class="bg-secondary">
+      <q-toolbar>
+        <q-toolbar-title>
+          Footer
+        </q-toolbar-title>
+      </q-toolbar>
+    </q-footer>
+
     <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
@@ -57,21 +65,50 @@
         <q-item-label header class="text-grey-8">
           Teacher Side
         </q-item-label>
+
         <SidebarOption
-          v-for="menuOption in menuOptions"
+          v-for="menuOption in menuOptionsTeacher"
+          :key="menuOption.title"
+          v-bind="menuOption"
+        />
+
+        <q-expansion-item :content-inset-level="0.5" icon="class" label="Courses" default-closed>
+          <SidebarOption
+            v-for="menuOption in menuOptionsCourseTeacher"
+            :key="menuOption.title"
+            v-bind="menuOption"
+          />
+        </q-expansion-item>
+
+        <q-expansion-item :content-inset-level="0.5" icon="school" label="Advisor" default-closed>
+          <SidebarOption
+            v-for="menuOption in menuOptionsAdvisor"
+            :key="menuOption.title"
+            v-bind="menuOption"
+          />
+        </q-expansion-item>
+
+        <q-expansion-item :content-inset-level="0.5" icon="school" label="Department Head" default-closed>
+          <SidebarOption
+            v-for="menuOption in menuOptionsHead"
+            :key="menuOption.title"
+            v-bind="menuOption"
+          />
+        </q-expansion-item>
+
+        <SidebarOption
+          v-for="menuOption in menuOptionsExaminer"
+          :key="menuOption.title"
+          v-bind="menuOption"
+        />
+
+        <SidebarOption
+          v-for="menuOption in menuOptionsScrutinizer"
           :key="menuOption.title"
           v-bind="menuOption"
         />
       </q-list>
     </q-drawer>
-
-    <q-footer elevated class="bg-secondary">
-      <q-toolbar>
-        <q-toolbar-title>
-          Footer
-        </q-toolbar-title>
-      </q-toolbar>
-    </q-footer>
 
     <q-page-container>
       <keep-alive>
@@ -84,7 +121,7 @@
 <script>
 import SidebarOption from "components/SidebarOption";
 
-const menuOptions = [
+const menuOptionsTeacher = [
   {
     title: "Home",
     icon: "home",
@@ -94,27 +131,67 @@ const menuOptions = [
     title: "Profile",
     icon: "account_circle",
     path: "/teacher/profile"
-  },
+  }
+];
+
+const menuOptionsCourseTeacher = [
   {
-    title: "Courses",
-    icon: "class",
+    title: "Attendance",
+    icon: "edit_calendar",
     path: "/teacher/courses"
   },
   {
-    title: "Advisor",
-    icon: "school",
+    title: "Class Evaluation",
+    icon: "grading",
+    path: "/teacher/courses"
+  }
+];
+
+const menuOptionsAdvisor = [
+  {
+    title: "Advisee Information",
+    icon: "groups",
     path: "/teacher/advisor"
   },
   {
-    title: "Department Head",
-    icon: "school",
+    title: "Advisee Result",
+    icon: "grade",
+    path: "/teacher/advisor"
+  },
+  {
+    title: "Course Registration",
+    icon: "app_registration",
+    path: "/teacher/advisor"
+  },
+  {
+    title: "Conversation",
+    icon: "question_answer",
+    path: "/teacher/advisor"
+  }
+];
+
+const menuOptionsHead = [
+  {
+    title: "Course Registration",
+    icon: "app_registration",
     path: "/teacher/head"
   },
+  {
+    title: "Final Result",
+    icon: "dashboard",
+    path: "/teacher/head"
+  }
+];
+
+const menuOptionsExaminer = [
   {
     title: "Examiner",
     icon: "quiz",
     path: "/teacher/examiner"
-  },
+  }
+];
+
+const menuOptionsScrutinizer = [
   {
     title: "Scrutinizer",
     icon: "auto_stories",
@@ -123,14 +200,19 @@ const menuOptions = [
 ];
 
 export default {
-  name: "MainLayout",
+  name: "TeacherLayout",
   components: { SidebarOption },
   methods: {
   },
   data() {
     return {
       leftDrawerOpen: false,
-      menuOptions
+      menuOptionsTeacher,
+      menuOptionsCourseTeacher,
+      menuOptionsAdvisor,
+      menuOptionsHead,
+      menuOptionsExaminer,
+      menuOptionsScrutinizer
     };
   }
 };

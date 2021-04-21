@@ -1,6 +1,5 @@
 <template>
-
-    <q-item clickable v-ripple :to="path"  exact>
+    <q-item clickable v-ripple :to="path" exact>
     <q-item-section
       v-if="icon"
       avatar
