@@ -138,12 +138,12 @@ const menuOptionsCourseTeacher = [
   {
     title: "Attendance",
     icon: "edit_calendar",
-    path: "/teacher/courses"
+    path: "/teacher/courses/attendance"
   },
   {
-    title: "Class Evaluation",
+    title: "Evaluation",
     icon: "grading",
-    path: "/teacher/courses"
+    path: "/teacher/courses/evaluation"
   }
 ];
 
@@ -151,22 +151,22 @@ const menuOptionsAdvisor = [
   {
     title: "Advisee Information",
     icon: "groups",
-    path: "/teacher/advisor"
+    path: "/teacher/advisor/advisee_info"
   },
   {
     title: "Advisee Result",
     icon: "grade",
-    path: "/teacher/advisor"
+    path: "/teacher/advisor/advisee_result"
   },
   {
     title: "Course Registration",
     icon: "app_registration",
-    path: "/teacher/advisor"
+    path: "/teacher/advisor/course_registration"
   },
   {
     title: "Conversation",
     icon: "question_answer",
-    path: "/teacher/advisor"
+    path: "/teacher/advisor/conversation"
   }
 ];
 
@@ -174,12 +174,12 @@ const menuOptionsHead = [
   {
     title: "Course Registration",
     icon: "app_registration",
-    path: "/teacher/head"
+    path: "/teacher/head/course_registration"
   },
   {
-    title: "Final Result",
+    title: "Result Evaluation",
     icon: "dashboard",
-    path: "/teacher/head"
+    path: "/teacher/head/result_evaluation"
   }
 ];
 

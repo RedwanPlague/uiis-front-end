@@ -2,11 +2,10 @@
   <q-page padding>
     <div class="q-pa-sm absolute-center">
       <h3>
-        Courses
+        Department Head Course Registration Approval
       </h3>
       <p>
-        One can record and keep track of attendances. Also, one can upload class
-        evaluations marks here.
+        Head will approve students' course registration applications.
       </p>
     </div>
   </q-page>
@@ -14,7 +13,7 @@
 
 <script>
 export default {
-  name: "ClassPage"
+  name: "HeadPage"
 };
 </script>
 
