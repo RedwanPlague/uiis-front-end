@@ -155,11 +155,6 @@ const menuOptionsAdvisor = [
     path: "/teacher/advisor/advisee_info"
   },
   {
-    title: "Advisee Result",
-    icon: "grade",
-    path: "/teacher/advisor/advisee_result"
-  },
-  {
     title: "Course Registration",
     icon: "app_registration",
     path: "/teacher/advisor/course_registration"
