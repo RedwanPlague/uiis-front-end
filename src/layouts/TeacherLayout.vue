@@ -60,6 +60,7 @@
       show-if-above
       bordered
       content-class="bg-grey-1"
+      style="font-weight: bold"
     >
       <q-list>
         <q-item-label header class="text-grey-8">
