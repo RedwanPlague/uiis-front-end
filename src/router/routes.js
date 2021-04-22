@@ -15,7 +15,6 @@ const routes = [
       { path: 'courses/attendance', component: () => import('pages/teacher/CourseAttendancePage.vue') },
       { path: 'courses/evaluation', component: () => import('pages/teacher/CourseEvaluationPage.vue') },
       { path: 'advisor/advisee_info', component: () => import('pages/teacher/AdviseeInformationPage.vue') },
-      { path: 'advisor/advisee_result', component: () => import('pages/teacher/AdviseeResultPage.vue') },
       { path: 'advisor/course_registration', component: () => import('pages/teacher/AdviseeCourseRegistrationPage') },
       { path: 'advisor/conversation', component: () => import('pages/teacher/AdviseeConversationPage.vue') },
       { path: 'head/course_registration', component: () => import('pages/teacher/HeadCourseRegistrationPage.vue') },
