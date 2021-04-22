@@ -73,13 +73,13 @@
           v-bind="menuOption"
         />
 
-        <q-expansion-item :content-inset-level="0.5" icon="class" label="Courses" default-closed>
-          <SidebarOption
-            v-for="menuOption in menuOptionsCourseTeacher"
-            :key="menuOption.title"
-            v-bind="menuOption"
-          />
-        </q-expansion-item>
+<!--        <q-expansion-item :content-inset-level="0.5" icon="class" label="Courses" default-closed>-->
+<!--          <SidebarOption-->
+<!--            v-for="menuOption in menuOptionsCourseTeacher"-->
+<!--            :key="menuOption.title"-->
+<!--            v-bind="menuOption"-->
+<!--          />-->
+<!--        </q-expansion-item>-->
 
         <q-expansion-item :content-inset-level="0.5" icon="school" label="Advisor" default-closed>
           <SidebarOption
@@ -132,19 +132,11 @@ const menuOptionsTeacher = [
     title: "Profile",
     icon: "account_circle",
     path: "/teacher/profile"
-  }
-];
-
-const menuOptionsCourseTeacher = [
-  {
-    title: "Attendance",
-    icon: "edit_calendar",
-    path: "/teacher/courses/attendance"
   },
   {
-    title: "Evaluation",
-    icon: "grading",
-    path: "/teacher/courses/evaluation"
+    title: "Courses",
+    icon: "class",
+    path: "/teacher/courses"
   }
 ];
 
@@ -209,7 +201,6 @@ export default {
     return {
       leftDrawerOpen: false,
       menuOptionsTeacher,
-      menuOptionsCourseTeacher,
       menuOptionsAdvisor,
       menuOptionsHead,
       menuOptionsExaminer,

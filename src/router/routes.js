@@ -12,8 +12,7 @@ const routes = [
     children: [
       { path: '', component: () => import('src/pages/teacher/Home.vue') },
       { path: 'profile', component: () => import('src/pages/teacher/PersonalProfilePage.vue') },
-      { path: 'courses/attendance', component: () => import('pages/teacher/CourseAttendancePage.vue') },
-      { path: 'courses/evaluation', component: () => import('pages/teacher/CourseEvaluationPage.vue') },
+      { path: 'courses', component: () => import('pages/teacher/CourseEvaluationPage.vue') },
       { path: 'advisor/advisee_info', component: () => import('pages/teacher/AdviseeInformationPage.vue') },
       { path: 'advisor/advisee_result', component: () => import('pages/teacher/AdviseeResultPage.vue') },
       { path: 'advisor/course_registration', component: () => import('pages/teacher/AdviseeCourseRegistrationPage') },

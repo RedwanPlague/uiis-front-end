@@ -16,7 +16,7 @@ export default {
   * {
     /*font-family: Arial, Helvetica, sans-serif;*/
     /*font-family: 'Montserrat', sans-serif;*/
-    font-family: Avenir, Helvetica, Arial, sans-serif;
+    /*font-family: Avenir, Helvetica, Arial, sans-serif;*/
   }
 
 </style>
