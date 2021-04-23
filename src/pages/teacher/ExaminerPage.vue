@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 
 export default {
   name: "ExaminerPage",
@@ -19,43 +20,9 @@ export default {
 
   created() {
     // API call
-
-    this.courses = [
-      {
-        courseName: "CSE311",
-        marks: [
-          {
-            student_id: "1605002",
-            marks: 34,
-          },
-          {
-            student_id: "1605003",
-            marks: 31,
-          },
-          {
-            student_id: "1605004",
-            marks: 37,
-          },
-        ],
-      },
-      {
-        courseName: "CSE313",
-        marks: [
-          {
-            student_id: "1605002",
-            marks: 43,
-          },
-          {
-            student_id: "1605003",
-            marks: 13,
-          },
-          {
-            student_id: "1605004",
-            marks: 73,
-          },
-        ],
-      },
-    ]
+    axios.get("http://localhost:3000/courses").then(cutu=> {
+      this.courses = cutu.data;
+    });
   }
 };
 </script>
