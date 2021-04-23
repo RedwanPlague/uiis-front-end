@@ -7,7 +7,7 @@
 <script>
 
 export default {
-  name: "ExaminePage",
+  name: "ExaminerPage",
   components: {
     ExaminerTable: () => import('../../components/ExaminerTable.vue'),
   },
@@ -61,12 +61,5 @@ export default {
 </script>
 
 <style>
-input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
- 
-input[type="number"] {
-    -moz-appearance: textfield;
-}
+
 </style>
