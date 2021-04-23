@@ -1,0 +1,146 @@
+<template>
+  <q-layout view="lHh Lpr lFf">
+    <q-header elevated>
+      <q-toolbar>
+        <q-btn
+          flat
+          dense
+          round
+          icon="menu"
+          aria-label="Menu"
+          @click="leftDrawerOpen = !leftDrawerOpen"
+        />
+
+        <q-toolbar-title>
+          UIIS Admin
+        </q-toolbar-title>
+
+        <q-btn-dropdown v-if="userIsLoggedIn" icon="person" :label="user.name" flat>
+          <q-list>
+            <q-item clickable v-close-popup :to="{ name: 'AdminCoursesPage' }" style="color: inherit" dense>
+              <q-item-section>
+                <q-item-label>
+                  <q-avatar icon="account_circle"></q-avatar>
+                  Account
+                </q-item-label>
+              </q-item-section>
+            </q-item>
+
+            <q-item clickable v-close-popup @click="userLogOut(); $router.push({ name: 'Index' })" dense>
+              <q-item-section>
+                <q-item-label>
+                  <q-avatar icon="logout"></q-avatar>
+                  Logout
+                </q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
+        <!--<q-btn v-else flat :to="{ name: 'Admin' }">SIGN IN</q-btn>-->
+        <q-btn v-else flat @click="userLogIn({ami: 'eikhane', tumi: 'oikhane'})">SIGN IN</q-btn>
+      </q-toolbar>
+    </q-header>
+
+    <q-drawer
+      v-model="leftDrawerOpen"
+      show-if-above
+      bordered
+      content-class="bg-grey-1"
+    >
+      <q-list>
+        <q-item-label header class="text-grey-8">
+          Admin Quick Links
+        </q-item-label>
+        <quick-link
+          v-for="quickLink in quickLinks"
+          :key="quickLink.title"
+          v-bind="quickLink"
+        />
+      </q-list>
+    </q-drawer>
+
+    <q-page-container>
+      <router-view />
+    </q-page-container>
+  </q-layout>
+</template>
+
+<script>
+import QuickLink from "components/QuickLink";
+import { mapGetters, mapActions } from 'vuex'
+
+const quickLinks = [
+  {
+    title: 'Docs1',
+    icon: 'school',
+    link: { name: 'AccountCreationPage' }
+  },
+  {
+    title: 'Docs2',
+    icon: 'school',
+    children: [
+      {
+        title: 'Docs4',
+        icon: 'school',
+        link: 'https://quasar.dev'
+      },
+      {
+        title: 'Docs5',
+        icon: 'school',
+        link: 'https://quasar.dev'
+      },
+      {
+        title: 'Docs6',
+        icon: 'school',
+        children: [
+          {
+            title: 'Docs7',
+            icon: 'school',
+            link: 'https://quasar.dev'
+          },
+          {
+            title: 'Docs8',
+            icon: 'school',
+            link: 'https://quasar.dev'
+          },
+          {
+            title: 'Docs9',
+            icon: 'school',
+            link: 'https://quasar.dev'
+          },
+        ]
+      },
+    ]
+  },
+  {
+    title: 'Docs3',
+    icon: 'school',
+    link: 'https://quasar.dev'
+  },
+];
+
+export default {
+  name: 'AdminLayout',
+  data() {
+    return {
+      leftDrawerOpen: false,
+      quickLinks,
+    }
+  },
+  components: {
+    QuickLink
+  },
+  computed: {
+    ...mapGetters([
+      'userIsLoggedIn',
+      'user'
+    ])
+  },
+  methods: {
+    ...mapActions([
+      'userLogIn',
+      'userLogOut'
+    ])
+  }
+}
+</script>

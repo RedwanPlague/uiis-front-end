@@ -1,26 +1,33 @@
 const routes = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    component: () => import('layouts/MainLayout'),
     children: [
-      { path: '', component: () => import('pages/Index.vue') }
+      { path: '', name: 'Index', component: () => import('pages/Index') }
     ]
   },
   {
     path: '/teacher',
-    component: () => import('layouts/TeacherLayout.vue'),
+    component: () => import('layouts/TeacherLayout'),
     children: [
-      { path: '', component: () => import('src/pages/teacher/Home.vue') },
-      { path: 'profile', component: () => import('src/pages/teacher/PersonalProfilePage.vue') },
-      { path: 'courses/attendance', component: () => import('pages/teacher/CourseAttendancePage.vue') },
-      { path: 'courses/evaluation', component: () => import('pages/teacher/CourseEvaluationPage.vue') },
-      { path: 'advisor/advisee_info', component: () => import('pages/teacher/AdviseeInformationPage.vue') },
+      { path: '', component: () => import('src/pages/teacher/Home') },
+      { path: 'profile', component: () => import('src/pages/teacher/PersonalProfilePage') },
+      { path: 'courses/attendance', component: () => import('pages/teacher/CourseAttendancePage') },
+      { path: 'courses/evaluation', component: () => import('pages/teacher/CourseEvaluationPage') },
+      { path: 'advisor/advisee_info', component: () => import('pages/teacher/AdviseeInformationPage') },
       { path: 'advisor/course_registration', component: () => import('pages/teacher/AdviseeCourseRegistrationPage') },
-      { path: 'advisor/conversation', component: () => import('pages/teacher/AdviseeConversationPage.vue') },
-      { path: 'head/course_registration', component: () => import('pages/teacher/HeadCourseRegistrationPage.vue') },
-      { path: 'head/result_evaluation', component: () => import('pages/teacher/HeadResultEvaluationPage.vue') },
-      { path: 'examiner', component: () => import('src/pages/teacher/ExaminerPage.vue') },
-      { path: 'scrutinizer', component: () => import('src/pages/teacher/ScrutinizerPage.vue') }
+      { path: 'advisor/conversation', component: () => import('pages/teacher/AdviseeConversationPage') },
+      { path: 'head/course_registration', component: () => import('pages/teacher/HeadCourseRegistrationPage') },
+      { path: 'head/result_evaluation', component: () => import('pages/teacher/HeadResultEvaluationPage') },
+      { path: 'examiner', component: () => import('src/pages/teacher/ExaminerPage') },
+      { path: 'scrutinizer', component: () => import('src/pages/teacher/ScrutinizerPage') }
+    ]
+  },
+  {
+    path: '/admin',
+    component: () => import('layouts/AdminLayout'),
+    children: [
+      { path: 'create-account', name: 'AccountCreationPage', component: () => import('pages/admin/AccountCreation') },
     ]
   },
 
@@ -30,7 +37,8 @@ const routes = [
   */
   {
     path: '*',
-    component: () => import('pages/Error404.vue')
+    name: 'ErrorPage',
+    component: () => import('pages/Error404')
   }
 ]
 
