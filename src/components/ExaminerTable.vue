@@ -22,6 +22,10 @@
         </template>
       </q-table>
     </div>
+    <div class="row q-pa-md">
+      <q-space />
+      <q-btn no-caps color="primary" label="Upload" class="" @click="onClick" />
+    </div>
   </div>
 </template>
 
@@ -58,6 +62,13 @@ export default {
           name: "marks", label: "Marks", field: "marks", align: "left", sortable: false,
         },
       ]
+    }
+  },
+
+  methods: {
+    onClick() {
+      this.$emit("upload", {courseName: this.courseName, marks: this.marks});
+      //console.log({courseName: this.courseName, marks: this.marks});
     }
   }
 }

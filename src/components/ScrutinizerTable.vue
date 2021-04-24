@@ -11,6 +11,10 @@
       >
       </q-table>
     </div>
+    <div class="row q-pa-md">
+      <q-space />
+      <q-btn no-caps color="primary" label="Forward to Department head" class="" />
+    </div>
   </div>
 </template>
 
