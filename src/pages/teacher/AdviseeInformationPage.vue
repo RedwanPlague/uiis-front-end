@@ -4,6 +4,7 @@
       <q-table
         title="Advisees" :data="rows" :columns="columns" row-key="studentID"
         :pagination.sync="pagination" hide-pagination
+        @row-click="methodErNaam"
       />
 
       <div class="row justify-center q-mt-md">
@@ -79,6 +80,13 @@ export default {
         }
       ]
     };
+  },
+  methods: {
+    methodErNaam(event, row) {
+      console.log(event);
+      console.log(row);
+      this.$router.push({ name: 'test', params: { studentID: row.studentID, name: row.name }});
+    }
   },
 
   computed: {

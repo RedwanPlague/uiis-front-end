@@ -20,7 +20,8 @@ const routes = [
       { path: 'head/course_registration', component: () => import('pages/teacher/HeadCourseRegistrationPage.vue') },
       { path: 'head/result_evaluation', component: () => import('pages/teacher/HeadResultEvaluationPage.vue') },
       { path: 'examiner', component: () => import('src/pages/teacher/ExaminerPage.vue') },
-      { path: 'scrutinizer', component: () => import('src/pages/teacher/ScrutinizerPage.vue') }
+      { path: 'scrutinizer', component: () => import('src/pages/teacher/ScrutinizerPage.vue') },
+      { path: 'advisor/advisee_test/:studentID', name: 'test', component: () => import('src/pages/teacher/Test.vue') }
     ]
   },
 

@@ -23,9 +23,22 @@
                 v-for="advisee in advisees"
                 :key="advisee.studentID"
                 v-bind="advisee"
+                @click="selectedAdvisee = advisee; alert = true"
               >
                 {{ advisee.studentID }}
               </q-btn>
+
+              <q-dialog v-model="alert">
+                <q-card>
+                  <q-card-section>
+                    <div class="text-h6">{{ selectedAdvisee.studentID }}</div>
+                  </q-card-section>
+
+                  <q-card-actions align="right">
+                    <q-btn flat label="OK" color="primary" v-close-popup />
+                  </q-card-actions>
+                </q-card>
+              </q-dialog>
             </div>
           </q-tab-panel>
 
@@ -92,8 +105,11 @@ for(let i=0; i<30; i++) {
 export default {
   name: "AdviseeCourseRegistrationPage",
 
-  data () {
+  data() {
     return {
+      alert: false,
+      selectedAdvisee: null,
+
       /* necessary data */
       advisees,
 
