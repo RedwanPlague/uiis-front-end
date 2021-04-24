@@ -3,7 +3,7 @@
     <div class="q-pa-md table">
       <q-table
         title="Current Courses"
-        :data="currentCourses"
+        :data="allCourses.currentCourses"
         :columns="columns"
         row-key="courseID"
         separator="cell"
@@ -24,7 +24,7 @@
     <div class="q-pa-md table">
       <q-table
         title="Previous Courses"
-        :data="previousCourses"
+        :data="allCourses.previousCourses"
         :columns="columns"
         row-key="courseID"
         separator="cell"
@@ -48,12 +48,28 @@
 </template>
 
 <script>
+
+  import { mapGetters, mapActions } from 'vuex';
+
 export default {
   name: "ClassPage",
+  computed: {
+    ...mapGetters(['allCourses']),
+  },
+  async created() {
+    await this.fetchCourses();
+  },
   methods : {
     onRowClick(evt, row) {
-      this.$router.push({ name: 'course_page', params: { courseID: row.courseID , courseSession: row.session, courseName: row.courseName}});
-    }
+      this.$router.push( {
+        name: 'course_page',
+        params: {
+          courseID: row.courseID ,
+          courseSession: row.session,
+          courseName: row.courseName
+        }});
+    },
+    ...mapActions(['fetchCourses']),
   },
   data () {
     return {
@@ -73,7 +89,6 @@ export default {
           headerClasses: 'bg-primary text-white',
           style: 'width: 200px',
           sortable: true,
-          to: '/teacher/advisor/advisee_result'
         },
         {
           name: 'courseID',
@@ -95,47 +110,6 @@ export default {
           sortable: true
         },
       ],
-
-      currentCourses: [
-        {
-          session: 'January 2021',
-          courseID: 'CSE107',
-          courseName: 'Object Oriented Programming Language',
-          to: '/teacher/advisor/advisee_result'
-        },
-        {
-          session: 'January 2021',
-          courseID: 'CSE203',
-          courseName: 'Data Structures and Algorithms I',
-        },
-        {
-          session: 'January 2021',
-          courseID: 'CSE218',
-          courseName: 'Numerical Methods',
-        },
-        {
-          session: 'January 2021',
-          courseID: 'CSE219',
-          courseName: 'Numerical Methods',
-        },
-      ],
-      previousCourses: [
-        {
-          session: 'January 2020',
-          courseID: 'CSE101',
-          courseName: 'Structured Programming Language',
-        },
-        {
-          session: 'January 2019',
-          courseID: 'CSE201',
-          courseName: 'Data Structures and Algorithms I',
-        },
-        {
-          session: 'January 2020',
-          courseID: 'CSE211',
-          courseName: 'Numerical Methods',
-        },
-      ]
     }
   }
 };

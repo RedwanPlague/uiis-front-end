@@ -1,16 +1,16 @@
 <template>
   <q-page class="container">
-    <h5>{{courseSession}} {{courseID}}: {{courseName}}</h5>
+    <h5>{{$route.params.session}} {{$route.params.courseID}}: {{$route.params.courseName}}</h5>
 
     <div>
       <q-btn :icon='buttonIcon' size='md' color="primary" :label="buttonText" class="" @click="toggleEditMode" ></q-btn>
     </div>
     <div class="table q-pa-md">
       <q-table
-      title = 'Course Assesment'
+      title = 'Course Assessment'
       :data="student_data"
       :columns="columns"
-      row-key="courseID"
+      row-key="this.courseDetails.courseID"
       separator="cell"
       :pagination.sync="pagination"
       :filter="studentFilter"
@@ -54,21 +54,37 @@
 </template>
 
 <script>
+
+  import { mapGetters, mapActions } from 'vuex';
+
   export default {
     name: "CourseEvaluationPage",
-    created() {
-      this.courseID = this.$route.params.courseID;
-      this.courseSession = this.$route.params.courseSession;
-      this.courseName = this.$route.params.courseName;
+
+    computed: {
+      ...mapGetters(['courseDetails']),
+    },
+    async created() {
+
+      await this.fetchCourse( { courseID: this.$route.params.courseID, session: this.$route.params.courseSession});
+      //
+      // this.courseID = this.courseDetails.courseID;
+      // this.courseSession = this.courseDetails.session;
+      // this.courseName = this.courseDetails.courseName;
     },
     watch: {
-      '$route.params' (to, from) {
-        this.courseID = this.$route.params.courseID;
-        this.courseSession = this.$route.params.courseSession;
-        this.courseName = this.$route.params.courseName;
+      async '$route.params' (to, from) {
+        if(!this.$route.params.courseID ) {
+          return;
+        }
+        // await this.fetchCourse( { courseID: this.$route.params.courseID, session: this.$route.params.courseSession});
+        //
+        // this.courseID = this.courseDetails.courseID;
+        // this.courseSession = this.courseDetails.session;
+        // this.courseName = this.courseDetails.courseName;
       }
     },
     methods: {
+      ...mapActions(['fetchCourse']),
       toggleEditMode(e) {
         e.preventDefault();
         this.editMode = !this.editMode;
@@ -95,8 +111,6 @@
         editMode: false,
         buttonIcon:'edit',
         buttonText:'Edit',
-
-
 
         pagination: {
           page: 1,
@@ -194,10 +208,6 @@
             sortable: true
           },
         ],
-        courseID: '',
-        courseSession: '',
-        courseName: '',
-
       }
     }
 
