@@ -18,7 +18,6 @@
             </template>
           </q-input>
         </template>
-
       </q-table>
     </div>
 
@@ -53,12 +52,7 @@ export default {
   name: "ClassPage",
   methods : {
     onRowClick(evt, row) {
-
-      console.log(row.session);
-      console.log(row.courseID);
-      console.log(row.courseName);
-
-
+      this.$router.push({ name: 'course_page', params: { courseID: row.courseID , courseSession: row.session, courseName: row.courseName}});
     }
   },
   data () {
@@ -78,10 +72,11 @@ export default {
           classes: 'bg-grey-1 ellipsis',
           headerClasses: 'bg-primary text-white',
           style: 'width: 200px',
-          sortable: true
+          sortable: true,
+          to: '/teacher/advisor/advisee_result'
         },
         {
-          name: 'CourseID',
+          name: 'courseID',
           label: 'Course ID',
           align: 'center',
           field: 'courseID',
@@ -103,49 +98,40 @@ export default {
 
       currentCourses: [
         {
-          session: '2020-21',
+          session: 'January 2021',
           courseID: 'CSE107',
           courseName: 'Object Oriented Programming Language',
+          to: '/teacher/advisor/advisee_result'
         },
         {
-          session: '2020-21',
+          session: 'January 2021',
           courseID: 'CSE203',
           courseName: 'Data Structures and Algorithms I',
         },
         {
-          session: '2020-21',
+          session: 'January 2021',
           courseID: 'CSE218',
           courseName: 'Numerical Methods',
         },
         {
-          session: '2020-21',
+          session: 'January 2021',
           courseID: 'CSE219',
-          courseName: 'Numerical Methods',
-        },
-        {
-          session: '2020-21',
-          courseID: 'CSE220',
-          courseName: 'Numerical Methods',
-        },
-        {
-          session: '2020-21',
-          courseID: 'CSE221',
           courseName: 'Numerical Methods',
         },
       ],
       previousCourses: [
         {
-          session: '2016-17',
+          session: 'January 2020',
           courseID: 'CSE101',
           courseName: 'Structured Programming Language',
         },
         {
-          session: '2017-18',
+          session: 'January 2019',
           courseID: 'CSE201',
           courseName: 'Data Structures and Algorithms I',
         },
         {
-          session: '2017-18',
+          session: 'January 2020',
           courseID: 'CSE211',
           courseName: 'Numerical Methods',
         },
@@ -160,7 +146,6 @@ export default {
     display: flex;
     align-items: center;
     flex-direction: column;
-    /*justify-content: center;*/
   }
   .table {
     width: 800px;
