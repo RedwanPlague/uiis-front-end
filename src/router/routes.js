@@ -1,3 +1,7 @@
+import Store from '../store/index'
+
+const store = Store()
+
 const routes = [
   {
     path: '/',
@@ -28,7 +32,14 @@ const routes = [
     component: () => import('layouts/AdminLayout'),
     children: [
       { path: 'create-account', name: 'AccountCreationPage', component: () => import('pages/admin/AccountCreation') },
-    ]
+    ],
+    beforeEnter(to, from, next) {
+      if (store.getters.userIsLoggedIn) {
+        next()
+      } else {
+        next({ name: 'Index' })
+      }
+    }
   },
 
   /*

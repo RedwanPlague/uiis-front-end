@@ -15,7 +15,7 @@
           UIIS Admin
         </q-toolbar-title>
 
-        <q-btn-dropdown v-if="userIsLoggedIn" icon="person" :label="user.name" flat>
+        <q-btn-dropdown icon="person" :label="user.name" flat>
           <q-list>
             <q-item clickable v-close-popup :to="{ name: 'AdminCoursesPage' }" style="color: inherit" dense>
               <q-item-section>
@@ -37,7 +37,6 @@
           </q-list>
         </q-btn-dropdown>
         <!--<q-btn v-else flat :to="{ name: 'Admin' }">SIGN IN</q-btn>-->
-        <q-btn v-else flat @click="userLogIn({ami: 'eikhane', tumi: 'oikhane'})">SIGN IN</q-btn>
       </q-toolbar>
     </q-header>
 
@@ -71,7 +70,7 @@ import { mapGetters, mapActions } from 'vuex'
 
 const quickLinks = [
   {
-    title: 'Docs1',
+    title: 'Account Creation',
     icon: 'school',
     link: { name: 'AccountCreationPage' }
   },
@@ -132,7 +131,6 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'userIsLoggedIn',
       'user'
     ])
   },

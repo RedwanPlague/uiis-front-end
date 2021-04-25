@@ -4,9 +4,22 @@
   </div>
 </template>
 <script>
+import { mapActions } from 'vuex'
 
 export default {
-  name: 'App'
+  name: 'App',
+  methods: {
+    ...mapActions([
+      'userTryAutoLogIn'
+    ])
+  },
+  created() {
+    this.userTryAutoLogIn().then().catch(() => {
+      if (this.$route.name !== 'Index') {
+        this.$router.replace({name: 'Index'})
+      }
+    })
+  }
 }
 </script>
 

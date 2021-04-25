@@ -1,3 +1,6 @@
+import {api} from "boot/axios";
+import {LocalStorage} from "quasar";
+
 export default {
   state: {
     loggedIn: false,
@@ -10,34 +13,61 @@ export default {
     user(state) {
       return state.user
     },
-    userHas(state) {
-      return (privilegeName) => state.loggedIn && state.user.privilegeList.includes(privilegeName)
-    }
+    userHasPrivilege(state) {
+      return (privilegeName) => state.loggedIn &&
+        state.user.hasOwnProperty('privilegeList') &&
+        state.user.privilegeList.includes(privilegeName)
+    },
   },
   mutations: {
-    userLogIn(state, user) {
+    userLogIn(state, {user, token}) {
       state.user = user
       state.loggedIn = true
+      LocalStorage.set('authToken', token)
+      api.defaults.headers.common['Authorization'] = token
     },
     userLogOut(state) {
       state.user = {}
       state.loggedIn = false
+      LocalStorage.remove('authToken')
+      delete api.defaults.headers.common['Authorization']
+      // api.setHeader('Authorization', null)
     }
   },
   actions: {
     userLogIn(context, data) {
-      // use data to get user from DB
-      const user = {
-        name: 'John Doe',
-        ...data,
-        privilegeList: [
-          'Create Account',
-          'Create Due'
-        ]
-      }
-      context.commit('userLogIn', user)
+      return new Promise((resolve, reject) => {
+        api.post('/login', data)
+          .then(response => {
+            context.commit('userLogIn', response.data)
+            resolve(response)
+          })
+          .catch(error => {
+            reject(error)
+          })
+      })
+    },
+    userTryAutoLogIn(context) {
+      return new Promise((resolve, reject) => {
+        if (LocalStorage.has('authToken')) {
+          api.defaults.headers.common['Authorization'] = LocalStorage.getItem('authToken')
+          api.post('/auto-login')
+            .then(response => {
+              context.commit('userLogIn', response.data)
+              resolve(response)
+            })
+            .catch(() => {
+              context.commit('userLogOut')
+              reject()
+            })
+        }
+        else {
+          reject()
+        }
+      })
     },
     userLogOut(context) {
+      api.post('/logout').then()
       context.commit('userLogOut')
     }
   }
