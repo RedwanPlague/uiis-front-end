@@ -4,7 +4,7 @@
       <q-table
         title="Advisees" :data="rows" :columns="columns" row-key="studentID"
         :pagination.sync="pagination" hide-pagination
-        @row-click="methodErNaam"
+        @row-click="methodErName"
       />
 
       <div class="row justify-center q-mt-md">
@@ -23,7 +23,7 @@
 export default {
   name: "AdviseeInformationPage",
 
-  data () {
+  data() {
     return {
       /* for pagination */
       pagination: {
@@ -82,7 +82,7 @@ export default {
     };
   },
   methods: {
-    methodErNaam(event, row) {
+    methodErName(event, row) {
       console.log(event);
       console.log(row);
       this.$router.push({ name: 'test', params: { studentID: row.studentID, name: row.name }});
@@ -97,4 +97,6 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+
+</style>
