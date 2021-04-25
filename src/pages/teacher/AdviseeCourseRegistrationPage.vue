@@ -73,7 +73,7 @@
             </div>
 
             <q-table
-              title="Courses" bordered :data="selectedAdvisee.courses" :columns="courseColumns" row-key="courseID"
+              title="Courses" dense bordered :data="selectedAdvisee.courses" :columns="courseColumns" row-key="courseID"
             />
           </q-card-section>
 

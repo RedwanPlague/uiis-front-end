@@ -1,42 +1,56 @@
 <template>
   <q-page padding>
     <div class="q-pa-md">
-      <q-card bordered>
-        <q-card-section>
-          <div class="text-h5">View Grade Statistics</div><br />
-          <div class="text-subtitle2"><strong>Student ID: </strong>{{ this.$route.params.studentID }}</div>
-        </q-card-section>
+      <div class="text-subtitle1">
+        <strong>Student ID:</strong> {{ advisees.find(advisee => advisee.studentID === this.$route.params.studentID).studentID }}<br />
+        <strong>Name:</strong> {{ advisees.find(advisee => advisee.studentID === this.$route.params.studentID).name }}<br />
+        <strong>Department:</strong> {{ advisees.find(advisee => advisee.studentID === this.$route.params.studentID).department }}<br />
+        <strong>Level/Term:</strong> {{ semesters.find(semester => semester.semesterID === this.$route.params.semesterID).level }}/{{ semesters.find(semester => semester.semesterID === this.$route.params.semesterID).term }}
+      </div><br />
 
-        <q-separator /><br />
+      <q-table
+        dense bordered :data="grades" :columns="gradeColumns" row-key="courseID"
+      /><br />
 
-        <q-card-actions align="center">
-          <q-btn-dropdown no-caps color="primary" label="Select a Level/Term">
-            <q-list>
-              <q-item
-                clickable
-                class="bg-grey-2"
-                v-for="semester in semesters"
-                :key="semester.semesterID"
-                v-bind="semester"
-                @click.native="selectedSemester = semester; onItemClick();"
-              >
-                <q-item-section>
-                  <q-item-label>Level/Term: <strong>{{ semester.level }}/{{ semester.term }}</strong></q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
-        </q-card-actions><br />
+      <div class="row">
+        <div class="text-subtitle1">
+          <strong>Registered Credit Hours in this Term:</strong> {{ getTotalCreditHours(grades) }}<br />
+          <strong>Credit Hours Earned in this Term:</strong> {{ getTotalCreditHours(grades) }}<br />
+          <strong>Total Credit Hours:</strong> {{ getTotalCreditHours(grades) }}
+        </div>
 
-        <q-card-actions align="right">
-          <q-btn flat class="bg-primary text-white" label="Back" @click="visitInformationPage" />
-        </q-card-actions>
-      </q-card>
+        <q-space />
+
+        <q-card>
+          <q-card-section>
+            <div class="text-subtitle1">
+              <strong>Obtained GPA:</strong> {{ getGPA(grades) }}<br />
+              <strong>Current CGPA:</strong> {{ getGPA(grades) }}
+            </div>
+          </q-card-section>
+        </q-card>
+      </div><br />
+
+      <div class="row">
+        <q-space />
+        <q-btn flat class="bg-primary text-white" label="Back" @click="visitSemesterSelectionPage" />
+      </div>
     </div>
   </q-page>
 </template>
 
 <script>
+/* creating dummy advisees array */
+let advisees = [];
+
+for(let i=0; i<30; i++) {
+  advisees[i] = {
+    studentID: 1605001+i,
+    name: "student no."+(i+1),
+    department: "CSE"
+  };
+}
+
 /* creating dummy semester array */
 let semesters = [];
 
@@ -48,25 +62,91 @@ for(let i=0; i<8; i++) {
   };
 }
 
+/* creating dummy grades array */
+let grades = [];
+
+for(let i=0; i<10; i++) {
+  grades[i] = {
+    courseID: "CSE30"+i,
+    courseTitle: "Course No."+(i+1),
+    creditHours: 3.00,
+    grade: "A+",
+    gradePoint: 4.00
+  };
+}
+
 export default {
   name: "AdviseeGradesPage",
 
   data() {
     return {
-      /* dummy semester array */
-      semesters,
+      advisees,  /* dummy advisees array */
+      semesters,  /* dummy semester array */
+      grades,  /* dummy grades array */
 
-      /* for keeping track of selected semester */
-      selectedSemester: {}
+      /* for tabulation */
+      gradeColumns: [
+        {
+          name: 'courseID',
+          required: true,
+          label: 'Course ID',
+          align: 'left',
+          field: row => row.courseID,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'courseTitle',
+          align: 'left',
+          label: 'Course Title',
+          field: 'courseTitle',
+          sortable: true
+        },
+        {
+          name: 'creditHours',
+          align: 'left',
+          label: 'Credit Hours',
+          field: 'creditHours',
+          sortable: true
+        },
+        {
+          name: 'grade',
+          align: 'left',
+          label: 'Grade',
+          field: 'grade',
+          sortable: true
+        },
+        {
+          name: 'gradePoint',
+          align: 'left',
+          label: 'Grade Point',
+          field: 'gradePoint',
+          sortable: true
+        }
+      ]
     };
   },
 
   methods: {
-    onItemClick() {
-      console.log(this.selectedSemester);
+    getTotalGradePoint(grades) {
+      let sum = 0.0;
+      for(let i=0; i<grades.length; i++) {
+        sum += grades[i].gradePoint;
+      }
+      return sum;
     },
-    visitInformationPage() {
-      this.$router.push({ name: 'adviseeInfo', params: {}});
+    getGPA(grades) {
+      return this.getTotalGradePoint(grades)/grades.length;
+    },
+    getTotalCreditHours(grades) {
+      let sum = 0.0;
+      for(let i=0; i<grades.length; i++) {
+        sum += grades[i].creditHours;
+      }
+      return sum;
+    },
+    visitSemesterSelectionPage() {
+      this.$router.push({ name: 'adviseeSemesterSelection', params: {}});
     }
   }
 }
