@@ -11,7 +11,7 @@
         >
           <q-tab name="registeredStudents" label="Registered Students" />
           <q-tab name="waitingForHeadApproval" label="Waiting for Head's Approval" />
-          <q-tab name="waitingForAdvisorApproval" label="Waiting for Head's Approval" />
+          <q-tab name="waitingForAdvisorApproval" label="Waiting for Advisor's Approval" />
           <q-tab name="notAppliedForRegistration" label="Not Applied for Registration" />
         </q-tabs><br />
 
@@ -41,7 +41,7 @@
 
             <div class="row">
               <q-space />
-              <q-btn class="btn-fixed-width" color="primary" label="Submit" />
+              <q-btn class="btn-fixed-width" color="primary" label="Submit" @click="forwardToHead" />
             </div>
           </q-tab-panel>
 
@@ -100,15 +100,38 @@ for(let i=0; i<30; i++) {
     courses: [
       {
         courseID: "CSE405",
-        courseTitle: "Computer Security"
+        syllabusID: "-",
+        courseTitle: "Computer Security",
+        creditHours: 3.00,
+        Remarks: "Qualified"
       },
       {
         courseID: "CSE409",
-        courseTitle: "Computer Graphics"
+        syllabusID: "-",
+        courseTitle: "Computer Graphics",
+        creditHours: 3.00,
+        Remarks: "Qualified"
+      },
+      {
+        courseID: "CSE453",
+        syllabusID: "-",
+        courseTitle: "High Performance Database Systems",
+        creditHours: 3.00,
+        Remarks: "Qualified"
+      },
+      {
+        courseID: "CSE463",
+        syllabusID: "-",
+        courseTitle: "Introduction to Bioinformatics",
+        creditHours: 3.00,
+        Remarks: "Qualified"
       },
       {
         courseID: "HUM475",
-        courseTitle: "Engineering Economics"
+        syllabusID: "-",
+        courseTitle: "Engineering Economics",
+        creditHours: 3.00,
+        Remarks: "Qualified"
       }
     ]
   };
@@ -152,10 +175,31 @@ export default {
           sortable: true
         },
         {
+          name: 'syllabusID',
+          align: 'left',
+          label: 'Syllabus ID',
+          field: 'syllabusID',
+          sortable: true
+        },
+        {
           name: 'courseTitle',
           align: 'left',
           label: 'Course Title',
           field: 'courseTitle',
+          sortable: true
+        },
+        {
+          name: 'creditHours',
+          align: 'left',
+          label: 'Credit Hours',
+          field: 'creditHours',
+          sortable: true
+        },
+        {
+          name: 'remarks',
+          align: 'left',
+          label: 'Remarks',
+          field: 'remarks',
           sortable: true
         }
       ],
@@ -182,6 +226,13 @@ export default {
     onRowClick(event, row) {
       this.selectedAdvisee = this.advisees.find(advisee => advisee.studentID === row.studentID);
       this.studentInfoDialogBox = true;
+    },
+    forwardToHead() {
+      for(let i=0; i<this.selected.length; i++) {
+        this.waitingForAdvisorApprovalAdvisees.splice(this.waitingForAdvisorApprovalAdvisees.findIndex(advisee => advisee.studentID === this.selected[i].studentID), 1);
+      }
+      this.waitingForHeadApprovalAdvisees = this.waitingForHeadApprovalAdvisees.concat(this.selected);
+      this.selected = [];
     }
   }
 };
