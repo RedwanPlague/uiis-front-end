@@ -1,16 +1,16 @@
 <template>
   <q-page class="container">
-    <h5>{{$route.params.session}} {{$route.params.courseID}}: {{$route.params.courseName}}</h5>
+    <h5>{{courseDetails.session }} {{courseDetails.courseID}}: {{courseDetails.courseName }}</h5>
 
     <div>
-      <q-btn :icon='buttonIcon' size='md' color="primary" :label="buttonText" class="" @click="toggleEditMode" ></q-btn>
+      <q-btn v-show="editAccess" :icon='buttonIcon' size='md' color="primary" :label="buttonText" class="" @click="toggleEditMode" ></q-btn>
     </div>
     <div class="table q-pa-md">
       <q-table
       title = 'Course Assessment'
       :data="student_data"
       :columns="columns"
-      row-key="this.courseDetails.courseID"
+      row-key="courseDetails.courseID"
       separator="cell"
       :pagination.sync="pagination"
       :filter="studentFilter"
@@ -33,60 +33,74 @@
             {{props.row.student_name}}
           </q-td>
           <q-td key="eval_1" :props="props" >
-            <q-input type="number" v-model="props.row.eval_1" autofocus dense :disable="!editMode" input-class="text-center"/>
+            <q-input type="number" v-model="props.row.eval_1" autofocus dense :disable="!editMode" input-class="text-center" />
           </q-td>
           <q-td key="eval_2" :props="props">
-            <q-input type="number" v-model="props.row.eval_2" autofocus dense :disable="!editMode" input-class="text-center" />
+            <q-input type="number" v-model="props.row.eval_2" autofocus dense :disable="!editMode" input-class="text-center"/>
           </q-td>
           <q-td key="attendance" :props="props">
-            <q-input type="number" v-model="props.row.attendance" autofocus dense :disable="!editMode" input-class="text-center" />
+            <q-input type="number" v-model="props.row.attendance" autofocus dense :disable="!editMode" input-class="text-center"/>
           </q-td>
         </q-tr>
       </template>
     </q-table>
 
-      <div class="row q-pa-md">
+      <div class="row q-pa-md" v-show="editAccess">
         <q-space />
-        <q-btn no-caps icon='check_circle' size='md' color="primary" label="Submit Evalution" ></q-btn>
+        <q-btn no-caps icon='check_circle' size='md' color="primary" label="Submit Evalution" @click="submitFlag = true"></q-btn>
       </div>
     </div>
+
+
+    <q-dialog v-model="submitFlag" persistent>
+      <q-card>
+        <q-card-section class="row items-center">
+          <span class="q-ml-sm">Are you sure you want to submit your Term evaluation for {{courseDetails.courseID}}: {{courseDetails.courseName}}?</span>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="primary" v-close-popup />
+          <q-btn flat label="Yes, Submit Evaluation" color="primary" v-close-popup @click="editAccess= false; "/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
 <script>
 
-  import { mapGetters, mapActions } from 'vuex';
+  import { mapGetters, mapActions} from 'vuex';
+  import { mapMultiRowFields } from 'vuex-map-fields';
 
   export default {
     name: "CourseEvaluationPage",
 
     computed: {
       ...mapGetters(['courseDetails']),
+      ...mapMultiRowFields(['student_data']),
     },
     async created() {
-
       await this.fetchCourse( { courseID: this.$route.params.courseID, session: this.$route.params.courseSession});
-      //
-      // this.courseID = this.courseDetails.courseID;
-      // this.courseSession = this.courseDetails.session;
-      // this.courseName = this.courseDetails.courseName;
+      await this.fetchStudentData( { courseID: this.$route.params.courseID, session: this.$route.params.courseSession});
     },
     watch: {
       async '$route.params' (to, from) {
         if(!this.$route.params.courseID ) {
           return;
         }
-        // await this.fetchCourse( { courseID: this.$route.params.courseID, session: this.$route.params.courseSession});
-        //
-        // this.courseID = this.courseDetails.courseID;
-        // this.courseSession = this.courseDetails.session;
-        // this.courseName = this.courseDetails.courseName;
+        await this.fetchCourse( { courseID: this.$route.params.courseID, session: this.$route.params.courseSession});
+        await this.fetchStudentData( { courseID: this.$route.params.courseID, session: this.$route.params.courseSession});
+
       }
     },
     methods: {
-      ...mapActions(['fetchCourse']),
-      toggleEditMode(e) {
+      ...mapActions(['fetchCourse', 'fetchStudentData', 'saveStudentData']),
+      async toggleEditMode(e) {
         e.preventDefault();
+
+        if(this.editMode) {
+          await this.saveStudentData();
+        }
+
         this.editMode = !this.editMode;
         if( this.editMode ) {
           this.buttonIcon =  'done';
@@ -94,7 +108,6 @@
           this.columns.forEach( (cell,index) => {
             if(index >= 2) cell.classes = 'bg-white-1';
           } );
-
         }
         else {
           this.buttonIcon =  'edit';
@@ -108,7 +121,10 @@
     data() {
       return {
         studentFilter: '',
+        submitFlag: false,
         editMode: false,
+
+        editAccess: true,
         buttonIcon:'edit',
         buttonText:'Edit',
 
@@ -116,44 +132,6 @@
           page: 1,
           rowsPerPage: 0 // 0 means all rows
         },
-
-        student_data : [
-          {
-            student_id: '1605001',
-            student_name: 'Ashraful Islam',
-            eval_1: '',
-            eval_2: '',
-            attendance: '',
-          },
-          {
-            student_id: '1605002',
-            student_name: 'Zawad Abdullah',
-            eval_1: '',
-            eval_2: '',
-            attendance: '',
-          },
-          {
-            student_id: '1605003',
-            student_name: 'Bishwajit Bhattacharjee',
-            eval_1: '',
-            eval_2: '',
-            attendance: '',
-          },
-          {
-            student_id: '1605004',
-            student_name: 'Redwanul  Haque',
-            eval_1: '',
-            eval_2: '',
-            attendance: '',
-          },
-          {
-            student_id: '1605005',
-            student_name: 'Navid Hasan',
-            eval_1: '',
-            eval_2: '',
-            attendance: '',
-          },
-        ],
         columns: [
           {
             name: 'student_id',
