@@ -32,8 +32,8 @@
           </q-card-section>
 
           <q-card-actions align="right">
-            <q-btn flat class="bg-secondary text-white" label="View Result" @click="visitResultPage" />
-            <q-btn flat class="bg-primary text-white" label="Back" v-close-popup />
+            <q-btn flat class="bg-primary text-white" label="View Grades" @click="visitedGradesPage" />
+            <q-btn flat class="bg-secondary text-white" label="Back" v-close-popup />
           </q-card-actions>
         </q-card>
       </q-dialog>
@@ -96,7 +96,7 @@ export default {
       this.selectedAdvisee = this.advisees.find(advisee => advisee.studentID === row.studentID);
       this.studentInfoDialogBox = true;
     },
-    visitResultPage() {
+    visitedGradesPage() {
       console.log("hello");
       this.$router.push({ name: 'adviseeGrades', params: { studentID: this.selectedAdvisee.studentID }});
     }
