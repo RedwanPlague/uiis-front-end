@@ -20,21 +20,21 @@
         <q-tab-panels v-model="tab" animated>
           <q-tab-panel name="registeredStudents">
             <q-table
-              class="bg-grey-2" :data="registeredAdvisees" :columns="adviseeColumns" row-key="studentID"
+              bordered :data="registeredAdvisees" :columns="adviseeColumns" row-key="studentID"
               @row-click="onRowClick"
             />
           </q-tab-panel>
 
           <q-tab-panel name="waitingForHeadApproval">
             <q-table
-              class="bg-grey-2" :data="waitingForHeadApprovalAdvisees" :columns="adviseeColumns" row-key="studentID"
+              bordered :data="waitingForHeadApprovalAdvisees" :columns="adviseeColumns" row-key="studentID"
               @row-click="onRowClick"
             />
           </q-tab-panel>
 
           <q-tab-panel name="waitingForAdvisorApproval">
             <q-table
-              class="bg-grey-2" :data="waitingForAdvisorApprovalAdvisees" :columns="adviseeColumns" row-key="studentID"
+              bordered :data="waitingForAdvisorApprovalAdvisees" :columns="adviseeColumns" row-key="studentID"
               :selected-rows-label="getSelectedString" selection="multiple" :selected.sync="selected"
               @row-click="onRowClick"
             /><br />
@@ -47,7 +47,7 @@
 
           <q-tab-panel name="notAppliedForRegistration">
             <q-table
-              class="bg-grey-2" :data="notAppliedForRegistrationAdvisees" :columns="adviseeColumns" row-key="studentID"
+              bordered :data="notAppliedForRegistrationAdvisees" :columns="adviseeColumns" row-key="studentID"
               @row-click="onRowClick"
             />
           </q-tab-panel>
@@ -73,7 +73,7 @@
             </div>
 
             <q-table
-              title="Courses" class="bg-grey-2" :data="selectedAdvisee.courses" :columns="courseColumns" row-key="courseID"
+              title="Courses" bordered :data="selectedAdvisee.courses" :columns="courseColumns" row-key="courseID"
             />
           </q-card-section>
 

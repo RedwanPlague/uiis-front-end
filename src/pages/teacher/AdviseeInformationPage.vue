@@ -2,40 +2,71 @@
   <q-page padding>
     <div class="q-pa-md">
       <q-table
-        title="Advisees" :data="rows" :columns="columns" row-key="studentID"
-        :pagination.sync="pagination" hide-pagination
-        @row-click="methodErName"
+        title="Advisees" bordered :data="advisees" :columns="adviseeColumns" row-key="studentID"
+        @row-click="onRowClick"
       />
 
-      <div class="row justify-center q-mt-md">
-        <q-pagination
-          v-model="pagination.page"
-          color="secondary"
-          :max="pagesNumber"
-          size="sm"
-        />
-      </div>
+      <q-dialog v-model="studentInfoDialogBox" full-width>
+        <q-card>
+          <q-card-section>
+            <div class="text-h6">
+              <p>
+                <strong>Student ID:</strong> {{ selectedAdvisee.studentID }}
+              </p>
+              <p>
+                <strong>Name:</strong> {{ selectedAdvisee.name }}
+              </p>
+              <p>
+                <strong>Level/Term:</strong> {{ selectedAdvisee.level }}/{{ selectedAdvisee.term }}
+              </p>
+              <p>
+                <strong>Department:</strong> {{ selectedAdvisee.department }}
+              </p>
+              <p>
+                <strong>Contact Number:</strong> {{ selectedAdvisee.contactNumber }}
+              </p>
+              <p>
+                <strong>Email Address:</strong> {{ selectedAdvisee.emailAddress }}
+              </p>
+            </div>
+          </q-card-section>
+
+          <q-card-actions align="right">
+            <q-btn flat class="bg-secondary text-white" label="View Result" @click="visitResultPage" />
+            <q-btn flat class="bg-primary text-white" label="Back" v-close-popup />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </div>
   </q-page>
 </template>
 
 <script>
+/* preparing dummy advisees array */
+let advisees = [];
+
+for(let i=0; i<30; i++) {
+  advisees[i] = {
+    studentID: 1605001+i,
+    name: "student no."+(i+1),
+    level: "4",
+    term: "1",
+    department: "CSE",
+    contactNumber: "xxx-xxx-xxxx",
+    emailAddress: (1605001+i)+"@ugrad.cse.buet.ac.bd"
+  };
+}
+
 export default {
   name: "AdviseeInformationPage",
 
   data() {
     return {
-      /* for pagination */
-      pagination: {
-        sortBy: 'studentID',
-        descending: false,
-        page: 1,
-        rowsPerPage: 10
-        /* rowsNumber: xx if getting data from a server */
-      },
+      /* dummy advisees array */
+      advisees,
 
       /* for tabulation */
-      columns: [
+      adviseeColumns: [
         {
           name: 'studentID',
           required: true,
@@ -53,45 +84,21 @@ export default {
           sortable: true
         }
       ],
-      rows: [
-        {
-          studentID: '1605002',
-          name: 'Zawad'
-        },
-        {
-          studentID: '1605003',
-          name: 'Bishwa'
-        },
-        {
-          studentID: '1605004',
-          name: 'Redwan'
-        },
-        {
-          studentID: '1605010',
-          name: 'Rakib'
-        },
-        {
-          studentID: '1605023',
-          name: 'Sahil'
-        },
-        {
-          studentID: '1605024',
-          name: 'Mahir'
-        }
-      ]
+
+      /* for showing selected Advisee information in dialog box */
+      selectedAdvisee: {},
+      studentInfoDialogBox: false  /* open when true */
     };
   },
-  methods: {
-    methodErName(event, row) {
-      console.log(event);
-      console.log(row);
-      this.$router.push({ name: 'test', params: { studentID: row.studentID, name: row.name }});
-    }
-  },
 
-  computed: {
-    pagesNumber () {
-      return Math.ceil(this.rows.length / this.pagination.rowsPerPage);
+  methods: {
+    onRowClick(event, row) {
+      this.selectedAdvisee = this.advisees.find(advisee => advisee.studentID === row.studentID);
+      this.studentInfoDialogBox = true;
+    },
+    visitResultPage() {
+      console.log("hello");
+      this.$router.push({ name: 'adviseeGrades', params: { studentID: this.selectedAdvisee.studentID }});
     }
   }
 };
