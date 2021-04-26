@@ -24,7 +24,7 @@ export default {
       required: true
     },
     link: {
-      type: Object,
+      type: [Object, String],
       default() {
         return { name: 'ErrorPage' }
       }

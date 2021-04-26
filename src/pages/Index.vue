@@ -1,13 +1,19 @@
 <template>
   <q-page>
-    <div style="max-width: 600px" class="q-mx-auto q-mt-lg q-pt-lg q-px-md">
+    <div style="max-width: 600px; margin-top: 6%" class="q-mx-auto q-px-md">
       <q-form @submit="submit" @reset="reset" class="q-gutter-md">
-        <q-input v-model="tempUser" label="UserName" outlined></q-input>
+        <q-input
+          v-model="tempUser"
+          label="Username"
+          outlined
+          :rules="[() => !!tempUser || 'Please Enter a Username']"
+        ></q-input>
         <q-input
           :type="passwordShow ? 'text' : 'password'"
           v-model="password"
           label="Password"
           outlined
+          :rules="[() => !!password || 'Please Enter a Password']"
         >
           <template v-slot:append>
             <q-icon
@@ -43,18 +49,19 @@ export default {
       'userLogIn'
     ]),
     submit() {
-      this.$q.loading.show()
+      this.$q.loading.show({delay: 100/*ms*/})
       this.userLogIn({
         userID: this.tempUser,
         password: this.password
       })
         .then((user) => {
           this.$q.loading.hide()
-          // if (user.userType === 'admin') {
-          //   this.$router.push({ name: 'AccountCreationPage' })
-          // }
+          if (user.userType === 'admin') {
+            this.$router.push({ name: 'AccountCreationPage' })
+          }
         })
         .catch(error => {
+          this.$q.loading.hide()
           console.log(error)
         })
     },

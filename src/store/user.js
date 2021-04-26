@@ -20,11 +20,11 @@ export default {
     },
   },
   mutations: {
-    userLogIn(state, {user, token}) {
-      state.user = user
+    userLogIn(state, data) {
+      state.user = data.user
       state.loggedIn = true
-      LocalStorage.set('authToken', token)
-      api.defaults.headers.common['Authorization'] = token
+      LocalStorage.set('authToken', data.token)
+      api.defaults.headers.common['Authorization'] = data.token
     },
     userLogOut(state) {
       state.user = {}
@@ -40,7 +40,7 @@ export default {
         api.post('/login', data)
           .then(response => {
             context.commit('userLogIn', response.data)
-            resolve(response)
+            resolve(response.data.user)
           })
           .catch(error => {
             reject(error)
@@ -67,7 +67,13 @@ export default {
       })
     },
     userLogOut(context) {
-      api.post('/logout').then()
+      api.post('/logout')
+        .then(() => {
+          console.log('Logout completed')
+        })
+        .catch(() => {
+          console.log('Logout failed')
+        })
       context.commit('userLogOut')
     }
   }

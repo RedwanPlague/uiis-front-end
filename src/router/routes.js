@@ -1,6 +1,4 @@
-import Store from '../store/index'
-
-const store = Store()
+import store from '../store/index'
 
 const routes = [
   {
