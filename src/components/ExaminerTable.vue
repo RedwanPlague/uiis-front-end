@@ -1,8 +1,7 @@
 <template>
   <div class="q-pa-sm">
-    <h6>{{courseName}}</h6>
-
-    <div class="q-pa-md">
+    <div class="q-pa-md column items-center">
+      <h6>{{courseName}}</h6>
       <q-table
         :data="marks"
         :columns="columns"
@@ -16,15 +15,16 @@
             </q-td>
             <q-td key="marks" :props="props">
               <!-- {{ props.row.marks }} -->
-              <q-input type="number" v-model="props.row.marks" autofocus dense />
+              <q-input type="number" v-model="props.row.marks" autofocus dense :disable="!canEdit" />
             </q-td>
           </q-tr>
         </template>
       </q-table>
     </div>
-    <div class="row q-pa-md">
-      <q-space />
-      <q-btn no-caps color="primary" label="Upload" class="" @click="onClick" />
+    
+    <div class="q-pa-md row justify-center">
+      <q-checkbox v-model="canEdit" label="Edit" class="rounded-borders" />
+      <q-btn no-caps color="primary" label="Upload" class="q-ml-xl" @click="onClick" />
     </div>
   </div>
 </template>
@@ -46,6 +46,7 @@ export default {
 
   data() {
     return {
+      canEdit: false,
       columns: [
         {
           // unique id, identifies column

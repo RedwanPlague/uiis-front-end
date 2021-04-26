@@ -1,8 +1,7 @@
 <template>
   <div class="q-pa-sm">
-    <h6>{{courseName}}</h6>
-
-    <div class="q-pa-md">
+    <div class="q-pa-md column items-center">
+      <h6>{{courseName}}</h6>
       <q-table
         style="textAlign: left"
         :data="marks"
@@ -11,8 +10,7 @@
       >
       </q-table>
     </div>
-    <div class="row q-pa-md">
-      <q-space />
+    <div class="row q-pa-md justify-center">
       <q-btn no-caps color="primary" label="Forward to Department head" class="" />
     </div>
   </div>
