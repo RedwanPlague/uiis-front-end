@@ -73,7 +73,7 @@
             </div>
 
             <q-table
-              title="Courses" dense bordered :data="selectedAdvisee.courses" :columns="courseColumns" row-key="courseID"
+              title="Courses" dense bordered :data="getCourses" :columns="courseColumns" row-key="courseID"
             />
           </q-card-section>
 
@@ -87,62 +87,13 @@
 </template>
 
 <script>
-/* preparing dummy advisees array */
-let advisees = [];
-
-for(let i=0; i<30; i++) {
-  advisees[i] = {
-    studentID: 1605001+i,
-    name: "student no."+(i+1),
-    level: "4",
-    term: "1",
-    department: "CSE",
-    courses: [
-      {
-        courseID: "CSE405",
-        syllabusID: "-",
-        courseTitle: "Computer Security",
-        creditHours: 3.00,
-        Remarks: "Qualified"
-      },
-      {
-        courseID: "CSE409",
-        syllabusID: "-",
-        courseTitle: "Computer Graphics",
-        creditHours: 3.00,
-        Remarks: "Qualified"
-      },
-      {
-        courseID: "CSE453",
-        syllabusID: "-",
-        courseTitle: "High Performance Database Systems",
-        creditHours: 3.00,
-        Remarks: "Qualified"
-      },
-      {
-        courseID: "CSE463",
-        syllabusID: "-",
-        courseTitle: "Introduction to Bioinformatics",
-        creditHours: 3.00,
-        Remarks: "Qualified"
-      },
-      {
-        courseID: "HUM475",
-        syllabusID: "-",
-        courseTitle: "Engineering Economics",
-        creditHours: 3.00,
-        Remarks: "Qualified"
-      }
-    ]
-  };
-}
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: "AdviseeCourseRegistrationPage",
 
   data() {
     return {
-      advisees,  /* dummy array of advisees */
       tab: "registeredStudents",  /* by default location for q-tab */
 
       /* for tabulation */
@@ -205,28 +156,32 @@ export default {
       ],
 
       /* table rows */
-      registeredAdvisees: advisees.slice(0, 8),
-      waitingForHeadApprovalAdvisees: advisees.slice(8, 15),
-      waitingForAdvisorApprovalAdvisees: advisees.slice(15, 22),
-      notAppliedForRegistrationAdvisees: advisees.slice(22, advisees.length),
+      registeredAdvisees: this.$store.getters.getAdvisees.slice(0, 8),
+      waitingForHeadApprovalAdvisees: this.$store.getters.getAdvisees.slice(8, 15),
+      waitingForAdvisorApprovalAdvisees: this.$store.getters.getAdvisees.slice(15, 22),
+      notAppliedForRegistrationAdvisees: this.$store.getters.getAdvisees.slice(22, this.$store.getters.getAdvisees.length),
 
       /* for multiple selections in Advisor Approval table */
       selected: [],
 
       /* for showing selected Advisee information in dialog box */
       selectedAdvisee: {},
-      studentInfoDialogBox: false  /* open when true */
+      studentInfoDialogBox: false,  /* open when true */
     };
   },
 
   methods: {
+    ...mapActions(['fetchAdvisees', 'fetchCourses']),
+
     getSelectedString() {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.waitingForAdvisorApprovalAdvisees.length}`;
     },
+
     onRowClick(event, row) {
-      this.selectedAdvisee = this.advisees.find(advisee => advisee.studentID === row.studentID);
+      this.selectedAdvisee = this.$store.getters.getAdvisees.find(advisee => advisee.studentID === row.studentID);
       this.studentInfoDialogBox = true;
     },
+
     forwardToHead() {
       for(let i=0; i<this.selected.length; i++) {
         this.waitingForAdvisorApprovalAdvisees.splice(this.waitingForAdvisorApprovalAdvisees.findIndex(advisee => advisee.studentID === this.selected[i].studentID), 1);
@@ -234,6 +189,13 @@ export default {
       this.waitingForHeadApprovalAdvisees = this.waitingForHeadApprovalAdvisees.concat(this.selected);
       this.selected = [];
     }
+  },
+
+  computed: mapGetters(['getAdvisees', 'getCourses']),
+
+  created() {
+    this.fetchAdvisees();
+    this.fetchCourses();
   }
 };
 </script>

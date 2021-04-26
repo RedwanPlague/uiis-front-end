@@ -15,7 +15,7 @@
               <q-item
                 clickable
                 class="bg-grey-2"
-                v-for="semester in semesters"
+                v-for="semester in getSemesters"
                 :key="semester.semesterID"
                 v-bind="semester"
                 @click.native="selectedSemester = semester; onItemClick();"
@@ -37,37 +37,34 @@
 </template>
 
 <script>
-/* creating dummy semester array */
-let semesters = [];
-
-for(let i=0; i<8; i++) {
-  semesters[i] = {
-    semesterID: i+1,
-    level: Math.floor(i/2)+1,
-    term: i%2+1
-  };
-}
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: "AdviseeSemesterSelectionPage",
 
   data() {
     return {
-      /* dummy semester array */
-      semesters,
-
       /* for keeping track of selected semester */
       selectedSemester: {}
     };
   },
 
   methods: {
+    ...mapActions(['fetchSemesters']),
+
     onItemClick() {
       this.$router.push({ name: 'adviseeGrades', params: { semesterID: this.selectedSemester.semesterID, studentID: this.$route.params.studentID }});
     },
+
     visitInformationPage() {
       this.$router.push({ name: 'adviseeInfo', params: {}});
     }
+  },
+
+  computed: mapGetters(['getSemesters']),
+
+  created() {
+    this.fetchSemesters();
   }
 }
 </script>

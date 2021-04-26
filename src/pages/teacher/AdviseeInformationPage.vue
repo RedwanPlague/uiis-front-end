@@ -2,7 +2,7 @@
   <q-page padding>
     <div class="q-pa-md">
       <q-table
-        title="Advisees" bordered :data="advisees" :columns="adviseeColumns" row-key="studentID"
+        title="Advisees" bordered :data="getAdvisees" :columns="adviseeColumns" row-key="studentID"
         @row-click="onRowClick"
       />
 
@@ -42,29 +42,13 @@
 </template>
 
 <script>
-/* preparing dummy advisees array */
-let advisees = [];
-
-for(let i=0; i<30; i++) {
-  advisees[i] = {
-    studentID: 1605001+i,
-    name: "student no."+(i+1),
-    level: "4",
-    term: "1",
-    department: "CSE",
-    contactNumber: "xxx-xxx-xxxx",
-    emailAddress: (1605001+i)+"@ugrad.cse.buet.ac.bd"
-  };
-}
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: "AdviseeInformationPage",
 
   data() {
     return {
-      /* dummy advisees array */
-      advisees,
-
       /* for tabulation */
       adviseeColumns: [
         {
@@ -92,14 +76,22 @@ export default {
   },
 
   methods: {
+    ...mapActions(['fetchAdvisees']),
+
     onRowClick(event, row) {
-      this.selectedAdvisee = this.advisees.find(advisee => advisee.studentID === row.studentID);
+      this.selectedAdvisee = this.$store.getters.getAdvisees.find(advisee => advisee.studentID === row.studentID);
       this.studentInfoDialogBox = true;
     },
     visitedSemesterSelectionPage() {
       console.log("hello");
       this.$router.push({ name: 'adviseeSemesterSelection', params: { studentID: this.selectedAdvisee.studentID }});
     }
+  },
+
+  computed: mapGetters(['getAdvisees']),
+
+  created() {
+    this.fetchAdvisees();
   }
 };
 </script>
