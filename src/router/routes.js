@@ -26,6 +26,7 @@ const routes = [
       { path: 'course/:courseSession/:courseID/', name: 'course_page', component: () => import('src/pages/teacher/CourseEvaluationPage.vue') }
     ]
   },
+
   {
     path: '/admin',
     component: () => import('layouts/AdminLayout'),
