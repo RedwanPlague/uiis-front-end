@@ -1,45 +1,5 @@
 {
-  "courses": {
-    "currentCourses": [
-      {
-        "session": "January 2021",
-        "courseID": "CSE107",
-        "courseName": "Object Oriented Programming Language"
-      },
-      {
-        "session": "January 2021",
-        "courseID": "CSE203",
-        "courseName": "Data Structures and Algorithms I"
-      },
-      {
-        "session": "January 2021",
-        "courseID": "CSE218",
-        "courseName": "Numerical Methods"
-      },
-      {
-        "session": "January 2021",
-        "courseID": "CSE219",
-        "courseName": "Numerical Methods"
-      }
-    ],
-    "previousCourses": [
-      {
-        "session": "January 2020",
-        "courseID": "CSE101",
-        "courseName": "Structured Programming Language"
-      },
-      {
-        "session": "January 2019",
-        "courseID": "CSE201",
-        "courseName": "Data Structures and Algorithms I"
-      },
-      {
-        "session": "January 2020",
-        "courseID": "CSE211",
-        "courseName": "Numerical Methods"
-      }
-    ]
-  },
+
 
   "courseDetails": [
     {
@@ -368,5 +328,42 @@
       ]
     }
 
+  ],
+
+  "courses": [
+    {
+      "courseName": "CSE311",
+      "marks": [
+        {
+          "student_id": "1605002",
+          "marks": 34
+        },
+        {
+          "student_id": "1605003",
+          "marks": 31
+        },
+        {
+          "student_id": "1605004",
+          "marks": 37
+        }
+      ]
+    },
+    {
+      "courseName": "CSE313",
+      "marks": [
+        {
+          "student_id": "1605002",
+          "marks": 43
+        },
+        {
+          "student_id": "1605003",
+          "marks": 13
+        },
+        {
+          "student_id": "1605004",
+          "marks": 73
+        }
+      ]
+    }
   ]
 }
