@@ -1,20 +1,40 @@
 <template>
   <q-page padding>
-    <div class="q-pa-sm absolute-center">
-      <h3>
-        Examiner
-      </h3>
-      <p>
-        Internals and Externals will upload and update exxam marks here.
-      </p>
-    </div>
+    <ExaminerTable v-for="course in courses" :key="course.courseName" v-bind="course" @upload="upload"></ExaminerTable>
   </q-page>
 </template>
 
 <script>
+import axios from 'axios';
+import CourseEvaluationPageVue from './CourseEvaluationPage.vue';
+
 export default {
-  name: "ExaminePage"
+  name: "ExaminerPage",
+  components: {
+    ExaminerTable: () => import('../../components/ExaminerTable.vue'),
+  },
+  data() {
+    return {
+      courses: null
+    };
+  },
+
+  created() {
+    // API call
+    axios.get("http://localhost:3000/courses").then(cutu=> {
+      this.courses = cutu.data;
+    });
+  },
+
+  methods: {
+    upload(course) {
+      // API call
+      console.log(course);
+    }
+  }
 };
 </script>
 
-<style scoped></style>
+<style>
+
+</style>
