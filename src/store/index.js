@@ -1,11 +1,13 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from 'vue';
+import Vuex from 'vuex';
+import courses from "src/store/teacher-modules/courses";
+import courseEval from "src/store/teacher-modules/courseEval";
 
 // import example from './module-example'
 import allPrivileges from "src/store/allPrivileges";
 import user from "src/store/user";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 /*
  * If not building with SSR mode, you can
@@ -22,6 +24,8 @@ export default function (/* { ssrContext } */) {
       // example
       allPrivileges,
       user,
+      courses,
+      courseEval,
     },
 
     // enable strict mode (adds overhead!)
@@ -29,5 +33,5 @@ export default function (/* { ssrContext } */) {
     strict: process.env.DEBUGGING
   })
 
-  return Store
-}
+  return Store;
+};
