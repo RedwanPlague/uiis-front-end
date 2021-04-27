@@ -95,6 +95,7 @@
     methods: {
       ...mapActions(['fetchCourse', 'fetchStudentData', 'saveStudentData']),
       async toggleEditMode(e) {
+        console.log(this.courseDetails);
         e.preventDefault();
 
         if(this.editMode) {
