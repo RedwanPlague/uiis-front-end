@@ -3,8 +3,8 @@
     <router-view />
   </div>
 </template>
-<script>
 
+<script>
 export default {
   name: 'App'
 }
@@ -18,5 +18,4 @@ export default {
     /*font-family: 'Montserrat', sans-serif;*/
     /*font-family: Avenir, Helvetica, Arial, sans-serif;*/
   }
-
 </style>

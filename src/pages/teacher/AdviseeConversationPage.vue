@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  name: "AdvisorPage"
+  name: "AdviseeConversationPage"
 };
 </script>
 
