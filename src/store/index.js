@@ -7,7 +7,7 @@ import courseEval from "src/store/teacher-modules/courseEval";
 // import example from './module-example'
 import allPrivileges from "src/store/allPrivileges";
 import user from "src/store/user";
-import advisor from './modules/advisor';
+import advisor from './teacher-modules/advisor';
 
 /* loading Vuex */
 Vue.use(Vuex);
