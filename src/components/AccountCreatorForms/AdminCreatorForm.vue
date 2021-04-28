@@ -8,17 +8,23 @@
         class="col-6"
         v-model="name"
         label="Name"
-        outlined></q-input>
+        outlined
+        :rules="[() => !!name || 'Please Enter a Name']"
+      ></q-input>
       <q-input
         class="col-6"
         v-model="id"
         label="Admin Id"
-        outlined></q-input>
+        outlined
+        :rules="[() => !!id || 'Please Enter an ID']"
+      ></q-input>
       <q-input
         class="col-6"
         v-model="password"
         label="Password"
-        outlined>
+        outlined
+        :rules="[() => !!password || 'Please Enter a Password']"
+      >
         <template v-slot:append>
           <q-btn label="generate" flat dense color="primary" @click="password = generator()"></q-btn>
         </template>
@@ -46,16 +52,16 @@
         </template>
       </q-select>
       <div class="col-12">
-        <q-btn label="Create" color="primary" unelevated @click="createAccount"></q-btn>
+        <q-btn label="Create" color="primary" unelevated @click="createAccount" :loading="createLoading"></q-btn>
         <q-btn label="Reset" color="primary" flat @click="resetForm"></q-btn>
-        <q-btn label="Haha" color="primary" flat @click="use"></q-btn>
       </div>
-    </q-form></div>
+    </q-form>
+  </div>
 </template>
 
 <script>
 import generator from 'src/utils/passwordGenerator'
-import apiFetch from 'src/utils/fetcher'
+import apiFetch from 'src/utils/apiFetch'
 
 let privilegeList = []
 
@@ -67,7 +73,8 @@ export default {
       id: '',
       password: '',
       privilegeSelected: [],
-      privilegeOptions: []
+      privilegeOptions: [],
+      createLoading: false
     }
   },
   methods: {
@@ -77,7 +84,6 @@ export default {
         .then(response => {
           privilegeList = response.data
         })
-        .catch()
     },
     privilegeFilter(value, update) {
       if (value === '') {
@@ -92,6 +98,7 @@ export default {
       })
     },
     createAccount() {
+      this.createLoading = true
       this.$api.post('/create-account', {
         userType: 'admin',
         userID: this.id,
@@ -100,11 +107,13 @@ export default {
         privileges: this.privilegeSelected
       })
         .then(response => {
-          console.log('Account created')
+          this.createLoading = false
+          console.log('Admin account created')
           console.log(response)
         })
         .catch(error => {
-          console.log('Could not create account')
+          this.createLoading = false
+          console.log('Could not create Admin account')
           console.log(error.response)
         })
     },

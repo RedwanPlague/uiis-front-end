@@ -24,7 +24,7 @@
           </template>
         </q-input>
         <div class="float-right">
-          <q-btn label="Submit" type="submit" color="primary"/>
+          <q-btn label="Submit" type="submit" color="primary" :loading="loginLoading"/>
           <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm"/>
         </div>
       </q-form>
@@ -41,7 +41,8 @@ export default {
     return {
       tempUser: '',
       password: '',
-      passwordShow: false
+      passwordShow: false,
+      loginLoading: false
     }
   },
   methods: {
@@ -49,19 +50,19 @@ export default {
       'userLogIn'
     ]),
     submit() {
-      this.$q.loading.show({delay: 100/*ms*/})
+      this.loginLoading = true
       this.userLogIn({
         userID: this.tempUser,
         password: this.password
       })
         .then((user) => {
-          this.$q.loading.hide()
+          this.loginLoading = false
           if (user.userType === 'admin') {
             this.$router.push({ name: 'AccountCreationPage' })
           }
         })
         .catch(error => {
-          this.$q.loading.hide()
+          this.loginLoading = false
           console.log(error)
         })
     },

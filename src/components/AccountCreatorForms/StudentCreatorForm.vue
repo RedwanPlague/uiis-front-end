@@ -3,7 +3,11 @@
     <div class="text-h5 q-my-md">
       Create Student Account
     </div>
-    <q-form class="row q-col-gutter-md">
+    <q-form
+      class="row q-col-gutter-md"
+      @submit="submit"
+      @reset="reset"
+    >
       <q-input
         class="col-6"
         v-model="name"
@@ -61,8 +65,8 @@
         </template>
       </q-input>
       <div class="col-12">
-        <q-btn label="Create" color="primary" unelevated></q-btn>
-        <q-btn label="Reset" color="primary" flat></q-btn>
+        <q-btn type="submit" label="Create" color="primary" unelevated :loading="createLoading"></q-btn>
+        <q-btn type="reset" label="Reset" color="primary" flat></q-btn>
       </div>
     </q-form>
   </div>
@@ -70,6 +74,7 @@
 
 <script>
 import generator from 'src/utils/passwordGenerator'
+import apiFetch from 'src/utils/apiFetch'
 
 let deptList = []
 let hallList = []
@@ -87,15 +92,22 @@ export default {
       password: '',
       deptOptions: [],
       hallOptions: [],
-      teacherOptions: []
+      teacherOptions: [],
+      createLoading: false
     }
   },
   methods: {
     generator,
-    loadDepartments() {
-      deptList = [
-        'CSE', 'EEE', 'ME', 'CE', 'WRE'
-      ]
+    fetchDepartments() {
+      apiFetch('/departments', null, 'All dept list')
+        .then(response => {
+          deptList = response.data.map(x => {
+            return {
+              value: x._id,
+              label: x.name
+            }
+          })
+        })
     },
     deptFilter(value, update) {
       if (value === '') {
@@ -106,13 +118,19 @@ export default {
       }
       update(() => {
         const substring = value.toLowerCase()
-        this.deptOptions = deptList.filter(x => x.toLowerCase().indexOf(substring) > -1)
+        this.deptOptions = deptList.filter(x => x.label.toLowerCase().indexOf(substring) > -1)
       })
     },
-    loadHalls() {
-      hallList = [
-        'Ahsanulla', 'Sohrawardy', 'Titumir', 'Rashid'
-      ]
+    fetchHalls() {
+      apiFetch('/halls', null, 'All hall list')
+        .then(response => {
+          hallList = response.data.map(x => {
+            return {
+              value: x._id,
+              label: x.name
+            }
+          })
+        })
     },
     hallFilter(value, update) {
       if (value === '') {
@@ -123,19 +141,18 @@ export default {
       }
       update(() => {
         const substring = value.toLowerCase()
-        this.hallOptions = hallList.filter(x => x.toLowerCase().indexOf(substring) > -1)
+        this.hallOptions = hallList.filter(x => x.label.toLowerCase().indexOf(substring) > -1)
       })
     },
-    loadTeachers() {
-      teacherList = [
-        {id: '1', name: 'ami'},
-        {id: '2', name: 'tumi'},
-        {id: '3', name: 'amra'},
-      ].map(x => {
-        return {
-          value: x.id,
-          label: `(${x.id}) ${x.name}`
-        }
+    fetchTeachers(dept) {
+      apiFetch('/teachers', {dept}, `teachers of ${dept}`)
+        .then(response => {
+          teacherList = response.data.map(x => {
+            return {
+              value: x._id,
+              label: `(${x.userID}) ${x.name}`
+            }
+        })
       })
     },
     teacherFilter(value, update) {
@@ -150,14 +167,44 @@ export default {
         this.teacherOptions = teacherList.filter(x => x.label.toLowerCase().indexOf(substring) > -1)
       })
     },
-    loadAllLists() {
-      this.loadDepartments()
-      this.loadHalls()
-      this.loadTeachers()
+    fetchAllLists() {
+      this.fetchDepartments()
+      this.fetchHalls()
+      this.fetchTeachers('CSE')
     },
+    submit() {
+      this.createLoading = true
+      this.$api.post('/create-account', {
+        userType: 'student',
+        userID: this.id,
+        name: this.name,
+        password: this.password,
+        department: this.deptSelected.value,
+        hall: this.hallSelected.value,
+        advisor: this.advisor.value
+      })
+        .then(response => {
+          this.createLoading = false
+          console.log('Student account created')
+          console.log(response)
+        })
+        .catch(error => {
+          this.createLoading = false
+          console.log('Could not create Student account')
+          console.log(error.response)
+        })
+    },
+    reset() {
+      this.name = ''
+      this.id = ''
+      this.password = ''
+      this.deptSelected = ''
+      this.hallSelected = ''
+      this.advisor = ''
+    }
   },
   created() {
-    this.loadAllLists()
+    this.fetchAllLists()
   }
 }
 </script>
