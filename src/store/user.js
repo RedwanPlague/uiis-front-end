@@ -1,20 +1,25 @@
 import {api} from "boot/axios";
 import {LocalStorage} from "quasar";
 
+const setApiToken = (token) => {
+  api.defaults.headers.common['Authorization'] = 'Bearer ' + token
+}
+
+const removeApiToken = () => {
+  delete api.defaults.headers.common['Authorization']
+  // api.setHeader('Authorization', null)
+}
+
 export default {
   state: {
-    loggedIn: false,
-    user: {}
+    user: null
   },
   getters: {
-    userIsLoggedIn(state) {
-      return state.loggedIn
-    },
     user(state) {
       return state.user
     },
     userHasPrivilege(state) {
-      return (privilegeName) => state.loggedIn &&
+      return (privilegeName) => !!state.user &&
         state.user.hasOwnProperty('privilegeList') &&
         state.user.privilegeList.includes(privilegeName)
     },
@@ -22,27 +27,28 @@ export default {
   mutations: {
     userLogIn(state, data) {
       state.user = data.user
-      state.loggedIn = true
       LocalStorage.set('authToken', data.token)
-      api.defaults.headers.common['Authorization'] = data.token
+      setApiToken(data.token)
     },
     userLogOut(state) {
-      state.user = {}
-      state.loggedIn = false
+      state.user = null
       LocalStorage.remove('authToken')
-      delete api.defaults.headers.common['Authorization']
-      // api.setHeader('Authorization', null)
+      removeApiToken()
     }
   },
   actions: {
     userLogIn(context, data) {
       return new Promise((resolve, reject) => {
-        api.post('/login', data)
+        api.post('/account/login', data)
           .then(response => {
+            console.log('Login successful')
+            console.log(response)
             context.commit('userLogIn', response.data)
             resolve(response.data.user)
           })
           .catch(error => {
+            console.log('Login failed')
+            console.log(error.response)
             reject(error)
           })
       })
@@ -50,13 +56,19 @@ export default {
     userTryAutoLogIn(context) {
       return new Promise((resolve, reject) => {
         if (LocalStorage.has('authToken')) {
-          api.defaults.headers.common['Authorization'] = LocalStorage.getItem('authToken')
-          api.post('/auto-login')
+          const token = LocalStorage.getItem('authToken')
+          setApiToken(token)
+          api.post('/account/auto-login')
             .then(response => {
+              console.log('Auto Login successful')
+              console.log(response)
+              response.data.token = token
               context.commit('userLogIn', response.data)
               resolve(response)
             })
-            .catch(() => {
+            .catch(error => {
+              console.log('Auto Login failed')
+              console.log(error.response)
               context.commit('userLogOut')
               reject()
             })
@@ -67,12 +79,14 @@ export default {
       })
     },
     userLogOut(context) {
-      api.post('/logout')
-        .then(() => {
-          console.log('Logout completed')
+      api.post('/account/logout')
+        .then(response => {
+          console.log('Logout successful')
+          console.log(response)
         })
-        .catch(() => {
+        .catch(error => {
           console.log('Logout failed')
+          console.log(error.response)
         })
       context.commit('userLogOut')
     }

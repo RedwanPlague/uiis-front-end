@@ -49,9 +49,7 @@
 
 <script>
 import generator from 'src/utils/passwordGenerator'
-import apiFetch from 'src/utils/apiFetch'
-
-let deptList = []
+import departments from 'src/mixins/departments'
 
 export default {
   name: 'TeacherCreatorForm',
@@ -65,36 +63,16 @@ export default {
       createLoading: false
     }
   },
+  mixins: [
+    departments
+  ],
   methods: {
     generator,
-    fetchDepartments() {
-      apiFetch('/departments', null, 'All dept list')
-        .then(response => {
-          deptList = response.data.map(x => {
-            return {
-              value: x._id,
-              label: x.name
-            }
-          })
-        })
-    },
-    deptFilter(value, update) {
-      if (value === '') {
-        update(() => {
-          this.deptOptions = deptList
-        })
-        return
-      }
-      update(() => {
-        const substring = value.toLowerCase()
-        this.deptOptions = deptList.filter(x => x.label.toLowerCase().indexOf(substring) > -1)
-      })
-    },
     submit() {
       this.createLoading = true
-      this.$api.post('/create-account', {
+      this.$api.post('/account/create', {
         userType: 'teacher',
-        userID: this.id,
+        id: this.id,
         name: this.name,
         password: this.password,
         department: this.deptSelected.value,
@@ -116,9 +94,6 @@ export default {
       this.password = ''
       this.deptSelected = ''
     }
-  },
-  created() {
-    this.fetchDepartments()
   }
 }
 </script>

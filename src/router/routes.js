@@ -29,15 +29,15 @@ const routes = [
     path: '/admin',
     component: () => import('layouts/AdminLayout'),
     children: [
-      { path: 'create-account', name: 'AccountCreationPage', component: () => import('pages/admin/AccountCreation') },
+      { path: 'create-account', name: 'AdminAccountCreationPage', component: () => import('pages/admin/AccountCreation') },
     ],
-    beforeEnter(to, from, next) {
-      if (store.getters.userIsLoggedIn) {
-        next()
-      } else {
-        next({ name: 'Index' })
-      }
-    }
+    // beforeEnter(to, from, next) {
+    //   if (store.getters.user) {
+    //     next()
+    //   } else {
+    //     next({ name: 'Index' })
+    //   }
+    // }
   },
 
   /*

@@ -32,6 +32,7 @@
         :rules="[() => !!deptSelected || 'Please Assign a Department']"
         use-input
         @filter="deptFilter"
+        @input="fetchTeachers(deptSelected.value)"
       ></q-select>
       <q-select
         class="col-6"
@@ -75,10 +76,9 @@
 <script>
 import generator from 'src/utils/passwordGenerator'
 import apiFetch from 'src/utils/apiFetch'
-
-let deptList = []
-let hallList = []
-let teacherList = []
+import departments from 'src/mixins/departments'
+import filter from 'src/mixins/filter'
+import {isSubstring} from 'src/utils/patternSearch'
 
 export default {
   name: 'StudentCreatorForm',
@@ -90,44 +90,28 @@ export default {
       hallSelected: '',
       advisor: '',
       password: '',
+      deptList: [],
       deptOptions: [],
+      hallList: [],
       hallOptions: [],
+      teacherList: [],
       teacherOptions: [],
       createLoading: false
     }
   },
+  mixins: [
+    departments,
+    filter
+  ],
   methods: {
     generator,
-    fetchDepartments() {
-      apiFetch('/departments', null, 'All dept list')
-        .then(response => {
-          deptList = response.data.map(x => {
-            return {
-              value: x._id,
-              label: x.name
-            }
-          })
-        })
-    },
-    deptFilter(value, update) {
-      if (value === '') {
-        update(() => {
-          this.deptOptions = deptList
-        })
-        return
-      }
-      update(() => {
-        const substring = value.toLowerCase()
-        this.deptOptions = deptList.filter(x => x.label.toLowerCase().indexOf(substring) > -1)
-      })
-    },
     fetchHalls() {
-      apiFetch('/halls', null, 'All hall list')
+      apiFetch('/hall/list', null, 'All hall list')
         .then(response => {
-          hallList = response.data.map(x => {
+          this.hallList = response.data.map(x => {
             return {
-              value: x._id,
-              label: x.name
+              value: x.id,
+              label: `(${x.id}) ${x.name}`
             }
           })
         })
@@ -135,22 +119,21 @@ export default {
     hallFilter(value, update) {
       if (value === '') {
         update(() => {
-          this.hallOptions = hallList
+          this.hallOptions = this.hallList
         })
         return
       }
       update(() => {
-        const substring = value.toLowerCase()
-        this.hallOptions = hallList.filter(x => x.label.toLowerCase().indexOf(substring) > -1)
+        this.hallOptions = this.hallList.filter(x => isSubstring(x.label, value))
       })
     },
     fetchTeachers(dept) {
-      apiFetch('/teachers', {dept}, `teachers of ${dept}`)
+      apiFetch('account/teacher/list', {dept}, `teachers of ${dept}`)
         .then(response => {
-          teacherList = response.data.map(x => {
+          this.teacherList = response.data.map(x => {
             return {
-              value: x._id,
-              label: `(${x.userID}) ${x.name}`
+              value: x.id,
+              label: `(${x.id}) ${x.name}`
             }
         })
       })
@@ -158,25 +141,22 @@ export default {
     teacherFilter(value, update) {
       if (value === '') {
         update(() => {
-          this.teacherOptions = teacherList
+          this.teacherOptions = this.teacherList
         })
         return
       }
       update(() => {
-        const substring = value.toLowerCase()
-        this.teacherOptions = teacherList.filter(x => x.label.toLowerCase().indexOf(substring) > -1)
+        this.teacherOptions = this.teacherList.filter(x => isSubstring(x.label, value))
       })
     },
     fetchAllLists() {
-      this.fetchDepartments()
       this.fetchHalls()
-      this.fetchTeachers('CSE')
     },
     submit() {
       this.createLoading = true
-      this.$api.post('/create-account', {
+      this.$api.post('account/create', {
         userType: 'student',
-        userID: this.id,
+        id: this.id,
         name: this.name,
         password: this.password,
         department: this.deptSelected.value,

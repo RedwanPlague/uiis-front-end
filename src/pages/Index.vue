@@ -3,10 +3,10 @@
     <div style="max-width: 600px; margin-top: 6%" class="q-mx-auto q-px-md">
       <q-form @submit="submit" @reset="reset" class="q-gutter-md">
         <q-input
-          v-model="tempUser"
+          v-model="id"
           label="Username"
           outlined
-          :rules="[() => !!tempUser || 'Please Enter a Username']"
+          :rules="[() => !!id || 'Please Enter a Username']"
         ></q-input>
         <q-input
           :type="passwordShow ? 'text' : 'password'"
@@ -39,7 +39,7 @@ export default {
   name: 'Index',
   data () {
     return {
-      tempUser: '',
+      id: '',
       password: '',
       passwordShow: false,
       loginLoading: false
@@ -52,13 +52,13 @@ export default {
     submit() {
       this.loginLoading = true
       this.userLogIn({
-        userID: this.tempUser,
+        id: this.id,
         password: this.password
       })
         .then((user) => {
           this.loginLoading = false
           if (user.userType === 'admin') {
-            this.$router.push({ name: 'AccountCreationPage' })
+            this.$router.replace({ name: 'AdminAccountCreationPage' })
           }
         })
         .catch(error => {
@@ -67,7 +67,7 @@ export default {
         })
     },
     reset() {
-      this.tempUser = ''
+      this.id = ''
       this.password = ''
     }
   }

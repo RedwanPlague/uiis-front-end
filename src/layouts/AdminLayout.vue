@@ -15,9 +15,9 @@
           UIIS Admin
         </q-toolbar-title>
 
-        <q-btn-dropdown icon="person" :label="user.name" flat no-caps>
+        <q-btn-dropdown v-if="user" icon="person" :label="user.name" flat no-caps>
           <q-list>
-            <q-item clickable v-close-popup :to="{ name: 'AccountCreationPage' }" style="color: inherit" dense>
+            <q-item clickable v-close-popup :to="{ name: 'AdminAccountCreationPage' }" style="color: inherit" dense>
               <q-item-section>
                 <q-item-label>
                   <q-avatar icon="account_circle"></q-avatar>
@@ -72,7 +72,7 @@ const quickLinks = [
   {
     title: 'Account Creation',
     icon: 'school',
-    link: { name: 'AccountCreationPage' }
+    link: { name: 'AdminAccountCreationPage' }
   },
   {
     title: 'Docs2',
@@ -136,7 +136,6 @@ export default {
   },
   methods: {
     ...mapActions([
-      'userLogIn',
       'userLogOut'
     ])
   }

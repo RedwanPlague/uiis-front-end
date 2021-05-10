@@ -2,8 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 // import example from './module-example'
-import allPrivileges from "src/store/allPrivileges";
-import user from "src/store/user";
+import user from 'src/store/user'
 
 Vue.use(Vuex)
 
@@ -33,7 +32,6 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     modules: {
       // example
-      allPrivileges,
       user,
     },
 

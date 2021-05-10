@@ -62,8 +62,7 @@
 <script>
 import generator from 'src/utils/passwordGenerator'
 import apiFetch from 'src/utils/apiFetch'
-
-let privilegeList = []
+import {isSubstring} from 'src/utils/patternSearch'
 
 export default {
   name: 'AdminCreatorForm',
@@ -74,6 +73,7 @@ export default {
       password: '',
       privilegeSelected: [],
       privilegeOptions: [],
+      privilegeList: [],
       createLoading: false
     }
   },
@@ -82,26 +82,25 @@ export default {
     fetchPrivilegeList() {
       apiFetch('/privileges', null, 'List of ALL privileges')
         .then(response => {
-          privilegeList = response.data
+          this.privilegeList = response.data
         })
     },
     privilegeFilter(value, update) {
       if (value === '') {
         update(() => {
-          this.privilegeOptions = privilegeList
+          this.privilegeOptions = this.privilegeList
         })
         return
       }
       update(() => {
-        const substring = value.toLowerCase()
-        this.privilegeOptions = privilegeList.filter(x => x.toLowerCase().indexOf(substring) > -1)
+        this.privilegeOptions = this.privilegeList.filter(x => isSubstring(x, value))
       })
     },
     createAccount() {
       this.createLoading = true
-      this.$api.post('/create-account', {
+      this.$api.post('account/create', {
         userType: 'admin',
-        userID: this.id,
+        id: this.id,
         password: this.password,
         name: this.name,
         privileges: this.privilegeSelected
