@@ -36,7 +36,7 @@
             </q-item>
           </q-list>
         </q-btn-dropdown>
-        <!--<q-btn v-else flat :to="{ name: 'Admin' }">SIGN IN</q-btn>-->
+        <q-btn v-else flat :to="{ name: 'Index' }">SIGN IN</q-btn>
       </q-toolbar>
     </q-header>
 
@@ -70,11 +70,11 @@ import { mapGetters, mapActions } from 'vuex'
 
 const quickLinks = [
   {
-    title: 'accounts',
+    title: 'Accounts',
     icon: 'school',
     children: [
       {
-        title: 'Creation',
+        title: 'Create',
         icon: 'school',
         link: { name: 'AdminAccountCreationPage' }
       },
@@ -85,7 +85,7 @@ const quickLinks = [
     icon: 'school',
     children: [
       {
-        title: 'Creation',
+        title: 'Create',
         icon: 'school',
         link: { name: 'AdminCourseCreationPage' }
       },

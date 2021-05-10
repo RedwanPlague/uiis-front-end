@@ -148,9 +148,6 @@ export default {
         this.teacherOptions = this.teacherList.filter(x => isSubstring(x.label, value))
       })
     },
-    fetchAllLists() {
-      this.fetchHalls()
-    },
     submit() {
       this.createLoading = true
       this.$api.post('account/create', {
@@ -183,7 +180,7 @@ export default {
     }
   },
   created() {
-    this.fetchAllLists()
+    this.fetchHalls()
   }
 }
 </script>

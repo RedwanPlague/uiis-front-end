@@ -24,7 +24,7 @@
         :options="deptOptions"
         label="Department"
         outlined
-        :rules="[() => !!deptSelected || 'Please Enter a Department']"
+        :rules="[() => !!deptSelected || 'Please Assign a Department']"
         use-input
         @filter="deptFilter"
       ></q-select>

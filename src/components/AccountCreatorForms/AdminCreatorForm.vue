@@ -32,7 +32,7 @@
       <div class="col-6"></div>
       <q-select
         class="col-12"
-        v-model="privilegeSelected"
+        v-model="privilegesSelected"
         :options="privilegeOptions"
         label="Privileges"
         outlined
@@ -71,7 +71,7 @@ export default {
       name: '',
       id: '',
       password: '',
-      privilegeSelected: [],
+      privilegesSelected: [],
       privilegeOptions: [],
       privilegeList: [],
       createLoading: false
@@ -103,7 +103,7 @@ export default {
         id: this.id,
         password: this.password,
         name: this.name,
-        privileges: this.privilegeSelected
+        privileges: this.privilegesSelected
       })
         .then(response => {
           this.createLoading = false
@@ -120,7 +120,7 @@ export default {
       this.name = ''
       this.id = ''
       this.password = ''
-      this.privilegeSelected = []
+      this.privilegesSelected = []
     }
   },
   created() {

@@ -1,4 +1,5 @@
 import apiFetch from 'src/utils/apiFetch'
+import {isSubstring} from 'src/utils/patternSearch'
 
 export default {
   data() {
@@ -28,8 +29,7 @@ export default {
         return
       }
       update(() => {
-        const substring = value.toLowerCase()
-        this.deptOptions = this.deptList.filter(x => x.label.toLowerCase().indexOf(substring) > -1)
+        this.deptOptions = this.deptList.filter(x => isSubstring(x.label, value))
       })
     }
   },
