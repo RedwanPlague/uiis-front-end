@@ -70,9 +70,26 @@ import { mapGetters, mapActions } from 'vuex'
 
 const quickLinks = [
   {
-    title: 'Account Creation',
+    title: 'accounts',
     icon: 'school',
-    link: { name: 'AdminAccountCreationPage' }
+    children: [
+      {
+        title: 'Creation',
+        icon: 'school',
+        link: { name: 'AdminAccountCreationPage' }
+      },
+    ]
+  },
+  {
+    title: 'Courses',
+    icon: 'school',
+    children: [
+      {
+        title: 'Creation',
+        icon: 'school',
+        link: { name: 'AdminCourseCreationPage' }
+      },
+    ]
   },
   {
     title: 'Docs2',

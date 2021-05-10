@@ -29,7 +29,28 @@ const routes = [
     path: '/admin',
     component: () => import('layouts/AdminLayout'),
     children: [
-      { path: 'create-account', name: 'AdminAccountCreationPage', component: () => import('pages/admin/AccountCreation') },
+      {
+        path: 'account',
+        component: () => import('pages/admin/accounts/Wrapper'),
+        children: [
+          {
+            path: 'create',
+            name: 'AdminAccountCreationPage',
+            component: () => import('pages/admin/accounts/Creation')
+          },
+        ]
+      },
+      {
+        path: 'course',
+        component: () => import('pages/admin/courses/Wrapper'),
+        children: [
+          {
+            path: 'create',
+            name: 'AdminCourseCreationPage',
+            component: () => import('pages/admin/courses/Creation')
+          },
+        ]
+      },
     ],
     // beforeEnter(to, from, next) {
     //   if (store.getters.user) {

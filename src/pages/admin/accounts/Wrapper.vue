@@ -1,11 +1,9 @@
 <template>
-  <q-page padding>
-
-  </q-page>
+  <router-view></router-view>
 </template>
 
 <script>
 export default {
-  name: 'CourseCreation',
+  name: 'AccountsWrapper',
 }
 </script>

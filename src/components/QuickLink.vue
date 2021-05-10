@@ -1,6 +1,12 @@
 <template>
   <div>
-    <q-expansion-item v-if="children" :label="title" :icon="icon" :content-inset-level="0.5">
+    <q-expansion-item
+      v-if="children"
+      :label="title"
+      :icon="icon"
+      :content-inset-level="0.5"
+      :default-opened="isActive"
+    >
       <quick-link v-for="child in children" :key="child.title" v-bind="child"/>
     </q-expansion-item>
 
@@ -16,6 +22,18 @@
 </template>
 
 <script>
+const findRecursive = (quickLink, routeName) => {
+  if (quickLink.hasOwnProperty('children')) {
+    for (const child of quickLink.children) {
+      if (findRecursive(child, routeName)) {
+        return true
+      }
+    }
+    return false
+  }
+  return quickLink.link.name === routeName
+}
+
 export default {
   name: 'QuickLink',
   props: {
@@ -36,6 +54,14 @@ export default {
     children: {
       type: Array,
       default: null
+    }
+  },
+  computed: {
+    isActive() {
+      return findRecursive({
+        link: this.link,
+        children: this.children,
+      }, this.$route.name)
     }
   }
 }

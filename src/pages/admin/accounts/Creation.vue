@@ -36,7 +36,7 @@ import TeacherCreatorForm from "components/AccountCreatorForms/TeacherCreatorFor
 import AdminCreatorForm from "components/AccountCreatorForms/AdminCreatorForm";
 
 export default {
-  name: 'CoursePage',
+  name: 'AccountCreation',
   components: {
     StudentCreatorForm,
     TeacherCreatorForm,

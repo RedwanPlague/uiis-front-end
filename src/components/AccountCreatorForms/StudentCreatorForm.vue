@@ -18,7 +18,6 @@
       <q-input
         class="col-6"
         v-model="id"
-        value=""
         label="Student ID"
         outlined
         :rules="[() => !!id || 'Please Enter an ID']"
