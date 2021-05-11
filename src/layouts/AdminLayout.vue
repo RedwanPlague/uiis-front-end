@@ -89,6 +89,11 @@ const quickLinks = [
         icon: 'school',
         link: { name: 'AdminCourseCreationPage' }
       },
+      {
+        title: 'Assign',
+        icon: 'school',
+        link: { name: 'AdminCourseAssignmentPage' }
+      },
     ]
   },
   {

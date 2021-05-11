@@ -18,27 +18,8 @@
         outlined
         :rules="[() => !!id || 'Please Enter an ID']"
       ></q-input>
-      <q-select
-        class="col-6"
-        v-model="deptSelected"
-        :options="deptOptions"
-        label="Department"
-        outlined
-        :rules="[() => !!deptSelected || 'Please Assign a Department']"
-        use-input
-        @filter="deptFilter"
-      ></q-select>
-      <q-input
-        class="col-6"
-        v-model="password"
-        label="Password"
-        outlined
-        :rules="[() => !!password || 'Please Enter a Password']"
-      >
-        <template v-slot:append>
-          <q-btn label="generate" flat dense color="primary" @click="password = generator()"></q-btn>
-        </template>
-      </q-input>
+      <department-picker classes="col-6" v-model="department"></department-picker>
+      <password-maker-and-picker classes="col-6" v-model="password"></password-maker-and-picker>
       <div class="col-12">
         <q-btn type="submit" label="Create" color="primary" unelevated :loading="createLoading"></q-btn>
         <q-btn type="reset" label="Reset" color="primary" flat></q-btn>
@@ -49,33 +30,34 @@
 
 <script>
 import generator from 'src/utils/passwordGenerator'
-import departments from 'src/mixins/departments'
+import DepartmentPicker from 'components/FormElements/DepartmentPicker'
+import PasswordMakerAndPicker from 'components/FormElements/PasswordMakerAndPicker'
 
 export default {
   name: 'TeacherCreatorForm',
+  components: {
+    PasswordMakerAndPicker,
+    DepartmentPicker
+  },
   data() {
     return {
       name: '',
       id: '',
-      deptSelected: '',
+      department: null,
       password: '',
-      deptOptions: [],
       createLoading: false
     }
   },
-  mixins: [
-    departments
-  ],
   methods: {
     generator,
     submit() {
       this.createLoading = true
-      this.$api.post('/account/create', {
+      this.$adminAPI.post('/account/create', {
         userType: 'teacher',
         id: this.id,
         name: this.name,
         password: this.password,
-        department: this.deptSelected.value,
+        department: this.department.value
       })
         .then(response => {
           this.createLoading = false
@@ -92,7 +74,7 @@ export default {
       this.name = ''
       this.id = ''
       this.password = ''
-      this.deptSelected = ''
+      this.department = null
     }
   }
 }

@@ -1,10 +1,38 @@
+<template>
+  <q-select
+    :class="classes"
+    :value="value"
+    @input="$emit('input', $event)"
+    :options="deptOptions"
+    :label="label"
+    outlined
+    :rules="[() => !!value || `Please Select a ${label}`]"
+    use-input
+    @filter="deptFilter"
+  ></q-select>
+</template>
+
+<script>
 import apiFetch from 'src/utils/apiFetch'
 import {isSubstring} from 'src/utils/patternSearch'
 
 export default {
+  name: 'DepartmentPicker',
+  props: {
+    label: {
+      type: String,
+      default: 'Department'
+    },
+    value: {
+      type: Object,
+      default: null
+    },
+    classes: {
+      type: [Object, String]
+    }
+  },
   data() {
     return {
-      deptSelected: '',
       deptList: [],
       deptOptions: []
     }
@@ -37,3 +65,8 @@ export default {
     this.fetchDepartments()
   }
 }
+</script>
+
+<style scoped>
+
+</style>

@@ -16,14 +16,14 @@
 
     <q-separator/>
 
-    <q-tab-panels v-model="tab" animated keep-alive>
-      <q-tab-panel name="student">
+    <q-tab-panels v-model="tab" animated>
+      <q-tab-panel name="student" class="q-pa-none">
         <student-creator-form/>
       </q-tab-panel>
-      <q-tab-panel name="teacher">
+      <q-tab-panel name="teacher" class="q-pa-none">
         <teacher-creator-form/>
       </q-tab-panel>
-      <q-tab-panel name="admin">
+      <q-tab-panel name="admin" class="q-pa-none">
         <admin-creator-form/>
       </q-tab-panel>
     </q-tab-panels>

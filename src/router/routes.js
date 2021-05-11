@@ -49,6 +49,11 @@ const routes = [
             name: 'AdminCourseCreationPage',
             component: () => import('pages/admin/courses/Creation')
           },
+          {
+            path: 'assign',
+            name: 'AdminCourseAssignmentPage',
+            component: () => import('pages/admin/courses/Assignment')
+          }
         ]
       },
     ],

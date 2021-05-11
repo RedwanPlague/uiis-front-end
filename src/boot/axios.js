@@ -3,9 +3,9 @@ import axios from 'axios'
 
 Vue.prototype.$axios = axios
 
-const api = axios.create({
+const adminAPI = axios.create({
   baseURL: 'http://localhost:3000'
 })
-Vue.prototype.$api = api
+Vue.prototype.$adminAPI = adminAPI
 
-export { axios, api }
+export { axios, adminAPI }

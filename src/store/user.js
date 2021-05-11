@@ -1,13 +1,13 @@
-import {api} from "boot/axios";
+import {adminAPI} from "boot/axios";
 import {LocalStorage} from "quasar";
 
 const setApiToken = (token) => {
-  api.defaults.headers.common['Authorization'] = 'Bearer ' + token
+  adminAPI.defaults.headers.common['Authorization'] = 'Bearer ' + token
 }
 
 const removeApiToken = () => {
-  delete api.defaults.headers.common['Authorization']
-  // api.setHeader('Authorization', null)
+  delete adminAPI.defaults.headers.common['Authorization']
+  // adminAPI.setHeader('Authorization', null)
 }
 
 export default {
@@ -39,7 +39,7 @@ export default {
   actions: {
     userLogIn(context, data) {
       return new Promise((resolve, reject) => {
-        api.post('/account/login', data)
+        adminAPI.post('/account/login', data)
           .then(response => {
             console.log('Login successful')
             console.log(response)
@@ -58,7 +58,7 @@ export default {
         if (LocalStorage.has('authToken')) {
           const token = LocalStorage.getItem('authToken')
           setApiToken(token)
-          api.post('/account/auto-login')
+          adminAPI.post('/account/auto-login')
             .then(response => {
               console.log('Auto Login successful')
               console.log(response)
@@ -79,7 +79,7 @@ export default {
       })
     },
     userLogOut(context) {
-      api.post('/account/logout')
+      adminAPI.post('/account/logout')
         .then(response => {
           console.log('Logout successful')
           console.log(response)

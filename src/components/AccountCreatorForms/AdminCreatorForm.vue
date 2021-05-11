@@ -18,20 +18,10 @@
         outlined
         :rules="[() => !!id || 'Please Enter an ID']"
       ></q-input>
-      <q-input
-        class="col-6"
-        v-model="password"
-        label="Password"
-        outlined
-        :rules="[() => !!password || 'Please Enter a Password']"
-      >
-        <template v-slot:append>
-          <q-btn label="generate" flat dense color="primary" @click="password = generator()"></q-btn>
-        </template>
-      </q-input>
+      <password-maker-and-picker classes="col-6" v-model="password"></password-maker-and-picker>
       <div class="col-6"></div>
       <q-select
-        class="col-12"
+        class="col-12 q-pa-md"
         v-model="privilegesSelected"
         :options="privilegeOptions"
         label="Privileges"
@@ -63,9 +53,13 @@
 import generator from 'src/utils/passwordGenerator'
 import apiFetch from 'src/utils/apiFetch'
 import {isSubstring} from 'src/utils/patternSearch'
+import PasswordMakerAndPicker from 'components/FormElements/PasswordMakerAndPicker'
 
 export default {
   name: 'AdminCreatorForm',
+  components: {
+    PasswordMakerAndPicker
+  },
   data() {
     return {
       name: '',
@@ -98,7 +92,7 @@ export default {
     },
     createAccount() {
       this.createLoading = true
-      this.$api.post('account/create', {
+      this.$adminAPI.post('account/create', {
         userType: 'admin',
         id: this.id,
         password: this.password,

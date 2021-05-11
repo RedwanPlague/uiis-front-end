@@ -10,7 +10,15 @@ export default {
   },
   methods: {
     fetchCourseList() {
-      // apiFetch('/course/list', {department: 'CSE'}).then().catch()
+      apiFetch('/course/list', null)
+        .then(response => {
+          this.courseList = response.data.map(x => {
+            return {
+              value: x.title,
+              label: `${x.title}(${x.department})`
+            }
+          })
+        }).catch()
     },
     courseFilter(value, update) {
       if (value === '') {

@@ -4,26 +4,14 @@
       Create New Course
     </div>
     <q-form class="row q-col-gutter-md">
-      <q-select
-        class="col-6"
-        v-model="deptFrom"
-        :options="deptFromOptions"
-        label="Department (offered from)"
-        outlined
-        :rules="[() => !!deptFrom || 'Please Select a Department']"
-        use-input
-        @filter="deptFromFilter"
-      ></q-select>
-      <q-select
-        class="col-6"
-        v-model="deptSelected"
-        :options="deptOptions"
+      <department-picker
         label="Department (offered to)"
-        outlined
-        :rules="[() => !!deptSelected || 'Please Select a Department']"
-        use-input
-        @filter="deptFilter"
-      ></q-select>
+        v-model="deptFor"
+      ></department-picker>
+      <department-picker
+        label="Department (offered from)"
+        v-model="deptFrom"
+      ></department-picker>
       <q-input
         class="col-6"
         v-model="syllabusID"
@@ -93,7 +81,8 @@
         class="col-12 q-pb-md"
         v-model="description"
         label="Description"
-        autogrow
+        type="textarea"
+        rows="10"
         outlined
       ></q-input>
       <div class="col-12">
@@ -106,19 +95,20 @@
 </template>
 
 <script>
-import departments from 'src/mixins/departments'
 import courses from 'src/mixins/courses'
 import {isSubstring} from 'src/utils/patternSearch'
+import DepartmentPicker from 'components/FormElements/DepartmentPicker'
 
 export default {
   name: 'CourseCreation',
+  components: {DepartmentPicker},
   data() {
     return {
       title: '',
       name: '',
       syllabusID: '',
       deptFrom: '',
-      deptFromOptions: [],
+      deptFor: '',
       level: '',
       term: '',
       credit: '',
@@ -128,21 +118,9 @@ export default {
     }
   },
   mixins: [
-    departments,
     courses
   ],
   methods: {
-    deptFromFilter(value, update) {
-      if (value === '') {
-        update(() => {
-          this.deptFromOptions = this.deptList
-        })
-        return
-      }
-      update(() => {
-        this.deptFromOptions = this.deptList.filter(x => isSubstring(x.label, value))
-      })
-    },
     createCourse() {
       this.createLoading = true
       setInterval(() => {
@@ -150,15 +128,16 @@ export default {
       }, 1000)
     },
     resetForm() {
-        this.title = ''
-        this.name = ''
-        this.syllabusID = ''
-        this.deptFrom = ''
-        this.level = ''
-        this.term = ''
-        this.credit = ''
-        this.prerequisitesSelected = []
-        this.description = ''
+      this.title = ''
+      this.name = ''
+      this.syllabusID = ''
+      this.deptFrom = ''
+      this.deptFor = ''
+      this.level = ''
+      this.term = ''
+      this.credit = ''
+      this.prerequisitesSelected = []
+      this.description = ''
     }
   },
 }

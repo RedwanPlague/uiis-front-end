@@ -9,7 +9,7 @@ const getRandomInt = (l, r) => {
   return l + Math.floor(Math.random() * (r - l + 1))
 }
 
-const generator = () => {
+const passwordGenerator = () => {
   const minLen = 10, maxLen = 10
   const len = getRandomInt(minLen, maxLen)
 
@@ -21,4 +21,4 @@ const generator = () => {
   return password
 }
 
-export default generator
+export default passwordGenerator
