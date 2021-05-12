@@ -3,12 +3,15 @@
     :class="classes"
     :value="value"
     @input="$emit('input', $event)"
-    :options="deptOptions"
+    :options="courseOptions"
     :label="label"
     outlined
     :rules="[() => !!value || `Please Select a ${label}`]"
+    :use-chips="multiple"
+    :multiple="multiple"
+    :clearable="multiple"
     use-input
-    @filter="deptFilter"
+    @filter="courseFilter"
   >
     <template v-slot:no-option>
       <q-item>
@@ -21,56 +24,60 @@
 </template>
 
 <script>
-import apiFetch from 'src/utils/apiFetch'
 import {isSubstring} from 'src/utils/patternSearch'
+import apiFetch from 'src/utils/apiFetch'
 
 export default {
-  name: 'DepartmentPicker',
+  name: 'CoursePicker',
   props: {
     label: {
       type: String,
-      default: 'Department'
+      default: 'Course'
     },
     value: {
-      type: Object,
+      type: [Object, Array],
       default: null
     },
     classes: {
       type: [Object, String]
+    },
+    multiple: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      deptList: [],
-      deptOptions: []
+      courseOptions: [],
+      courseList: []
     }
   },
   methods: {
-    fetchDepartments() {
-      apiFetch('/department/list', null, 'All dept list')
+    fetchCourseList() {
+      apiFetch('/course/list', null, 'all courses')
         .then(response => {
-          this.deptList = response.data.map(x => {
+          this.courseList = response.data.map((x, idx) => {
             return {
-              value: x.id,
-              label: x.id
+              value: idx,
+              label: `${x.title}(${x.department}) - ${idx}`
             }
           })
-        })
+        }).catch()
     },
-    deptFilter(value, update) {
+    courseFilter(value, update) {
       if (value === '') {
         update(() => {
-          this.deptOptions = this.deptList
+          this.courseOptions = this.courseList
         })
         return
       }
       update(() => {
-        this.deptOptions = this.deptList.filter(x => isSubstring(x.label, value))
+        this.courseOptions = this.courseList.filter(x => isSubstring(x.label, value))
       })
     }
   },
   created() {
-    this.fetchDepartments()
+    this.fetchCourseList()
   }
 }
 </script>

@@ -74,7 +74,7 @@ export default {
   methods: {
     generator,
     fetchPrivilegeList() {
-      apiFetch('/privileges', null, 'List of ALL privileges')
+      apiFetch('/account/privileges', null, 'List of ALL privileges')
         .then(response => {
           this.privilegeList = response.data
         })

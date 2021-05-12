@@ -27,8 +27,9 @@
       <teacher-picker
         classes="col-6"
         label="Advisor"
-        :department="department.value"
+        :department="department ? department.value : null"
         v-model="advisor"
+        required
       ></teacher-picker>
       <password-maker-and-picker classes="col-6" v-model="password"></password-maker-and-picker>
       <div class="col-12">

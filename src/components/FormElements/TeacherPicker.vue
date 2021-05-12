@@ -6,10 +6,21 @@
     :options="teacherOptions"
     :label="label"
     outlined
-    :rules="[() => !!value || `Please Assign an ${label}`]"
+    :rules="[() => !!value || `Please Assign ${label}`]"
+    :use-chips="multiple"
+    :multiple="multiple"
+    :clearable="multiple"
     use-input
     @filter="teacherFilter"
-  ></q-select>
+  >
+    <template v-slot:no-option>
+      <q-item>
+        <q-item-section class="text-grey">
+          No results
+        </q-item-section>
+      </q-item>
+    </template>
+  </q-select>
 </template>
 
 <script>
@@ -24,15 +35,23 @@ export default {
       default: 'Teacher'
     },
     value: {
-      type: Object,
+      type: [Object, Array],
       default: null
     },
     department: {
       type: String,
-      default: null
+      default: 'CSE'
     },
     classes: {
       type: [Object, String]
+    },
+    multiple: {
+      type: Boolean,
+      default: false
+    },
+    required: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

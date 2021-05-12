@@ -5,10 +5,12 @@
     </div>
     <q-form class="row q-col-gutter-md">
       <department-picker
+        classes="col-6"
         label="Department (offered to)"
         v-model="deptFor"
       ></department-picker>
       <department-picker
+        classes="col-6"
         label="Department (offered from)"
         v-model="deptFrom"
       ></department-picker>
@@ -56,27 +58,12 @@
         outlined
         :rules="[() => !!credit || 'Please Enter a Level']"
       ></q-input>
-      <q-select
-        class="col-12 q-pb-md"
-        v-model="prerequisitesSelected"
-        :options="courseOptions"
+      <course-picker
+        classes="col-12"
         label="Prerequisites"
-        outlined
-        use-chips
+        v-model="prerequisites"
         multiple
-        clearable
-        use-input
-        input-debounce="0"
-        @filter="courseFilter"
-      >
-        <template v-slot:no-option>
-          <q-item>
-            <q-item-section class="text-grey">
-              No results
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
+      ></course-picker>
       <q-input
         class="col-12 q-pb-md"
         v-model="description"
@@ -96,23 +83,26 @@
 
 <script>
 import courses from 'src/mixins/courses'
-import {isSubstring} from 'src/utils/patternSearch'
 import DepartmentPicker from 'components/FormElements/DepartmentPicker'
+import CoursePicker from 'components/FormElements/CoursePicker'
 
 export default {
   name: 'CourseCreation',
-  components: {DepartmentPicker},
+  components: {
+    CoursePicker,
+    DepartmentPicker
+  },
   data() {
     return {
       title: '',
       name: '',
       syllabusID: '',
-      deptFrom: '',
-      deptFor: '',
+      deptFrom: null,
+      deptFor: null,
       level: '',
       term: '',
       credit: '',
-      prerequisitesSelected: [],
+      prerequisites: [],
       description: '',
       createLoading: false
     }
@@ -131,12 +121,12 @@ export default {
       this.title = ''
       this.name = ''
       this.syllabusID = ''
-      this.deptFrom = ''
-      this.deptFor = ''
+      this.deptFrom = null
+      this.deptFor = null
       this.level = ''
       this.term = ''
       this.credit = ''
-      this.prerequisitesSelected = []
+      this.prerequisites = []
       this.description = ''
     }
   },
