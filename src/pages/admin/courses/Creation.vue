@@ -3,52 +3,52 @@
     <div class="text-h5 q-my-md">
       Create New Course
     </div>
-    <q-form class="row q-col-gutter-md">
+    <q-form class="row q-col-gutter-md" @submit="createCourse" @reset="resetForm">
       <department-picker
         classes="col-6"
         label="Department (offered to)"
         v-model="deptFor"
-      ></department-picker>
+      />
       <department-picker
         classes="col-6"
         label="Department (offered from)"
         v-model="deptFrom"
-      ></department-picker>
+      />
       <q-input
         class="col-6"
         v-model="syllabusID"
         label="Syllabus ID"
         outlined
         :rules="[() => !!syllabusID || 'Please Enter a SyllabusID']"
-      ></q-input>
+      />
       <q-input
         class="col-6"
         v-model="title"
         label="Title"
         outlined
         :rules="[() => !!title || 'Please Enter a Title']"
-      ></q-input>
+      />
       <q-input
         class="col-12"
         v-model="name"
         label="Name"
         outlined
         :rules="[() => !!name || 'Please Enter a Name']"
-      ></q-input>
+      />
       <q-input
         class="col-4"
         v-model="level"
         label="Level"
         outlined
         :rules="[() => !!level || 'Please Enter a Level']"
-      ></q-input>
+      />
       <q-input
         class="col-4"
         v-model="term"
         label="Term"
         outlined
         :rules="[() => !!term || 'Please Enter a Level']"
-      ></q-input>
+      />
       <q-input
         class="col-4"
         v-model="credit"
@@ -57,13 +57,13 @@
         step="0.25"
         outlined
         :rules="[() => !!credit || 'Please Enter a Level']"
-      ></q-input>
+      />
       <course-picker
         classes="col-12"
         label="Prerequisites"
         v-model="prerequisites"
         multiple
-      ></course-picker>
+      />
       <q-input
         class="col-12 q-pb-md"
         v-model="description"
@@ -71,10 +71,10 @@
         type="textarea"
         rows="10"
         outlined
-      ></q-input>
+      />
       <div class="col-12">
-        <q-btn label="Create" color="primary" unelevated @click="createCourse" :loading="createLoading"></q-btn>
-        <q-btn label="Reset" color="primary" flat @click="resetForm"></q-btn>
+        <q-btn label="Create" color="primary" unelevated :loading="createLoading"/>
+        <q-btn label="Reset" color="primary" flat/>
       </div>
     </q-form>
     <div style="min-height: 200px"></div>

@@ -8,13 +8,13 @@
         <course-picker
           classes="col-6"
           v-model="course"
-        ></course-picker>
+        />
         <q-input
           class="col-6"
           value=""
           label="Session"
           outlined
-        ></q-input>
+        />
         <q-input
           class="col-6"
           v-model="totalEvalCount"
@@ -22,7 +22,7 @@
           type="number"
           outlined
           :rules="[() => !!totalEvalCount || 'Please Fill this Field']"
-        ></q-input>
+        />
         <q-input
           class="col-6"
           v-model="consideredEvalCount"
@@ -30,7 +30,7 @@
           type="number"
           outlined
           :rules="[() => !!consideredEvalCount || 'Please Fill this Field']"
-        ></q-input>
+        />
         <q-input
           class="col-6"
           v-model="totalMarks"
@@ -38,7 +38,7 @@
           type="number"
           outlined
           :rules="[() => !!totalMarks || 'Please Fill this Field']"
-        ></q-input>
+        />
         <q-input
           class="col-6"
           v-model="evalWeight"
@@ -46,7 +46,7 @@
           type="number"
           outlined
           :rules="[() => !!evalWeight || 'Please Fill this Field']"
-        ></q-input>
+        />
         <q-input
           class="col-6"
           v-model="attendanceWeight"
@@ -54,7 +54,7 @@
           type="number"
           outlined
           :rules="[() => !!attendanceWeight || 'Please Fill this Field']"
-        ></q-input>
+        />
       </div>
       <q-separator/>
       <q-expansion-item
@@ -69,7 +69,7 @@
                 classes="col-11"
                 v-model="item.teacher"
                 required
-              ></teacher-picker>
+              />
             </div>
             <q-input
               class="col-3"
@@ -77,7 +77,7 @@
               label="Part"
               outlined
               :rules="[() => !!item.part || 'Please Assign a Part']"
-            ></q-input>
+            />
             <q-input
               class="col-3"
               v-model="item.evalCount"
@@ -86,12 +86,12 @@
               :max="totalEvalCount"
               :min="0"
               outlined
-            ></q-input>
+            />
             <div class="col-1">
               <q-btn
                 icon="delete" color="primary" flat dense
                 @click="removeCourseTeacher(i)"
-              ></q-btn>
+              />
             </div>
           </div>
           <div class="row">
@@ -100,7 +100,7 @@
               class="col-6" color="primary"
               outline icon="add" :ripple="false"
               @click="addNewCourseTeacher"
-            ></q-btn>
+            />
           </div>
         </div>
       </q-expansion-item>
@@ -117,7 +117,7 @@
               <slot-picker
                 classes="col-11"
                 v-model="item.slot"
-              ></slot-picker>
+              />
             </div>
             <q-input
               class="col-3"
@@ -125,18 +125,18 @@
               label="Room"
               outlined
               :rules="[() => !!item.part || 'Please Assign a Room']"
-            ></q-input>
+            />
             <day-of-week-picker
               class="col-3"
               v-model="item.day"
               label="Day of Week"
               required
-            ></day-of-week-picker>
+            />
             <div class="col-1">
               <q-btn
                 icon="delete" color="primary" flat dense
                 @click="removeSlot(i)"
-              ></q-btn>
+              />
             </div>
           </div>
           <div class="row">
@@ -145,7 +145,7 @@
               class="col-6" color="primary"
               outline icon="add" :ripple="false"
               @click="addSlot"
-            ></q-btn>
+            />
           </div>
         </div>
       </q-expansion-item>
@@ -164,7 +164,7 @@
                 label="Examiner"
                 v-model="item.teacher"
                 required
-              ></teacher-picker>
+              />
             </div>
             <q-input
               class="col-4"
@@ -172,12 +172,12 @@
               label="Part"
               outlined
               :rules="[() => !!item.part || 'Please Assign a Part']"
-            ></q-input>
+            />
             <div class="col-1">
               <q-btn
                 icon="delete" color="primary" flat dense
                 @click="removeExaminer(i)"
-              ></q-btn>
+              />
             </div>
           </div>
           <div class="row">
@@ -186,7 +186,7 @@
               class="col-6" color="primary"
               outline icon="add" :ripple="false"
               @click="addExaminer"
-            ></q-btn>
+            />
           </div>
         </div>
       </q-expansion-item>
@@ -202,13 +202,13 @@
             label="Scrutinizers"
             v-model="scrutinizers"
             multiple
-          ></teacher-picker>
+          />
         </div>
       </q-expansion-item>
       <q-separator class="q-mb-sm"/>
       <div class="col-12 q-mt-lg">
-        <q-btn label="Assign" color="primary" unelevated @click="assignCourse" :loading="assignLoading"></q-btn>
-        <q-btn label="Reset" color="primary" flat @click="resetForm"></q-btn>
+        <q-btn label="Assign" color="primary" unelevated @click="assignCourse" :loading="assignLoading"/>
+        <q-btn label="Reset" color="primary" flat @click="resetForm"/>
       </div>
     </q-form>
     <div style="min-height: 200px"></div>

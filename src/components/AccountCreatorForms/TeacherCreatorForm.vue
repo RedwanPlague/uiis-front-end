@@ -3,33 +3,32 @@
     <div class="text-h5 q-my-md">
       Create Teacher Account
     </div>
-    <q-form class="row q-col-gutter-md">
+    <q-form class="row q-col-gutter-md" @submit="createAccount" @reset="resetForm">
       <q-input
         class="col-6"
         v-model="name"
         label="Name"
         outlined
         :rules="[() => !!name || 'Please Enter a Name']"
-      ></q-input>
+      />
       <q-input
         class="col-6"
         v-model="id"
         label="Teacher ID"
         outlined
         :rules="[() => !!id || 'Please Enter an ID']"
-      ></q-input>
-      <department-picker classes="col-6" v-model="department"></department-picker>
-      <password-maker-and-picker classes="col-6" v-model="password"></password-maker-and-picker>
+      />
+      <department-picker classes="col-6" v-model="department"/>
+      <password-maker-and-picker classes="col-6" v-model="password"/>
       <div class="col-12">
-        <q-btn type="submit" label="Create" color="primary" unelevated :loading="createLoading"></q-btn>
-        <q-btn type="reset" label="Reset" color="primary" flat></q-btn>
+        <q-btn type="submit" label="Create" color="primary" unelevated :loading="createLoading"/>
+        <q-btn type="reset" label="Reset" color="primary" flat/>
       </div>
     </q-form>
   </div>
 </template>
 
 <script>
-import generator from 'src/utils/passwordGenerator'
 import DepartmentPicker from 'components/FormElements/DepartmentPicker'
 import PasswordMakerAndPicker from 'components/FormElements/PasswordMakerAndPicker'
 
@@ -49,8 +48,7 @@ export default {
     }
   },
   methods: {
-    generator,
-    submit() {
+    createAccount() {
       this.createLoading = true
       this.$adminAPI.post('/account/create', {
         userType: 'teacher',
@@ -70,7 +68,7 @@ export default {
           console.log(error.response)
         })
     },
-    reset() {
+    resetForm() {
       this.name = ''
       this.id = ''
       this.password = ''

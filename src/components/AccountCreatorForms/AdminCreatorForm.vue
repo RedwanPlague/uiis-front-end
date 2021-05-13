@@ -3,22 +3,22 @@
     <div class="text-h5 q-my-md">
       Create Admin Account
     </div>
-    <q-form class="row q-col-gutter-md">
+    <q-form class="row q-col-gutter-md" @submit="createAccount" @reset="resetForm">
       <q-input
         class="col-6"
         v-model="name"
         label="Name"
         outlined
         :rules="[() => !!name || 'Please Enter a Name']"
-      ></q-input>
+      />
       <q-input
         class="col-6"
         v-model="id"
         label="Admin Id"
         outlined
         :rules="[() => !!id || 'Please Enter an ID']"
-      ></q-input>
-      <password-maker-and-picker classes="col-6" v-model="password"></password-maker-and-picker>
+      />
+      <password-maker-and-picker classes="col-6" v-model="password"/>
       <div class="col-6"></div>
       <q-select
         class="col-12 q-pa-md"
@@ -42,15 +42,14 @@
         </template>
       </q-select>
       <div class="col-12">
-        <q-btn label="Create" color="primary" unelevated @click="createAccount" :loading="createLoading"></q-btn>
-        <q-btn label="Reset" color="primary" flat @click="resetForm"></q-btn>
+        <q-btn label="Create" type="submit" color="primary" unelevated :loading="createLoading"/>
+        <q-btn label="Reset" type="reset" color="primary" flat/>
       </div>
     </q-form>
   </div>
 </template>
 
 <script>
-import generator from 'src/utils/passwordGenerator'
 import apiFetch from 'src/utils/apiFetch'
 import {isSubstring} from 'src/utils/patternSearch'
 import PasswordMakerAndPicker from 'components/FormElements/PasswordMakerAndPicker'
@@ -72,7 +71,6 @@ export default {
     }
   },
   methods: {
-    generator,
     fetchPrivilegeList() {
       apiFetch('/account/privileges', null, 'List of ALL privileges')
         .then(response => {

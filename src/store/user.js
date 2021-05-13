@@ -62,8 +62,7 @@ export default {
             .then(response => {
               console.log('Auto Login successful')
               console.log(response)
-              response.data.token = token
-              context.commit('userLogIn', response.data)
+              context.commit('userLogIn', {user: response.data, token})
               resolve(response)
             })
             .catch(error => {

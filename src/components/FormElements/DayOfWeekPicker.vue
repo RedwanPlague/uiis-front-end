@@ -10,7 +10,7 @@
     :multiple="multiple"
     :clearable="multiple"
     outlined
-  ></q-select>
+  />
 </template>
 
 <script>
