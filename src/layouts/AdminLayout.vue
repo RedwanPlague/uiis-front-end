@@ -20,7 +20,7 @@
             <q-item clickable v-close-popup :to="{ name: 'AdminAccountCreationPage' }" style="color: inherit" dense>
               <q-item-section>
                 <q-item-label>
-                  <q-avatar icon="account_circle"></q-avatar>
+                  <q-avatar icon="account_circle"/>
                   Account
                 </q-item-label>
               </q-item-section>
@@ -29,14 +29,14 @@
             <q-item clickable v-close-popup @click="userLogOut(); $router.push({ name: 'Index' })" dense>
               <q-item-section>
                 <q-item-label>
-                  <q-avatar icon="logout"></q-avatar>
+                  <q-avatar icon="logout"/>
                   Logout
                 </q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
         </q-btn-dropdown>
-        <q-btn v-else flat :to="{ name: 'Index' }">SIGN IN</q-btn>
+        <q-btn v-else flat label="SIGN IN" :to="{ name: 'Index' }"/>
       </q-toolbar>
     </q-header>
 
@@ -95,6 +95,22 @@ const quickLinks = [
         link: { name: 'AdminCourseAssignmentPage' }
       },
     ]
+  },
+  {
+    title: 'Slots',
+    icon: 'school',
+    children: [
+      {
+        title: 'Create',
+        icon: 'school',
+        link: { name: 'AdminSlotCreationPage' }
+      },
+    ]
+  },
+  {
+    title: 'Session',
+    icon: 'school',
+    link: { name: 'AdminSessionAssignmentPage' }
   },
   {
     title: 'Docs2',

@@ -56,6 +56,22 @@ const routes = [
           }
         ]
       },
+      {
+        path: 'slot',
+        component: () => import('pages/admin/slots/Wrapper'),
+        children: [
+          {
+            path: 'create',
+            name: 'AdminSlotCreationPage',
+            component: () => import('pages/admin/slots/Creation')
+          },
+        ]
+      },
+      {
+        path: 'session/assign',
+        name: 'AdminSessionAssignmentPage',
+        component: () => import('pages/admin/SessionAssignment'),
+      },
     ],
     // beforeEnter(to, from, next) {
     //   if (store.getters.user) {
