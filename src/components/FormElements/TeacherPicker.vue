@@ -5,8 +5,10 @@
     @input="$emit('input', $event)"
     :options="teacherOptions"
     :label="label"
-    outlined
-    :rules="[() => !!value || `Please Assign ${label}`]"
+    :filled="!required"
+    :outlined="required"
+    :readonly="readonly"
+    :rules="[() => !required || !!value || `Please Assign ${label}`]"
     :use-chips="multiple"
     :multiple="multiple"
     :clearable="multiple"
@@ -50,6 +52,10 @@ export default {
       default: false
     },
     required: {
+      type: Boolean,
+      default: false
+    },
+    readonly: {
       type: Boolean,
       default: false
     }

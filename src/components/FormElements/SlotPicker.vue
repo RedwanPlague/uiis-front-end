@@ -5,7 +5,7 @@
     @input="$emit('input', $event)"
     :options="slotOptions"
     :label="label"
-    :rules="[() => !!value || `Please Select ${label}`]"
+    :rules="[() => !required || !!value || `Please Select ${label}`]"
     :use-chips="multiple"
     :multiple="multiple"
     :clearable="multiple"
@@ -40,6 +40,10 @@ export default {
       type: Boolean,
       default: false
     },
+    required: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {

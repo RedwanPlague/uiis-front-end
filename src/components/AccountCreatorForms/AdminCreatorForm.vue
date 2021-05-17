@@ -1,31 +1,34 @@
 <template>
   <div>
     <div class="text-h5 q-my-md">
-      Create Admin Account
+      {{submitLabel}} Admin Account
     </div>
     <q-form class="row q-col-gutter-md" @submit="createAccount" @reset="resetForm">
       <q-input
         class="col-6"
         v-model="name"
         label="Name"
-        outlined
-        :rules="[() => !!name || 'Please Enter a Name']"
+        :filled="!openFields"
+        :outlined="openFields"
+        :rules="[() => !openFields || !!name || 'Please Enter a Name']"
       />
       <q-input
         class="col-6"
         v-model="id"
         label="Admin Id"
-        outlined
-        :rules="[() => !!id || 'Please Enter an ID']"
+        :filled="!openFields"
+        :outlined="openFields"
+        :rules="[() => !openFields || !!id || 'Please Enter an ID']"
       />
-      <password-maker-and-picker classes="col-6" v-model="password"/>
-      <div class="col-6"></div>
+      <password-maker-and-picker v-if="openFields" classes="col-6" v-model="password"/>
+      <div v-if="openFields" class="col-6"></div>
       <q-select
-        class="col-12 q-pa-md"
+        class="col-12"
         v-model="privilegesSelected"
         :options="privilegeOptions"
         label="Privileges"
-        outlined
+        :filled="!openFields"
+        :outlined="openFields"
         use-chips
         multiple
         clearable
@@ -42,7 +45,7 @@
         </template>
       </q-select>
       <div class="col-12">
-        <q-btn label="Create" type="submit" color="primary" unelevated :loading="createLoading"/>
+        <q-btn :label="submitLabel" type="submit" color="primary" unelevated :loading="createLoading"/>
         <q-btn label="Reset" type="reset" color="primary" flat/>
       </div>
     </q-form>
@@ -58,6 +61,25 @@ export default {
   name: 'AdminCreatorForm',
   components: {
     PasswordMakerAndPicker
+  },
+  computed: {
+    submitLabel() {
+      const route = this.$route.name
+      if (route === 'AdminAccountCreationPage') {
+        return 'Create'
+      }
+      else if (route === 'AdminAccountSearchPage') {
+        return 'Search'
+      }
+      else if (route === 'AdminAccountEditPage') {
+        return 'Edit'
+      }
+      return 'Label Error'
+    },
+    openFields() {
+      const route = this.$route.name
+      return (route === 'AdminAccountCreationPage') || (route === 'AdminAccountEditPage')
+    }
   },
   data() {
     return {

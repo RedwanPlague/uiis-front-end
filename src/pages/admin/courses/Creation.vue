@@ -8,11 +8,13 @@
         classes="col-6"
         label="Department (offered to)"
         v-model="deptFor"
+        required
       />
       <department-picker
         classes="col-6"
         label="Department (offered from)"
         v-model="deptFrom"
+        required
       />
       <q-input
         class="col-6"
@@ -63,6 +65,7 @@
         label="Prerequisites"
         v-model="prerequisites"
         multiple
+        required
       />
       <q-input
         class="col-12 q-pb-md"

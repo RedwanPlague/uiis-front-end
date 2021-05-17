@@ -1,27 +1,29 @@
 <template>
   <div>
     <div class="text-h5 q-my-md">
-      Create Teacher Account
+      {{submitLabel}} Teacher Account
     </div>
     <q-form class="row q-col-gutter-md" @submit="createAccount" @reset="resetForm">
       <q-input
         class="col-6"
         v-model="name"
         label="Name"
-        outlined
-        :rules="[() => !!name || 'Please Enter a Name']"
+        :filled="!openFields"
+        :outlined="openFields"
+        :rules="[() => !openFields || !!name || 'Please Enter a Name']"
       />
       <q-input
         class="col-6"
         v-model="id"
         label="Teacher ID"
-        outlined
-        :rules="[() => !!id || 'Please Enter an ID']"
+        :filled="!openFields"
+        :outlined="openFields"
+        :rules="[() => !openFields || !!id || 'Please Enter an ID']"
       />
-      <department-picker classes="col-6" v-model="department"/>
-      <password-maker-and-picker classes="col-6" v-model="password"/>
+      <department-picker classes="col-6" v-model="department" :required="openFields"/>
+      <password-maker-and-picker v-if="openFields" classes="col-6" v-model="password"/>
       <div class="col-12">
-        <q-btn type="submit" label="Create" color="primary" unelevated :loading="createLoading"/>
+        <q-btn type="submit" :label="submitLabel" color="primary" unelevated :loading="createLoading"/>
         <q-btn type="reset" label="Reset" color="primary" flat/>
       </div>
     </q-form>
@@ -37,6 +39,25 @@ export default {
   components: {
     PasswordMakerAndPicker,
     DepartmentPicker
+  },
+  computed: {
+    submitLabel() {
+      const route = this.$route.name
+      if (route === 'AdminAccountCreationPage') {
+        return 'Create'
+      }
+      else if (route === 'AdminAccountSearchPage') {
+        return 'Search'
+      }
+      else if (route === 'AdminAccountEditPage') {
+        return 'Edit'
+      }
+      return 'Label Error'
+    },
+    openFields() {
+      const route = this.$route.name
+      return (route === 'AdminAccountCreationPage') || (route === 'AdminAccountEditPage')
+    }
   },
   data() {
     return {

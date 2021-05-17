@@ -8,6 +8,7 @@
         <course-picker
           classes="col-6"
           v-model="course"
+          required
         />
         <q-input
           class="col-6"
@@ -202,6 +203,7 @@
             label="Scrutinizers"
             v-model="scrutinizers"
             multiple
+            required
           />
         </div>
       </q-expansion-item>

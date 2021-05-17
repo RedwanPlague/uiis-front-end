@@ -5,8 +5,9 @@
     @input="$emit('input', $event)"
     :options="courseOptions"
     :label="label"
-    outlined
-    :rules="[() => !!value || `Please Select a ${label}`]"
+    :filled="!required"
+    :outlined="required"
+    :rules="[() => !required || !!value || `Please Select a ${label}`]"
     :use-chips="multiple"
     :multiple="multiple"
     :clearable="multiple"
@@ -42,6 +43,10 @@ export default {
       type: [Object, String]
     },
     multiple: {
+      type: Boolean,
+      default: false
+    },
+    required: {
       type: Boolean,
       default: false
     }

@@ -38,6 +38,16 @@ const routes = [
             name: 'AdminAccountCreationPage',
             component: () => import('pages/admin/accounts/Creation')
           },
+          {
+            path: 'search',
+            name: 'AdminAccountSearchPage',
+            component: () => import('pages/admin/accounts/Creation')
+          },
+          {
+            path: 'edit',
+            name: 'AdminAccountEditPage',
+            component: () => import('pages/admin/accounts/Creation')
+          },
         ]
       },
       {

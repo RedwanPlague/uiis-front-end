@@ -5,8 +5,10 @@
     @input="$emit('input', $event)"
     :options="deptOptions"
     :label="label"
-    outlined
-    :rules="[() => !!value || `Please Select a ${label}`]"
+    :filled="!required"
+    :outlined="required"
+    :readonly="readonly"
+    :rules="[() => !required || !!value || `Please Select a ${label}`]"
     use-input
     @filter="deptFilter"
   >
@@ -37,6 +39,14 @@ export default {
     },
     classes: {
       type: [Object, String]
+    },
+    required: {
+      type: Boolean,
+      default: false
+    },
+    readonly: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
