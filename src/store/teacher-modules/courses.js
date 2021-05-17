@@ -11,7 +11,9 @@ const getters = {
 
 const actions = {
   async fetchCourses({commit}) {
-    const res = await api.get('/courses');
+    const res = await api.get('/courseList');
+
+    console.log(res.data);
     commit('setCourses', res.data);
   }
 };

@@ -53,24 +53,6 @@
 
 export default {
   name: "ClassPage",
-  computed: {
-    ...mapGetters(['allCourses']),
-  },
-  async created() {
-    await this.fetchCourses();
-  },
-  methods : {
-    onRowClick(evt, row) {
-      this.$router.push( {
-        name: 'course_page',
-        params: {
-          courseID: row.courseID ,
-          courseSession: row.session,
-          courseName: row.courseName
-        }});
-    },
-    ...mapActions(['fetchCourses']),
-  },
   data () {
     return {
       currentCourseFilter: '',
@@ -111,6 +93,24 @@ export default {
         },
       ],
     }
+  },
+  methods : {
+    onRowClick(evt, row) {
+      this.$router.push( {
+        name: 'course_page',
+        params: {
+          courseID: row.courseID ,
+          courseSession: row.session,
+          courseName: row.courseName
+        }});
+    },
+    ...mapActions(['fetchCourses']),
+  },
+  async created() {
+    await this.fetchCourses();
+  },
+  computed: {
+    ...mapGetters(['allCourses']),
   }
 };
 </script>
