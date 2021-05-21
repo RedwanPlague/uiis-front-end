@@ -2,59 +2,141 @@
   <q-page padding>
     <div class="q-pa-md">
       <q-card bordered class="bg-grey-2">
-        <q-tabs
-          v-model="tab"
-          no-caps
-          class="bg-grey-2 text-primary"
-          align="justify"
-          narrow-indicator
-        >
-          <q-tab name="registeredStudents" label="Registered Students" />
-          <q-tab name="waitingForHeadApproval" label="Waiting for Head's Approval" />
-          <q-tab name="waitingForAdvisorApproval" label="Waiting for Advisor's Approval" />
-          <q-tab name="notAppliedForRegistration" label="Not Applied for Registration" />
-        </q-tabs><br />
+        <q-card-section>
+          <div class="text-h6">
+            <p>
+              <strong>Registered Students</strong>
+            </p>
+          </div>
+        </q-card-section>
 
         <q-separator />
 
-        <q-tab-panels v-model="tab" animated>
-          <q-tab-panel name="registeredStudents">
-            <q-table
-              bordered :data="registeredAdvisees" :columns="adviseeColumns" row-key="studentID"
-              @row-click="onRowClick"
-            />
-          </q-tab-panel>
+        <q-card-section>
+          <div class="q-gutter-sm">
+            <q-btn
+              flat class="bg-primary text-white"
+              v-for="registeredAdvisee in registeredAdvisees"
+              :key="registeredAdvisee.studentID"
+              v-bind="registeredAdvisee"
+              @click.native="selectedAdvisee = registeredAdvisee; onAdviseeWithoutApprovalOptionClick();"
+            >
+              {{ registeredAdvisee.studentID }}
+            </q-btn>
+          </div>
+        </q-card-section>
+      </q-card><br />
 
-          <q-tab-panel name="waitingForHeadApproval">
-            <q-table
-              bordered :data="waitingForHeadApprovalAdvisees" :columns="adviseeColumns" row-key="studentID"
-              @row-click="onRowClick"
-            />
-          </q-tab-panel>
+      <q-card bordered class="bg-grey-2">
+        <q-card-section>
+          <div class="text-h6">
+            <p>
+              <strong>Waiting for Head's Approval</strong>
+            </p>
+          </div>
+        </q-card-section>
 
-          <q-tab-panel name="waitingForAdvisorApproval">
-            <q-table
-              bordered :data="waitingForAdvisorApprovalAdvisees" :columns="adviseeColumns" row-key="studentID"
-              :selected-rows-label="getSelectedString" selection="multiple" :selected.sync="selected"
-              @row-click="onRowClick"
-            /><br />
+        <q-separator />
 
-            <div class="row">
-              <q-space />
-              <q-btn class="btn-fixed-width" color="primary" label="Submit" @click="forwardToHead" />
-            </div>
-          </q-tab-panel>
+        <q-card-section>
+          <div class="q-gutter-sm">
+            <q-btn
+              flat class="bg-primary text-white"
+              v-for="waitingForHeadApprovalAdvisee in waitingForHeadApprovalAdvisees"
+              :key="waitingForHeadApprovalAdvisee.studentID"
+              v-bind="waitingForHeadApprovalAdvisee"
+              @click.native="selectedAdvisee = waitingForHeadApprovalAdvisee; onAdviseeWithoutApprovalOptionClick();"
+            >
+              {{ waitingForHeadApprovalAdvisee.studentID }}
+            </q-btn>
+          </div>
+        </q-card-section>
+      </q-card><br />
 
-          <q-tab-panel name="notAppliedForRegistration">
-            <q-table
-              bordered :data="notAppliedForRegistrationAdvisees" :columns="adviseeColumns" row-key="studentID"
-              @row-click="onRowClick"
-            />
-          </q-tab-panel>
-        </q-tab-panels>
+      <q-card bordered class="bg-grey-2">
+        <q-card-section>
+          <div class="text-h6">
+            <p>
+              <strong>Waiting for Advisor's Approval</strong>
+            </p>
+          </div>
+        </q-card-section>
+
+        <q-separator />
+
+        <q-card-section>
+          <div class="q-gutter-sm">
+            <q-btn
+              flat class="bg-primary text-white"
+              v-for="waitingForAdvisorApprovalAdvisee in waitingForAdvisorApprovalAdvisees"
+              :key="waitingForAdvisorApprovalAdvisee.studentID"
+              v-bind="waitingForAdvisorApprovalAdvisee"
+              @click.native="selectedAdvisee = waitingForAdvisorApprovalAdvisee; onAdviseeWithApprovalOptionClick();"
+            >
+              {{ waitingForAdvisorApprovalAdvisee.studentID }}
+            </q-btn>
+          </div>
+        </q-card-section>
+      </q-card><br />
+
+      <q-card bordered class="bg-grey-2">
+        <q-card-section>
+          <div class="text-h6">
+            <p>
+              <strong>Not Applied for Registration</strong>
+            </p>
+          </div>
+        </q-card-section>
+
+        <q-separator />
+
+        <q-card-section>
+          <div class="q-gutter-sm">
+            <q-btn
+              flat class="bg-primary text-white"
+              v-for="notAppliedForRegistrationAdvisee in notAppliedForRegistrationAdvisees"
+              :key="notAppliedForRegistrationAdvisee.studentID"
+              v-bind="notAppliedForRegistrationAdvisee"
+              @click.native="selectedAdvisee = notAppliedForRegistrationAdvisee; onAdviseeWithoutApprovalOptionClick();"
+            >
+              {{ notAppliedForRegistrationAdvisee.studentID }}
+            </q-btn>
+          </div>
+        </q-card-section>
       </q-card>
 
-      <q-dialog v-model="studentInfoDialogBox" full-width>
+      <q-dialog v-model="adviseeWithApprovalOptionDialogBox" full-width>
+        <q-card>
+          <q-card-section>
+            <div class="text-h6">
+              <p>
+                <strong>Student ID:</strong> {{ selectedAdvisee.studentID }}
+              </p>
+              <p>
+                <strong>Name:</strong> {{ selectedAdvisee.name }}
+              </p>
+              <p>
+                <strong>Level/Term:</strong> {{ selectedAdvisee.level }}/{{ selectedAdvisee.term }}
+              </p>
+              <p>
+                <strong>Department:</strong> {{ selectedAdvisee.department }}
+              </p>
+            </div>
+
+            <q-table
+              title="Courses" dense bordered :data="getCourses" :columns="courseColumns" row-key="courseID"
+            />
+          </q-card-section>
+
+          <q-card-actions align="right">
+            <q-btn flat class="bg-secondary text-white" label="Approve" @click="approve" v-close-popup />
+            <q-btn flat class="bg-secondary text-white" label="Reject" @click="reject" v-close-popup />
+            <q-btn flat class="bg-primary text-white" label="Back" v-close-popup />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
+
+      <q-dialog v-model="adviseeWithoutApprovalOptionDialogBox" full-width>
         <q-card>
           <q-card-section>
             <div class="text-h6">
@@ -94,27 +176,7 @@ export default {
 
   data() {
     return {
-      tab: "registeredStudents",  /* by default location for q-tab */
-
       /* for tabulation */
-      adviseeColumns: [
-        {
-          name: 'studentID',
-          required: true,
-          label: 'Student ID',
-          align: 'left',
-          field: row => row.studentID,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'name',
-          align: 'left',
-          label: 'Name',
-          field: 'name',
-          sortable: true
-        }
-      ],
       courseColumns: [
         {
           name: 'courseID',
@@ -155,39 +217,40 @@ export default {
         }
       ],
 
-      /* table rows */
+      /* card groups */
       registeredAdvisees: this.$store.getters.getAdvisees.slice(0, 8),
       waitingForHeadApprovalAdvisees: this.$store.getters.getAdvisees.slice(8, 15),
       waitingForAdvisorApprovalAdvisees: this.$store.getters.getAdvisees.slice(15, 22),
       notAppliedForRegistrationAdvisees: this.$store.getters.getAdvisees.slice(22, this.$store.getters.getAdvisees.length),
 
-      /* for multiple selections in Advisor Approval table */
-      selected: [],
-
       /* for showing selected Advisee information in dialog box */
       selectedAdvisee: {},
-      studentInfoDialogBox: false,  /* open when true */
+      adviseeWithApprovalOptionDialogBox: false,  /* open when true */
+      adviseeWithoutApprovalOptionDialogBox: false  /* open when true */
     };
   },
 
   methods: {
     ...mapActions(['fetchAdvisees', 'fetchCourses']),
 
-    getSelectedString() {
-      return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.waitingForAdvisorApprovalAdvisees.length}`;
+    onAdviseeWithApprovalOptionClick() {
+      this.adviseeWithApprovalOptionDialogBox = true;
     },
 
-    onRowClick(event, row) {
-      this.selectedAdvisee = this.$store.getters.getAdvisees.find(advisee => advisee.studentID === row.studentID);
-      this.studentInfoDialogBox = true;
+    onAdviseeWithoutApprovalOptionClick() {
+      this.adviseeWithoutApprovalOptionDialogBox = true;
     },
 
-    forwardToHead() {
-      for(let i=0; i<this.selected.length; i++) {
-        this.waitingForAdvisorApprovalAdvisees.splice(this.waitingForAdvisorApprovalAdvisees.findIndex(advisee => advisee.studentID === this.selected[i].studentID), 1);
-      }
-      this.waitingForHeadApprovalAdvisees = this.waitingForHeadApprovalAdvisees.concat(this.selected);
-      this.selected = [];
+    approve() {
+      this.waitingForAdvisorApprovalAdvisees.splice(this.waitingForAdvisorApprovalAdvisees.findIndex(advisee => advisee.studentID === this.selectedAdvisee.studentID), 1);
+      this.waitingForHeadApprovalAdvisees = this.waitingForHeadApprovalAdvisees.concat(this.selectedAdvisee);
+      this.waitingForHeadApprovalAdvisees.sort((advisee1, advisee2) => (advisee1.studentID > advisee2.studentID)? 1: ((advisee1.studentID < advisee2.studentID)? -1: 0));
+    },
+
+    reject() {
+      this.waitingForAdvisorApprovalAdvisees.splice(this.waitingForAdvisorApprovalAdvisees.findIndex(advisee => advisee.studentID === this.selectedAdvisee.studentID), 1);
+      this.notAppliedForRegistrationAdvisees = this.notAppliedForRegistrationAdvisees.concat(this.selectedAdvisee);
+      this.notAppliedForRegistrationAdvisees.sort((advisee1, advisee2) => (advisee1.studentID > advisee2.studentID)? 1: ((advisee1.studentID < advisee2.studentID)? -1: 0));
     }
   },
 

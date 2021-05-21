@@ -1,12 +1,33 @@
 <template>
   <q-page padding>
     <div class="q-pa-md">
-      <q-table
-        title="Advisees" bordered :data="getAdvisees" :columns="adviseeColumns" row-key="studentID"
-        @row-click="onRowClick"
-      />
+      <q-card bordered class="bg-grey-2">
+        <q-card-section>
+          <div class="text-h6">
+            <p>
+              <strong>Advisees</strong>
+            </p>
+          </div>
+        </q-card-section>
 
-      <q-dialog v-model="studentInfoDialogBox" full-width>
+        <q-separator />
+
+        <q-card-section>
+          <div class="q-gutter-sm">
+            <q-btn
+              flat class="bg-primary text-white"
+              v-for="advisee in getAdvisees"
+              :key="advisee.studentID"
+              v-bind="advisee"
+              @click.native="selectedAdvisee = advisee; onAdviseeClick();"
+            >
+              {{ advisee.studentID }}
+            </q-btn>
+          </div>
+        </q-card-section>
+      </q-card>
+
+      <q-dialog v-model="adviseeInfoDialogBox" full-width>
         <q-card>
           <q-card-section>
             <div class="text-h6">
@@ -32,8 +53,8 @@
           </q-card-section>
 
           <q-card-actions align="right">
-            <q-btn flat class="bg-primary text-white" label="View Grades" @click="visitedSemesterSelectionPage" />
-            <q-btn flat class="bg-secondary text-white" label="Back" v-close-popup />
+            <q-btn flat class="bg-secondary text-white" label="View Grades" @click="visitedSemesterSelectionPage" />
+            <q-btn flat class="bg-primary text-white" label="Back" v-close-popup />
           </q-card-actions>
         </q-card>
       </q-dialog>
@@ -49,41 +70,20 @@ export default {
 
   data() {
     return {
-      /* for tabulation */
-      adviseeColumns: [
-        {
-          name: 'studentID',
-          required: true,
-          label: 'Student ID',
-          align: 'left',
-          field: row => row.studentID,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'name',
-          align: 'left',
-          label: 'Name',
-          field: 'name',
-          sortable: true
-        }
-      ],
-
       /* for showing selected Advisee information in dialog box */
       selectedAdvisee: {},
-      studentInfoDialogBox: false  /* open when true */
+      adviseeInfoDialogBox: false  /* open when true */
     };
   },
 
   methods: {
     ...mapActions(['fetchAdvisees']),
 
-    onRowClick(event, row) {
-      this.selectedAdvisee = this.$store.getters.getAdvisees.find(advisee => advisee.studentID === row.studentID);
-      this.studentInfoDialogBox = true;
+    onAdviseeClick() {
+      this.adviseeInfoDialogBox = true;
     },
+
     visitedSemesterSelectionPage() {
-      console.log("hello");
       this.$router.push({ name: 'adviseeSemesterSelection', params: { studentID: this.selectedAdvisee.studentID }});
     }
   },
