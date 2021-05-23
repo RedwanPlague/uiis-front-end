@@ -15,9 +15,9 @@ export default {
   },
   created() {
     this.userTryAutoLogIn().then().catch(() => {
-      if (this.$route.name !== 'Index') {
-        this.$router.replace({name: 'Index'})
-      }
+      // if (this.$route.name !== 'Index') {
+      //   this.$router.replace({name: 'Index'})
+      // }
     })
   }
 }
