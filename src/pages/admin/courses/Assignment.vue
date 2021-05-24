@@ -46,6 +46,7 @@
           label="Per Evaluation Weight"
           type="number"
           outlined
+          suffix="%"
           :rules="[() => !!evalWeight || 'Please Fill this Field']"
         />
         <q-input
@@ -53,6 +54,7 @@
           v-model="attendanceWeight"
           label="Attendance Weight"
           type="number"
+          suffix="%"
           outlined
           :rules="[() => !!attendanceWeight || 'Please Fill this Field']"
         />
