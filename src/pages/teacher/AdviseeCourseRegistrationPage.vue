@@ -16,12 +16,12 @@
           <div class="q-gutter-sm">
             <q-btn
               flat class="bg-primary text-white"
-              v-for="registeredAdvisee in registeredAdvisees"
-              :key="registeredAdvisee.studentID"
+              v-for="registeredAdvisee in getRegistrations.filter(registration => registration.status === 'registered')"
+              :key="registeredAdvisee._id"
               v-bind="registeredAdvisee"
               @click.native="selectedAdvisee = registeredAdvisee; onAdviseeWithoutApprovalOptionClick();"
             >
-              {{ registeredAdvisee.studentID }}
+              {{ registeredAdvisee._id }}
             </q-btn>
           </div>
         </q-card-section>
@@ -42,12 +42,12 @@
           <div class="q-gutter-sm">
             <q-btn
               flat class="bg-primary text-white"
-              v-for="waitingForHeadApprovalAdvisee in waitingForHeadApprovalAdvisees"
-              :key="waitingForHeadApprovalAdvisee.studentID"
+              v-for="waitingForHeadApprovalAdvisee in getRegistrations.filter(registration => registration.status === 'waiting')"
+              :key="waitingForHeadApprovalAdvisee._id"
               v-bind="waitingForHeadApprovalAdvisee"
               @click.native="selectedAdvisee = waitingForHeadApprovalAdvisee; onAdviseeWithoutApprovalOptionClick();"
             >
-              {{ waitingForHeadApprovalAdvisee.studentID }}
+              {{ waitingForHeadApprovalAdvisee._id }}
             </q-btn>
           </div>
         </q-card-section>
@@ -68,12 +68,12 @@
           <div class="q-gutter-sm">
             <q-btn
               flat class="bg-primary text-white"
-              v-for="waitingForAdvisorApprovalAdvisee in waitingForAdvisorApprovalAdvisees"
-              :key="waitingForAdvisorApprovalAdvisee.studentID"
+              v-for="waitingForAdvisorApprovalAdvisee in getRegistrations.filter(registration => registration.status === 'applied')"
+              :key="waitingForAdvisorApprovalAdvisee._id"
               v-bind="waitingForAdvisorApprovalAdvisee"
               @click.native="selectedAdvisee = waitingForAdvisorApprovalAdvisee; onAdviseeWithApprovalOptionClick();"
             >
-              {{ waitingForAdvisorApprovalAdvisee.studentID }}
+              {{ waitingForAdvisorApprovalAdvisee._id }}
             </q-btn>
           </div>
         </q-card-section>
@@ -94,12 +94,12 @@
           <div class="q-gutter-sm">
             <q-btn
               flat class="bg-primary text-white"
-              v-for="notAppliedForRegistrationAdvisee in notAppliedForRegistrationAdvisees"
-              :key="notAppliedForRegistrationAdvisee.studentID"
+              v-for="notAppliedForRegistrationAdvisee in getRegistrations.filter(registration => registration.status === 'unregistered')"
+              :key="notAppliedForRegistrationAdvisee._id"
               v-bind="notAppliedForRegistrationAdvisee"
               @click.native="selectedAdvisee = notAppliedForRegistrationAdvisee; onAdviseeWithoutApprovalOptionClick();"
             >
-              {{ notAppliedForRegistrationAdvisee.studentID }}
+              {{ notAppliedForRegistrationAdvisee._id }}
             </q-btn>
           </div>
         </q-card-section>
@@ -110,7 +110,7 @@
           <q-card-section>
             <div class="text-h6">
               <p>
-                <strong>Student ID:</strong> {{ selectedAdvisee.studentID }}
+                <strong>Student ID:</strong> {{ selectedAdvisee._id }}
               </p>
               <p>
                 <strong>Name:</strong> {{ selectedAdvisee.name }}
@@ -124,7 +124,7 @@
             </div>
 
             <q-table
-              title="Courses" dense bordered :data="getCourses" :columns="courseColumns" row-key="courseID"
+              title="Courses" dense bordered :data="getSpecificRegistrations" :columns="courseColumns" row-key="courseID"
             />
           </q-card-section>
 
@@ -141,7 +141,7 @@
           <q-card-section>
             <div class="text-h6">
               <p>
-                <strong>Student ID:</strong> {{ selectedAdvisee.studentID }}
+                <strong>Student ID:</strong> {{ selectedAdvisee._id }}
               </p>
               <p>
                 <strong>Name:</strong> {{ selectedAdvisee.name }}
@@ -155,7 +155,7 @@
             </div>
 
             <q-table
-              title="Courses" dense bordered :data="getCourses" :columns="courseColumns" row-key="courseID"
+              title="Courses" dense bordered :data="getSpecificRegistrations" :columns="courseColumns" row-key="courseID"
             />
           </q-card-section>
 
@@ -169,6 +169,7 @@
 </template>
 
 <script>
+import AdvisorCall from '../../backend-calls/AdvisorCall';
 import { mapGetters, mapActions } from 'vuex';
 
 export default {
@@ -195,33 +196,27 @@ export default {
           sortable: true
         },
         {
-          name: 'courseTitle',
+          name: 'title',
           align: 'left',
           label: 'Course Title',
-          field: 'courseTitle',
+          field: 'title',
           sortable: true
         },
         {
-          name: 'creditHours',
+          name: 'credit',
           align: 'left',
           label: 'Credit Hours',
-          field: 'creditHours',
+          field: 'credit',
           sortable: true
         },
         {
-          name: 'remarks',
+          name: 'status',
           align: 'left',
-          label: 'Remarks',
-          field: 'remarks',
+          label: 'Status',
+          field: 'status',
           sortable: true
         }
       ],
-
-      /* card groups */
-      registeredAdvisees: this.$store.getters.getAdvisees.slice(0, 8),
-      waitingForHeadApprovalAdvisees: this.$store.getters.getAdvisees.slice(8, 15),
-      waitingForAdvisorApprovalAdvisees: this.$store.getters.getAdvisees.slice(15, 22),
-      notAppliedForRegistrationAdvisees: this.$store.getters.getAdvisees.slice(22, this.$store.getters.getAdvisees.length),
 
       /* for showing selected Advisee information in dialog box */
       selectedAdvisee: {},
@@ -231,34 +226,53 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchAdvisees', 'fetchCourses']),
+    ...mapActions(['fetchRegistrations', 'fetchSpecificRegistrations']),
 
-    onAdviseeWithApprovalOptionClick() {
+    async onAdviseeWithApprovalOptionClick() {
+      try {
+        await this.fetchSpecificRegistrations(selectedAdvisee._id, selectedAdvisee.level, selectedAdvisee.term);
+      } catch(error) {
+        console.log(error);
+      }
       this.adviseeWithApprovalOptionDialogBox = true;
     },
 
-    onAdviseeWithoutApprovalOptionClick() {
+    async onAdviseeWithoutApprovalOptionClick() {
+      try {
+        await this.fetchSpecificRegistrations(selectedAdvisee._id, selectedAdvisee.level, selectedAdvisee.term);
+      } catch(error) {
+        console.log(error);
+      }
       this.adviseeWithoutApprovalOptionDialogBox = true;
     },
 
-    approve() {
-      this.waitingForAdvisorApprovalAdvisees.splice(this.waitingForAdvisorApprovalAdvisees.findIndex(advisee => advisee.studentID === this.selectedAdvisee.studentID), 1);
-      this.waitingForHeadApprovalAdvisees = this.waitingForHeadApprovalAdvisees.concat(this.selectedAdvisee);
-      this.waitingForHeadApprovalAdvisees.sort((advisee1, advisee2) => (advisee1.studentID > advisee2.studentID)? 1: ((advisee1.studentID < advisee2.studentID)? -1: 0));
+    async approve() {
+      try {
+        await AdvisorCall.approveRegistration(selectedAdvisee._id);
+        await this.fetchRegistrations();
+      } catch(error) {
+        console.log(error);
+      }
     },
 
-    reject() {
-      this.waitingForAdvisorApprovalAdvisees.splice(this.waitingForAdvisorApprovalAdvisees.findIndex(advisee => advisee.studentID === this.selectedAdvisee.studentID), 1);
-      this.notAppliedForRegistrationAdvisees = this.notAppliedForRegistrationAdvisees.concat(this.selectedAdvisee);
-      this.notAppliedForRegistrationAdvisees.sort((advisee1, advisee2) => (advisee1.studentID > advisee2.studentID)? 1: ((advisee1.studentID < advisee2.studentID)? -1: 0));
+    async reject() {
+      try {
+        await AdvisorCall.rejectRegistration(selectedAdvisee._id);
+        await this.fetchRegistrations();
+      } catch(error) {
+        console.log(error);
+      }
     }
   },
 
-  computed: mapGetters(['getAdvisees', 'getCourses']),
+  computed: mapGetters(['getRegistrations', 'getSpecificRegistrations']),
 
-  created() {
-    this.fetchAdvisees();
-    this.fetchCourses();
+  async created() {
+    try {
+      await this.fetchRegistrations();
+    } catch(error) {
+      console.log(error);
+    }
   }
 };
 </script>

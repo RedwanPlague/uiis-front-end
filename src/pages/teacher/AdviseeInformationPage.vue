@@ -17,11 +17,11 @@
             <q-btn
               flat class="bg-primary text-white"
               v-for="advisee in getAdvisees"
-              :key="advisee.studentID"
+              :key="advisee._id"
               v-bind="advisee"
               @click.native="selectedAdvisee = advisee; onAdviseeClick();"
             >
-              {{ advisee.studentID }}
+              {{ advisee._id }}
             </q-btn>
           </div>
         </q-card-section>
@@ -32,28 +32,28 @@
           <q-card-section>
             <div class="text-h6">
               <p>
-                <strong>Student ID:</strong> {{ selectedAdvisee.studentID }}
+                <strong>Student ID:</strong> {{ getAdvisee._id }}
               </p>
               <p>
-                <strong>Name:</strong> {{ selectedAdvisee.name }}
+                <strong>Name:</strong> {{ getAdvisee.name }}
               </p>
               <p>
-                <strong>Level/Term:</strong> {{ selectedAdvisee.level }}/{{ selectedAdvisee.term }}
+                <strong>Level/Term:</strong> {{ getAdvisee.level }}/{{ getAdvisee.term }}
               </p>
               <p>
-                <strong>Department:</strong> {{ selectedAdvisee.department }}
+                <strong>Department:</strong> {{ getAdvisee.department }}
               </p>
               <p>
-                <strong>Contact Number:</strong> {{ selectedAdvisee.contactNumber }}
+                <strong>Contact Number:</strong> {{ getAdvisee.contactNumber }}
               </p>
               <p>
-                <strong>Email Address:</strong> {{ selectedAdvisee.emailAddress }}
+                <strong>Email Address:</strong> {{ getAdvisee.email }}
               </p>
             </div>
           </q-card-section>
 
           <q-card-actions align="right">
-            <q-btn flat class="bg-secondary text-white" label="View Grades" @click="visitedSemesterSelectionPage" />
+            <q-btn flat class="bg-secondary text-white" label="View Grades" @click="visitSemesterSelectionPage" />
             <q-btn flat class="bg-primary text-white" label="Back" v-close-popup />
           </q-card-actions>
         </q-card>
@@ -77,21 +77,34 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchAdvisees']),
+    ...mapActions(['fetchAdvisees', 'fetchAdvisee']),
 
-    onAdviseeClick() {
+    async onAdviseeClick() {
+      try {
+        await this.fetchAdvisee(this.selectedAdvisee._id);
+      } catch(error) {
+        console.log(error);
+      }
       this.adviseeInfoDialogBox = true;
     },
 
-    visitedSemesterSelectionPage() {
-      this.$router.push({ name: 'adviseeSemesterSelection', params: { studentID: this.selectedAdvisee.studentID }});
+    visitSemesterSelectionPage() {
+      this.$router.push({ name: 'adviseeSemesterSelection', params: {
+        _id: this.$store.getters.getAdvisee._id,
+        level: this.$store.getters.getAdvisee.level,
+        term: this.$store.getters.getAdvisee.term
+      }});
     }
   },
 
-  computed: mapGetters(['getAdvisees']),
+  computed: mapGetters(['getAdvisees', 'getAdvisee']),
 
-  created() {
-    this.fetchAdvisees();
+  async created() {
+    try {
+      await this.fetchAdvisees();
+    } catch(error) {
+      console.log(error);
+    }
   }
 };
 </script>

@@ -2,21 +2,21 @@
   <q-page padding>
     <div class="q-pa-md">
       <div class="text-subtitle1">
-        <strong>Student ID:</strong> {{ getAdvisees.find(advisee => advisee.studentID === this.$route.params.studentID).studentID }}<br />
-        <strong>Name:</strong> {{ getAdvisees.find(advisee => advisee.studentID === this.$route.params.studentID).name }}<br />
-        <strong>Department:</strong> {{ getAdvisees.find(advisee => advisee.studentID === this.$route.params.studentID).department }}<br />
-        <strong>Level/Term:</strong> {{ getSemesters.find(semester => semester.semesterID === this.$route.params.semesterID).level }}/{{ getSemesters.find(semester => semester.semesterID === this.$route.params.semesterID).term }}
+        <strong>Student ID:</strong> {{ getAdvisee._id }} <br />
+        <strong>Name:</strong> {{ getAdvisee.name }} <br />
+        <strong>Department:</strong> {{ getAdvisee.department }} <br />
+        <strong>Level/Term:</strong> {{ this.$route.params.level }}/{{ this.$route.params.term }}
       </div><br />
 
       <q-table
-        dense bordered :data="getCourses" :columns="gradeColumns" row-key="courseID"
+        dense bordered :data="grades" :columns="gradeColumns" row-key="courseID"
       /><br />
 
       <div class="row">
         <div class="text-subtitle1">
-          <strong>Registered Credit Hours in this Term:</strong> {{ getTotalCreditHours(getCourses) }}<br />
-          <strong>Credit Hours Earned in this Term:</strong> {{ getTotalCreditHours(getCourses) }}<br />
-          <strong>Total Credit Hours:</strong> {{ getTotalCreditHours(getCourses) }}
+          <strong>Registered Credit Hours in this Term:</strong> {{ getTotalCreditHour() }}<br />
+          <strong>Credit Hours Earned in this Term:</strong> {{ getTotalCreditHourObtained }}<br />
+          <strong>Total Credit Hours:</strong> {{ getTotalCreditHoursCompleted() }}
         </div>
 
         <q-space />
@@ -24,8 +24,8 @@
         <q-card>
           <q-card-section>
             <div class="text-subtitle1">
-              <strong>Obtained GPA:</strong> {{ getGPA(getCourses) }}<br />
-              <strong>Current CGPA:</strong> {{ getGPA(getCourses) }}
+              <strong>Obtained GPA:</strong> {{ getGPA() }}<br />
+              <strong>Current CGPA:</strong> {{ getCGPA() }}
             </div>
           </q-card-section>
         </q-card>
@@ -59,24 +59,24 @@ export default {
           sortable: true
         },
         {
-          name: 'courseTitle',
+          name: 'title',
           align: 'left',
           label: 'Course Title',
-          field: 'courseTitle',
+          field: 'title',
           sortable: true
         },
         {
-          name: 'creditHours',
+          name: 'credit',
           align: 'left',
           label: 'Credit Hours',
-          field: 'creditHours',
+          field: 'credit',
           sortable: true
         },
         {
-          name: 'grade',
+          name: 'gradeLetter',
           align: 'left',
           label: 'Grade',
-          field: 'grade',
+          field: 'gradeLetter',
           sortable: true
         },
         {
@@ -86,31 +86,53 @@ export default {
           field: 'gradePoint',
           sortable: true
         }
-      ]
+      ],
+
+      /* passed or failed courses' grades */
+      grades: []
     };
   },
 
   methods: {
-    ...mapActions(['fetchAdvisees', 'fetchCourses', 'fetchSemesters']),
+    ...mapActions(['fetchAdvisee', 'fetchGrades']),
 
-    getTotalGradePoint(grades) {
-      let sum = 0.0;
-      for(let i=0; i<grades.length; i++) {
-        sum += grades[i].gradePoint;
+    getTotalCreditHourObtained() {
+      let totalCredit = 0.0;
+
+      for(let i=0; i<this.grades.length; i++) {
+        if(this.grades[i].status === 'passed') {
+          totalCredit += this.grades[i].credit;
+        }
       }
-      return sum;
+      return totalCredit;
     },
 
-    getGPA(grades) {
-      return this.getTotalGradePoint(grades)/grades.length;
+    getTotalCreditHour() {
+      let totalCredit = 0.0;
+
+      for(let i=0; i<this.grades.length; i++) {
+        totalCredit += this.grades[i].credit;
+      }
+      return totalCredit;
     },
 
-    getTotalCreditHours(grades) {
+    getGPA() {
       let sum = 0.0;
-      for(let i=0; i<grades.length; i++) {
-        sum += grades[i].creditHours;
+
+      for(let i=0; i<this.grades.length; i++) {
+        sum += this.grades[i].credit*this.grades[i].result.gradePoint;
       }
-      return sum;
+      return sum/this.getTotalCreditHour();
+    },
+
+    getCGPA() {
+      /* NOTICE: this should change later */
+      return this.$store.getters.getAdvisee.cgpa;
+    },
+
+    getTotalCreditHoursCompleted() {
+      /* NOTICE: this should change later */
+      return this.$store.getters.getAdvisee.totalCreditHoursCompleted;
     },
 
     visitSemesterSelectionPage() {
@@ -118,12 +140,16 @@ export default {
     }
   },
 
-  computed: mapGetters(['getAdvisees', 'getCourses', 'getSemesters']),
+  computed: mapGetters(['getAdvisee', 'getGrades']),
 
-  created() {
-    this.fetchAdvisees();
-    this.fetchCourses();
-    this.fetchSemesters();
+  async created() {
+    try {
+      await this.fetchAdvisee(this.$route.params._id);
+      await this.fetchGrades(this.$route.params._id, this.$route.params.level, this.$route.params.term);
+    } catch(error) {
+      console.log(error);
+    }
+    this.grades = this.$store.getters.getGrades.filter(grade => grade.status === 'passed' || grade.status === 'failed');
   }
 }
 </script>
