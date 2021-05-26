@@ -7,7 +7,7 @@
     :label="label"
     :filled="!required"
     :outlined="required"
-    :rules="[() => !required || !!value || `Please Select a ${label}`]"
+    :rules="[() => !required || multiple || !!value || `Please Select ${label}`]"
     :use-chips="multiple"
     :multiple="multiple"
     :clearable="multiple"

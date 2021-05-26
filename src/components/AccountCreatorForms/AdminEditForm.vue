@@ -1,51 +1,41 @@
 <template>
   <div>
     <div class="text-h5 q-my-md">
-      {{submitLabel}} Admin Account
+      {{label}} Admin Account
+      <q-btn
+        :icon="viewing ? 'edit' : 'visibility'"
+        :color="viewing ? 'primary' : 'black'"
+        @click="viewing = !viewing"
+        flat dense
+      />
     </div>
-    <q-form class="row q-col-gutter-md" @submit="createAccount" @reset="resetForm">
+    <q-form class="row q-col-gutter-md" @submit="editAccount" @reset="resetForm">
       <q-input
         class="col-6"
         v-model="name"
         label="Name"
-        :filled="!openFields"
-        :outlined="openFields"
-        :rules="[() => !openFields || !!name || 'Please Enter a Name']"
+        outlined
+        :rules="[() => !!name || 'Please Enter a Name']"
       />
       <q-input
         class="col-6"
         v-model="id"
         label="Admin Id"
-        :filled="!openFields"
-        :outlined="openFields"
-        :rules="[() => !openFields || !!id || 'Please Enter an ID']"
+        outlined
+        :rules="[() => !!id || 'Please Enter an ID']"
       />
-      <password-maker-field v-if="openFields" classes="col-6" v-model="password"/>
-      <div v-if="openFields" class="col-6"></div>
-      <q-select
-        class="col-12"
-        v-model="privilegesSelected"
-        :options="privilegeOptions"
+      <password-maker-field v-if="viewing" classes="col-6" v-model="password"/>
+      <div v-if="viewing" class="col-6"></div>
+      <privilege-picker
+        classes="col-12"
+        v-model="privileges"
         label="Privileges"
-        :filled="!openFields"
-        :outlined="openFields"
-        use-chips
         multiple
-        clearable
-        use-input
-        input-debounce="0"
-        @filter="privilegeFilter"
-      >
-        <template v-slot:no-option>
-          <q-item>
-            <q-item-section class="text-grey">
-              No results
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
-      <div class="col-12">
-        <q-btn :label="submitLabel" type="submit" color="primary" unelevated :loading="createLoading"/>
+        :readonly="viewing"
+        required
+      />
+      <div class="col-12" v-if="!viewing">
+        <q-btn label="Edit" type="submit" color="primary" unelevated :loading="editLoading"/>
         <q-btn label="Reset" type="reset" color="primary" flat/>
       </div>
     </q-form>
@@ -53,79 +43,47 @@
 </template>
 
 <script>
-import apiFetch from 'src/utils/apiFetch'
-import {isSubstring} from 'src/utils/patternSearch'
 import PasswordMakerField from 'components/FormElements/PasswordMakerField'
+import PrivilegePicker from "components/FormElements/PrivilegePicker";
 
 export default {
   name: 'AdminCreatorForm',
   components: {
+    PrivilegePicker,
     PasswordMakerField
-  },
-  computed: {
-    submitLabel() {
-      const route = this.$route.name
-      if (route === 'AdminAccountCreationPage') {
-        return 'Create'
-      }
-      else if (route === 'AdminAccountSearchPage') {
-        return 'Search'
-      }
-      else if (route === 'AdminAccountEditPage') {
-        return 'Edit'
-      }
-      return 'Label Error'
-    },
-    openFields() {
-      const route = this.$route.name
-      return (route === 'AdminAccountCreationPage') || (route === 'AdminAccountEditPage')
-    }
   },
   data() {
     return {
+      viewing: true,
       name: '',
       id: '',
       password: '',
-      privilegesSelected: [],
-      privilegeOptions: [],
-      privilegeList: [],
-      createLoading: false
+      privileges: [],
+      editLoading: false
+    }
+  },
+  computed: {
+    label() {
+      return this.viewing ? 'View' : 'Edit'
     }
   },
   methods: {
-    fetchPrivilegeList() {
-      apiFetch('/account/privileges', null, 'List of ALL privileges')
-        .then(response => {
-          this.privilegeList = response.data
-        })
-    },
-    privilegeFilter(value, update) {
-      if (value === '') {
-        update(() => {
-          this.privilegeOptions = this.privilegeList
-        })
-        return
-      }
-      update(() => {
-        this.privilegeOptions = this.privilegeList.filter(x => isSubstring(x, value))
-      })
-    },
-    createAccount() {
-      this.createLoading = true
+    editAccount() {
+      this.editLoading = true
       this.$adminAPI.post('account/create', {
         userType: 'admin',
         id: this.id,
         password: this.password,
         name: this.name,
-        privileges: this.privilegesSelected
+        privileges: this.privileges
       })
         .then(response => {
-          this.createLoading = false
+          this.editLoading = false
           console.log('Admin account created')
           console.log(response)
         })
         .catch(error => {
-          this.createLoading = false
+          this.editLoading = false
           console.log('Could not create Admin account')
           console.log(error.response)
         })
@@ -134,12 +92,9 @@ export default {
       this.name = ''
       this.id = ''
       this.password = ''
-      this.privilegesSelected = []
+      this.privileges = []
     }
   },
-  created() {
-    this.fetchPrivilegeList()
-  }
 }
 </script>
 

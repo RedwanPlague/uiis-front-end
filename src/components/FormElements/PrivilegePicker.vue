@@ -14,6 +14,7 @@
     use-input
     input-debounce="0"
     @filter="privilegeFilter"
+    :rules="[() => !required || multiple || !!value || `Please Select ${label}`]"
   >
     <template v-slot:no-option>
       <q-item>
