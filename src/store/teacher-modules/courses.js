@@ -11,8 +11,11 @@ const getters = {
 
 const actions = {
   async fetchCourses({commit}) {
-    const res = await api.get('/courseList');
-
+    const res = await api.get('/teacher/courses', {
+      headers: {
+        Authorization: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjEyMDQyOH0.d7VMrLXp8EObxf6-i43FRcTnUxqI9RqTUDrVK3r_9Sw"
+      }
+    });
     console.log(res.data);
     commit('setCourses', res.data);
   }

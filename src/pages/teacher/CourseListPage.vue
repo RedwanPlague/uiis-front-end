@@ -3,7 +3,7 @@
     <div class="q-pa-md table">
       <q-table
         title="Current Courses"
-        :data="allCourses.currentCourses"
+        :data="allCourses.currentCourseSessions"
         :columns="columns"
         row-key="courseID"
         separator="cell"
@@ -24,7 +24,7 @@
     <div class="q-pa-md table">
       <q-table
         title="Previous Courses"
-        :data="allCourses.previousCourses"
+        :data="allCourses.previousCourseSessions"
         :columns="columns"
         row-key="courseID"
         separator="cell"
@@ -86,7 +86,7 @@ export default {
           name: 'courseName',
           align: 'center',
           label: 'Course Name',
-          field: 'courseName',
+          field: 'title',
           headerClasses: 'bg-primary text-white',
           headerStyle: 'width: 400px',
           sortable: true
@@ -96,6 +96,7 @@ export default {
   },
   methods : {
     onRowClick(evt, row) {
+
       this.$router.push( {
         name: 'course_page',
         params: {

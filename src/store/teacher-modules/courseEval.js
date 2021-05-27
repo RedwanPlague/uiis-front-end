@@ -20,13 +20,19 @@ const getters = {
 const actions = {
 
   async fetchCourse({commit}, {courseID, session}) {
-    const res = await api.get(`/courseDetails/?courseID=${courseID}&session=${session}`);
+
+    const res = await api.get(`teacher/courses/${courseID}/${session}`, {
+      headers: {
+        Authorization: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjEyMDQyOH0.d7VMrLXp8EObxf6-i43FRcTnUxqI9RqTUDrVK3r_9Sw"
+      }
+    });
+    console.log(res);
     commit('setCourse', res.data[0]);
   },
-  async fetchStudentData({commit}, {courseID, session}) {
-    const res = await api.get(`/studentData/?courseID=${courseID}&session=${session}`);
-    commit('setStudentData', res.data[0].data);
-  },
+  // async fetchStudentData({commit}, {courseID, session}) {
+  //   const res = await api.get(`/studentData/?courseID=${courseID}&session=${session}`);
+  //   commit('setStudentData', res.data[0].data);
+  // },
   async saveStudentData({commit}) {
 
   }

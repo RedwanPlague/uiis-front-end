@@ -36,7 +36,6 @@
       "courseName": "Numerical Methods"
     }
   ],
-
   "studentData": [
     {
       "courseID": "CSE107",
@@ -325,9 +324,7 @@
         }
       ]
     }
-
   ],
-
   "courses": [
     {
       "courseName": "CSE311",
@@ -364,7 +361,27 @@
       ]
     }
   ],
-
+  "ret_courses": {
+    "currentCourseSessions": [
+      {
+        "session": 2021,
+        "courseID": "CSE203",
+        "title": "DSA-1"
+      },
+      {
+        "session": 2021,
+        "courseID": "CSE207",
+        "title": "DSA-2"
+      }
+    ],
+    "previousCourseSessions": [
+      {
+        "session": 2020,
+        "courseID": "CSE101",
+        "title": "Structural Programming Language"
+      }
+    ]
+  },
   "courseList": {
     "currentCourses": [
       {

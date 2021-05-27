@@ -87,6 +87,7 @@
         if(!this.$route.params.courseID ) {
           return;
         }
+        console.log(this.$route.params.courseID, this.$route.params.courseSession);
         await this.fetchCourse( { courseID: this.$route.params.courseID, session: this.$route.params.courseSession});
         await this.fetchStudentData( { courseID: this.$route.params.courseID, session: this.$route.params.courseSession});
 
