@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 import courses from "src/store/teacher-modules/courses";
 import courseEval from "src/store/teacher-modules/courseEval";
 import advisor from './teacher-modules/advisor';
+import examiner from './teacher-modules/examiner';
 
 import allPrivileges from "src/store/allPrivileges";
 import user from "src/store/user";
@@ -20,7 +21,8 @@ export default function() {
       user,
       courses,
       courseEval,
-      advisor
+      advisor,
+      examiner
     },
 
     /*

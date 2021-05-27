@@ -1,12 +1,31 @@
 <template>
   <q-page padding>
-    <ExaminerTable v-for="course in courses" :key="course.courseName" v-bind="course" @upload="upload"></ExaminerTable>
+    <h6>Current Sessoin: {{ currentSession }}</h6>
+    <span>Select course: </span>
+    <select @change="mutCurCourse">
+      <option disabled value="">Please select one</option>
+      <option
+        v-for="course in allCourses"
+        :value="course.courseID"
+        :key="course.courseID + course.part"
+      >
+        {{
+          course.courseID +
+            " - " +
+            course.courseTitle +
+            " - Part " +
+            course.part
+        }}
+      </option>
+    </select>
+    
+    <ExaminerTable v-if="currentCourseName" :key="currentCourseName" />
   </q-page>
 </template>
 
 <script>
-import axios from 'axios';
-import CourseEvaluationPageVue from './CourseEvaluationPage.vue';
+import axios from "axios";
+import { mapGetters, mapMutations } from "vuex";
 
 export default {
   name: "ExaminerPage",
@@ -15,7 +34,8 @@ export default {
   },
   data() {
     return {
-      courses: null
+      emni: null,
+      currentSession: null
     };
   },
 
@@ -25,57 +45,24 @@ export default {
       this.courses = cutu.data;
     });*/
 
-    this.courses = [
-      {
-        courseName: "CSE311",
-        marks: [
-          {
-            student_id: "1605002",
-            marks: 49,
-          },
-          {
-            student_id: "1605003",
-            marks: 31,
-          },
-          {
-            student_id: "1605004",
-            marks: 37,
-          },
-        ],
-      },
-      {
-        courseName: "CSE313",
-        marks: [
-          {
-            student_id: "1605002",
-            marks: 43,
-          },
-          {
-            student_id: "1605023",
-            marks: 13,
-          },
-          {
-            student_id: "1605024",
-            marks: 73,
-          },
-          {
-            student_id: "1605014",
-            marks: 73,
-          },
-        ],
-      },
-    ]
+    this.currentSession = "2021";
   },
 
   methods: {
     upload(course) {
       // API call
       console.log(course);
+    },
+
+    mutCurCourse(e) {
+      this.$store.commit("examiner/mutCurCourse", e.target.value);
     }
+  },
+
+  computed: {
+    ...mapGetters("examiner", ["allCourses", "currentCourseName"])
   }
 };
 </script>
 
-<style>
-
-</style>
+<style></style>
