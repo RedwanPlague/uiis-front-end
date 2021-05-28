@@ -1,12 +1,15 @@
-const columnMerger = (column, common) => {
-  for (const property in common) {
-    if (common.hasOwnProperty(property)) {
-      if (column.hasOwnProperty(property)) {
-        column[property] += common[property]
-      }
-      else {
-        column[property] = common[property]
+const columnMerger = (columns, common) => {
+  for (const prop of ['style', 'headerStyle']) {
+    if (common.hasOwnProperty(prop)) {
+      for (let i = 0; i < columns.length; i++) {
+        if (columns[i].hasOwnProperty(prop)) {
+          columns[i][prop] += ';' + common[prop]
+        } else {
+          columns[i][prop] = common[prop]
+        }
       }
     }
   }
 }
+
+export default columnMerger

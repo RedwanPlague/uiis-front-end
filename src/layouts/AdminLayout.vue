@@ -109,13 +109,7 @@ const quickLinks = [
   {
     title: 'Slots',
     icon: 'school',
-    children: [
-      {
-        title: 'Create',
-        icon: 'school',
-        link: { name: 'AdminSlotCreationPage' }
-      },
-    ]
+    link: { name: 'AdminSlotCreationPage' }
   },
   {
     title: 'Session',

@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import apiFetch from 'src/utils/apiFetch'
+import {apiFetch} from 'src/utils/apiWrappers'
 import {isSubstring} from 'src/utils/patternSearch'
 
 export default {

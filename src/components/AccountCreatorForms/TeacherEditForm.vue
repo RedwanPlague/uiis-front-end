@@ -1,29 +1,35 @@
 <template>
   <div>
     <div class="text-h5 q-my-md">
-      {{submitLabel}} Teacher Account
+      {{label}} Teacher Account
+      <q-btn
+        :icon="viewing ? 'edit' : 'visibility'"
+        :color="viewing ? 'primary' : 'black'"
+        @click="viewing = !viewing"
+        flat dense
+      />
     </div>
-    <q-form class="row q-col-gutter-md" @submit="createAccount" @reset="resetForm">
+    <q-form class="row q-col-gutter-md" @submit="editAccount" @reset="resetForm">
       <q-input
         class="col-6"
         v-model="name"
         label="Name"
-        :filled="!openFields"
-        :outlined="openFields"
-        :rules="[() => !openFields || !!name || 'Please Enter a Name']"
+        outlined
+        :readonly="viewing"
+        :rules="[() => !!name || 'Please Enter a Name']"
       />
       <q-input
         class="col-6"
         v-model="id"
         label="Teacher ID"
-        :filled="!openFields"
-        :outlined="openFields"
-        :rules="[() => !openFields || !!id || 'Please Enter an ID']"
+        outlined
+        :readonly="viewing"
+        :rules="[() => !!id || 'Please Enter an ID']"
       />
-      <department-picker classes="col-6" v-model="department" :required="openFields"/>
-      <password-maker-field v-if="openFields" classes="col-6" v-model="password"/>
-      <div class="col-12">
-        <q-btn type="submit" :label="submitLabel" color="primary" unelevated :loading="createLoading"/>
+      <department-picker classes="col-6" v-model="department" required :readonly="viewing"/>
+      <password-maker-field v-if="!viewing" classes="col-6" v-model="password"/>
+      <div class="col-12" v-if="!viewing">
+        <q-btn type="submit" label="Edit" color="primary" unelevated :loading="editLoading"/>
         <q-btn type="reset" label="Reset" color="primary" flat/>
       </div>
     </q-form>
@@ -33,6 +39,7 @@
 <script>
 import DepartmentPicker from 'components/FormElements/DepartmentPicker'
 import PasswordMakerField from 'components/FormElements/PasswordMakerField'
+import edit from 'src/mixins/edit'
 
 export default {
   name: 'TeacherCreatorForm',
@@ -40,61 +47,43 @@ export default {
     PasswordMakerField,
     DepartmentPicker
   },
-  computed: {
-    submitLabel() {
-      const route = this.$route.name
-      if (route === 'AdminAccountCreationPage') {
-        return 'Create'
-      }
-      else if (route === 'AdminAccountSearchPage') {
-        return 'Search'
-      }
-      else if (route === 'AdminAccountEditPage') {
-        return 'Edit'
-      }
-      return 'Label Error'
-    },
-    openFields() {
-      const route = this.$route.name
-      return (route === 'AdminAccountCreationPage') || (route === 'AdminAccountEditPage')
-    }
-  },
+  mixins: [
+    edit
+  ],
   data() {
     return {
       name: '',
       id: '',
       department: null,
       password: '',
-      createLoading: false
+    }
+  },
+  computed: {
+    loadID() {
+      return this.$route.params.id
     }
   },
   methods: {
-    createAccount() {
-      this.createLoading = true
-      this.$adminAPI.post('/account/create', {
-        userType: 'teacher',
+    editAccount() {
+      this.callEditApi('/account/update/teacher' + this.loadID, {
         id: this.id,
         name: this.name,
         password: this.password,
-        department: this.department.value
+        department: this.department
       })
-        .then(response => {
-          this.createLoading = false
-          console.log('Teacher account created')
-          console.log(response)
-        })
-        .catch(error => {
-          this.createLoading = false
-          console.log('Could not create Teacher account')
-          console.log(error.response)
-        })
     },
     resetForm() {
-      this.name = ''
-      this.id = ''
+      this.name = this.oldData.name
+      this.id = this.oldData.id
       this.password = ''
-      this.department = null
+      this.department = this.oldData.department
     }
+  },
+  created() {
+    this.fetchOldData('/account/teacher/list', {
+      id: this.loadID
+    }, 'Teacher Account')
+      .then(() => this.resetForm())
   }
 }
 </script>

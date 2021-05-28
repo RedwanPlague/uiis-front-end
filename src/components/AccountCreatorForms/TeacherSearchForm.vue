@@ -1,98 +1,83 @@
 <template>
   <div>
     <div class="text-h5 q-my-md">
-      {{submitLabel}} Teacher Account
+      Search Teacher Account
     </div>
-    <q-form class="row q-col-gutter-md" @submit="createAccount" @reset="resetForm">
+    <q-form class="row q-col-gutter-md" @submit="searchAccount" @reset="resetForm">
       <q-input
         class="col-6"
         v-model="name"
         label="Name"
-        :filled="!openFields"
-        :outlined="openFields"
-        :rules="[() => !openFields || !!name || 'Please Enter a Name']"
+        filled
+        :rules="[() => !!columns || 'Dummy Text']"
       />
       <q-input
         class="col-6"
         v-model="id"
         label="Teacher ID"
-        :filled="!openFields"
-        :outlined="openFields"
-        :rules="[() => !openFields || !!id || 'Please Enter an ID']"
+        filled
+        :rules="[() => !!columns || 'Dummy Text']"
       />
-      <department-picker classes="col-6" v-model="department" :required="openFields"/>
-      <password-maker-field v-if="openFields" classes="col-6" v-model="password"/>
+      <department-picker classes="col-6" v-model="department"/>
       <div class="col-12">
-        <q-btn type="submit" :label="submitLabel" color="primary" unelevated :loading="createLoading"/>
+        <q-btn type="submit" label="Search" color="primary" unelevated/>
         <q-btn type="reset" label="Reset" color="primary" flat/>
       </div>
     </q-form>
+    <div v-if="showResults" class="q-mt-lg">
+      <q-table
+        title="Results"
+        :data="tableData"
+        :columns="columns"
+        @row-click="$router.push({name: 'AdminAccountEditPage'})"
+      />
+    </div>
+    <q-inner-loading :showing="searchLoading"/>
   </div>
 </template>
 
 <script>
 import DepartmentPicker from 'components/FormElements/DepartmentPicker'
-import PasswordMakerField from 'components/FormElements/PasswordMakerField'
+import columnMerger from 'src/utils/columnMerger'
+import search from 'src/mixins/search'
+
+const columns = [
+  {name: 'id', label: 'Student ID', field: 'id', style: 'width: 10%', sortable: true},
+  {name: 'name', label: 'Name', field: 'name', align: 'left', sortable: true},
+  {name: 'department', label: 'Department', field: 'department', align: 'center'},
+]
+const commonAttr = {
+  style: 'font-size: 1.05em', headerStyle: 'font-size: 1.05em'
+}
+columnMerger(columns, commonAttr)
 
 export default {
   name: 'TeacherCreatorForm',
   components: {
-    PasswordMakerField,
     DepartmentPicker
   },
-  computed: {
-    submitLabel() {
-      const route = this.$route.name
-      if (route === 'AdminAccountCreationPage') {
-        return 'Create'
-      }
-      else if (route === 'AdminAccountSearchPage') {
-        return 'Search'
-      }
-      else if (route === 'AdminAccountEditPage') {
-        return 'Edit'
-      }
-      return 'Label Error'
-    },
-    openFields() {
-      const route = this.$route.name
-      return (route === 'AdminAccountCreationPage') || (route === 'AdminAccountEditPage')
-    }
-  },
+  mixins: [
+    search
+  ],
   data() {
     return {
       name: '',
       id: '',
       department: null,
-      password: '',
-      createLoading: false
+      columns
     }
   },
   methods: {
-    createAccount() {
-      this.createLoading = true
-      this.$adminAPI.post('/account/create', {
-        userType: 'teacher',
-        id: this.id,
+    searchAccount() {
+      this.callSearchApi('/account/teacher/list', {
         name: this.name,
-        password: this.password,
-        department: this.department.value
-      })
-        .then(response => {
-          this.createLoading = false
-          console.log('Teacher account created')
-          console.log(response)
-        })
-        .catch(error => {
-          this.createLoading = false
-          console.log('Could not create Teacher account')
-          console.log(error.response)
-        })
+        id: this.id,
+        department: this.department
+      }, 'Teacher account')
     },
     resetForm() {
       this.name = ''
       this.id = ''
-      this.password = ''
       this.department = null
     }
   }

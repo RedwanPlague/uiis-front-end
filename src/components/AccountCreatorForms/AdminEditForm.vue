@@ -15,6 +15,7 @@
         v-model="name"
         label="Name"
         outlined
+        :readonly="viewing"
         :rules="[() => !!name || 'Please Enter a Name']"
       />
       <q-input
@@ -22,9 +23,10 @@
         v-model="id"
         label="Admin Id"
         outlined
+        :readonly="viewing"
         :rules="[() => !!id || 'Please Enter an ID']"
       />
-      <password-maker-field v-if="viewing" classes="col-6" v-model="password"/>
+      <password-maker-field v-if="!viewing" classes="col-6" v-model="password"/>
       <div v-if="viewing" class="col-6"></div>
       <privilege-picker
         classes="col-12"
@@ -44,57 +46,53 @@
 
 <script>
 import PasswordMakerField from 'components/FormElements/PasswordMakerField'
-import PrivilegePicker from "components/FormElements/PrivilegePicker";
+import PrivilegePicker from 'components/FormElements/PrivilegePicker';
+import edit from 'src/mixins/edit'
 
 export default {
-  name: 'AdminCreatorForm',
+  name: 'AdminEditForm',
   components: {
     PrivilegePicker,
     PasswordMakerField
   },
+  mixins: [
+    edit
+  ],
   data() {
     return {
-      viewing: true,
       name: '',
       id: '',
       password: '',
       privileges: [],
-      editLoading: false
     }
   },
   computed: {
-    label() {
-      return this.viewing ? 'View' : 'Edit'
+    loadID() {
+      return this.$route.params.id
     }
   },
   methods: {
     editAccount() {
-      this.editLoading = true
-      this.$adminAPI.post('account/create', {
-        userType: 'admin',
+      this.callEditApi('account/update/admin/' + this.loadID, {
+        name: this.name,
         id: this.id,
         password: this.password,
-        name: this.name,
         privileges: this.privileges
-      })
-        .then(response => {
-          this.editLoading = false
-          console.log('Admin account created')
-          console.log(response)
-        })
-        .catch(error => {
-          this.editLoading = false
-          console.log('Could not create Admin account')
-          console.log(error.response)
-        })
+      }, 'Admin account')
     },
     resetForm() {
-      this.name = ''
-      this.id = ''
+      this.name = this.oldData.name
+      this.id = this.oldData.id
       this.password = ''
-      this.privileges = []
+      this.privileges = this.oldData.privileges
     }
   },
+  created() {
+    this.fetchOldData('account/admin/list', {
+      id: this.loadID
+    }, 'Admin account')
+      .then(() => this.resetForm())
+  }
 }
 </script>
 

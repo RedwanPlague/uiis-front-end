@@ -5,7 +5,7 @@
     </div>
     <q-form
       class="row q-col-gutter-md"
-      @submit="createAccount"
+      @submit="searchAccount"
       @reset="resetForm"
     >
       <q-input
@@ -13,14 +13,14 @@
         v-model="name"
         label="Name"
         filled
-        :rules="[() => !!name || 'Please Enter a Name']"
+        :rules="[() => !!columns || 'Dummy Text']"
       />
       <q-input
         class="col-6"
         v-model="id"
         label="Student ID"
         filled
-        :rules="[() => !!id || 'Please Enter an ID']"
+        :rules="[() => !!columns || 'Dummy Text']"
       />
       <department-picker classes="col-6" v-model="department"/>
       <hall-picker classes="col-6" v-model="hall"/>
@@ -40,11 +40,10 @@
         title="Results"
         :data="tableData"
         :columns="columns"
-        row-key="name"
-        @row-click="$router.push({name: 'AdminAccountEditPage'})"
+        @row-click="onRowClick"
       />
     </div>
-    <q-inner-loading :showing="dataLoading"/>
+    <q-inner-loading :showing="searchLoading"/>
   </div>
 </template>
 
@@ -52,16 +51,19 @@
 import DepartmentPicker from 'components/FormElements/DepartmentPicker'
 import TeacherPicker from 'components/FormElements/TeacherPicker'
 import HallPicker from 'components/FormElements/HallPicker'
+import columnMerger from 'src/utils/columnMerger'
+import search from 'src/mixins/search'
 
+const columns = [
+  {name: 'id', label: 'Student ID', field: 'id', style: 'width: 10%', sortable: true},
+  {name: 'name', label: 'Name', field: 'name', align: 'left', style: 'width: 60%'},
+  {name: 'department', label: 'Department', field: 'department', align: 'center'},
+  {name: 'lt', label: 'Level/Term', field: 'lt', align: 'center', sortable: true},
+]
 const commonAttr = {
   style: 'font-size: 1.05em', headerStyle: 'font-size: 1.05em'
 }
-const columns = [
-  {name: 'id', label: 'Student ID', field: 'id', style: 'width: 10%', sortable: true},
-  {name: 'name', label: 'Name', field: 'name', align: 'left', style: 'width: 60%', sortable: true},
-  {name: 'dept', label: 'Department', field: 'dept', align: 'left'},
-  {name: 'lt', label: 'Level/Term', field: 'lt', align: 'left'},
-]
+columnMerger(columns, commonAttr)
 
 export default {
   name: 'StudentCreatorForm',
@@ -70,6 +72,9 @@ export default {
     TeacherPicker,
     DepartmentPicker
   },
+  mixins: [
+    search
+  ],
   data() {
     return {
       name: '',
@@ -77,89 +82,42 @@ export default {
       department: null,
       hall: null,
       advisor: null,
-      password: '',
-      dataLoading: false,
-      showResults: false,
-      tableData: [],
       columns
     }
   },
   methods: {
-    createAccount() {
-      // this.createLoading = true
-      // this.$adminAPI.post('account/create', {
-      //   userType: 'student',
-      //   id: this.id,
-      //   name: this.name,
-      //   password: this.password,
-      //   department: this.department.value,
-      //   hall: this.hall.value,
-      //   advisor: this.advisor.value
-      // })
-      //   .then(response => {
-      //     this.createLoading = false
-      //     console.log('Student account created')
-      //     console.log(response)
-      //   })
-      //   .catch(error => {
-      //     this.createLoading = false
-      //     console.log('Could not create Student account')
-      //     console.log(error.response)
-      //   })
-      this.createLoading = true
-      setTimeout(() => {
-        this.createLoading = false
-        this.viewing = true
-        if (this.openFields) {
-          this.$q.notify({
-            message: `Account of ${this.name} Edited Successfully`,
-            color: 'positive',
-            position: 'bottom-right',
-            icon: 'check',
+    searchAccount() {
+      this.callSearchApi('/account/student/list', {
+        name: this.name,
+        id: this.id,
+        department: this.department,
+        hall: this.hall,
+        advisor: this.advisor
+      }, 'Student account')
+        .then(() => {
+          this.tableData = this.tableData.map(x => {
+            x.lt = x.level + '-' + x.term
+            return x
           })
-        }
-        else {
-          this.showResults = !this.showResults
-        }
-      }, 1000)
+        })
     },
     resetForm() {
       this.name = ''
       this.id = ''
-      this.password = ''
       this.department = null
       this.hall= null
       this.advisor = null
     },
-    preset() {
-      this.viewing = true
-      this.dataLoading = true
-      setTimeout(() => {
-        this.dataLoading = false
-        this.name = 'Md. Ashraful Islam'
-        this.id = '1605001'
-        this.department = {value: 'CSE', label: 'CSE'}
-        this.hall = {value: 'AULA', label: '(AULA) AHSAN ULLAH HALL'}
-        this.advisor = {value: 't3', label: 'Navid Bin Hasan'}
-      }, 1000)
+    onRowClick(event, row) {
+      this.$router.push({
+        name: 'AdminAccountEditPage',
+        query: {
+          type: 'student',
+          id: row.id
+        }
+      })
     }
   },
-  created() {
-    if (this.$route.name === 'AdminAccountEditPage') {
-      this.preset()
-    }
-  },
-  watch: {
-    $route(to /*, from*/) {
-      if (to.name === 'AdminAccountEditPage') {
-        this.preset()
-      }
-      else {
-        this.viewing = false
-        this.resetForm()
-      }
-    }
-  }
 }
 </script>
 

@@ -9,14 +9,14 @@
         v-model="name"
         label="Name"
         filled
-        :rules="[() => !!name || 'Please Enter a Name']"
+        :rules="[() => !!columns || 'Dummy Text']"
       />
       <q-input
         class="col-6"
         v-model="id"
         label="Admin Id"
         filled
-        :rules="[() => !!id || 'Please Enter an ID']"
+        :rules="[() => !!columns || 'Dummy Text']"
       />
       <privilege-picker
         classes="col-12"
@@ -25,58 +25,105 @@
         multiple
       />
       <div class="col-12">
-        <q-btn label="Search" type="submit" color="primary" unelevated :loading="searchLoading"/>
+        <q-btn label="Search" type="submit" color="primary" unelevated/>
         <q-btn label="Reset" type="reset" color="primary" flat/>
       </div>
     </q-form>
+    <div v-if="showResults" class="q-mt-lg">
+      <q-table
+        title="Results"
+        :data="tableData"
+        :columns="columns"
+        @row-click="onRowClick"
+      />
+    </div>
+    <q-inner-loading :showing="searchLoading"/>
   </div>
 </template>
 
 <script>
 import PrivilegePicker from "components/FormElements/PrivilegePicker";
+import columnMerger from 'src/utils/columnMerger'
+import search from 'src/mixins/search'
+
+const format = val => {
+  if (val.length === 0) {
+    return 'None'
+  }
+  let newVal = ''
+  for (const privilege of val) {
+    newVal += privilege + ', '
+  }
+  return newVal
+}
+
+const columns = [
+  {name: 'id', label: 'Admin ID', field: 'id', style: 'width: 10%;', sortable: true},
+  {name: 'name', label: 'Name', field: 'name', align: 'left'},
+  {name: 'privileges', label: 'Privileges', field: 'privileges', format},
+]
+const commonAttr = {
+  style: 'font-size: 1.05em;', headerStyle: 'font-size: 1.05em;'
+}
+columnMerger(columns, commonAttr)
 
 export default {
   name: 'AdminCreatorForm',
   components: {
     PrivilegePicker,
   },
+  mixins: [
+    search
+  ],
   data() {
     return {
       name: '',
       id: '',
-      password: '',
       privileges: [],
-      searchLoading: false
+      columns
     }
   },
   methods: {
     searchAccount() {
-      this.searchLoading = true
-      this.$adminAPI.post('account/create', {
-        userType: 'admin',
+      this.callSearchApi('account/admin/list', {
         id: this.id,
-        password: this.password,
         name: this.name,
         privileges: this.privileges
-      })
-        .then(response => {
-          this.searchLoading = false
-          console.log('Admin account created')
-          console.log(response)
-        })
-        .catch(error => {
-          this.searchLoading = false
-          console.log('Could not create Admin account')
-          console.log(error.response)
-        })
+      }, 'Admin account')
     },
     resetForm() {
       this.name = ''
       this.id = ''
-      this.password = ''
       this.privileges = []
+    },
+    onRowClick(event, row) {
+      this.$router.push({
+        name: 'AdminAccountEditPage',
+        params: {
+          userType: 'admin',
+          id: row.id
+        }
+      })
+    },
+    loadResults(use) {
+      console.log('this is it')
+      console.log(use)
+      if (use.q) {
+        this.name = use.name
+        this.id = use.id
+        this.privileges = use.privileges
+        this.searchAccount()
+      }
     }
   },
+  created() {
+    this.loadResults(this.$route.query)
+  },
+  watch: {
+    $route(to/*, from*/) {
+      this.loadResults(to.query)
+    }
+  }
 }
 </script>
 

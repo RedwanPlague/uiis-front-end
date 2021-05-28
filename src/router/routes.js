@@ -41,12 +41,12 @@ const routes = [
           {
             path: 'search',
             name: 'AdminAccountSearchPage',
-            component: () => import('pages/admin/accounts/Creation')
+            component: () => import('pages/admin/accounts/Search')
           },
           {
-            path: 'edit',
+            path: 'edit/:userType/:id',
             name: 'AdminAccountEditPage',
-            component: () => import('pages/admin/accounts/Creation')
+            component: () => import('pages/admin/accounts/Edit')
           },
         ]
       },

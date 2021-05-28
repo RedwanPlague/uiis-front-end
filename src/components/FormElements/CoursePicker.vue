@@ -26,7 +26,7 @@
 
 <script>
 import {isSubstring} from 'src/utils/patternSearch'
-import apiFetch from 'src/utils/apiFetch'
+import {apiFetch} from 'src/utils/apiWrappers'
 
 export default {
   name: 'CoursePicker',

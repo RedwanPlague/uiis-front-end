@@ -17,4 +17,4 @@ const apiFetch = (url, params, name) => {
   })
 }
 
-export default apiFetch
+export {apiFetch}

@@ -1,21 +1,18 @@
 <template>
   <q-page padding>
-    <div class="text-h5 q-my-md">
-      Assign Course for Current Session
+    <div class="row q-col-gutter-md">
+      <course-picker
+        classes="col-6"
+        v-model="course"
+      />
     </div>
-    <q-form>
+    <q-form v-if="!!course">
+      <q-separator/>
+      <q-expansion-item
+        label="Evaluation Details"
+        header-class="text-h6 q-pl-none"
+      >
       <div class="row q-col-gutter-md q-mb-md">
-        <course-picker
-          classes="col-6"
-          v-model="course"
-          required
-        />
-        <q-input
-          class="col-6"
-          value=""
-          label="Session"
-          outlined
-        />
         <q-input
           class="col-6"
           v-model="totalEvalCount"
@@ -59,6 +56,8 @@
           :rules="[() => !!attendanceWeight || 'Please Fill this Field']"
         />
       </div>
+      </q-expansion-item>
+      <q-separator class="q-mb-sm"/>
       <q-separator/>
       <q-expansion-item
         label="Assign Course Teachers"

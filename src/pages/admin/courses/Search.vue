@@ -1,82 +1,67 @@
 <template>
   <q-page padding>
     <div class="text-h5 q-my-md">
-      Create New Course
+      Search New Course
     </div>
-    <q-form class="row q-col-gutter-md" @submit="createCourse" @reset="resetForm">
+    <q-form class="row q-col-gutter-md" @submit="searchCourse" @reset="resetForm">
       <department-picker
         classes="col-6"
         label="Department (offered to)"
         v-model="deptFor"
-        required
       />
       <department-picker
         classes="col-6"
         label="Department (offered from)"
         v-model="deptFrom"
-        required
       />
       <q-input
         class="col-6"
         v-model="syllabusID"
         label="Syllabus ID"
-        outlined
-        :rules="[() => !!syllabusID || 'Please Enter a SyllabusID']"
+        filled
       />
       <q-input
         class="col-6"
         v-model="title"
         label="Title"
-        outlined
-        :rules="[() => !!title || 'Please Enter a Title']"
+        filled
       />
       <q-input
         class="col-12"
         v-model="name"
         label="Name"
-        outlined
-        :rules="[() => !!name || 'Please Enter a Name']"
+        filled
       />
       <q-input
-        class="col-4"
+        class="col-3"
         v-model="level"
         label="Level"
-        outlined
-        :rules="[() => !!level || 'Please Enter Level']"
+        filled
       />
       <q-input
-        class="col-4"
+        class="col-3"
         v-model="term"
         label="Term"
-        outlined
-        :rules="[() => !!term || 'Please Enter Term']"
+        filled
       />
       <q-input
-        class="col-4"
-        v-model="credit"
-        label="Credit"
+        class="col-3"
+        v-model="creditMin"
+        label="Credit Min"
         type="number"
         step="0.25"
-        outlined
-        :rules="[() => !!credit || 'Please Enter Credit']"
-      />
-      <course-picker
-        classes="col-12"
-        label="Prerequisites"
-        v-model="prerequisites"
-        multiple
-        required
+        filled
       />
       <q-input
-        class="col-12 q-pb-md"
-        v-model="description"
-        label="Description"
-        type="textarea"
-        rows="10"
-        outlined
+        class="col-3"
+        v-model="creditMax"
+        label="Credit Max"
+        type="number"
+        step="0.25"
+        filled
       />
       <div class="col-12">
-        <q-btn label="Create" type="submit" color="primary" unelevated :loading="createLoading"/>
+        <q-btn label="Create" type="submit" color="primary" unelevated/>
         <q-btn label="Reset" type="reset" color="primary" flat/>
       </div>
     </q-form>
@@ -86,17 +71,15 @@
 
 <script>
 import DepartmentPicker from 'components/FormElements/DepartmentPicker'
-import CoursePicker from 'components/FormElements/CoursePicker'
-import creator from 'src/mixins/creator'
+import search from 'src/mixins/creator'
 
 export default {
-  name: 'CourseCreation',
+  name: 'CourseSearch',
   components: {
-    CoursePicker,
     DepartmentPicker
   },
   mixins: [
-    creator
+    search
   ],
   data() {
     return {
@@ -107,14 +90,13 @@ export default {
       deptFor: null,
       level: '',
       term: '',
-      credit: '',
-      prerequisites: [],
-      description: '',
+      creditMin: '',
+      creditMax: '',
     }
   },
   methods: {
-    createCourse() {
-      this.callCreateApi('/course/create', {
+    searchCourse() {
+      this.callSearchApi('/course/list', {
         title: this.title,
         name: this.name,
         syllabusID: this.syllabusID,
@@ -122,9 +104,8 @@ export default {
         offeredByDepartment: this.deptFrom,
         level: this.level,
         term: this.term,
-        credit: this.credit,
-        prerequisites: this.prerequisites,
-        description: this.description
+        creditMin: this.creditMin,
+        creditMax: this.creditMax,
       }, 'Course')
     },
     resetForm() {
@@ -135,9 +116,8 @@ export default {
       this.deptFor = null
       this.level = ''
       this.term = ''
-      this.credit = ''
-      this.prerequisites = []
-      this.description = ''
+      this.creditMin = ''
+      this.creditMax = ''
     }
   },
 }

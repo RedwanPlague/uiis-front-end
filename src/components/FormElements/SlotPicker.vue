@@ -14,13 +14,8 @@
 </template>
 
 <script>
-const dummy = [
-  { startingTime: '8:00AM', duration: 50 },
-  { startingTime: '9:00AM', duration: 50 },
-  { startingTime: '10:00AM', duration: 50 },
-  { startingTime: '11:00AM', duration: 50 },
-  { startingTime: '12:00PM', duration: 50 },
-]
+import {apiFetch} from 'src/utils/apiWrappers'
+import {secondsToAMPM} from 'src/utils/dateFormatters'
 
 export default {
   name: 'SlotPicker',
@@ -47,16 +42,24 @@ export default {
   },
   data() {
     return {
-      slotOptions: []
+      slotOptions: [],
+    }
+  },
+  methods: {
+    fetchSlots() {
+      apiFetch('/slot/list')
+        .then(response => {
+          this.slotOptions = response.data.map(x => {
+            return {
+              value: x.id,
+              label: `(${x.id}) ${secondsToAMPM(x.startingTime)} - ${x.duration} minutes`
+            }
+          })
+        })
     }
   },
   created() {
-    this.slotOptions = dummy.map(x => {
-      return {
-        value: `${x.startingTime}-${x.duration}`,
-        label: `${x.startingTime} - ${x.duration} mins`
-      }
-    })
+    this.fetchSlots()
   }
 }
 </script>

@@ -38,6 +38,7 @@
 <script>
 import PasswordMakerField from 'components/FormElements/PasswordMakerField'
 import PrivilegePicker from 'components/FormElements/PrivilegePicker'
+import creator from 'src/mixins/creator'
 
 export default {
   name: 'AdminCreatorForm',
@@ -45,43 +46,26 @@ export default {
     PasswordMakerField,
     PrivilegePicker,
   },
+  mixins: [
+    creator
+  ],
   data() {
     return {
       name: '',
       id: '',
       password: '',
       privileges: [],
-      createLoading: false
     }
   },
   methods: {
     createAccount() {
-      this.createLoading = true
-      this.$adminAPI.post('account/create', {
+      this.callCreateApi('account/create', {
         userType: 'admin',
         id: this.id,
         password: this.password,
         name: this.name,
         privileges: this.privileges
-      })
-        .then(response => {
-          this.createLoading = false
-          this.$q.notify({
-            message: 'Admin account created successfully',
-            type: 'positive'
-          })
-          console.log('Admin account created')
-          console.log(response)
-        })
-        .catch(error => {
-          this.createLoading = false
-          this.$q.notify({
-            message: 'Could not create Admin account',
-            type: 'negative'
-          })
-          console.log('Could not create Admin account')
-          console.log(error.response)
-        })
+      }, 'Admin account')
     },
     resetForm() {
       this.name = ''
