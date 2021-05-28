@@ -1,39 +1,60 @@
 <template>
   <q-page padding>
     <div class="q-pa-md">
-      <q-table
-        title="Advisees" bordered :data="getAdvisees" :columns="adviseeColumns" row-key="studentID"
-        @row-click="onRowClick"
-      />
+      <q-card bordered class="bg-grey-2">
+        <q-card-section>
+          <div class="text-h6">
+            <p>
+              <strong>Advisees</strong>
+            </p>
+          </div>
+        </q-card-section>
 
-      <q-dialog v-model="studentInfoDialogBox" full-width>
+        <q-separator />
+
+        <q-card-section>
+          <div class="q-gutter-sm">
+            <q-btn
+              flat class="bg-primary text-white"
+              v-for="advisee in getAdvisees"
+              :key="advisee.id"
+              v-bind="advisee"
+              @click.native="selectedAdvisee = advisee; onAdviseeClick();"
+            >
+              {{ advisee.id }}
+            </q-btn>
+          </div>
+        </q-card-section>
+      </q-card>
+
+      <q-dialog v-model="adviseeInfoDialogBox" full-width>
         <q-card>
           <q-card-section>
             <div class="text-h6">
               <p>
-                <strong>Student ID:</strong> {{ selectedAdvisee.studentID }}
+                <strong>Student ID:</strong> {{ getAdvisee.id }}
               </p>
               <p>
-                <strong>Name:</strong> {{ selectedAdvisee.name }}
+                <strong>Name:</strong> {{ getAdvisee.name }}
               </p>
               <p>
-                <strong>Level/Term:</strong> {{ selectedAdvisee.level }}/{{ selectedAdvisee.term }}
+                <strong>Level/Term:</strong> {{ getAdvisee.level }}/{{ getAdvisee.term }}
               </p>
               <p>
-                <strong>Department:</strong> {{ selectedAdvisee.department }}
+                <strong>Department:</strong> {{ getAdvisee.department }}
               </p>
               <p>
-                <strong>Contact Number:</strong> {{ selectedAdvisee.contactNumber }}
+                <strong>Contact Number:</strong> {{ getAdvisee.contactNumber }}
               </p>
               <p>
-                <strong>Email Address:</strong> {{ selectedAdvisee.emailAddress }}
+                <strong>Email Address:</strong> {{ getAdvisee.email }}
               </p>
             </div>
           </q-card-section>
 
           <q-card-actions align="right">
-            <q-btn flat class="bg-primary text-white" label="View Grades" @click="visitedSemesterSelectionPage" />
-            <q-btn flat class="bg-secondary text-white" label="Back" v-close-popup />
+            <q-btn flat class="bg-secondary text-white" label="View Grades" @click="visitSemesterSelectionPage" />
+            <q-btn flat class="bg-primary text-white" label="Back" v-close-popup />
           </q-card-actions>
         </q-card>
       </q-dialog>
@@ -49,49 +70,43 @@ export default {
 
   data() {
     return {
-      /* for tabulation */
-      adviseeColumns: [
-        {
-          name: 'studentID',
-          required: true,
-          label: 'Student ID',
-          align: 'left',
-          field: row => row.studentID,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'name',
-          align: 'left',
-          label: 'Name',
-          field: 'name',
-          sortable: true
-        }
-      ],
-
       /* for showing selected Advisee information in dialog box */
       selectedAdvisee: {},
-      studentInfoDialogBox: false  /* open when true */
+      adviseeInfoDialogBox: false  /* open when true */
     };
   },
 
   methods: {
-    ...mapActions(['fetchAdvisees']),
+    ...mapActions(['fetchAdvisees', 'fetchAdvisee']),
 
-    onRowClick(event, row) {
-      this.selectedAdvisee = this.$store.getters.getAdvisees.find(advisee => advisee.studentID === row.studentID);
-      this.studentInfoDialogBox = true;
+    async onAdviseeClick() {
+      try {
+        await this.fetchAdvisee(this.selectedAdvisee.id);
+      } catch(error) {
+        console.log(error);
+      }
+      this.adviseeInfoDialogBox = true;
     },
-    visitedSemesterSelectionPage() {
-      console.log("hello");
-      this.$router.push({ name: 'adviseeSemesterSelection', params: { studentID: this.selectedAdvisee.studentID }});
+
+    visitSemesterSelectionPage() {
+      this.$router.push({ name: 'adviseeSemesterSelection', params: {
+        studentID: this.$store.getters.getAdvisee.id
+      },
+      query: {
+        level: this.$store.getters.getAdvisee.level,
+        term: this.$store.getters.getAdvisee.term
+      }});
     }
   },
 
-  computed: mapGetters(['getAdvisees']),
+  computed: mapGetters(['getAdvisees', 'getAdvisee']),
 
-  created() {
-    this.fetchAdvisees();
+  async created() {
+    try {
+      await this.fetchAdvisees();
+    } catch(error) {
+      console.log(error);
+    }
   }
 };
 </script>

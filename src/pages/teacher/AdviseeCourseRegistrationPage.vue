@@ -2,64 +2,115 @@
   <q-page padding>
     <div class="q-pa-md">
       <q-card bordered class="bg-grey-2">
-        <q-tabs
-          v-model="tab"
-          no-caps
-          class="bg-grey-2 text-primary"
-          align="justify"
-          narrow-indicator
-        >
-          <q-tab name="registeredStudents" label="Registered Students" />
-          <q-tab name="waitingForHeadApproval" label="Waiting for Head's Approval" />
-          <q-tab name="waitingForAdvisorApproval" label="Waiting for Advisor's Approval" />
-          <q-tab name="notAppliedForRegistration" label="Not Applied for Registration" />
-        </q-tabs><br />
+        <q-card-section>
+          <div class="text-h6">
+            <p>
+              <strong>Registered Students</strong>
+            </p>
+          </div>
+        </q-card-section>
 
         <q-separator />
 
-        <q-tab-panels v-model="tab" animated>
-          <q-tab-panel name="registeredStudents">
-            <q-table
-              bordered :data="registeredAdvisees" :columns="adviseeColumns" row-key="studentID"
-              @row-click="onRowClick"
-            />
-          </q-tab-panel>
+        <q-card-section>
+          <div class="q-gutter-sm">
+            <q-btn
+              flat class="bg-primary text-white"
+              v-for="registeredAdvisee in getRegistrations.filter(registration => registration.status === 'registered')"
+              :key="registeredAdvisee.id"
+              v-bind="registeredAdvisee"
+              @click.native="selectedAdvisee = registeredAdvisee; onAdviseeWithoutApprovalOptionClick();"
+            >
+              {{ registeredAdvisee.id }}
+            </q-btn>
+          </div>
+        </q-card-section>
+      </q-card><br />
 
-          <q-tab-panel name="waitingForHeadApproval">
-            <q-table
-              bordered :data="waitingForHeadApprovalAdvisees" :columns="adviseeColumns" row-key="studentID"
-              @row-click="onRowClick"
-            />
-          </q-tab-panel>
+      <q-card bordered class="bg-grey-2">
+        <q-card-section>
+          <div class="text-h6">
+            <p>
+              <strong>Waiting for Head's Approval</strong>
+            </p>
+          </div>
+        </q-card-section>
 
-          <q-tab-panel name="waitingForAdvisorApproval">
-            <q-table
-              bordered :data="waitingForAdvisorApprovalAdvisees" :columns="adviseeColumns" row-key="studentID"
-              :selected-rows-label="getSelectedString" selection="multiple" :selected.sync="selected"
-              @row-click="onRowClick"
-            /><br />
+        <q-separator />
 
-            <div class="row">
-              <q-space />
-              <q-btn class="btn-fixed-width" color="primary" label="Submit" @click="forwardToHead" />
-            </div>
-          </q-tab-panel>
+        <q-card-section>
+          <div class="q-gutter-sm">
+            <q-btn
+              flat class="bg-primary text-white"
+              v-for="waitingForHeadApprovalAdvisee in getRegistrations.filter(registration => registration.status === 'waiting')"
+              :key="waitingForHeadApprovalAdvisee.id"
+              v-bind="waitingForHeadApprovalAdvisee"
+              @click.native="selectedAdvisee = waitingForHeadApprovalAdvisee; onAdviseeWithoutApprovalOptionClick();"
+            >
+              {{ waitingForHeadApprovalAdvisee.id }}
+            </q-btn>
+          </div>
+        </q-card-section>
+      </q-card><br />
 
-          <q-tab-panel name="notAppliedForRegistration">
-            <q-table
-              bordered :data="notAppliedForRegistrationAdvisees" :columns="adviseeColumns" row-key="studentID"
-              @row-click="onRowClick"
-            />
-          </q-tab-panel>
-        </q-tab-panels>
+      <q-card bordered class="bg-grey-2">
+        <q-card-section>
+          <div class="text-h6">
+            <p>
+              <strong>Waiting for Advisor's Approval</strong>
+            </p>
+          </div>
+        </q-card-section>
+
+        <q-separator />
+
+        <q-card-section>
+          <div class="q-gutter-sm">
+            <q-btn
+              flat class="bg-primary text-white"
+              v-for="waitingForAdvisorApprovalAdvisee in getRegistrations.filter(registration => registration.status === 'applied')"
+              :key="waitingForAdvisorApprovalAdvisee.id"
+              v-bind="waitingForAdvisorApprovalAdvisee"
+              @click.native="selectedAdvisee = waitingForAdvisorApprovalAdvisee; onAdviseeWithApprovalOptionClick();"
+            >
+              {{ waitingForAdvisorApprovalAdvisee.id }}
+            </q-btn>
+          </div>
+        </q-card-section>
+      </q-card><br />
+
+      <q-card bordered class="bg-grey-2">
+        <q-card-section>
+          <div class="text-h6">
+            <p>
+              <strong>Not Applied for Registration</strong>
+            </p>
+          </div>
+        </q-card-section>
+
+        <q-separator />
+
+        <q-card-section>
+          <div class="q-gutter-sm">
+            <q-btn
+              flat class="bg-primary text-white"
+              v-for="notAppliedForRegistrationAdvisee in getRegistrations.filter(registration => registration.status === 'unregistered')"
+              :key="notAppliedForRegistrationAdvisee.id"
+              v-bind="notAppliedForRegistrationAdvisee"
+              @click.native="selectedAdvisee = notAppliedForRegistrationAdvisee; onAdviseeWithoutApprovalOptionClick();"
+            >
+              {{ notAppliedForRegistrationAdvisee.id }}
+            </q-btn>
+          </div>
+        </q-card-section>
       </q-card>
 
-      <q-dialog v-model="studentInfoDialogBox" full-width>
+      <q-dialog v-model="adviseeWithApprovalOptionDialogBox" full-width>
         <q-card>
           <q-card-section>
             <div class="text-h6">
               <p>
-                <strong>Student ID:</strong> {{ selectedAdvisee.studentID }}
+                <strong>Student ID:</strong> {{ selectedAdvisee.id }}
               </p>
               <p>
                 <strong>Name:</strong> {{ selectedAdvisee.name }}
@@ -73,7 +124,38 @@
             </div>
 
             <q-table
-              title="Courses" dense bordered :data="getCourses" :columns="courseColumns" row-key="courseID"
+              title="Courses" dense bordered :data="specificRegistrations" :columns="courseColumns" row-key="courseID"
+            />
+          </q-card-section>
+
+          <q-card-actions align="right">
+            <q-btn flat class="bg-secondary text-white" label="Approve" @click="approve" v-close-popup />
+            <q-btn flat class="bg-secondary text-white" label="Reject" @click="reject" v-close-popup />
+            <q-btn flat class="bg-primary text-white" label="Back" v-close-popup />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
+
+      <q-dialog v-model="adviseeWithoutApprovalOptionDialogBox" full-width>
+        <q-card>
+          <q-card-section>
+            <div class="text-h6">
+              <p>
+                <strong>Student ID:</strong> {{ selectedAdvisee.id }}
+              </p>
+              <p>
+                <strong>Name:</strong> {{ selectedAdvisee.name }}
+              </p>
+              <p>
+                <strong>Level/Term:</strong> {{ selectedAdvisee.level }}/{{ selectedAdvisee.term }}
+              </p>
+              <p>
+                <strong>Department:</strong> {{ selectedAdvisee.department }}
+              </p>
+            </div>
+
+            <q-table
+              title="Courses" dense bordered :data="specificRegistrations" :columns="courseColumns" row-key="courseID"
             />
           </q-card-section>
 
@@ -88,33 +170,16 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import { api } from "boot/axios";
+
+const url = "/teacher/advisor";
 
 export default {
   name: "AdviseeCourseRegistrationPage",
 
   data() {
     return {
-      tab: "registeredStudents",  /* by default location for q-tab */
-
       /* for tabulation */
-      adviseeColumns: [
-        {
-          name: 'studentID',
-          required: true,
-          label: 'Student ID',
-          align: 'left',
-          field: row => row.studentID,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'name',
-          align: 'left',
-          label: 'Name',
-          field: 'name',
-          sortable: true
-        }
-      ],
       courseColumns: [
         {
           name: 'courseID',
@@ -133,69 +198,119 @@ export default {
           sortable: true
         },
         {
-          name: 'courseTitle',
+          name: 'title',
           align: 'left',
           label: 'Course Title',
-          field: 'courseTitle',
+          field: 'title',
           sortable: true
         },
         {
-          name: 'creditHours',
+          name: 'credit',
           align: 'left',
           label: 'Credit Hours',
-          field: 'creditHours',
+          field: 'credit',
           sortable: true
         },
         {
-          name: 'remarks',
+          name: 'status',
           align: 'left',
-          label: 'Remarks',
-          field: 'remarks',
+          label: 'Status',
+          field: 'status',
           sortable: true
         }
       ],
 
-      /* table rows */
-      registeredAdvisees: this.$store.getters.getAdvisees.slice(0, 8),
-      waitingForHeadApprovalAdvisees: this.$store.getters.getAdvisees.slice(8, 15),
-      waitingForAdvisorApprovalAdvisees: this.$store.getters.getAdvisees.slice(15, 22),
-      notAppliedForRegistrationAdvisees: this.$store.getters.getAdvisees.slice(22, this.$store.getters.getAdvisees.length),
-
-      /* for multiple selections in Advisor Approval table */
-      selected: [],
-
       /* for showing selected Advisee information in dialog box */
       selectedAdvisee: {},
-      studentInfoDialogBox: false,  /* open when true */
+      specificRegistrations: [],
+      adviseeWithApprovalOptionDialogBox: false,  /* open when true */
+      adviseeWithoutApprovalOptionDialogBox: false  /* open when true */
     };
   },
 
   methods: {
-    ...mapActions(['fetchAdvisees', 'fetchCourses']),
+    ...mapActions(['fetchRegistrations', 'fetchSpecificRegistrations']),
 
-    getSelectedString() {
-      return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.waitingForAdvisorApprovalAdvisees.length}`;
-    },
+    generateSpecificRegistrations() {
+      this.specificRegistrations = [];
 
-    onRowClick(event, row) {
-      this.selectedAdvisee = this.$store.getters.getAdvisees.find(advisee => advisee.studentID === row.studentID);
-      this.studentInfoDialogBox = true;
-    },
-
-    forwardToHead() {
-      for(let i=0; i<this.selected.length; i++) {
-        this.waitingForAdvisorApprovalAdvisees.splice(this.waitingForAdvisorApprovalAdvisees.findIndex(advisee => advisee.studentID === this.selected[i].studentID), 1);
+      for(let i=0; i<this.$store.getters.getSpecificRegistrations.length; i++) {
+        this.specificRegistrations[i] = {
+          courseID: this.$store.getters.getSpecificRegistrations[i].courseSession.course.courseID,
+          syllabusID: this.$store.getters.getSpecificRegistrations[i].courseSession.course.syllabusID,
+          title: this.$store.getters.getSpecificRegistrations[i].courseSession.course.title,
+          credit: this.$store.getters.getSpecificRegistrations[i].courseSession.course.credit,
+          status: this.$store.getters.getSpecificRegistrations[i].status
+        };
       }
-      this.waitingForHeadApprovalAdvisees = this.waitingForHeadApprovalAdvisees.concat(this.selected);
-      this.selected = [];
+    },
+
+    async onAdviseeWithApprovalOptionClick() {
+      try {
+        await this.fetchSpecificRegistrations({
+          id: this.selectedAdvisee.id,
+          level: this.selectedAdvisee.level,
+          term: this.selectedAdvisee.term
+        });
+        this.generateSpecificRegistrations();
+      } catch(error) {
+        console.log(error);
+      }
+      this.adviseeWithApprovalOptionDialogBox = true;
+    },
+
+    async onAdviseeWithoutApprovalOptionClick() {
+      try {
+        await this.fetchSpecificRegistrations({
+          id: this.selectedAdvisee.id,
+          level: this.selectedAdvisee.level,
+          term: this.selectedAdvisee.term
+        });
+        this.generateSpecificRegistrations();
+      } catch(error) {
+        console.log(error);
+      }
+      this.adviseeWithoutApprovalOptionDialogBox = true;
+    },
+
+    /* approving course registration application */
+    async approve() {
+      console.log(this.selectedAdvisee.id);
+      try {
+        await api.patch(url+'/registrations/'+this.selectedAdvisee.id+'/approve', {
+          headers: {
+            Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
+          }
+        });
+        await this.fetchRegistrations();
+      } catch(error) {
+        console.log(error);
+      }
+    },
+
+    /* rejecting course registration application */
+    async reject() {
+      try {
+        await api.patch(url+'/registrations/'+this.selectedAdvisee.id+'/reject', {
+          headers: {
+            Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
+          }
+        });
+        await this.fetchRegistrations();
+      } catch(error) {
+        console.log(error);
+      }
     }
   },
 
-  computed: mapGetters(['getAdvisees', 'getCourses']),
+  computed: mapGetters(['getRegistrations', 'getSpecificRegistrations']),
 
-  created() {
-    this.fetchAdvisees();
-    this.fetchCourses();
+  async created() {
+    try {
+      await this.fetchRegistrations();
+    } catch(error) {
+      console.log(error);
+    }
   }
 };
 </script>

@@ -4,7 +4,7 @@
       <q-card bordered>
         <q-card-section>
           <div class="text-h5">View Grade Statistics</div><br />
-          <div class="text-subtitle2"><strong>Student ID: </strong>{{ this.$route.params.studentID }}</div>
+          <div class="text-subtitle2"><strong>Student ID: </strong>{{ this.$route.params.id }}</div>
         </q-card-section>
 
         <q-separator /><br />
@@ -15,7 +15,7 @@
               <q-item
                 clickable
                 class="bg-grey-2"
-                v-for="semester in getSemesters"
+                v-for="semester in availableSemesters"
                 :key="semester.semesterID"
                 v-bind="semester"
                 @click.native="selectedSemester = semester; onItemClick();"
@@ -37,23 +37,26 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
-
 export default {
   name: "AdviseeSemesterSelectionPage",
 
   data() {
     return {
+      /* available semesters */
+      availableSemesters: [],
+
       /* for keeping track of selected semester */
       selectedSemester: {}
     };
   },
 
   methods: {
-    ...mapActions(['fetchSemesters']),
-
     onItemClick() {
-      this.$router.push({ name: 'adviseeGrades', params: { semesterID: this.selectedSemester.semesterID, studentID: this.$route.params.studentID }});
+      this.$router.push({ name: 'adviseeGrades', params: {
+        id: this.$route.params.id,
+        level: this.$route.params.level,
+        term: this.$route.params.term
+      }});
     },
 
     visitInformationPage() {
@@ -61,10 +64,16 @@ export default {
     }
   },
 
-  computed: mapGetters(['getSemesters']),
-
   created() {
-    this.fetchSemesters();
+    let availableSemesterCount = (this.$route.query.level-1)*2+this.$route.query.term-1;
+
+    for(let i=0; i<availableSemesterCount; i++) {
+      this.availableSemesters[i] = {
+        semesterID: i+1,
+        level: Math.floor(i/2)+1,
+        term: i%2+1
+      };
+    }
   }
 }
 </script>
