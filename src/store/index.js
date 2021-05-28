@@ -7,18 +7,16 @@ import advisor from './teacher-modules/advisor';
 import examiner from './teacher-modules/examiner';
 import scrutinizer from './teacher-modules/scrutinizer';
 
-import allPrivileges from "src/store/allPrivileges";
 import user from "src/store/user";
 
 /* loading Vuex */
 Vue.use(Vuex);
 
-/* creating store */
-export default function() {
-  return new Vuex.Store({
+
+const store = new Vuex.Store({
+
     modules: {
       // example
-      allPrivileges,
       user,
       courses,
       courseEval,
@@ -32,5 +30,8 @@ export default function() {
       for dev mode only
     */
     strict: process.env.DEBUGGING
-  });
-}
+
+  })
+
+export default store
+

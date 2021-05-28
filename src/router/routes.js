@@ -1,3 +1,5 @@
+import store from '../store/index'
+
 const routes = [
   {
     path: '/',
@@ -35,8 +37,67 @@ const routes = [
     path: '/admin',
     component: () => import('layouts/AdminLayout'),
     children: [
-      { path: 'create-account', name: 'AccountCreationPage', component: () => import('pages/admin/AccountCreation') },
-    ]
+      {
+        path: 'account',
+        component: () => import('pages/admin/accounts/Wrapper'),
+        children: [
+          {
+            path: 'create',
+            name: 'AdminAccountCreationPage',
+            component: () => import('pages/admin/accounts/Creation')
+          },
+          {
+            path: 'search',
+            name: 'AdminAccountSearchPage',
+            component: () => import('pages/admin/accounts/Search')
+          },
+          {
+            path: 'edit/:userType/:id',
+            name: 'AdminAccountEditPage',
+            component: () => import('pages/admin/accounts/Edit')
+          },
+        ]
+      },
+      {
+        path: 'course',
+        component: () => import('pages/admin/courses/Wrapper'),
+        children: [
+          {
+            path: 'create',
+            name: 'AdminCourseCreationPage',
+            component: () => import('pages/admin/courses/Creation')
+          },
+          {
+            path: 'assign',
+            name: 'AdminCourseAssignmentPage',
+            component: () => import('pages/admin/courses/Assignment')
+          }
+        ]
+      },
+      {
+        path: 'slot',
+        component: () => import('pages/admin/slots/Wrapper'),
+        children: [
+          {
+            path: 'create',
+            name: 'AdminSlotCreationPage',
+            component: () => import('pages/admin/slots/Creation')
+          },
+        ]
+      },
+      {
+        path: 'session/assign',
+        name: 'AdminSessionAssignmentPage',
+        component: () => import('pages/admin/SessionAssignment'),
+      },
+    ],
+    // beforeEnter(to, from, next) {
+    //   if (store.getters.user) {
+    //     next()
+    //   } else {
+    //     next({ name: 'Index' })
+    //   }
+    // }
   },
 
   /*

@@ -15,12 +15,12 @@
           UIIS Admin
         </q-toolbar-title>
 
-        <q-btn-dropdown v-if="userIsLoggedIn" icon="person" :label="user.name" flat>
+        <q-btn-dropdown v-if="user" icon="person" :label="user.name" flat no-caps>
           <q-list>
-            <q-item clickable v-close-popup :to="{ name: 'AdminCoursesPage' }" style="color: inherit" dense>
+            <q-item clickable v-close-popup :to="{ name: 'AdminAccountCreationPage' }" style="color: inherit" dense>
               <q-item-section>
                 <q-item-label>
-                  <q-avatar icon="account_circle"></q-avatar>
+                  <q-avatar icon="account_circle"/>
                   Account
                 </q-item-label>
               </q-item-section>
@@ -29,15 +29,14 @@
             <q-item clickable v-close-popup @click="userLogOut(); $router.push({ name: 'Index' })" dense>
               <q-item-section>
                 <q-item-label>
-                  <q-avatar icon="logout"></q-avatar>
+                  <q-avatar icon="logout"/>
                   Logout
                 </q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
         </q-btn-dropdown>
-        <!--<q-btn v-else flat :to="{ name: 'Admin' }">SIGN IN</q-btn>-->
-        <q-btn v-else flat @click="userLogIn({ami: 'eikhane', tumi: 'oikhane'})">SIGN IN</q-btn>
+        <q-btn v-else flat label="SIGN IN" :to="{ name: 'Index' }"/>
       </q-toolbar>
     </q-header>
 
@@ -71,9 +70,51 @@ import { mapGetters, mapActions } from 'vuex'
 
 const quickLinks = [
   {
-    title: 'Docs1',
+    title: 'Accounts',
     icon: 'school',
-    link: { name: 'AccountCreationPage' }
+    children: [
+      {
+        title: 'Create',
+        icon: 'school',
+        link: { name: 'AdminAccountCreationPage' }
+      },
+      {
+        title: 'Search',
+        icon: 'school',
+        link: { name: 'AdminAccountSearchPage' }
+      },
+      {
+        title: 'Edit',
+        icon: 'school',
+        link: { name: 'AdminAccountEditPage' }
+      },
+    ]
+  },
+  {
+    title: 'Courses',
+    icon: 'school',
+    children: [
+      {
+        title: 'Create',
+        icon: 'school',
+        link: { name: 'AdminCourseCreationPage' }
+      },
+      {
+        title: 'Assign',
+        icon: 'school',
+        link: { name: 'AdminCourseAssignmentPage' }
+      },
+    ]
+  },
+  {
+    title: 'Slots',
+    icon: 'school',
+    link: { name: 'AdminSlotCreationPage' }
+  },
+  {
+    title: 'Session',
+    icon: 'school',
+    link: { name: 'AdminSessionAssignmentPage' }
   },
   {
     title: 'Docs2',
@@ -132,13 +173,11 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'userIsLoggedIn',
       'user'
     ])
   },
   methods: {
     ...mapActions([
-      'userLogIn',
       'userLogOut'
     ])
   }
