@@ -1,10 +1,21 @@
 <template>
   <q-page class="container">
+
     <h5>{{ course_data.session }} {{ course_data.courseID }}: {{ course_data.courseName }}</h5>
 
-    <div>
-      <q-btn v-show="editAccess" :icon='buttonIcon' size='md' color="primary" :label="buttonText" class="" @click="toggleEditMode" ></q-btn>
-    </div>
+<!--    <div class="row">-->
+
+      <div class="col">
+        <q-btn v-show="course_data.editAccess" :icon='buttonIcon' size='md' color="primary" :label="buttonText" class="" @click="toggleEditMode" ></q-btn>
+      </div>
+<!--      <div class="col q-pa-md" style="max-width: 400px; ">-->
+<!--        <label style="float: left" >Total Attendance Count:</label>-->
+<!--        <q-input filled type="number" v-model="course_data.classCount" autofocus dense :disable="!editMode" input-class="text-center" />-->
+<!--      </div>-->
+
+
+<!--    </div>-->
+
     <div class="table q-pa-md">
       <q-table
       title = 'Course Assessment'
@@ -13,7 +24,7 @@
       separator="cell"
       :pagination.sync="pagination"
       :filter="studentFilter"
-      :row-key="student_data.studentID"
+      :row-key="student_data.student_id"
       >
 
       <template v-slot:top-right>
@@ -45,7 +56,7 @@
       </template>
     </q-table>
 
-      <div class="row q-pa-md" v-show="editAccess">
+    <div class="row q-pa-md" v-show="course_data.editAccess">
         <q-space />
         <q-btn no-caps icon='check_circle' size='md' color="primary" label="Submit Evalution" @click="submitFlag = true"></q-btn>
       </div>
@@ -63,6 +74,7 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
   </q-page>
 </template>
 
@@ -70,7 +82,10 @@
 
   import { mapGetters, mapActions} from 'vuex';
   import { mapMultiRowFields } from 'vuex-map-fields';
-  console.log("heh eh");
+  import Loading from 'vue-loading-overlay';
+  import 'vue-loading-overlay/dist/vue-loading.css';
+
+
   let eval_column_entry = {
     name: 'eval_',
     label: 'Evaluation - ',
@@ -111,13 +126,29 @@
     },
     methods: {
       ...mapActions(['fetchCourseDetails', 'saveStudentData']),
+
       async toggleEditMode(e) {
-        console.log(this.student_data);
         e.preventDefault();
 
         if(this.editMode) {
+          // this.isLoading = true;
+
+          const notif = this.$q.notify({
+            message: `Saving Evaluation`,
+            position: "top-right",
+            group: false, // required to be updatable
+            timeout: 0, // we want to be in control when it gets dismissed
+            spinner: true,
+          });
           await this.saveStudentData();
+          notif({
+            icon: 'done', // we add an icon
+            spinner: false, // we reset the spinner setting so the icon can be displayed
+            message: 'Progress Saved',
+            timeout: 1500 // we will timeout it in 2.5s
+          });
         }
+
 
         this.editMode = !this.editMode;
         if( this.editMode ) {
@@ -137,8 +168,8 @@
       }
     },
     data() {
-      console.log("data");
       return {
+        isLoading: false,
         studentFilter: '',
         submitFlag: false,
         editMode: false,
@@ -147,8 +178,10 @@
         buttonIcon:'edit',
         buttonText:'Edit',
         pagination: {
+          sortBy: 'student_id',
           page: 1,
-          rowsPerPage: 0 // 0 means all rows
+          rowsPerPage: 0, // 0 means all rows
+          ascending: true
         },
         columns: [
           {
@@ -173,7 +206,7 @@
           },
           {
             name: 'attendance',
-            label: 'Attendance Marks',
+            label: 'Attendance Count',
             align: 'center',
             field: 'attendance',
             classes: 'bg-grey-1',
@@ -200,6 +233,17 @@
   .table {
     width: 900px;
   }
+
+  .row {
+    display: flex; /* equal height of the children */
+  }
+
+  .col {
+    flex: 1; /* additionally, equal width */
+    padding: 1em;
+    /*border: solid;*/
+  }
+
 
 
 </style>
