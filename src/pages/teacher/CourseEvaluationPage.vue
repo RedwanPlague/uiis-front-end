@@ -70,7 +70,7 @@
         </q-card-section>
         <q-card-actions align="right">
           <q-btn flat label="Cancel" color="primary" v-close-popup />
-          <q-btn flat label="Yes, Submit Evaluation" color="primary" v-close-popup @click="editAccess= false; "/>
+          <q-btn flat label="Yes, Submit Evaluation" color="primary" v-close-popup @click="course_data.editAccess= false; "/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -82,9 +82,6 @@
 
   import { mapGetters, mapActions} from 'vuex';
   import { mapMultiRowFields } from 'vuex-map-fields';
-  import Loading from 'vue-loading-overlay';
-  import 'vue-loading-overlay/dist/vue-loading.css';
-
 
   let eval_column_entry = {
     name: 'eval_',
@@ -131,7 +128,6 @@
         e.preventDefault();
 
         if(this.editMode) {
-          // this.isLoading = true;
 
           const notif = this.$q.notify({
             message: `Saving Evaluation`,
