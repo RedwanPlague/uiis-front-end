@@ -2,43 +2,7 @@ import { api } from "boot/axios";
 
 const state = {
   currentSession: "2021",
-  courses: [
-    {
-      courseID: "CSE203",
-      courseTitle: "Algo DS",
-      part: "A",
-      totalMarks: 105,
-      hasEditAccess: true,
-      students: [
-        {
-          studentID: "1605001",
-          marks: 101
-        },
-        {
-          studentID: "1605002",
-          marks: 102
-        }
-      ]
-    },
-    {
-      courseID: "CSE207",
-      courseTitle: "Algo DS cutu",
-      part: "B",
-      totalMarks: 105,
-      hasEditAccess: false,
-      students: [
-        {
-          studentID: "1605001",
-          marks: 103
-        },
-        {
-          studentID: "1605002",
-          marks: 104
-        }
-      ]
-    }
-  ],
-
+  courses: [],
   currentCourse: null
 };
 
