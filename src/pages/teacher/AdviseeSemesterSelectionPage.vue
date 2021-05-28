@@ -4,7 +4,7 @@
       <q-card bordered>
         <q-card-section>
           <div class="text-h5">View Grade Statistics</div><br />
-          <div class="text-subtitle2"><strong>Student ID: </strong>{{ this.$route.params._id }}</div>
+          <div class="text-subtitle2"><strong>Student ID: </strong>{{ this.$route.params.id }}</div>
         </q-card-section>
 
         <q-separator /><br />
@@ -53,7 +53,7 @@ export default {
   methods: {
     onItemClick() {
       this.$router.push({ name: 'adviseeGrades', params: {
-        _id: this.$route.params._id,
+        id: this.$route.params.id,
         level: this.$route.params.level,
         term: this.$route.params.term
       }});
@@ -65,7 +65,7 @@ export default {
   },
 
   created() {
-    let availableSemesterCount = this.$route.params.level*2+this.$route.params.term-1;
+    let availableSemesterCount = (this.$route.query.level-1)*2+this.$route.query.term-1;
 
     for(let i=0; i<availableSemesterCount; i++) {
       this.availableSemesters[i] = {

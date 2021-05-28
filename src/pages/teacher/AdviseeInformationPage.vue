@@ -17,11 +17,11 @@
             <q-btn
               flat class="bg-primary text-white"
               v-for="advisee in getAdvisees"
-              :key="advisee._id"
+              :key="advisee.id"
               v-bind="advisee"
               @click.native="selectedAdvisee = advisee; onAdviseeClick();"
             >
-              {{ advisee._id }}
+              {{ advisee.id }}
             </q-btn>
           </div>
         </q-card-section>
@@ -32,7 +32,7 @@
           <q-card-section>
             <div class="text-h6">
               <p>
-                <strong>Student ID:</strong> {{ getAdvisee._id }}
+                <strong>Student ID:</strong> {{ getAdvisee.id }}
               </p>
               <p>
                 <strong>Name:</strong> {{ getAdvisee.name }}
@@ -81,7 +81,7 @@ export default {
 
     async onAdviseeClick() {
       try {
-        await this.fetchAdvisee(this.selectedAdvisee._id);
+        await this.fetchAdvisee(this.selectedAdvisee.id);
       } catch(error) {
         console.log(error);
       }
@@ -90,7 +90,9 @@ export default {
 
     visitSemesterSelectionPage() {
       this.$router.push({ name: 'adviseeSemesterSelection', params: {
-        _id: this.$store.getters.getAdvisee._id,
+        studentID: this.$store.getters.getAdvisee.id
+      },
+      query: {
         level: this.$store.getters.getAdvisee.level,
         term: this.$store.getters.getAdvisee.term
       }});

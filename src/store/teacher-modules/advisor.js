@@ -1,4 +1,6 @@
-import AdvisorCall from '../../backend-calls/AdvisorCall';
+import { api } from "boot/axios";
+
+const url = "/teacher/advisor";
 
 const state = {
   advisees: [],
@@ -17,41 +19,79 @@ const getters = {
 };
 
 const actions = {
+  /* getting advisees */
   async fetchAdvisees({ commit }) {
     try {
-      commit('mutateAdvisees', await AdvisorCall.getAdvisees());
+      const response = await api.get(url+'/advisees', {
+        headers: {
+          Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
+        }
+      });
+      commit('mutateAdvisees', response.data);
     } catch(err) {
       this.error = err.message;
     }
   },
 
+  /* getting specific advisee */
   async fetchAdvisee({ commit }, id) {
     try {
-      commit('mutateAdvisee', await AdvisorCall.getAdvisee(id));
+      const response = await api.get(url+'/advisees/'+id, {
+        headers: {
+          Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
+        }
+      });
+      commit('mutateAdvisee', response.data);
     } catch(err) {
       this.error = err.message;
     }
   },
 
-  async fetchGrades({ commit }, id, level, term) {
+  /* getting specific advisee's specific semester's grades */
+  async fetchGrades({ commit }, params) {
     try {
-      commit('mutateGrades', await AdvisorCall.getGrades(id, level, term));
+      const response = await api.get(url+'/advisees/'+params.id+'/grades', {
+        headers: {
+          Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
+        },
+        params: {
+          level: params.level,
+          term: params.term
+        }
+      });
+      commit('mutateGrades', response.data);
     } catch(err) {
       this.error = err.message;
     }
   },
 
+  /* getting registrations */
   async fetchRegistrations({ commit }) {
     try {
-      commit('mutateRegistrations', await AdvisorCall.getRegistrations());
+      const response = await api.get(url+'/registrations', {
+        headers: {
+          Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
+        }
+      });
+      commit('mutateRegistrations', response.data);
     } catch(err) {
       this.error = err.message;
     }
   },
 
-  async fetchSpecificRegistrations({ commit }, id, level, term) {
+  /* getting specific advisee's registrations */
+  async fetchSpecificRegistrations({ commit }, params) {
     try {
-      commit('mutateSpecificRegistrations', await AdvisorCall.getSpecificRegistrations(id, level, term));
+      const response = await api.get(url+'/registrations/'+params.id, {
+        headers: {
+          Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
+        },
+        params: {
+          level: params.level,
+          term: params.term
+        }
+      });
+      commit('mutateSpecificRegistrations', response.data);
     } catch(err) {
       this.error = err.message;
     }
