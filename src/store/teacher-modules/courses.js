@@ -1,4 +1,3 @@
-import axios from "axios";
 import {api} from 'boot/axios'
 
 const state = {
@@ -16,7 +15,6 @@ const actions = {
         Authorization: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjEyMDQyOH0.d7VMrLXp8EObxf6-i43FRcTnUxqI9RqTUDrVK3r_9Sw"
       }
     });
-    console.log(res.data);
     commit('setCourses', res.data);
   }
 };

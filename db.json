@@ -325,7 +325,7 @@
       ]
     }
   ],
-  "courses": [
+  "course_details": [
     {
       "courseName": "CSE311",
       "marks": [
@@ -361,7 +361,7 @@
       ]
     }
   ],
-  "ret_courses": {
+  "courses": {
     "currentCourseSessions": [
       {
         "session": 2021,
