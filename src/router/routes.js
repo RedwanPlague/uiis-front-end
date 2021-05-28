@@ -12,7 +12,7 @@ const routes = [
     path: '/teacher',
     component: () => import('layouts/TeacherLayout'),
     children: [
-      { path: '', component: () => import('src/pages/teacher/Home.vue') },
+      { path: '', name: 'home', component: () => import('src/pages/teacher/Home.vue') },
 
       { path: 'profile', component: () => import('src/pages/teacher/PersonalProfilePage.vue') },
 

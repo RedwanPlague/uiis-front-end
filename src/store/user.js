@@ -1,12 +1,14 @@
-import {adminAPI} from "boot/axios";
+import {adminAPI, api} from "boot/axios";
 import {LocalStorage} from "quasar";
 
 const setApiToken = (token) => {
   adminAPI.defaults.headers.common['Authorization'] = 'Bearer ' + token
+  api.defaults.headers.common['Authorization'] = 'Bearer ' + token
 }
 
 const removeApiToken = () => {
   delete adminAPI.defaults.headers.common['Authorization']
+  delete api.defaults.headers.common['Authorization']
   // adminAPI.setHeader('Authorization', null)
 }
 

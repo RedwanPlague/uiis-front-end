@@ -60,6 +60,9 @@ export default {
           if (user.userType === 'admin') {
             this.$router.replace({ name: 'AdminAccountCreationPage' })
           }
+          else if(user.userType === 'teacher') {
+            this.$router.replace({name: 'home'});
+          }
         })
         .catch(error => {
           this.loginLoading = false
