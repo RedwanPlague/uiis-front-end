@@ -1,7 +1,7 @@
-import axios from "axios";
 import { api } from "boot/axios";
 
 const state = {
+  currentSession: "2021",
   courses: [
     {
       courseID: "CSE203",
@@ -54,10 +54,10 @@ const getters = {
   currentCourseName: state => state.currentCourse,
 
   currentCourseInfo: state =>
-    state.courses.find(course => course.courseID === state.currentCourse)
-};
+    state.courses.find(course => course.courseID === state.currentCourse),
 
-const actions = {};
+  currentSession: state => state.currentSession,
+};
 
 const mutations = {
   mutCurCourse: (state, currentCourse) => {
@@ -69,7 +69,60 @@ const mutations = {
    const student = curCourse.students.find(student => student.studentID === payload.studentID);
    
    student.marks = payload.marks;
+  },
+
+  mutAllCourses: (state, allCourses) => {
+    state.courses = allCourses;
+  },
+
+  mutCurSession: (state, currentSession) => {
+    state.currentSession = currentSession;
   }
+};
+
+const actions = {
+  async fillCourses(context) {
+    const session = context.state.currentSession;
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjA0Njc2Mn0.vdxf-sKNb5UnO26cQdDDyT0B2O9lDjD40smW2VnSAoU";
+
+    const shob = await api.get(
+      `/teacher/examiner/${session}`,
+      {
+        headers: { Authorization: `Bearer ${token}`, },
+      }
+    );
+
+    const courseSum = shob.data.toRet;
+    console.log(courseSum);
+
+    const shobCourses = [];
+
+    for(const cr of courseSum) {
+      //console.log(`/teacher/examiner/${cr.courseID}/${session}?part=${cr.part}`);
+      const courseInfo = (await api.get(
+        `/teacher/examiner/${cr.courseID}/${session}?part=${cr.part}`,
+        {
+          headers: { Authorization: `Bearer ${token}`, },
+        }
+      )).data;
+
+      console.log(courseInfo);
+
+      const newCourse = {
+        courseID: cr.courseID,
+        courseTitle: cr.courseTitle,
+        part: cr.part,
+        totalMarks: courseInfo.totalMarks,
+        hasEditAccess: courseInfo.editAccess,
+        students: courseInfo.students,
+      };
+
+      shobCourses.push(newCourse);
+    }
+
+    context.commit("mutAllCourses", shobCourses);
+  }
+
 };
 
 export default {
