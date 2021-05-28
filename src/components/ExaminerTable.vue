@@ -1,88 +1,106 @@
 <template>
   <div class="q-pa-sm">
-    <div class="q-pa-md column items-center">
-      <h6>{{courseName}}</h6>
-      <q-table
-        :data="marks"
-        :columns="columns"
-        row-key="student_id"
-        separator="cell"
-      >
-        <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td key="student_id" :props="props">
-              {{ props.row.student_id }}
-            </q-td>
-            <q-td key="marks" :props="props">
-              <!-- {{ props.row.marks }} -->
-              <q-input type="number" v-model="props.row.marks" autofocus dense :disable="!canEdit" />
-            </q-td>
-          </q-tr>
-        </template>
-      </q-table>
-    </div>
-    
-    <div class="q-pa-md row justify-center">
-      <q-checkbox v-model="canEdit" label="Edit" class="rounded-borders" />
-      <q-btn no-caps color="primary" label="Upload" class="q-ml-xl" @click="onClick" />
-    </div>
+    <h6>
+      {{
+        info.courseID + " (" + info.courseTitle + " ) - " + "Part " + info.part
+      }}
+    </h6>
+    <q-checkbox v-model="canEdit" label="Edit" :disable="!info.hasEditAccess" />
+    <q-markup-table>
+      <thead>
+        <tr>
+          <th>Student ID</th>
+          <th>Marks ({{ info.totalMarks }})</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="student in info.students" :key="student.studentID">
+          <td>{{ student.studentID }}</td>
+          <td>
+            <input
+              type="number"
+              :value="student.marks"
+              :disabled="!canEdit"
+              @change="updateMarks($event, student.studentID)"
+            />
+          </td>
+        </tr>
+      </tbody>
+    </q-markup-table>
+
+    <q-btn color="primary" label="Save" class="q-mt-md" @click="saveMarks" />
+    <q-btn
+      color="primary"
+      label="Submit"
+      class="q-mt-md"
+      @click="submitMarks"
+    />
   </div>
 </template>
 
 <script>
-export default {
-  name: 'ExaminerTable',
-  props: {
-    courseName: {
-      type: String,
-      required: true,
-    },
+import { mapGetters } from "vuex";
+import { api } from "boot/axios";
 
-    marks: {
-      type: Array,
-      required: true
-    },
-  },
+export default {
+  name: "ExaminerTable",
 
   data() {
     return {
-      canEdit: false,
-      columns: [
-        {
-          // unique id, identifies column
-          name: "student_id",
-
-          // label that is displayed in the table
-          label: "Student ID",
-          field: "student_id",
-
-          align: "left",
-          sortable: false,
-        },
-        {
-          name: "marks", label: "Marks", field: "marks", align: "left", sortable: false,
-        },
-      ]
-    }
+      canEdit: false
+    };
   },
 
   methods: {
-    onClick() {
-      this.$emit("upload", {courseName: this.courseName, marks: this.marks});
-      //console.log({courseName: this.courseName, marks: this.marks});
+    updateMarks(e, studentID) {
+      this.$store.commit("examiner/mutSingleMark", {
+        studentID,
+        marks: Number(e.target.value),
+      });
+    },
+
+    async uploadMarks(dhoron) {
+      const courseID = this.info.courseID;
+      const session = this.currentSession;
+      const part = this.info.part;
+
+      const students = this.info.students.map(student => ({
+        studentID: student.studentID,
+        mark: student.marks
+      }));
+
+      const token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjA0Njc2Mn0.vdxf-sKNb5UnO26cQdDDyT0B2O9lDjD40smW2VnSAoU";
+
+      await api.put(
+        `teacher/examiner/${courseID}/${session}/${dhoron}`,
+        {
+          part,
+          students
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+    },
+
+    async saveMarks() {
+      await this.uploadMarks("save");
+    },
+
+    async submitMarks() {
+      await this.uploadMarks("forward");
+      this.$forceUpdate();
     }
+  },
+
+  computed: {
+    ...mapGetters("examiner", {
+      info: "currentCourseInfo",
+      currentSession: "currentSession"
+    })
   }
-}
+};
 </script>
 
-<style scoped>
-/* I don't know why the following doesn't work */
-input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
- 
-input[type="number"] {
-    -moz-appearance: textfield;
-}
-</style>
+<style scoped></style>

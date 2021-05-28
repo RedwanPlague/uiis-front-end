@@ -1,81 +1,76 @@
 <template>
   <q-page padding>
-    <ExaminerTable v-for="course in courses" :key="course.courseName" v-bind="course" @upload="upload"></ExaminerTable>
+    <h6>Current Session: {{ currentSession }}</h6>
+    <span>Select course: </span>
+    <select v-model="currentCourseName">
+      <option disabled value="">Please select one</option>
+      <option
+        v-for="course in allCourses"
+        :value="course.courseID"
+        :key="course.courseID + course.part"
+      >
+        {{
+          course.courseID +
+            " - " +
+            course.courseTitle +
+            " - Part " +
+            course.part
+        }}
+      </option>
+    </select>
+
+    <ExaminerTable v-if="currentCourseName" :key="currentCourseName" />
   </q-page>
 </template>
 
 <script>
-import axios from 'axios';
-import CourseEvaluationPageVue from './CourseEvaluationPage.vue';
+import { api } from "boot/axios";
+import { mapGetters, mapMutations } from "vuex";
 
 export default {
   name: "ExaminerPage",
   components: {
-    ExaminerTable: () => import('../../components/ExaminerTable.vue'),
+    ExaminerTable: () => import("../../components/ExaminerTable.vue")
   },
   data() {
     return {
-      courses: null
+      currentSession: null,
     };
   },
 
-  created() {
+  async created() {
     // API call
     /*axios.get("http://localhost:3000/courses").then(cutu=> {
       this.courses = cutu.data;
     });*/
 
-    this.courses = [
-      {
-        courseName: "CSE311",
-        marks: [
-          {
-            student_id: "1605002",
-            marks: 49,
-          },
-          {
-            student_id: "1605003",
-            marks: 31,
-          },
-          {
-            student_id: "1605004",
-            marks: 37,
-          },
-        ],
-      },
-      {
-        courseName: "CSE313",
-        marks: [
-          {
-            student_id: "1605002",
-            marks: 43,
-          },
-          {
-            student_id: "1605023",
-            marks: 13,
-          },
-          {
-            student_id: "1605024",
-            marks: 73,
-          },
-          {
-            student_id: "1605014",
-            marks: 73,
-          },
-        ],
-      },
-    ]
+    this.currentSession = "2021";
+    
+    await this.$store.dispatch("examiner/fillCourses");
   },
 
   methods: {
     upload(course) {
       // API call
       console.log(course);
+    },
+  },
+
+  computed: {
+
+    ...mapGetters("examiner", ["allCourses"], ),
+
+    currentCourseName: {
+      get() {
+        return this.$store.getters["examiner/currentCourseName"];
+      },
+
+      set(newCurCourse) {
+        this.$store.commit("examiner/mutCurCourse", newCurCourse);
+      }
     }
   }
 };
 </script>
 
-<style>
-
-</style>
+<style></style>
