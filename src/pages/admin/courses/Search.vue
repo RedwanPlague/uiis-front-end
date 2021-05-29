@@ -163,5 +163,12 @@ export default {
       })
     },
   },
+  watch: {
+    $route(to/*, from*/) {
+      if (to.name === 'AdminCourseSearchPage') {
+        this.searchAccount()
+      }
+    }
+  }
 }
 </script>

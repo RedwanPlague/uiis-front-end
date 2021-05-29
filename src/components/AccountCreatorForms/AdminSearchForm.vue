@@ -90,15 +90,6 @@ export default {
         name: this.name,
         privileges: this.privileges
       }, 'Admin account')
-      // this.$router.push({
-      //   name: 'AdminAccountSearchPage',
-      //   query: {
-      //     q: '',
-      //     id: this.id,
-      //     name: this.name,
-      //     privileges: this.privileges
-      //   }
-      // })
     },
     resetForm() {
       this.name = ''
@@ -114,23 +105,14 @@ export default {
         }
       })
     },
-    // loadResults(use) {
-    //   this.showResults = false
-    //   if (use.q) {
-    //     this.name = use.name
-    //     this.id = use.id
-    //     this.privileges = use.privileges
-    //   }
-    // }
   },
-  // created() {
-  //   this.loadResults(this.$route.query)
-  // },
-  // watch: {
-  //   $route(to/*, from*/) {
-  //     this.loadResults(to.query)
-  //   }
-  // }
+  watch: {
+    $route(to/*, from*/) {
+      if (to.name === 'AdminAccountSearchPage') {
+        this.searchAccount()
+      }
+    }
+  }
 }
 </script>
 

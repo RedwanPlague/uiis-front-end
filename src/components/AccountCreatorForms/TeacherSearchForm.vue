@@ -89,6 +89,13 @@ export default {
         }
       })
     }
+  },
+  watch: {
+    $route(to/*, from*/) {
+      if (to.name === 'AdminAccountSearchPage') {
+        this.searchAccount()
+      }
+    }
   }
 }
 </script>
