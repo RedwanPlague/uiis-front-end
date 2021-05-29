@@ -29,8 +29,8 @@
           classes="col-4"
           v-model="hall.provost"
           label="Provost"
-          required
           :readonly="hall.viewing"
+          :required="hall.old"
         />
         <div class="col-1">
           <q-btn
@@ -56,7 +56,7 @@
         />
       </div>
       <div class="col-12 q-mt-lg">
-        <q-btn label="Update" type="submit" color="primary" unelevated :loading="doneCounter > 0"/>
+        <q-btn label="Update" type="submit" color="primary" unelevated/>
         <q-btn label="Reset" type="reset" color="primary" flat/>
       </div>
     </q-form>
@@ -67,16 +67,21 @@
 <script>
 import {apiFetch} from 'src/utils/apiWrappers'
 import TeacherPicker from 'components/FormElements/TeacherPicker'
+import creator from 'src/mixins/creator'
+import edit from 'src/mixins/edit'
 
 export default {
   name: 'DeptManagement',
   components: {TeacherPicker},
+  mixins: [
+    creator,
+    edit
+  ],
   data() {
     return {
       halls: [],
       hallList: [],
       dataLoading: false,
-      doneCounter: 0
     }
   },
   methods: {
@@ -104,50 +109,36 @@ export default {
     localRemoveHall(idx) {
       this.halls.splice(idx, 1)
     },
-    doneUpdate() {
-      this.doneCounter--
-      if (this.doneCounter === 0) {
-        // this.fetchHalls()
-        this.$q.notify({
-          message: 'Updated halls successfully',
-          type: 'positive'
-        })
-      }
-    },
     updateHalls() {
-      this.doneCounter = this.halls.length
-      for (const hall of this.halls) {
+      this.halls.forEach((hall, idx) => {
+        console.log(hall)
         if (hall.old) {
-          this.editHall(hall)
+          const prev = this.hallList[idx]
+          if (
+            prev.name !== hall.name ||
+            !hall.provost ||
+            prev.provost !== hall.provost.value
+          ) {
+            this.editHall(hall)
+          }
         } else {
           this.createHall(hall)
         }
-      }
+      })
+      this.fetchHalls()
     },
     createHall(hall) {
-      this.$adminAPI.post('/hall/create', {
+      this.callCreateApi('/hall/create', {
         id: hall.id,
         name: hall.name,
-        provost: hall.provost.value
-      })
-        .then(() => this.doneUpdate())
-        .catch(error => {
-          this.doneUpdate()
-          console.log('Failed to create hall: ' + hall.id)
-          console.log(error.response)
-        })
+        provost: hall.provost
+      }, `${hall.name} hall`)
     },
     editHall(hall) {
-      this.$adminAPI.patch('/hall/update/' + hall.id, {
+      this.callEditApi('/hall/update/' + hall.id, {
         name: hall.name,
-        provost: hall.provost.value
-      })
-        .then(() => this.doneUpdate())
-        .catch(error => {
-          this.doneUpdate()
-          console.log('Failed to edit hall: ' + hall.id)
-          console.log(error.response)
-        })
+        provost: hall.provost
+      }, `${hall.name} hall`)
     },
     resetForm() {
       this.halls = this.hallList.map(x => {

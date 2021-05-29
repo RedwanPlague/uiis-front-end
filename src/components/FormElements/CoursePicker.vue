@@ -5,8 +5,7 @@
     @input="$emit('input', $event)"
     :options="courseOptions"
     :label="label"
-    :filled="!required"
-    :outlined="required"
+    outlined
     :readonly="readonly"
     :rules="[() => !required || multiple || !!value || `Please Select ${label}`]"
     :use-chips="multiple"

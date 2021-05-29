@@ -5,8 +5,7 @@
     @input="$emit('input', $event)"
     :options="hallOptions"
     :label="label"
-    :filled="!required"
-    :outlined="required"
+    outlined
     :readonly="readonly"
     :rules="[() => !required || !!value || `Please Assign a ${label}`]"
     use-input

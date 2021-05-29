@@ -8,14 +8,14 @@
         class="col-6"
         v-model="name"
         label="Name"
-        filled
+        outlined
         :rules="[() => !!columns || 'Dummy Text']"
       />
       <q-input
         class="col-6"
         v-model="id"
         label="Teacher ID"
-        filled
+        outlined
         :rules="[() => !!columns || 'Dummy Text']"
       />
       <department-picker classes="col-6" v-model="department"/>
@@ -90,13 +90,13 @@ export default {
       })
     }
   },
-  watch: {
-    $route(to/*, from*/) {
-      if (to.name === 'AdminAccountSearchPage') {
-        this.searchAccount()
-      }
-    }
-  }
+  // watch: {
+  //   $route(to/*, from*/) {
+  //     if (to.name === 'AdminAccountSearchPage') {
+  //       this.searchAccount()
+  //     }
+  //   }
+  // }
 }
 </script>
 

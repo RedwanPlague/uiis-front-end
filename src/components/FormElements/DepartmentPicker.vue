@@ -5,8 +5,7 @@
     @input="$emit('input', $event)"
     :options="deptOptions"
     :label="label"
-    :filled="!required"
-    :outlined="required"
+    outlined
     :readonly="readonly"
     :rules="[() => !required || !!value || `Please Select a ${label}`]"
     use-input

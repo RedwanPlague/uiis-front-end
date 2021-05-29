@@ -8,14 +8,14 @@
         class="col-6"
         v-model="name"
         label="Name"
-        filled
+        outlined
         :rules="[() => !!columns || 'Dummy Text']"
       />
       <q-input
         class="col-6"
         v-model="id"
         label="Admin Id"
-        filled
+        outlined
         :rules="[() => !!columns || 'Dummy Text']"
       />
       <privilege-picker
@@ -106,13 +106,13 @@ export default {
       })
     },
   },
-  watch: {
-    $route(to/*, from*/) {
-      if (to.name === 'AdminAccountSearchPage') {
-        this.searchAccount()
-      }
-    }
-  }
+  // watch: {
+  //   $route(to/*, from*/) {
+  //     if (to.name === 'AdminAccountSearchPage') {
+  //       this.searchAccount()
+  //     }
+  //   }
+  // }
 }
 </script>
 

@@ -29,8 +29,8 @@
           classes="col-4"
           v-model="dept.head"
           label="Head"
-          required
           :readonly="dept.viewing"
+          :required="dept.old"
         />
         <div class="col-1">
           <q-btn
@@ -56,7 +56,7 @@
         />
       </div>
       <div class="col-12 q-mt-lg">
-        <q-btn label="Update" type="submit" color="primary" unelevated :loading="doneCounter > 0"/>
+        <q-btn label="Update" type="submit" color="primary" unelevated/>
         <q-btn label="Reset" type="reset" color="primary" flat/>
       </div>
     </q-form>
@@ -67,16 +67,21 @@
 <script>
 import {apiFetch} from 'src/utils/apiWrappers'
 import TeacherPicker from 'components/FormElements/TeacherPicker'
+import creator from 'src/mixins/creator'
+import edit from 'src/mixins/edit'
 
 export default {
   name: 'DeptManagement',
   components: {TeacherPicker},
+  mixins: [
+    creator,
+    edit
+  ],
   data() {
     return {
       departments: [],
       deptList: [],
       dataLoading: false,
-      doneCounter: 0
     }
   },
   methods: {
@@ -104,50 +109,35 @@ export default {
     localRemoveDepartment(idx) {
       this.departments.splice(idx, 1)
     },
-    doneUpdate() {
-      this.doneCounter--
-      if (this.doneCounter === 0) {
-        // this.fetchDepartments()
-        this.$q.notify({
-          message: 'Updated departments successfully',
-          type: 'positive'
-        })
-      }
-    },
     updateDepartments() {
-      this.doneCounter = this.departments.length
-      for (const dept of this.departments) {
+      this.departments.forEach((dept, idx) => {
         if (dept.old) {
-          this.editDepartment(dept)
+          const prev = this.deptList[idx]
+          if (
+            prev.name !== dept.name ||
+            !dept.head ||
+            prev.head !== dept.head.value
+          ) {
+            this.editDepartment(dept)
+          }
         } else {
           this.createDepartment(dept)
         }
-      }
+      })
+      this.fetchDepartments()
     },
     createDepartment(dept) {
-      this.$adminAPI.post('/department/create', {
+      this.callCreateApi('/department/create', {
         id: dept.id,
         name: dept.name,
-        head: dept.head.value
-      })
-        .then(() => this.doneUpdate())
-        .catch(error => {
-          this.doneUpdate()
-          console.log('Failed to create dept: ' + dept.id)
-          console.log(error.response)
-        })
+        head: dept.head
+      }, `${dept.id} department`)
     },
     editDepartment(dept) {
-      this.$adminAPI.patch('/department/update/' + dept.id, {
+      this.callEditApi('/department/update/' + dept.id, {
         name: dept.name,
-        head: dept.head.value
-      })
-        .then(() => this.doneUpdate())
-        .catch(error => {
-          this.doneUpdate()
-          console.log('Failed to edit dept: ' + dept.id)
-          console.log(error.response)
-        })
+        head: dept.head
+      }, `${dept.id} department`)
     },
     resetForm() {
       this.departments = this.deptList.map(x => {

@@ -65,7 +65,7 @@
         />
       </div>
       <div class="col-12 q-mt-lg">
-        <q-btn label="Update" type="submit" color="primary" unelevated :loading="doneCounter > 0"/>
+        <q-btn label="Update" type="submit" color="primary" unelevated/>
         <q-btn label="Reset" type="reset" color="primary" flat/>
       </div>
     </q-form>
@@ -76,15 +76,20 @@
 <script>
 import {apiFetch} from 'src/utils/apiWrappers'
 import {secondsToHour24, hour24ToSeconds} from 'src/utils/dateFormatters'
+import creator from 'src/mixins/creator'
+import edit from 'src/mixins/edit'
 
 export default {
   name: 'SlotManagement',
+  mixins: [
+    creator,
+    edit
+  ],
   data() {
     return {
       slots: [],
       slotList: [],
       dataLoading: false,
-      doneCounter: 0
     }
   },
   methods: {
@@ -112,50 +117,34 @@ export default {
     localRemoveSlot(idx) {
       this.slots.splice(idx, 1)
     },
-    doneUpdate() {
-      this.doneCounter--
-      if (this.doneCounter === 0) {
-        // this.fetchSlots()
-        this.$q.notify({
-          message: 'Updated slots successfully',
-          type: 'positive'
-        })
-      }
-    },
     updateSlots() {
-      this.doneCounter = this.slots.length
-      for (const slot of this.slots) {
+      this.slots.forEach((slot, idx) => {
         if (slot.old) {
-          this.editSlot(slot)
+          const prev = this.slotList[idx]
+          if (
+            prev.startingTime !== hour24ToSeconds(slot.startingTime) ||
+            prev.duration !== parseInt(slot.duration)
+          ) {
+            this.editSlot(slot)
+          }
         } else {
           this.createSlot(slot)
         }
-      }
+      })
+      this.fetchSlots()
     },
     createSlot(slot) {
-      this.$adminAPI.post('/slot/create', {
+      this.callCreateApi('/slot/create', {
         id: slot.id,
         startingTime: hour24ToSeconds(slot.startingTime),
         duration: slot.duration
-      })
-        .then(() => this.doneUpdate())
-        .catch(error => {
-          this.doneUpdate()
-          console.log('Failed to create slot: ' + slot.id)
-          console.log(error.response)
-        })
+      }, `Slot ${slot.id}`)
     },
     editSlot(slot) {
-      this.$adminAPI.patch('/slot/update/' + slot.id, {
+      this.callEditApi('/slot/update/' + slot.id, {
         startingTime: hour24ToSeconds(slot.startingTime),
         duration: slot.duration
-      })
-        .then(() => this.doneUpdate())
-        .catch(error => {
-          this.doneUpdate()
-          console.log('Failed to edit slot: ' + slot.id)
-          console.log(error.response)
-        })
+      }, `Slot ${slot.id}`)
     },
     resetForm() {
       this.slots = this.slotList.map(x => {

@@ -3,7 +3,7 @@
     :class="classes"
     :label="label"
     :value="value"
-    :outlined="required"
+    outlined
     :readonly="readonly"
     input-class="cursor-pointer"
     @input="$emit('input', $event)"

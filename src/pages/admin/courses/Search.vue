@@ -18,35 +18,35 @@
         class="col-6"
         v-model="syllabusID"
         label="Syllabus ID"
-        filled
+        outlined
         :rules="[() => !!columns || 'Dummy Text']"
       />
       <q-input
         class="col-6"
         v-model="courseID"
         label="Course ID"
-        filled
+        outlined
         :rules="[() => !!columns || 'Dummy Text']"
       />
       <q-input
         class="col-12"
         v-model="title"
         label="Title"
-        filled
+        outlined
         :rules="[() => !!columns || 'Dummy Text']"
       />
       <q-input
         class="col-3"
         v-model="level"
         label="Level"
-        filled
+        outlined
         :rules="[() => !!columns || 'Dummy Text']"
       />
       <q-input
         class="col-3"
         v-model="term"
         label="Term"
-        filled
+        outlined
         :rules="[() => !!columns || 'Dummy Text']"
       />
       <q-input
@@ -56,7 +56,7 @@
         type="number"
         min="0"
         step="0.25"
-        filled
+        outlined
         :rules="[() => !!columns || 'Dummy Text']"
       />
       <q-input
@@ -66,7 +66,7 @@
         type="number"
         min="0"
         step="0.25"
-        filled
+        outlined
         :rules="[() => !!columns || 'Dummy Text']"
       />
       <div class="col-12">
@@ -163,12 +163,12 @@ export default {
       })
     },
   },
-  watch: {
-    $route(to/*, from*/) {
-      if (to.name === 'AdminCourseSearchPage') {
-        this.searchAccount()
-      }
-    }
-  }
+  // watch: {
+  //   $route(to/*, from*/) {
+  //     if (to.name === 'AdminCourseSearchPage') {
+  //       this.searchCourse()
+  //     }
+  //   }
+  // }
 }
 </script>
