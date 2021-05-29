@@ -4,7 +4,7 @@
       <q-card bordered>
         <q-card-section>
           <div class="text-h5">View Grade Statistics</div><br />
-          <div class="text-subtitle2"><strong>Student ID: </strong>{{ this.$route.params.id }}</div>
+          <div class="text-subtitle2"><strong>Student ID: </strong>{{ getAdvisee.id }}</div>
         </q-card-section>
 
         <q-separator /><br />
@@ -37,6 +37,8 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
   name: "AdviseeSemesterSelectionPage",
 
@@ -51,28 +53,42 @@ export default {
   },
 
   methods: {
+    ...mapActions(['fetchAdvisee']),
+
     onItemClick() {
-      this.$router.push({ name: 'adviseeGrades', params: {
-        id: this.$route.params.id,
-        level: this.$route.params.level,
-        term: this.$route.params.term
-      }});
+      this.$router.push({ name: 'adviseeGrades',
+        params: {
+          studentID: this.getAdvisee.id
+        },
+        query: {
+          level: this.selectedSemester.level,
+          term: this.selectedSemester.term
+        }
+      });
     },
 
     visitInformationPage() {
-      this.$router.push({ name: 'adviseeInfo', params: {}});
+      this.$router.push({ name: 'adviseeInfo', params: {}, query: {} });
     }
   },
 
-  created() {
-    let availableSemesterCount = (this.$route.query.level-1)*2+this.$route.query.term-1;
+  computed: mapGetters(['getAdvisee']),
 
-    for(let i=0; i<availableSemesterCount; i++) {
-      this.availableSemesters[i] = {
-        semesterID: i+1,
-        level: Math.floor(i/2)+1,
-        term: i%2+1
-      };
+  async created() {
+    try {
+      await this.fetchAdvisee(this.$route.params.studentID);
+
+      let availableSemesterCount = (this.getAdvisee.level-1)*2+this.getAdvisee.term-1;
+
+      for(let i=0; i<availableSemesterCount; i++) {
+        this.availableSemesters[i] = {
+          semesterID: i+1,
+          level: Math.floor(i/2)+1,
+          term: i%2+1
+        };
+      }
+    } catch(error) {
+      console.log(error);
     }
   }
 }

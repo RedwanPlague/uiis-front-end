@@ -275,7 +275,6 @@ export default {
 
     /* approving course registration application */
     async approve() {
-      console.log(this.selectedAdvisee.id);
       try {
         await api.patch(url+'/registrations/'+this.selectedAdvisee.id+'/approve', {
           headers: {

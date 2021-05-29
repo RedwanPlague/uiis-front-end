@@ -20,7 +20,7 @@ const routes = [
 
       { path: 'advisor/advisee_info', name: 'adviseeInfo', component: () => import('pages/teacher/AdviseeInformationPage.vue') },
       { path: 'advisor/advisee_info/advisee_semester_selection/:studentID', name: 'adviseeSemesterSelection', component: () => import('pages/teacher/AdviseeSemesterSelectionPage.vue') },
-      { path: 'advisor/advisee_info/advisee_semester_selection/:studentID/advisee_grades/:semesterID', name: 'adviseeGrades', component: () => import('pages/teacher/AdviseeGradesPage') },
+      { path: 'advisor/advisee_info/advisee_semester_selection/:studentID/advisee_grades', name: 'adviseeGrades', component: () => import('pages/teacher/AdviseeGradesPage') },
       { path: 'advisor/course_registration', name: 'adviseeCourseRegistration', component: () => import('pages/teacher/AdviseeCourseRegistrationPage') },
       { path: 'advisor/conversation', name: 'adviseeConversation', component: () => import('pages/teacher/AdviseeConversationPage.vue') },
 

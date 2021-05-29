@@ -2,10 +2,10 @@
   <q-page padding>
     <div class="q-pa-md">
       <div class="text-subtitle1">
-        <strong>Student ID:</strong> {{ getAdvisee._id }} <br />
+        <strong>Student ID:</strong> {{ getAdvisee.id }} <br />
         <strong>Name:</strong> {{ getAdvisee.name }} <br />
         <strong>Department:</strong> {{ getAdvisee.department }} <br />
-        <strong>Level/Term:</strong> {{ this.$route.params.level }}/{{ this.$route.params.term }}
+        <strong>Level/Term:</strong> {{ this.$route.query.level }}/{{ this.$route.query.term }}
       </div><br />
 
       <q-table
@@ -15,7 +15,7 @@
       <div class="row">
         <div class="text-subtitle1">
           <strong>Registered Credit Hours in this Term:</strong> {{ getTotalCreditHour() }}<br />
-          <strong>Credit Hours Earned in this Term:</strong> {{ getTotalCreditHourObtained }}<br />
+          <strong>Credit Hours Earned in this Term:</strong> {{ getTotalCreditHourObtained() }}<br />
           <strong>Total Credit Hours:</strong> {{ getTotalCreditHoursCompleted() }}
         </div>
 
@@ -120,23 +120,27 @@ export default {
       let sum = 0.0;
 
       for(let i=0; i<this.grades.length; i++) {
-        sum += this.grades[i].credit*this.grades[i].result.gradePoint;
+        sum += this.grades[i].credit*this.grades[i].gradePoint;
       }
       return sum/this.getTotalCreditHour();
     },
 
     getCGPA() {
       /* NOTICE: this should change later */
-      return this.$store.getters.getAdvisee.cgpa;
+      return this.getAdvisee.cgpa;
     },
 
     getTotalCreditHoursCompleted() {
       /* NOTICE: this should change later */
-      return this.$store.getters.getAdvisee.totalCreditHoursCompleted;
+      return this.getAdvisee.totalCreditHoursCompleted;
     },
 
     visitSemesterSelectionPage() {
-      this.$router.push({ name: 'adviseeSemesterSelection', params: {}});
+      this.$router.push({ name: 'adviseeSemesterSelection',
+        params: {
+          studentID: this.getAdvisee.id
+        },
+        query: {} });
     }
   },
 
@@ -144,12 +148,27 @@ export default {
 
   async created() {
     try {
-      await this.fetchAdvisee(this.$route.params._id);
-      await this.fetchGrades(this.$route.params._id, this.$route.params.level, this.$route.params.term);
+      await this.fetchAdvisee(this.$route.params.studentID);
+      await this.fetchGrades({
+        id: this.getAdvisee.id,
+        level: this.$route.query.level,
+        term: this.$route.query.term
+      });
+
+      for(let i=0, index=0; i<this.getGrades.length; i++) {
+        if(this.getGrades[i].status === 'passed' || this.getGrades[i].status === 'failed') {
+          this.grades[index++] = {
+            courseID: this.getGrades[i].courseSession.course.courseID,
+            title: this.getGrades[i].courseSession.course.title,
+            credit: this.getGrades[i].courseSession.course.credit,
+            gradeLetter: this.getGrades[i].result.gradeLetter,
+            gradePoint: this.getGrades[i].result.gradePoint
+          };
+        }
+      }
     } catch(error) {
       console.log(error);
     }
-    this.grades = this.$store.getters.getGrades.filter(grade => grade.status === 'passed' || grade.status === 'failed');
   }
 }
 </script>
