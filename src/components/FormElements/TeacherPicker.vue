@@ -68,7 +68,9 @@ export default {
   },
   methods: {
     fetchTeachers(dept) {
-      apiFetch('account/teacher/list', dept, `teachers of ${dept ? dept : 'all'}`)
+      apiFetch('account/teacher/list',
+        {department: dept},
+        `teachers of ${dept ? dept : 'all'}`)
         .then(response => {
           this.teacherList = response.data.map(x => {
             return {
