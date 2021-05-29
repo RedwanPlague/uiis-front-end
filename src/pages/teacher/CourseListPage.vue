@@ -10,9 +10,10 @@
         :pagination.sync="pagination"
         :filter="currentCourseFilter"
         @row-click="onRowClick"
+        hide-bottom
       >
         <template v-slot:top-right>
-          <q-input  dense debounce="300" v-model="currentCourseFilter" placeholder="Search">
+          <q-input outlined dense debounce="300" v-model="currentCourseFilter" placeholder="Search">
             <template v-slot:append>
               <q-icon name="search" ></q-icon>
             </template>
@@ -31,10 +32,11 @@
         :pagination.sync="pagination"
         :filter="previousCourseFilter"
         @row-click="onRowClick"
+        hide-bottom
       >
 
         <template v-slot:top-right >
-          <q-input dense debounce="300" v-model="previousCourseFilter" placeholder="Search">
+          <q-input outlined dense debounce="300" v-model="previousCourseFilter" placeholder="Search">
             <template v-slot:append>
               <q-icon name="search" ></q-icon>
             </template>
@@ -124,5 +126,6 @@ export default {
   }
   .table {
     width: 800px;
+    margin-top: 30px;
   }
 </style>

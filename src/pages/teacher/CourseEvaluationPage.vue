@@ -1,22 +1,29 @@
 <template>
   <q-page class="container">
 
-    <h5>{{ course_data.session }} {{ course_data.courseID }}: {{ course_data.courseName }}</h5>
+    <h5>Januray {{ course_data.session }} {{ course_data.courseID }}: {{ course_data.courseName }}</h5>
 
-<!--    <div class="row">-->
-
-      <div class="col">
+      <div class="button-row">
+        <div class="col">
         <q-btn v-show="course_data.editAccess" :icon='buttonIcon' size='md' color="primary" :label="buttonText" class="" @click="toggleEditMode" ></q-btn>
+        </div>
+
+        <div class="col csv-button">
+          <q-btn
+            size='md'
+            color="primary"
+            icon="upload"
+            label="Import CSV"
+            @click="onFileChange"
+          >
+            <input id="fileUpload" type="file" hidden  accept=".csv" @change='readFile' >
+          </q-btn>
+        </div>
       </div>
-<!--      <div class="col q-pa-md" style="max-width: 400px; ">-->
-<!--        <label style="float: left" >Total Attendance Count:</label>-->
-<!--        <q-input filled type="number" v-model="course_data.classCount" autofocus dense :disable="!editMode" input-class="text-center" />-->
-<!--      </div>-->
 
 
-<!--    </div>-->
+    <div class="table q-pa-lg">
 
-    <div class="table q-pa-md">
       <q-table
       title = 'Course Assessment'
       :data="student_data"
@@ -27,13 +34,18 @@
       :row-key="student_data.student_id"
       >
 
-      <template v-slot:top-right>
-        <q-input  dense debounce="300" v-model="studentFilter" placeholder="Search">
+      <template v-slot:top>
+
+        <div class="q-table__title">Course Assessment</div>
+        <q-space/>
+        <q-input  outlined dense debounce="300" v-model="studentFilter" placeholder="Search" >
           <template v-slot:append>
             <q-icon name="search" ></q-icon>
           </template>
         </q-input>
       </template>
+
+
 
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -45,20 +57,23 @@
           </q-td>
 
           <q-td v-for="i in course_data.evalCount" :props="props" :key="'eval_'+i">
-            <q-input type="number" v-model="props.row['eval_'+i]" autofocus dense :disable="!editMode" input-class="text-center" />
+            <q-input type="number" min="0" v-model="props.row['eval_'+i]" autofocus dense :disable="!editMode" input-class="text-center" />
           </q-td>
 
           <q-td key="attendance" :props="props">
-            <q-input type="number" v-model="props.row.attendance" autofocus dense :disable="!editMode" input-class="text-center"/>
+            <q-input type="number" min="0" v-model="props.row.attendance" autofocus dense :disable="!editMode" input-class="text-center"/>
           </q-td>
 
         </q-tr>
       </template>
     </q-table>
 
-    <div class="row q-pa-md" v-show="course_data.editAccess">
+    <div class="row q-pa-lg" >
+        <q-input  outlined dense  v-model="classCount" label="Total Classes:" type="number" min="0" :disable="!editMode"/>
         <q-space />
-        <q-btn no-caps icon='check_circle' size='md' color="primary" label="Submit Evalution" @click="submitFlag = true"></q-btn>
+      <div  v-show="course_data.editAccess">
+        <q-btn no-caps icon='check_circle' size='md' style="height:40px" color="primary" label="Submit Evalution" @click="submitFlag = true"></q-btn>
+      </div>
       </div>
     </div>
 
@@ -99,6 +114,14 @@
     computed: {
       ...mapGetters(['course_data']),
       ...mapMultiRowFields(['student_data']),
+      classCount: {
+        get () {
+          return this.course_data.classCount
+        },
+        set (value) {
+          this.$store.commit('setClassCount', value);
+        }
+      }
     },
     async created() {
       await this.fetchCourseDetails( { courseID: this.$route.params.courseID, session: this.$route.params.courseSession});
@@ -108,7 +131,7 @@
         };
 
         new_eval_entry.name += i;
-        new_eval_entry.label += i;
+        new_eval_entry.label += i + " (20)";
         new_eval_entry.field += i;
         this.columns.splice(this.columns.length - 1, 0, new_eval_entry);
       }
@@ -124,96 +147,150 @@
     methods: {
       ...mapActions(['fetchCourseDetails', 'saveStudentData']),
 
-      async toggleEditMode(e) {
-        e.preventDefault();
+      onFileChange() {
+        document.getElementById("fileUpload").click();
+      },
+      readFile() {
 
-        if(this.editMode) {
+        const csvFile = document.getElementById("fileUpload").files[0];
+        let reader = new FileReader();
+        reader.readAsText(csvFile);
+        reader.onload = function() {
+          console.log(reader.result);
+        };
+      },
 
-          const notif = this.$q.notify({
-            message: `Saving Evaluation`,
-            position: "top-right",
-            group: false, // required to be updatable
-            timeout: 0, // we want to be in control when it gets dismissed
-            spinner: true,
-          });
-          await this.saveStudentData();
-          notif({
-            icon: 'done', // we add an icon
-            spinner: false, // we reset the spinner setting so the icon can be displayed
-            message: 'Progress Saved',
-            timeout: 1500 // we will timeout it in 2.5s
-          });
+        async toggleEditMode(e) {
+          e.preventDefault();
+
+          this.editMode = !this.editMode;
+
+          if(!this.editMode) {
+
+            const notif = this.$q.notify({
+              message: `Saving Evaluation`,
+              position: "bottom-left",
+              group: false, // required to be updatable
+              timeout: 0, // we want to be in control when it gets dismissed
+              spinner: true,
+            });
+            const ret = await this.saveStudentData();
+
+
+            if(ret.error) {
+              this.editMode = true;
+              notif({
+                icon: 'error', // we add an icon
+                spinner: false, // we reset the spinner setting so the icon can be displayed
+                message: 'Error: ' + ret.error,
+
+                actions: [
+                  { label: 'Dismiss', color: 'yellow', handler: () => { /* ... */ } }
+                ]
+              });
+            }
+            else {
+              notif({
+                icon: 'done', // we add an icon
+                spinner: false, // we reset the spinner setting so the icon can be displayed
+                message: 'Progress Saved',
+                timeout: 1500 // we will timeout it in 2.5s
+              });
+            }
+          }
+
+
+
+          if( this.editMode ) {
+            this.buttonIcon =  'done';
+            this.buttonText = 'Save';
+            this.columns.forEach( (cell,index) => {
+              if(index >= 2) cell.classes = 'bg-white-1';
+            } );
+          }
+          else {
+            this.buttonIcon =  'edit';
+            this.buttonText = 'Edit';
+            this.columns.forEach( (cell,index) => {
+              if(index >= 2) cell.classes = 'bg-grey-1';
+            });
+          }
         }
+      },
+      data() {
+        return {
 
+          isLoading: false,
+          studentFilter: '',
+          submitFlag: false,
+          editMode: false,
 
-        this.editMode = !this.editMode;
-        if( this.editMode ) {
-          this.buttonIcon =  'done';
-          this.buttonText = 'Save';
-          this.columns.forEach( (cell,index) => {
-            if(index >= 2) cell.classes = 'bg-white-1';
-          } );
-        }
-        else {
-          this.buttonIcon =  'edit';
-          this.buttonText = 'Edit';
-          this.columns.forEach( (cell,index) => {
-            if(index >= 2) cell.classes = 'bg-grey-1';
-          });
+          editAccess: true,
+          buttonIcon:'edit',
+          buttonText:'Edit',
+          pagination: {
+            sortBy: 'student_id',
+            page: 1,
+            rowsPerPage: 0, // 0 means all rows
+            ascending: true
+          },
+          total_mark_column: [
+            {
+              name: 'Total Mark',
+              label: 'Total Mark',
+              align: 'center',
+              field: 'student_id',
+              classes: 'bg-grey-1',
+              headerClasses: 'bg-primary text-white',
+              // style: 'width: 100px',
+              sortable: true,
+            },
+            {
+              name: 'Eval - 1',
+              label: 'Student ID',
+              align: 'center',
+              field: 'student_id',
+              classes: 'bg-grey-1',
+              headerClasses: 'bg-primary text-white',
+              // style: 'width: 100px',
+              sortable: true,
+            },
+          ],
+          columns: [
+            {
+              name: 'student_id',
+              label: 'Student ID',
+              align: 'center',
+              field: 'student_id',
+              classes: 'bg-grey-1',
+              headerClasses: 'bg-primary text-white',
+              // style: 'width: 100px',
+              sortable: true,
+            },
+            {
+              name: 'student_name',
+              label: 'Student Name',
+              align: 'center',
+              field: 'student_name',
+              classes: 'bg-grey-1',
+              headerClasses: 'bg-primary text-white',
+              // style: 'width: 100px',
+              sortable: true,
+            },
+            {
+              name: 'attendance',
+              label: 'Attendance Count',
+              align: 'center',
+              field: 'attendance',
+              classes: 'bg-grey-1',
+              headerClasses: 'bg-primary text-white',
+              // headerStyle: 'width: 400px',
+              // style: 'width: 100px',
+              sortable: true
+            },
+          ],
         }
       }
-    },
-    data() {
-      return {
-        isLoading: false,
-        studentFilter: '',
-        submitFlag: false,
-        editMode: false,
-
-        editAccess: true,
-        buttonIcon:'edit',
-        buttonText:'Edit',
-        pagination: {
-          sortBy: 'student_id',
-          page: 1,
-          rowsPerPage: 0, // 0 means all rows
-          ascending: true
-        },
-        columns: [
-          {
-            name: 'student_id',
-            label: 'Student ID',
-            align: 'center',
-            field: 'student_id',
-            classes: 'bg-grey-1',
-            headerClasses: 'bg-primary text-white',
-            // style: 'width: 100px',
-            sortable: true,
-          },
-          {
-            name: 'student_name',
-            label: 'Student Name',
-            align: 'center',
-            field: 'student_name',
-            classes: 'bg-grey-1',
-            headerClasses: 'bg-primary text-white',
-            // style: 'width: 100px',
-            sortable: true,
-          },
-          {
-            name: 'attendance',
-            label: 'Attendance Count',
-            align: 'center',
-            field: 'attendance',
-            classes: 'bg-grey-1',
-            headerClasses: 'bg-primary text-white',
-            // headerStyle: 'width: 400px',
-            // style: 'width: 100px',
-            sortable: true
-          },
-        ],
-      }
-    }
 
 
   }
@@ -227,17 +304,28 @@
     align-self: center;
   }
   .table {
-    width: 900px;
+    width: 950px;
   }
 
-  .row {
-    display: flex; /* equal height of the children */
+  h5 {
+    margin-bottom: 50px;
+    margin-top: 50px;
   }
 
-  .col {
-    flex: 1; /* additionally, equal width */
-    padding: 1em;
-    /*border: solid;*/
+  .button-row {
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    align-items: center;
+    margin-left: 50px;
+  }
+  /*.col {*/
+  /*  margin-left: 30px;*/
+  /*}*/
+
+  .csv-button {
+    width: 300px;
+    /*margin-left: 50px;*/
   }
 
 
