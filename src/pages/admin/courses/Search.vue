@@ -54,6 +54,7 @@
         v-model="creditMin"
         label="Credit Min"
         type="number"
+        min="0"
         step="0.25"
         filled
         :rules="[() => !!columns || 'Dummy Text']"
@@ -63,6 +64,7 @@
         v-model="creditMax"
         label="Credit Max"
         type="number"
+        min="0"
         step="0.25"
         filled
         :rules="[() => !!columns || 'Dummy Text']"
@@ -95,7 +97,9 @@ const columns = [
   {name: 'courseID', label: 'Course ID', field: 'courseID', align: 'left', style: 'width: 10%'},
   {name: 'syllabusID', label: 'Syllabus ID', field: 'syllabusID', align: 'center'},
   {name: 'title', label: 'Title', field: 'title', align: 'center'},
-  {name: 'credit', label: 'Credit', field: 'credit', format: val => val.toFixed(2)},
+  {name: 'lt', label: 'Level/Term', field: 'lt', align: 'center', sortable: true,
+    format: (val, row) => row.level + '-' + row.term},
+  {name: 'credit', label: 'Credit', field: 'credit', sortable: true, format: val => val.toFixed(2)},
 ]
 const commonAttr = {
   style: 'font-size: 1.05em;', headerStyle: 'font-size: 1.05em;'

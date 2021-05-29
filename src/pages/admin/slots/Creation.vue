@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <div class="text-h5 q-my-md">
+    <div class="text-h5 q-mb-md">
       Slots
     </div>
     <q-form
@@ -8,7 +8,7 @@
       @submit="updateSlots"
       @reset="resetForm"
     >
-      <div v-for="(slot, idx) in slots" :key="idx" class="row q-col-gutter-md">
+      <div v-for="(slot, idx) in slots" :key="idx" class="row q-col-gutter-md q-mb-sm">
         <q-input
           class="col-3"
           v-model="slot.id"

@@ -29,7 +29,7 @@
         v-model="syllabusID"
         label="Syllabus ID"
         outlined
-        :readonly="viewing"
+        readonly
         :rules="[() => !!syllabusID || 'Please Enter a Syllabus ID']"
       />
       <q-input
@@ -37,7 +37,7 @@
         v-model="courseID"
         label="Course ID"
         outlined
-        :readonly="viewing"
+        readonly
         :rules="[() => !!courseID || 'Please Enter a Course ID']"
       />
       <q-input
@@ -141,8 +141,6 @@ export default {
       const url = `/course/update/${this.loadCourseID}/${this.loadSyllabusID}`
       this.callEditApi(url, {
         title: this.title,
-        courseID: this.courseID,
-        syllabusID: this.syllabusID,
         offeredToDepartment: this.deptFor,
         offeredByDepartment: this.deptFrom,
         level: this.level,
@@ -167,7 +165,8 @@ export default {
   },
   created() {
     this.fetchOldData('/course/list', {
-      id: this.loadID
+      courseID: this.loadCourseID,
+      syllabusID: this.loadSyllabusID
     }, 'Course')
       .then(() => this.resetForm())
   }

@@ -23,7 +23,7 @@
         v-model="id"
         label="Admin Id"
         outlined
-        :readonly="viewing"
+        readonly
         :rules="[() => !!id || 'Please Enter an ID']"
       />
       <password-maker-field v-if="!viewing" classes="col-6" v-model="password"/>
@@ -75,7 +75,6 @@ export default {
     editAccount() {
       this.callEditApi('account/update/admin/' + this.loadID, {
         name: this.name,
-        id: this.id,
         password: this.password,
         privileges: this.privileges
       }, 'Admin account')

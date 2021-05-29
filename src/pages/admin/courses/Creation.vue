@@ -60,6 +60,7 @@
         v-model="credit"
         label="Credit"
         type="number"
+        min="0"
         step="0.25"
         outlined
         :rules="[() => !!credit || 'Please Enter Credit']"

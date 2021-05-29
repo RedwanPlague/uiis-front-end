@@ -37,7 +37,7 @@ export default {
       default: 'Teacher'
     },
     value: {
-      type: [Object, Array],
+      type: [Object, Array, String],
       default: null
     },
     department: {

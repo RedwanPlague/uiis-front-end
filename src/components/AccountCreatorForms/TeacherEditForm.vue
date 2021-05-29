@@ -23,7 +23,7 @@
         v-model="id"
         label="Teacher ID"
         outlined
-        :readonly="viewing"
+        readonly
         :rules="[() => !!id || 'Please Enter an ID']"
       />
       <department-picker classes="col-6" v-model="department" required :readonly="viewing"/>
@@ -65,8 +65,7 @@ export default {
   },
   methods: {
     editAccount() {
-      this.callEditApi('/account/update/teacher' + this.loadID, {
-        id: this.id,
+      this.callEditApi('/account/update/teacher/' + this.loadID, {
         name: this.name,
         password: this.password,
         department: this.department

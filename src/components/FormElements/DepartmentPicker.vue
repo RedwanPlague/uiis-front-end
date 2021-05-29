@@ -34,7 +34,7 @@ export default {
       default: 'Department'
     },
     value: {
-      type: Object,
+      type: [Object, String],
       default: null
     },
     classes: {
