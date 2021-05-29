@@ -42,15 +42,17 @@
           :rules="[() => !!slot.duration || 'Please Enter Duration']"
         />
         <div class="col-1">
-          <q-btn v-if="slot.old"
-                 :icon="slot.viewing ? 'edit' : 'visibility'"
-                 :color="slot.viewing ? 'primary' : 'black'"
-                 @click="slot.viewing = !slot.viewing"
-                 flat dense
+          <q-btn
+            v-if="slot.old"
+            :icon="slot.viewing ? 'edit' : 'visibility'"
+            :color="slot.viewing ? 'primary' : 'black'"
+            @click="slot.viewing = !slot.viewing"
+            flat dense
           />
-          <q-btn v-else
-                 icon="delete" color="primary" flat dense
-                 @click="localRemoveSlot(idx)"
+          <q-btn
+            v-else
+            icon="delete" color="primary" flat dense
+            @click="localRemoveSlot(idx)"
           />
         </div>
       </div>
@@ -76,7 +78,7 @@ import {apiFetch} from 'src/utils/apiWrappers'
 import {secondsToHour24, hour24ToSeconds} from 'src/utils/dateFormatters'
 
 export default {
-  name: 'SlotsCreation',
+  name: 'SlotManagement',
   data() {
     return {
       slots: [],

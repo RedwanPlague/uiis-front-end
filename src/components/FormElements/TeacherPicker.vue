@@ -68,17 +68,19 @@ export default {
   },
   methods: {
     fetchTeachers(dept) {
-      if (dept) {
-        apiFetch('account/teacher/list', {dept}, `teachers of ${dept}`)
-          .then(response => {
-            this.teacherList = response.data.map(x => {
-              return {
-                value: x.id,
-                label: `(${x.id}) ${x.name}`
-              }
-            })
+      apiFetch('account/teacher/list', dept, `teachers of ${dept ? dept : 'all'}`)
+        .then(response => {
+          this.teacherList = response.data.map(x => {
+            return {
+              value: x.id,
+              label: `(${x.id}) ${x.name}`
+            }
           })
-      }
+          if (typeof this.value === 'string') {
+            const cur = this.teacherList.filter(x => x.value === this.value)[0]
+            this.$emit('input', cur)
+          }
+        })
     },
     teacherFilter(value, update) {
       if (value === '') {

@@ -62,9 +62,13 @@ export default {
           this.deptList = response.data.map(x => {
             return {
               value: x.id,
-              label: x.id
+              label: `${x.id} - ${x.name}`
             }
           })
+          if (typeof this.value === 'string') {
+            const cur = this.deptList.filter(x => x.value === this.value)[0]
+            this.$emit('input', cur)
+          }
         })
     },
     deptFilter(value, update) {

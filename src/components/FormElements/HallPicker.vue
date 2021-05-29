@@ -65,6 +65,10 @@ export default {
               label: `(${x.id}) ${x.name}`
             }
           })
+          if (typeof this.value === 'string') {
+            const cur = this.hallList.filter(x => x.value === this.value)[0]
+            this.$emit('input', cur)
+          }
         })
     },
     hallFilter(value, update) {
