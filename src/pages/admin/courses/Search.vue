@@ -19,30 +19,35 @@
         v-model="syllabusID"
         label="Syllabus ID"
         filled
+        :rules="[() => !!columns || 'Dummy Text']"
       />
       <q-input
         class="col-6"
-        v-model="title"
-        label="Title"
+        v-model="courseID"
+        label="Course ID"
         filled
+        :rules="[() => !!columns || 'Dummy Text']"
       />
       <q-input
         class="col-12"
-        v-model="name"
-        label="Name"
+        v-model="title"
+        label="Title"
         filled
+        :rules="[() => !!columns || 'Dummy Text']"
       />
       <q-input
         class="col-3"
         v-model="level"
         label="Level"
         filled
+        :rules="[() => !!columns || 'Dummy Text']"
       />
       <q-input
         class="col-3"
         v-model="term"
         label="Term"
         filled
+        :rules="[() => !!columns || 'Dummy Text']"
       />
       <q-input
         class="col-3"
@@ -51,6 +56,7 @@
         type="number"
         step="0.25"
         filled
+        :rules="[() => !!columns || 'Dummy Text']"
       />
       <q-input
         class="col-3"
@@ -59,19 +65,42 @@
         type="number"
         step="0.25"
         filled
+        :rules="[() => !!columns || 'Dummy Text']"
       />
       <div class="col-12">
-        <q-btn label="Create" type="submit" color="primary" unelevated/>
+        <q-btn label="Search" type="submit" color="primary" unelevated/>
         <q-btn label="Reset" type="reset" color="primary" flat/>
       </div>
     </q-form>
+    <div v-if="showResults" class="q-mt-lg">
+      <q-table
+        title="Results"
+        :data="tableData"
+        :columns="columns"
+        flat
+        @row-click="onRowClick"
+      />
+    </div>
     <div style="min-height: 200px"></div>
+    <q-inner-loading :showing="searchLoading"/>
   </q-page>
 </template>
 
 <script>
 import DepartmentPicker from 'components/FormElements/DepartmentPicker'
-import search from 'src/mixins/creator'
+import search from 'src/mixins/search'
+import columnMerger from 'src/utils/columnMerger'
+
+const columns = [
+  {name: 'courseID', label: 'Course ID', field: 'courseID', align: 'left', style: 'width: 10%'},
+  {name: 'syllabusID', label: 'Syllabus ID', field: 'syllabusID', align: 'center'},
+  {name: 'title', label: 'Title', field: 'title', align: 'center'},
+  {name: 'credit', label: 'Credit', field: 'credit', format: val => val.toFixed(2)},
+]
+const commonAttr = {
+  style: 'font-size: 1.05em;', headerStyle: 'font-size: 1.05em;'
+}
+columnMerger(columns, commonAttr)
 
 export default {
   name: 'CourseSearch',
@@ -84,7 +113,7 @@ export default {
   data() {
     return {
       title: '',
-      name: '',
+      courseID: '',
       syllabusID: '',
       deptFrom: null,
       deptFor: null,
@@ -92,13 +121,14 @@ export default {
       term: '',
       creditMin: '',
       creditMax: '',
+      columns
     }
   },
   methods: {
     searchCourse() {
       this.callSearchApi('/course/list', {
         title: this.title,
-        name: this.name,
+        courseID: this.courseID,
         syllabusID: this.syllabusID,
         offeredToDepartment: this.deptFor,
         offeredByDepartment: this.deptFrom,
@@ -110,7 +140,7 @@ export default {
     },
     resetForm() {
       this.title = ''
-      this.name = ''
+      this.courseID = ''
       this.syllabusID = ''
       this.deptFrom = null
       this.deptFor = null
@@ -118,7 +148,16 @@ export default {
       this.term = ''
       this.creditMin = ''
       this.creditMax = ''
-    }
+    },
+    onRowClick(event, row) {
+      this.$router.push({
+        name: 'AdminCourseEditPage',
+        params: {
+          courseID: row.courseID,
+          syllabusID: row.syllabusID
+        }
+      })
+    },
   },
 }
 </script>

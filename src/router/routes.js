@@ -68,6 +68,16 @@ const routes = [
             component: () => import('pages/admin/courses/Creation')
           },
           {
+            path: 'search',
+            name: 'AdminCourseSearchPage',
+            component: () => import('pages/admin/courses/Search')
+          },
+          {
+            path: 'edit/:courseID/:syllabusID',
+            name: 'AdminCourseEditPage',
+            component: () => import('pages/admin/courses/Edit')
+          },
+          {
             path: 'assign',
             name: 'AdminCourseAssignmentPage',
             component: () => import('pages/admin/courses/Assignment')

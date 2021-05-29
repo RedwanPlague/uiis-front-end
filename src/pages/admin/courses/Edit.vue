@@ -1,49 +1,59 @@
 <template>
   <q-page padding>
     <div class="text-h5 q-my-md">
-      Create New Course
+      {{label}} New Course
+      <q-btn
+        :icon="viewing ? 'edit' : 'visibility'"
+        :color="viewing ? 'primary' : 'black'"
+        @click="viewing = !viewing"
+        flat dense
+      />
     </div>
-    <q-form class="row q-col-gutter-md" @submit="createCourse" @reset="resetForm">
+    <q-form class="row q-col-gutter-md" @submit="editCourse" @reset="resetForm">
       <department-picker
         classes="col-6"
         label="Department (offered to)"
         v-model="deptFor"
         required
+        :readonly="viewing"
       />
       <department-picker
         classes="col-6"
         label="Department (offered from)"
         v-model="deptFrom"
         required
+        :readonly="viewing"
       />
       <q-input
         class="col-6"
         v-model="syllabusID"
         label="Syllabus ID"
         outlined
-        :rules="[() => !!syllabusID || 'Please Enter Syllabus ID']"
+        :readonly="viewing"
+        :rules="[() => !!syllabusID || 'Please Enter a Syllabus ID']"
       />
       <q-input
         class="col-6"
         v-model="courseID"
         label="Course ID"
         outlined
-        :rules="[() => !!courseID || 'Please Enter Course ID']"
+        :readonly="viewing"
+        :rules="[() => !!courseID || 'Please Enter a Course ID']"
       />
       <q-input
         class="col-12"
         v-model="title"
         label="Title"
         outlined
-        :rules="[() => !!title || 'Please Enter Title']"
+        :readonly="viewing"
+        :rules="[() => !!title || 'Please Enter a Title']"
       />
       <q-input
         class="col-4"
         v-model="level"
         label="Level"
         outlined
-        type="number"
-        min="1" max="4"
+        :readonly="viewing"
         :rules="[() => !!level || 'Please Enter Level']"
       />
       <q-input
@@ -51,8 +61,7 @@
         v-model="term"
         label="Term"
         outlined
-        type="number"
-        min="1" max="2"
+        :readonly="viewing"
         :rules="[() => !!term || 'Please Enter Term']"
       />
       <q-input
@@ -62,6 +71,7 @@
         type="number"
         step="0.25"
         outlined
+        :readonly="viewing"
         :rules="[() => !!credit || 'Please Enter Credit']"
       />
       <course-picker
@@ -70,6 +80,7 @@
         v-model="prerequisites"
         multiple
         required
+        :readonly="viewing"
       />
       <q-input
         class="col-12 q-pb-md"
@@ -78,9 +89,10 @@
         type="textarea"
         rows="10"
         outlined
+        :readonly="viewing"
       />
       <div class="col-12">
-        <q-btn label="Create" type="submit" color="primary" unelevated :loading="createLoading"/>
+        <q-btn label="Edit" type="submit" color="primary" unelevated/>
         <q-btn label="Reset" type="reset" color="primary" flat/>
       </div>
     </q-form>
@@ -91,16 +103,16 @@
 <script>
 import DepartmentPicker from 'components/FormElements/DepartmentPicker'
 import CoursePicker from 'components/FormElements/CoursePicker'
-import creator from 'src/mixins/creator'
+import edit from 'src/mixins/edit'
 
 export default {
-  name: 'CourseCreation',
+  name: 'CourseEdit',
   components: {
     CoursePicker,
     DepartmentPicker
   },
   mixins: [
-    creator
+    edit
   ],
   data() {
     return {
@@ -116,9 +128,18 @@ export default {
       description: '',
     }
   },
+  computed: {
+    loadCourseID() {
+      return this.$route.params.courseID
+    },
+    loadSyllabusID() {
+      return this.$route.params.syllabusID
+    }
+  },
   methods: {
-    createCourse() {
-      this.callCreateApi('/course/create', {
+    editCourse() {
+      const url = `/course/update/${this.loadCourseID}/${this.loadSyllabusID}`
+      this.callEditApi(url, {
         title: this.title,
         courseID: this.courseID,
         syllabusID: this.syllabusID,
@@ -132,17 +153,23 @@ export default {
       }, 'Course')
     },
     resetForm() {
-      this.title = ''
-      this.courseID = ''
-      this.syllabusID = ''
-      this.deptFrom = null
-      this.deptFor = null
-      this.level = ''
-      this.term = ''
-      this.credit = ''
-      this.prerequisites = []
-      this.description = ''
+      this.title = this.oldData.title
+      this.courseID = this.oldData.courseID
+      this.syllabusID = this.oldData.syllabusID
+      this.deptFor = this.oldData.offeredToDepartment
+      this.deptFrom = this.oldData.offeredByDepartment
+      this.level = this.oldData.level
+      this.term = this.oldData.term
+      this.credit = this.oldData.credit
+      this.prerequisites = this.oldData.prerequisites
+      this.description = this.oldData.description
     }
   },
+  created() {
+    this.fetchOldData('/course/list', {
+      id: this.loadID
+    }, 'Course')
+      .then(() => this.resetForm())
+  }
 }
 </script>

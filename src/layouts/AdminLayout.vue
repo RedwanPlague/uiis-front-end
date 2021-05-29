@@ -83,11 +83,11 @@ const quickLinks = [
         icon: 'school',
         link: { name: 'AdminAccountSearchPage' }
       },
-      {
+      /*{
         title: 'Edit',
         icon: 'school',
         link: { name: 'AdminAccountEditPage' }
-      },
+      }*/
     ]
   },
   {
@@ -98,6 +98,11 @@ const quickLinks = [
         title: 'Create',
         icon: 'school',
         link: { name: 'AdminCourseCreationPage' }
+      },
+      {
+        title: 'Search',
+        icon: 'school',
+        link: { name: 'AdminCourseSearchPage' }
       },
       {
         title: 'Assign',

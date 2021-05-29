@@ -54,11 +54,15 @@ import HallPicker from 'components/FormElements/HallPicker'
 import columnMerger from 'src/utils/columnMerger'
 import search from 'src/mixins/search'
 
+const format = (val, row) => {
+  return row.level + '-' + row.term
+}
+
 const columns = [
   {name: 'id', label: 'Student ID', field: 'id', style: 'width: 10%', sortable: true},
   {name: 'name', label: 'Name', field: 'name', align: 'left', style: 'width: 60%'},
   {name: 'department', label: 'Department', field: 'department', align: 'center'},
-  {name: 'lt', label: 'Level/Term', field: 'lt', align: 'center', sortable: true},
+  {name: 'lt', label: 'Level/Term', field: 'lt', align: 'center', sortable: true, format},
 ]
 const commonAttr = {
   style: 'font-size: 1.05em', headerStyle: 'font-size: 1.05em'
@@ -94,12 +98,6 @@ export default {
         hall: this.hall,
         advisor: this.advisor
       }, 'Student account')
-        .then(() => {
-          this.tableData = this.tableData.map(x => {
-            x.lt = x.level + '-' + x.term
-            return x
-          })
-        })
     },
     resetForm() {
       this.name = ''
@@ -111,8 +109,8 @@ export default {
     onRowClick(event, row) {
       this.$router.push({
         name: 'AdminAccountEditPage',
-        query: {
-          type: 'student',
+        params: {
+          userType: 'student',
           id: row.id
         }
       })

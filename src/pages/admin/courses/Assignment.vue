@@ -4,6 +4,15 @@
       <course-picker
         classes="col-6"
         v-model="course"
+        label="Course to Edit"
+        required
+      />
+      <session-field
+        classes="col-6"
+        v-model="session"
+        label="Session"
+        required
+        readonly
       />
     </div>
     <q-form v-if="!!course">
@@ -12,7 +21,7 @@
         label="Evaluation Details"
         header-class="text-h6 q-pl-none"
       >
-      <div class="row q-col-gutter-md q-mb-md">
+      <div class="row q-col-gutter-md q-mb-md q-pt-md">
         <q-input
           class="col-6"
           v-model="totalEvalCount"
@@ -223,10 +232,12 @@ import CoursePicker from 'components/FormElements/CoursePicker'
 import TeacherPicker from 'components/FormElements/TeacherPicker'
 import SlotPicker from 'components/FormElements/SlotPicker'
 import DayOfWeekPicker from 'components/FormElements/DayOfWeekPicker'
+import SessionField from 'components/FormElements/SessionField'
 
 export default {
   name: 'CourseAssignment',
   components: {
+    SessionField,
     DayOfWeekPicker,
     SlotPicker,
     TeacherPicker,
@@ -235,6 +246,7 @@ export default {
   data() {
     return {
       course: null,
+      session: '',
       totalEvalCount: '',
       consideredEvalCount: '',
       totalMarks: '',

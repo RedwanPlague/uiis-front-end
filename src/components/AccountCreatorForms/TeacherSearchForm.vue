@@ -29,7 +29,7 @@
         title="Results"
         :data="tableData"
         :columns="columns"
-        @row-click="$router.push({name: 'AdminAccountEditPage'})"
+        @row-click="onRowClick"
       />
     </div>
     <q-inner-loading :showing="searchLoading"/>
@@ -79,6 +79,15 @@ export default {
       this.name = ''
       this.id = ''
       this.department = null
+    },
+    onRowClick(event, row) {
+      this.$router.push({
+        name: 'AdminAccountEditPage',
+        params: {
+          userType: 'teacher',
+          id: row.id
+        }
+      })
     }
   }
 }

@@ -7,6 +7,7 @@
     :label="label"
     :filled="!required"
     :outlined="required"
+    :readonly="readonly"
     :rules="[() => !required || multiple || !!value || `Please Select ${label}`]"
     :use-chips="multiple"
     :multiple="multiple"
@@ -49,6 +50,10 @@ export default {
     required: {
       type: Boolean,
       default: false
+    },
+    readonly: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -61,10 +66,10 @@ export default {
     fetchCourseList() {
       apiFetch('/course/list', null, 'all courses')
         .then(response => {
-          this.courseList = response.data.map((x, idx) => {
+          this.courseList = response.data.map(x => {
             return {
-              value: idx,
-              label: `${x.title}(${x.department}) - ${idx}`
+              value: `${x.courseID}${x.syllabusID}`,
+              label: `${x.courseID}(${x.syllabusID}): ${x.title}`
             }
           })
         }).catch()
