@@ -15,7 +15,7 @@
               <q-item
                 clickable
                 class="bg-grey-2"
-                v-for="semester in availableSemesters"
+                v-for="semester in getAvailableSemesters"
                 :key="semester.semesterID"
                 v-bind="semester"
                 @click.native="selectedSemester = semester; onItemClick();"
@@ -44,16 +44,13 @@ export default {
 
   data() {
     return {
-      /* available semesters */
-      availableSemesters: [],
-
       /* for keeping track of selected semester */
       selectedSemester: {}
     };
   },
 
   methods: {
-    ...mapActions(['fetchAdvisee']),
+    ...mapActions(['fetchAdvisee', 'generateAvailableSemesters']),
 
     onItemClick() {
       this.$router.push({ name: 'adviseeGrades',
@@ -72,21 +69,15 @@ export default {
     }
   },
 
-  computed: mapGetters(['getAdvisee']),
+  computed: mapGetters(['getAdvisee', 'getAvailableSemesters']),
 
   async created() {
     try {
       await this.fetchAdvisee(this.$route.params.studentID);
-
-      let availableSemesterCount = (this.getAdvisee.level-1)*2+this.getAdvisee.term-1;
-
-      for(let i=0; i<availableSemesterCount; i++) {
-        this.availableSemesters[i] = {
-          semesterID: i+1,
-          level: Math.floor(i/2)+1,
-          term: i%2+1
-        };
-      }
+      this.generateAvailableSemesters({
+        level: this.getAdvisee.level,
+        term: this.getAdvisee.term
+      });
     } catch(error) {
       console.log(error);
     }

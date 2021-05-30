@@ -9,14 +9,14 @@
       </div><br />
 
       <q-table
-        dense bordered :data="grades" :columns="gradeColumns" row-key="courseID"
+        dense bordered :data="getAvailableGrades" :columns="gradeColumns" row-key="courseID"
       /><br />
 
       <div class="row">
         <div class="text-subtitle1">
-          <strong>Registered Credit Hours in this Term:</strong> {{ getTotalCreditHour() }}<br />
-          <strong>Credit Hours Earned in this Term:</strong> {{ getTotalCreditHourObtained() }}<br />
-          <strong>Total Credit Hours:</strong> {{ getTotalCreditHoursCompleted() }}
+          <strong>Registered Credit Hours in this Term:</strong> {{ getTotalCreditHour().toFixed(2) }}<br />
+          <strong>Credit Hours Earned in this Term:</strong> {{ getTotalCreditHourObtained().toFixed(2) }}<br />
+          <strong>Total Credit Hours:</strong> {{ getTotalCreditHoursCompleted().toFixed(2) }}
         </div>
 
         <q-space />
@@ -24,8 +24,8 @@
         <q-card>
           <q-card-section>
             <div class="text-subtitle1">
-              <strong>Obtained GPA:</strong> {{ getGPA() }}<br />
-              <strong>Current CGPA:</strong> {{ getCGPA() }}
+              <strong>Obtained GPA:</strong> {{ getGPA().toFixed(2) }}<br />
+              <strong>Current CGPA:</strong> {{ getCGPA().toFixed(2) }}
             </div>
           </q-card-section>
         </q-card>
@@ -70,6 +70,7 @@ export default {
           align: 'left',
           label: 'Credit Hours',
           field: 'credit',
+          format: val => `${val.toFixed(2)}`,
           sortable: true
         },
         {
@@ -84,24 +85,22 @@ export default {
           align: 'left',
           label: 'Grade Point',
           field: 'gradePoint',
+          format: val => `${val.toFixed(2)}`,
           sortable: true
         }
-      ],
-
-      /* passed or failed courses' grades */
-      grades: []
+      ]
     };
   },
 
   methods: {
-    ...mapActions(['fetchAdvisee', 'fetchGrades']),
+    ...mapActions(['fetchAdvisee', 'fetchGrades', 'generateAvailableGrades']),
 
     getTotalCreditHourObtained() {
       let totalCredit = 0.0;
 
-      for(let i=0; i<this.grades.length; i++) {
-        if(this.grades[i].status === 'passed') {
-          totalCredit += this.grades[i].credit;
+      for(let i=0; i<this.$store.getters.getAvailableGrades.length; i++) {
+        if(this.$store.getters.getAvailableGrades[i].status === 'passed') {
+          totalCredit += this.$store.getters.getAvailableGrades[i].credit;
         }
       }
       return totalCredit;
@@ -110,8 +109,8 @@ export default {
     getTotalCreditHour() {
       let totalCredit = 0.0;
 
-      for(let i=0; i<this.grades.length; i++) {
-        totalCredit += this.grades[i].credit;
+      for(let i=0; i<this.$store.getters.getAvailableGrades.length; i++) {
+        totalCredit += this.$store.getters.getAvailableGrades[i].credit;
       }
       return totalCredit;
     },
@@ -119,8 +118,8 @@ export default {
     getGPA() {
       let sum = 0.0;
 
-      for(let i=0; i<this.grades.length; i++) {
-        sum += this.grades[i].credit*this.grades[i].gradePoint;
+      for(let i=0; i<this.$store.getters.getAvailableGrades.length; i++) {
+        sum += this.$store.getters.getAvailableGrades[i].credit*this.$store.getters.getAvailableGrades[i].gradePoint;
       }
       return sum/this.getTotalCreditHour();
     },
@@ -144,7 +143,7 @@ export default {
     }
   },
 
-  computed: mapGetters(['getAdvisee', 'getGrades']),
+  computed: mapGetters(['getAdvisee', 'getGrades', 'getAvailableGrades']),
 
   async created() {
     try {
@@ -154,18 +153,7 @@ export default {
         level: this.$route.query.level,
         term: this.$route.query.term
       });
-
-      for(let i=0, index=0; i<this.getGrades.length; i++) {
-        if(this.getGrades[i].status === 'passed' || this.getGrades[i].status === 'failed') {
-          this.grades[index++] = {
-            courseID: this.getGrades[i].courseSession.course.courseID,
-            title: this.getGrades[i].courseSession.course.title,
-            credit: this.getGrades[i].courseSession.course.credit,
-            gradeLetter: this.getGrades[i].result.gradeLetter,
-            gradePoint: this.getGrades[i].result.gradePoint
-          };
-        }
-      }
+      this.generateAvailableGrades();
     } catch(error) {
       console.log(error);
     }
