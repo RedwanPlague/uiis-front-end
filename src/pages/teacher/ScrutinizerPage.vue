@@ -1,45 +1,40 @@
 <template>
   <q-page padding>
-    <h6>Current Session: {{ currentSession }}</h6>
-    <span>Select course: </span>
-    <select v-model="currentCourse">
-      <option disabled value="">Please select one</option>
-      <option
-        v-for="course in allCourses"
-        :value="course.courseID"
-        :key="course.courseID"
-      >
-        {{
-          course.courseID +
-            " - " +
-            course.courseTitle
-        }}
-      </option>
-    </select>
+    <div class="column items-center">
+      <h6>Current Session: {{ currentSession }}</h6>
+      <div>
+        <span>Select course: </span>
+        <select v-model="currentCourse">
+          <option disabled value="">Please select one</option>
+          <option
+            v-for="course in allCourses"
+            :value="course.courseID"
+            :key="course.courseID"
+          >
+            {{ course.courseID + " - " + course.courseTitle }}
+          </option>
+        </select>
+      </div>
 
-    <ScrutinizerTable v-if="currentCourse" :key="currentCourse" />
+      <ScrutinizerTable v-if="currentCourse" :key="currentCourse" />
+    </div>
   </q-page>
 </template>
 
 <script>
-
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions } from "vuex";
 
 export default {
-
   name: "ScrutinizerPage",
   components: {
-    ScrutinizerTable: () => import('../../components/ScrutinizerTable.vue'),
+    ScrutinizerTable: () => import("../../components/ScrutinizerTable.vue")
   },
   data() {
-    return {
-      
-    };
+    return {};
   },
 
   methods: {
-    ...mapActions("scrutinizer", ["fillCourses", "fillSingleCourse"]),
-
+    ...mapActions("scrutinizer", ["fillCourses", "fillSingleCourse"])
   },
 
   computed: {
@@ -60,17 +55,15 @@ export default {
     async currentCourse(newVal, oldVal) {
       //await this.fillSingleCourse();
       //console.log("hemlo");
-    },
+    }
   },
 
   created() {
     // API call
 
     this.$store.dispatch("scrutinizer/fillCourses");
-  },
+  }
 };
 </script>
 
-<style>
-
-</style>
+<style></style>

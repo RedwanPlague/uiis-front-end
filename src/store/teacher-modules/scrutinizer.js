@@ -16,6 +16,11 @@ const getters = {
   currentSession: state => state.currentSession,
   courseLoading: state => state.courseLoading,
 
+  hasApprovedResult: (state, getters) => {
+    const info = getters.currentCourseInfo;
+    return info.hasApprovedResult;
+  },
+
   allCourses: state => state.courses,
 
   attTotal: (state, getters) => teacherID => {
@@ -133,6 +138,11 @@ const mutations = {
   mutCourseLoading: (state, loading) => {
     state.courseLoading = loading;
   },
+
+  mutHasApprovedResult: (state) => {
+    let curCor = state.courses.find(course => course.courseID === state.currentCourse);
+    curCor.hasApprovedResult = true;
+  }
 };
 
 const actions = {

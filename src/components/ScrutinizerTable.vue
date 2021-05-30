@@ -1,23 +1,6 @@
 <template>
-  <div class="q-pa-sm">
+  <div class="q-pa-sm column items-center">
     <h6>{{ info.courseID + " - " + info.courseTitle }}</h6>
-    <!-- <h6>{{info.teachers}}</h6> -->
-    <!-- <q-markup-table v-if="!courseLoading" separator="vertical" flat bordered>
-      <thead>
-        <tr>
-          <th v-for="matha in allheaders" :key="matha">
-            {{ matha }}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(deho, index) in studentDehos" :key="index">
-          <td v-for="(entry, eindex) in deho" :key="eindex">
-            {{ entry }}
-          </td>
-        </tr>
-      </tbody>
-    </q-markup-table> -->
     <div v-if="!courseLoading">
       <q-table
         v-for="(teacherInfo, index) in allTeacherInfo"
@@ -41,9 +24,12 @@
     </div>
     <h3 v-else>Loading</h3>
 
-    <!-- <p>{{ allTeacherInfo }}</p> -->
-
-    <q-btn color="primary" label="Forward to department head" />
+    <q-btn
+      class="q-mt-xl"
+      color="primary"
+      label="Forward to department head"
+      :disable="hasApprovedResult || !allCompleted"
+    />
   </div>
 </template>
 
@@ -60,7 +46,14 @@ export default {
   },
 
   methods: {
-    ...mapActions("scrutinizer", ["fillSingleCourse"])
+    ...mapActions("scrutinizer", ["fillSingleCourse"]),
+
+    async forwardResult() {
+      await api.put(
+        `/teacher/scrutinizer/${this.info.courseID}/${this.currentSession}/approve`
+      );
+      this.$store.commit("mutHasApprovedResult");
+    }
   },
 
   computed: {
@@ -74,70 +67,36 @@ export default {
       tfStudent: "tfStudent",
       courseLoading: "courseLoading",
       hasApprovedResult: "hasApprovedResult",
+      currentSession: "currentSession"
     }),
 
-    allheaders() {
-      const mathas = ["Student ID"];
-
-      for (const teacher of this.info.teachers) {
-        mathas.push(
-          `${teacher.teacher}-Attendance (${this.attTotal(teacher.teacher)})`
-        );
-      }
-
-      for (const teacher of this.info.teachers) {
-        for (const evall of teacher.evalDescriptions) {
-          mathas.push(
-            `${teacher.teacher}-eval-${evall.evalID} (${this.evalTotal(
-              teacher.teacher,
-              evall.evalID
-            )})`
-          );
-        }
-      }
-
-      for (const examiner of this.info.examiners) {
-        mathas.push(
-          `${examiner.teacher}-Term Final-${examiner.part}  (${this.tfTotal(
-            examiner.teacher,
-            examiner.part
-          )})`
-        );
-      }
-
-      return mathas;
-    },
-
-    studentDehos() {
-      const shobDehos = [];
-
-      for (const student of this.info.students) {
-        const studentID = student.student.id;
-
-        const deho = [studentID];
-
+    allCompleted() {
+      for (const regi of this.info.students) {
         for (const teacher of this.info.teachers) {
-          deho.push(this.attStudent(teacher.teacher, studentID));
-        }
+          if (this.attStudent(teacher.teacher, regi.student.id) === "NA")
+            return false;
 
-        for (const teacher of this.info.teachers) {
           for (const evall of teacher.evalDescriptions) {
-            deho.push(
-              this.evalStudent(teacher.teacher, evall.evalID, studentID)
-            );
+            if (
+              this.evalStudent(
+                teacher.teacher,
+                evall.evalID,
+                regi.student.id
+              ) === "NA"
+            )
+              return false;
           }
         }
 
         for (const examiner of this.info.examiners) {
-          deho.push(this.tfStudent(examiner.teacher, examiner.part, studentID));
+          if (
+            this.tfStudent(examiner.teacher, examiner.part, regi.student.id) ===
+            "NA"
+          )
+            return false;
         }
-
-        shobDehos.push(deho);
       }
-
-      shobDehos.sort((a, b) => (a[0] < b[0] ? -1 : 1));
-
-      return shobDehos;
+      return true;
     },
 
     allTeacherInfo() {
@@ -251,7 +210,7 @@ export default {
         deho.push(notun);
       }
 
-      return ({mathas, deho});
+      return { mathas, deho };
     }
   },
 
