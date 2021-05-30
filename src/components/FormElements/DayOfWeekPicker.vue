@@ -32,7 +32,7 @@ export default {
       default: 'Day'
     },
     value: {
-      type: [Object, Array],
+      type: [Object, Array, String],
       default: null
     },
     classes: {
@@ -51,6 +51,24 @@ export default {
     return {
       dayOptions: dayList
     }
+  },
+  methods: {
+    fixValue(value) {
+      if (typeof value === 'string') {
+        const cur = this.dayOptions.filter(x => x.value === value)[0]
+        this.$emit('input', cur)
+      }
+    },
+  },
+  created() {
+    this.fixValue(this.value)
+  },
+  watch: {
+    value: {
+      handler(newVal/*, oldVal*/) {
+        this.fixValue(newVal)
+      }
+    },
   }
 }
 </script>

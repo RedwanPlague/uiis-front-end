@@ -16,6 +16,7 @@
 <script>
 import {apiFetch} from 'src/utils/apiWrappers'
 import {secondsToAMPM} from 'src/utils/dateFormatters'
+import {numEqual} from 'src/utils/utilities'
 
 export default {
   name: 'SlotPicker',
@@ -25,7 +26,7 @@ export default {
       default: 'Slot'
     },
     value: {
-      type: [Object, Array],
+      type: [Object, Array, Number, String],
       default: null
     },
     classes: {
@@ -46,8 +47,14 @@ export default {
     }
   },
   methods: {
+    fixValue(value) {
+      if (typeof value === 'string' || typeof value === 'number') {
+        const cur = this.slotOptions.filter(x => numEqual(x.value, value))[0]
+        this.$emit('input', cur)
+      }
+    },
     fetchSlots() {
-      apiFetch('/slot/list')
+      apiFetch('/slot/list', null, 'Slots')
         .then(response => {
           this.slotOptions = response.data.map(x => {
             return {
@@ -55,11 +62,19 @@ export default {
               label: `(${x.id}) ${secondsToAMPM(x.startingTime)} - ${x.duration} minutes`
             }
           })
+          this.fixValue(this.value)
         })
     }
   },
   created() {
     this.fetchSlots()
+  },
+  watch: {
+    value: {
+      handler(newVal/*, oldVal*/) {
+        this.fixValue(newVal)
+      }
+    },
   }
 }
 </script>

@@ -5,9 +5,9 @@
     :value="value"
     outlined
     :readonly="readonly"
-    input-class="cursor-pointer"
+    :input-class="{'cursor-pointer': !readonly}"
     @input="$emit('input', $event)"
-    @click="$refs.monthPicker.show()"
+    @click="!readonly ? $refs.monthPicker.show() : null"
     :rules="[() => !required || !!value || `Please Enter ${label}`]"
   >
     <template v-slot:append v-if="!readonly">

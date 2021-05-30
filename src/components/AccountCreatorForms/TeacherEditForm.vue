@@ -74,17 +74,14 @@ export default {
       })
     },
     resetForm() {
-      this.name = this.oldData.name
-      this.id = this.oldData.id
+      this.loadOldDataIntoForm()
       this.password = null
-      this.department = this.oldData.department
     }
   },
   created() {
     this.fetchOldData('/account/teacher/list', {
       id: this.loadID
     }, 'Teacher Account')
-      .then(() => this.resetForm())
   }
 }
 </script>

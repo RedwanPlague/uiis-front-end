@@ -21,13 +21,13 @@
       <department-picker
         classes="col-6"
         label="Department (offered to)"
-        v-model="deptFor"
+        v-model="offeredToDepartment"
         required
       />
       <department-picker
         classes="col-6"
         label="Department (offered from)"
-        v-model="deptFrom"
+        v-model="offeredByDepartment"
         required
       />
       <q-input
@@ -109,8 +109,8 @@ export default {
       title: null,
       courseID: null,
       syllabusID: null,
-      deptFrom: null,
-      deptFor: null,
+      offeredByDepartment: null,
+      offeredToDepartment: null,
       level: null,
       term: null,
       credit: null,
@@ -124,8 +124,8 @@ export default {
         title: this.title,
         courseID: this.courseID,
         syllabusID: this.syllabusID,
-        offeredToDepartment: extract(this.deptFor),
-        offeredByDepartment: extract(this.deptFrom),
+        offeredToDepartment: extract(this.offeredToDepartment),
+        offeredByDepartment: extract(this.offeredByDepartment),
         level: this.level,
         term: this.term,
         credit: this.credit,
@@ -138,8 +138,8 @@ export default {
       this.title = null
       this.courseID = null
       this.syllabusID = null
-      this.deptFrom = null
-      this.deptFor = null
+      this.offeredByDepartment = null
+      this.offeredToDepartment = null
       this.level = null
       this.term = null
       this.credit = null

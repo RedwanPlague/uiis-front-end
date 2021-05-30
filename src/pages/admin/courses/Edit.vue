@@ -29,14 +29,14 @@
       <department-picker
         classes="col-6"
         label="Department (offered to)"
-        v-model="deptFor"
+        v-model="offeredToDepartment"
         required
         :readonly="viewing"
       />
       <department-picker
         classes="col-6"
-        label="Department (offered from)"
-        v-model="deptFrom"
+        label="Department (offered by)"
+        v-model="offeredByDepartment"
         required
         :readonly="viewing"
       />
@@ -121,8 +121,8 @@ export default {
       title: null,
       courseID: null,
       syllabusID: null,
-      deptFrom: null,
-      deptFor: null,
+      offeredByDepartment: null,
+      offeredToDepartment: null,
       level: null,
       term: null,
       credit: null,
@@ -143,28 +143,17 @@ export default {
       const url = `/course/update/${this.loadCourseID}/${this.loadSyllabusID}`
       this.callEditApi(url, {
         title: this.title,
-        offeredToDepartment: extract(this.deptFor),
-        offeredByDepartment: extract(this.deptFrom),
+        offeredToDepartment: extract(this.offeredToDepartment),
+        offeredByDepartment: extract(this.offeredByDepartment),
         level: this.level,
         term: this.term,
         credit: this.credit,
         prerequisites: extract(this.prerequisites),
         description: this.description
       }, 'Course')
-      console.log('**************')
-      console.log(this.prerequisites.map(x => x.value))
     },
     resetForm() {
-      this.title = this.oldData.title
-      this.courseID = this.oldData.courseID
-      this.syllabusID = this.oldData.syllabusID
-      this.deptFor = this.oldData.offeredToDepartment
-      this.deptFrom = this.oldData.offeredByDepartment
-      this.level = this.oldData.level
-      this.term = this.oldData.term
-      this.credit = this.oldData.credit
-      this.prerequisites = this.oldData.prerequisites
-      this.description = this.oldData.description
+      this.loadOldDataIntoForm()
     }
   },
   created() {
@@ -172,7 +161,6 @@ export default {
       courseID: this.loadCourseID,
       syllabusID: this.loadSyllabusID
     }, 'Course')
-      .then(() => this.resetForm())
   }
 }
 </script>

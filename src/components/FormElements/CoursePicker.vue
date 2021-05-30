@@ -36,7 +36,7 @@ export default {
       default: 'Course'
     },
     value: {
-      type: [Object, Array],
+      type: [Object, Array, String],
       default: null,
     },
     classes: {
@@ -62,16 +62,21 @@ export default {
     }
   },
   methods: {
-    fixValue() {
-      if (Array.isArray(this.value)) {
-        for (let i = 0; i < this.value.length; i++) {
-          const format = this.value.map(x => JSON.stringify(x))
+    fixValue(value) {
+      if (this.courseList.length === 0) return
+      if (Array.isArray(value)) {
+        for (let i = 0; i < value.length; i++) {
+          const format = value.map(x => JSON.stringify(x))
           const cur = this.courseList.filter(x => format.includes(JSON.stringify(x.value)))
           this.$emit('input', cur)
         }
       }
-      // else if (typeof this.value === 'object' && !this.value.hasOwnProperty('value')) {
-      //   const cur = this.courseList.filter(x => JSON.stringify(x.value) === JSON.stringify(this.value))[0]
+      else if (typeof value === 'string') {
+        const cur = this.courseList.filter(x => x.value === value)[0]
+        this.$emit('input', cur)
+      }
+      // else if (typeof value === 'object' && !value.hasOwnProperty('value')) {
+      //   const cur = this.courseList.filter(x => JSON.stringify(x.value) === JSON.stringify(value))[0]
       //   this.$emit('input', cur)
       // }
     },
@@ -87,8 +92,8 @@ export default {
               label: `${x.courseID}(${x.syllabusID}): ${x.title}`
             }
           })
-          this.fixValue()
-        }).catch()
+          this.fixValue(this.value)
+        })
     },
     courseFilter(value, update) {
       if (value === '') {
@@ -105,11 +110,13 @@ export default {
   created() {
     this.fetchCourseList()
   },
-  // watch: {
-  //   value() {
-  //     this.fixValue()
-  //   }
-  // }
+  watch: {
+    value: {
+      handler(newVal/*, oldVal*/) {
+        this.fixValue(newVal)
+      }
+    },
+  }
 }
 </script>
 

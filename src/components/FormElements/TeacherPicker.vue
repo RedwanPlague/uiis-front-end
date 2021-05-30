@@ -41,7 +41,7 @@ export default {
     },
     department: {
       type: String,
-      default: 'CSE'
+      default: null
     },
     classes: {
       type: [Object, String]
@@ -66,6 +66,19 @@ export default {
     }
   },
   methods: {
+    fixValue(value) {
+      if (this.teacherList.length === 0) return
+      if (Array.isArray(value)) {
+        for (let i = 0; i < value.length; i++) {
+          const cur = this.teacherList.filter(x => value.includes(x.value))
+          this.$emit('input', cur)
+        }
+      }
+      else if (typeof value === 'string') {
+        const cur = this.teacherList.filter(x => x.value === value)[0]
+        this.$emit('input', cur)
+      }
+    },
     fetchTeachers(dept) {
       apiFetch('account/teacher/list',
         {department: dept},
@@ -77,10 +90,7 @@ export default {
               label: `(${x.id}) ${x.name}`
             }
           })
-          if (typeof this.value === 'string') {
-            const cur = this.teacherList.filter(x => x.value === this.value)[0]
-            this.$emit('input', cur)
-          }
+          this.fixValue(this.value)
         })
     },
     teacherFilter(value, update) {
@@ -99,8 +109,13 @@ export default {
     this.fetchTeachers(this.department)
   },
   watch: {
+    value: {
+      handler(newVal/*, oldVal*/) {
+        this.fixValue(newVal)
+      }
+    },
     department: {
-      handler(newVal, oldVal) {
+      handler(newVal/*, oldVal*/) {
         this.fetchTeachers(newVal)
       }
     }

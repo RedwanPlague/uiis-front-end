@@ -95,19 +95,13 @@ export default {
       }, 'Student Account')
     },
     resetForm() {
-      this.name = this.oldData.name
-      this.id = this.oldData.id
-      this.password = null
-      this.department = this.oldData.department
-      this.hall= this.oldData.hall
-      this.advisor = this.oldData.advisor
+      this.loadOldDataIntoForm()
     },
   },
   created() {
     this.fetchOldData('/account/student/list', {
       id: this.loadID
     }, 'Student Account')
-      .then(() => this.resetForm())
   }
 }
 </script>

@@ -55,9 +55,10 @@ export default {
     }
   },
   methods: {
-    fixValue() {
-      if (typeof this.value === 'string') {
-        const cur = this.deptList.filter(x => x.value === this.value)[0]
+    fixValue(value) {
+      if (this.deptList.length === 0) return
+      if (typeof value === 'string') {
+        const cur = this.deptList.filter(x => x.value === value)[0]
         this.$emit('input', cur)
       }
     },
@@ -70,7 +71,7 @@ export default {
               label: `${x.id} - ${x.name}`
             }
           })
-          this.fixValue()
+          this.fixValue(this.value)
         })
     },
     deptFilter(value, update) {
@@ -88,11 +89,13 @@ export default {
   created() {
     this.fetchDepartments()
   },
-  // watch: {
-  //   value() {
-  //     this.fixValue()
-  //   }
-  // }
+  watch: {
+    value: {
+      handler(newVal/*, oldVal*/) {
+        this.fixValue(newVal)
+      }
+    },
+  }
 }
 </script>
 

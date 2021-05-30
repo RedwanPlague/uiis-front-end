@@ -81,17 +81,14 @@ export default {
       }, 'Admin account')
     },
     resetForm() {
-      this.name = this.oldData.name
-      this.id = this.oldData.id
+      this.loadOldDataIntoForm()
       this.password = null
-      this.privileges = this.oldData.privileges
     }
   },
   created() {
     this.fetchOldData('account/admin/list', {
       id: this.loadID
     }, 'Admin account')
-      .then(() => this.resetForm())
   }
 }
 </script>

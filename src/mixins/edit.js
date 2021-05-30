@@ -1,4 +1,5 @@
 import {adminAPI} from 'boot/axios'
+import {deepCopy} from 'src/utils/utilities'
 
 export default {
   data() {
@@ -15,13 +16,22 @@ export default {
     }
   },
   methods: {
+    loadOldDataIntoForm() {
+      for (const key of Object.keys(this.oldData)) {
+        this[key] = deepCopy(this.oldData[key])
+      }
+    },
     fetchOldData(url, params, name) {
       this.oldDataLoading = true
       return new Promise((resolve, reject) => {
         adminAPI.get(url, { params })
           .then(response => {
+            if (response.data.length === 0) {
+              reject({doesNotExist: true})
+            }
             this.oldDataLoading = false
             this.oldData = response.data[0]
+            this.loadOldDataIntoForm()
             console.log(`Old data for ${name} loaded`)
             console.log(response)
             resolve(response)
