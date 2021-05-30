@@ -2,34 +2,37 @@
   <div class="q-pa-sm column items-center">
     <h6>{{ info.courseID + " - " + info.courseTitle }}</h6>
     <div v-if="!courseLoading">
-      <q-table
-        v-for="(teacherInfo, index) in allTeacherInfo"
-        :key="index"
-        :title="teacherInfo.teacherName"
-        :data="teacherInfo.deho"
-        :columns="teacherInfo.mathas"
-        separator="cell"
-        row-key="studentID"
-      >
-      </q-table>
+      <div>
+        <q-table
+          v-for="(teacherInfo, index) in allTeacherInfo"
+          :key="index"
+          :title="teacherInfo.teacherName"
+          :data="teacherInfo.deho"
+          :columns="teacherInfo.mathas"
+          separator="cell"
+          row-key="studentID"
+        >
+        </q-table>
 
-      <q-table
-        title="Term Final"
-        :data="tfInfo.deho"
-        :columns="tfInfo.mathas"
-        separator="cell"
-        row-key="studentID"
-      >
-      </q-table>
+        <q-table
+          title="Term Final"
+          :data="tfInfo.deho"
+          :columns="tfInfo.mathas"
+          separator="cell"
+          row-key="studentID"
+        >
+        </q-table>
+      </div>
+      <q-btn
+        class="q-mt-xl"
+        color="primary"
+        label="Forward to department head"
+        :disable="hasApprovedResult || !allCompleted"
+      />
     </div>
     <h3 v-else>Loading</h3>
 
-    <q-btn
-      class="q-mt-xl"
-      color="primary"
-      label="Forward to department head"
-      :disable="hasApprovedResult || !allCompleted"
-    />
+
   </div>
 </template>
 
@@ -71,6 +74,8 @@ export default {
     }),
 
     allCompleted() {
+
+      console.log(this.info);
       for (const regi of this.info.students) {
         for (const teacher of this.info.teachers) {
           if (this.attStudent(teacher.teacher, regi.student.id) === "NA")
