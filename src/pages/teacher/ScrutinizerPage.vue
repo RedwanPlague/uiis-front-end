@@ -1,94 +1,73 @@
 <template>
   <q-page padding>
-    <ScrutinizerTable v-for="course in courses" :key="course.courseName" v-bind="course"></ScrutinizerTable>
+    <h6>Current Session: {{ currentSession }}</h6>
+    <span>Select course: </span>
+    <select v-model="currentCourse">
+      <option disabled value="">Please select one</option>
+      <option
+        v-for="course in allCourses"
+        :value="course.courseID"
+        :key="course.courseID"
+      >
+        {{
+          course.courseID +
+            " - " +
+            course.courseTitle
+        }}
+      </option>
+    </select>
+
+    <ScrutinizerTable v-if="currentCourse" :key="currentCourse" />
   </q-page>
 </template>
 
 <script>
 
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
+
   name: "ScrutinizerPage",
   components: {
     ScrutinizerTable: () => import('../../components/ScrutinizerTable.vue'),
   },
   data() {
     return {
-      courses: null
+      
     };
+  },
+
+  methods: {
+    ...mapActions("scrutinizer", ["fillCourses", "fillSingleCourse"]),
+
+  },
+
+  computed: {
+    ...mapGetters("scrutinizer", ["currentSession", "allCourses"]),
+
+    currentCourse: {
+      get() {
+        return this.$store.getters["scrutinizer/currentCourse"];
+      },
+
+      set(curCourse) {
+        this.$store.commit("scrutinizer/mutCurCourse", curCourse);
+      }
+    }
+  },
+
+  watch: {
+    async currentCourse(newVal, oldVal) {
+      //await this.fillSingleCourse();
+      //console.log("hemlo");
+    },
   },
 
   created() {
     // API call
 
-    this.courses = [
-      {
-        courseName: "CSE311",
-        marks: [
-          {
-            student_id: "1605002",
-            Attendance: 9,
-            ct_1: 18,
-            ct_2: 19,
-            "term_final_part_1 (teacher_1)": 104,
-            "term_final_part_2 (teacher_2)": 103,
-          },
-          {
-            student_id: "1605003",
-            Attendance: 9,
-            ct_1: 18,
-            ct_2: 19,
-            "term_final_part_1 (teacher_1)": 104,
-            "term_final_part_2 (teacher_2)": 103,
-          },
-          {
-            student_id: "1605004",
-            Attendance: 9,
-            ct_1: 18,
-            ct_2: 19,
-            "term_final_part_1 (teacher_1)": 104,
-            "term_final_part_2 (teacher_2)": 103,
-          },
-        ],
-      },
-      {
-        courseName: "CSE313",
-        marks: [
-          {
-            student_id: "1605002",
-            Attendance: 9,
-            ct_1: 18,
-            ct_2: 19,
-            "term_final_part_1 (teacher_1)": 104,
-            "term_final_part_2 (teacher_2)": 103,
-          },
-          {
-            student_id: "1605023",
-            Attendance: 9,
-            ct_1: 18,
-            ct_2: 19,
-            "term_final_part_1 (teacher_1)": 104,
-            "term_final_part_2 (teacher_2)": 103,
-          },
-          {
-            student_id: "1605024",
-            Attendance: 9,
-            ct_1: 18,
-            ct_2: 19,
-            "term_final_part_1 (teacher_1)": 104,
-            "term_final_part_2 (teacher_2)": 103,
-          },
-          {
-            student_id: "1605014",
-            Attendance: 9,
-            ct_1: 18,
-            ct_2: 19,
-            "term_final_part_1 (teacher_1)": 104,
-            "term_final_part_2 (teacher_2)": 103,
-          },
-        ],
-      },
-    ]
-  }
+    this.$store.dispatch("scrutinizer/fillCourses");
+  },
 };
 </script>
 
