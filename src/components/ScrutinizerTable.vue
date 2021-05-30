@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-sm column items-center">
-    <h6>{{ info.courseID + " - " + info.courseTitle }}</h6>
+    <h6 class="q-mb-none">{{ info.courseID + " - " + info.courseTitle }}</h6>
     <div v-if="!courseLoading">
       <div>
         <q-table
@@ -11,6 +11,7 @@
           :columns="teacherInfo.mathas"
           separator="cell"
           row-key="studentID"
+          class="q-mt-lg"
         >
         </q-table>
 
@@ -20,6 +21,7 @@
           :columns="tfInfo.mathas"
           separator="cell"
           row-key="studentID"
+          class="q-mt-lg"
         >
         </q-table>
       </div>
@@ -115,7 +117,9 @@ export default {
           name: "studentID",
           label: `Student ID`,
           field: "studentID",
-          sortable: true
+          sortable: true,
+          headerClasses: 'bg-primary text-white',
+          align: "center",
         };
 
         mathas.push(stu);
@@ -125,7 +129,8 @@ export default {
           label: `Attendance Count (${this.attTotal(teacher.teacher)})`,
           field: "attendance",
           sortable: true,
-          align: "center"
+          align: "center",
+          headerClasses: 'bg-primary text-white',
         };
 
         mathas.push(att);
@@ -139,7 +144,8 @@ export default {
             )})`,
             field: `eval_${evall.evalID}`,
             sortable: true,
-            align: "center"
+            align: "center",
+            headerClasses: 'bg-primary text-white',
           };
 
           mathas.push(dhukbe);
@@ -180,7 +186,9 @@ export default {
         name: "studentID",
         label: `Student ID`,
         field: "studentID",
-        sortable: true
+        sortable: true,
+        headerClasses: 'bg-primary text-white',
+        align: "center",
       };
 
       mathas.push(stu);
@@ -193,7 +201,8 @@ export default {
           } (${this.tfTotal(examiner.teacher, examiner.part)})`,
           field: `tf_${examiner.teacher}_${examiner.part}`,
           sortable: true,
-          align: "center"
+          align: "center",
+          headerClasses: 'bg-primary text-white',
         };
 
         mathas.push(dhukbe);

@@ -77,16 +77,8 @@ const actions = {
   },
 
   updateEvaluationTable({commit}, input) {
-    console.log(state.student_data);
-    console.log(input);
-    console.log(state.course_data);
-
-    console.log("saving");
-    console.log(input);
 
     commit('setEvaluationTable', input);
-    console.log("done");
-    console.log(state.student_data);
   }
 };
 

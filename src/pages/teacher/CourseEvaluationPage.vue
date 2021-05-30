@@ -203,7 +203,6 @@
 
         let reader = new FileReader();
         reader.readAsText(csvFile);
-        console.log(reader);
         reader.onload = (event)=> {
           const ret = this.loadCSVData(event.target.result);
           if( !ret) {

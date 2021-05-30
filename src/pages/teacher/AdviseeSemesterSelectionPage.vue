@@ -23,7 +23,7 @@
         <q-separator /><br />
 
         <q-card-actions align="center">
-          <q-btn-dropdown no-caps color="primary" label="Filter with Level/Term">
+          <q-btn-dropdown no-caps color="primary" label="Select Level/Term">
             <q-list>
               <q-item
                 clickable
@@ -42,7 +42,7 @@
         </q-card-actions><br />
 
         <q-card-actions align="center">
-          <q-btn-dropdown no-caps color="primary" label="Select a Grade">
+          <q-btn-dropdown no-caps color="primary" label="Filter with Grade">
             <q-list>
               <q-item
                 clickable
