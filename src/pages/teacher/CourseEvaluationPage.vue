@@ -3,20 +3,37 @@
 
     <h5>Januray {{ course_data.session }} {{ course_data.courseID }}: {{ course_data.courseName }}</h5>
 
-      <div class="button-row">
-        <div class="col">
-        <q-btn v-show="course_data.editAccess" :icon='buttonIcon' size='md' color="primary" :label="buttonText" class="" @click="toggleEditMode" ></q-btn>
-        </div>
 
-        <div class="col csv-button">
+    <q-dialog v-model="csvButton">
+      <q-card style="width: 400px">
+        <q-card-section>
+          <div class="text-h6">Upload CSV File</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-md">
+          <input  type="file" id="csvFile" accept=".csv" />
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn class="q-mr-sm" label="Upload" color="primary" v-close-popup no-caps @click="readFile" />
+          <q-btn label="Cancel" color="primary" v-close-popup no-caps/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+
+      <div class="button-row" v-show="course_data.editAccess">
+        <div class="col">
+        <q-btn :icon='buttonIcon' size='md' color="primary" :label="buttonText" class="" @click="toggleEditMode" ></q-btn>
+      </div>
+      <div class="col csv-button">
           <q-btn
             size='md'
             color="primary"
             icon="upload"
             label="Import CSV"
-            @click="onFileChange"
+            @click="csvButton = true"
           >
-            <input id="fileUpload" type="file" hidden  accept=".csv" @change='readFile' >
           </q-btn>
         </div>
       </div>
@@ -35,7 +52,6 @@
       >
 
       <template v-slot:top>
-
         <div class="q-table__title">Course Assessment</div>
         <q-space/>
         <q-input  outlined dense debounce="300" v-model="studentFilter" placeholder="Search" >
@@ -97,6 +113,7 @@
 
   import { mapGetters, mapActions} from 'vuex';
   import { mapMultiRowFields } from 'vuex-map-fields';
+  import parseCSV from '../../utils/csvParser';
 
   let eval_column_entry = {
     name: 'eval_',
@@ -145,82 +162,134 @@
       }
     },
     methods: {
-      ...mapActions(['fetchCourseDetails', 'saveStudentData']),
+      ...mapActions(['fetchCourseDetails', 'saveStudentData', 'updateEvaluationTable']),
 
-      onFileChange() {
-        document.getElementById("fileUpload").click();
+
+      loadCSVData(input) {
+        let csvData ;
+        try {
+          csvData = parseCSV(input);
+        } catch (error) {
+          console.log(error);
+          return false;
+        }
+
+        if(!csvData || !this.updateEvaluationTable(csvData)) return false;
+        this.saveStudentData();
+        return true;
+
       },
       readFile() {
 
-        const csvFile = document.getElementById("fileUpload").files[0];
+        const csvFile = document.getElementById("csvFile").files[0];
+        if(!csvFile || csvFile.name.split(".").pop() !== "csv") {
+          this.$q.notify({
+            icon: 'error',
+            message: 'Error: Please upload a .csv file',
+            position: "bottom-left" ,
+            actions: [
+              { label: 'Dismiss', color: 'yellow', handler: () => { /* ... */ } }
+            ]
+          });
+          return;
+        }
+        const notif = this.$q.notify({
+          message: `Uploading File`,
+          position: "bottom-left",
+          group: false, // required to be updatable
+          timeout: 0, // we want to be in control when it gets dismissed
+          spinner: true,
+        });
+
         let reader = new FileReader();
         reader.readAsText(csvFile);
-        reader.onload = function() {
-          console.log(reader.result);
+        console.log(reader);
+        reader.onload = (event)=> {
+          const ret = this.loadCSVData(event.target.result);
+          if( !ret) {
+            notif({
+              icon: 'error', // we add an icon
+              spinner: false, // we reset the spinner setting so the icon can be displayed
+              message: 'Error: Failed parsing CSV file, please check data format',
+              actions: [
+                {
+                  label: 'Dismiss', color: 'yellow', handler: () => { /* ... */
+                  }
+                }]
+            });
+          }
+          else {
+            notif({
+              icon: 'done', // we add an icon
+              spinner: false, // we reset the spinner setting so the icon can be displayed
+              message: 'Evaluation table updated',
+              timeout: 1500 // we will timeout it in 2.5s
+            });
+          }
         };
       },
 
-        async toggleEditMode(e) {
-          e.preventDefault();
+      async toggleEditMode(e) {
+        e.preventDefault();
 
-          this.editMode = !this.editMode;
+        this.editMode = !this.editMode;
 
-          if(!this.editMode) {
+        if(!this.editMode) {
 
-            const notif = this.$q.notify({
-              message: `Saving Evaluation`,
-              position: "bottom-left",
-              group: false, // required to be updatable
-              timeout: 0, // we want to be in control when it gets dismissed
-              spinner: true,
+          const notif = this.$q.notify({
+            message: `Saving Evaluation`,
+            position: "bottom-left",
+            group: false, // required to be updatable
+            timeout: 0, // we want to be in control when it gets dismissed
+            spinner: true,
+          });
+          const ret = await this.saveStudentData();
+
+
+          if(ret.error) {
+            this.editMode = true;
+            notif({
+              icon: 'error', // we add an icon
+              spinner: false, // we reset the spinner setting so the icon can be displayed
+              message: 'Error: ' + ret.error,
+
+              actions: [
+                { label: 'Dismiss', color: 'yellow', handler: () => { /* ... */ } }
+              ]
             });
-            const ret = await this.saveStudentData();
-
-
-            if(ret.error) {
-              this.editMode = true;
-              notif({
-                icon: 'error', // we add an icon
-                spinner: false, // we reset the spinner setting so the icon can be displayed
-                message: 'Error: ' + ret.error,
-
-                actions: [
-                  { label: 'Dismiss', color: 'yellow', handler: () => { /* ... */ } }
-                ]
-              });
-            }
-            else {
-              notif({
-                icon: 'done', // we add an icon
-                spinner: false, // we reset the spinner setting so the icon can be displayed
-                message: 'Progress Saved',
-                timeout: 1500 // we will timeout it in 2.5s
-              });
-            }
-          }
-
-
-
-          if( this.editMode ) {
-            this.buttonIcon =  'done';
-            this.buttonText = 'Save';
-            this.columns.forEach( (cell,index) => {
-              if(index >= 2) cell.classes = 'bg-white-1';
-            } );
           }
           else {
-            this.buttonIcon =  'edit';
-            this.buttonText = 'Edit';
-            this.columns.forEach( (cell,index) => {
-              if(index >= 2) cell.classes = 'bg-grey-1';
+            notif({
+              icon: 'done', // we add an icon
+              spinner: false, // we reset the spinner setting so the icon can be displayed
+              message: 'Progress Saved',
+              timeout: 1500 // we will timeout it in 2.5s
             });
           }
         }
+
+
+
+        if( this.editMode ) {
+          this.buttonIcon =  'done';
+          this.buttonText = 'Save';
+          this.columns.forEach( (cell,index) => {
+            if(index >= 2) cell.classes = 'bg-white-1';
+          } );
+        }
+        else {
+          this.buttonIcon =  'edit';
+          this.buttonText = 'Edit';
+          this.columns.forEach( (cell,index) => {
+            if(index >= 2) cell.classes = 'bg-grey-1';
+          });
+        }
+      }
       },
       data() {
         return {
 
-          isLoading: false,
+          csvButton: false,
           studentFilter: '',
           submitFlag: false,
           editMode: false,
@@ -319,13 +388,11 @@
     align-items: center;
     margin-left: 50px;
   }
-  /*.col {*/
-  /*  margin-left: 30px;*/
-  /*}*/
 
   .csv-button {
-    width: 300px;
-    /*margin-left: 50px;*/
+    width: 400px;
+    /*margin-left: 30px;*/
+    padding-left: 110px;
   }
 
 

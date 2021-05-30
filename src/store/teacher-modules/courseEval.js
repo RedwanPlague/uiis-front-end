@@ -74,6 +74,32 @@ const actions = {
         student_data: student_formatted_data
     });
     return 1;
+  },
+
+  updateEvaluationTable({commit}, input) {
+    console.log(state.student_data);
+    console.log(input);
+    console.log(state.course_data);
+
+    let new_student_array = state.student_data.copy();
+
+    input.forEach(new_entry => {
+      new_student_array.forEach( (student_entry, index) => {
+        if(student_entry.student_id === new_entry.student_id) {
+
+          if(new_entry["attendance"]) student_entry["attendance"] = new_entry["attendance"];
+          for(let i = 1 ; i <= new_student_array.evalCount ; i++) {
+            if(new_entry["eval_"+i]) student_entry["eval_"+i] = new_entry["eval_"+i];
+          }
+          new_student_array[index] = student_entry;
+          console.log(new_student_array[index]);
+        }
+      });
+    });
+
+    commit('seEvaluationTable', new_student_array);
+    console.log("done");
+    console.log(state.student_data);
   }
 };
 
@@ -85,7 +111,12 @@ const mutations = {
   setClassCount: (state, classCount) => {
     state.course_data.classCount = classCount;
   },
+  seEvaluationTable: (state, input) => {
+    state.student_data = input;
+  },
   updateField
+
+
 };
 
 export default {
