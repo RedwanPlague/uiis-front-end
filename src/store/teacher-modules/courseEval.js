@@ -81,23 +81,10 @@ const actions = {
     console.log(input);
     console.log(state.course_data);
 
-    let new_student_array = state.student_data.copy();
+    console.log("saving");
+    console.log(input);
 
-    input.forEach(new_entry => {
-      new_student_array.forEach( (student_entry, index) => {
-        if(student_entry.student_id === new_entry.student_id) {
-
-          if(new_entry["attendance"]) student_entry["attendance"] = new_entry["attendance"];
-          for(let i = 1 ; i <= new_student_array.evalCount ; i++) {
-            if(new_entry["eval_"+i]) student_entry["eval_"+i] = new_entry["eval_"+i];
-          }
-          new_student_array[index] = student_entry;
-          console.log(new_student_array[index]);
-        }
-      });
-    });
-
-    commit('seEvaluationTable', new_student_array);
+    commit('setEvaluationTable', input);
     console.log("done");
     console.log(state.student_data);
   }
@@ -111,8 +98,26 @@ const mutations = {
   setClassCount: (state, classCount) => {
     state.course_data.classCount = classCount;
   },
-  seEvaluationTable: (state, input) => {
-    state.student_data = input;
+  setEvaluationTable: (state, input) => {
+
+    input.forEach(new_entry => {
+      state.student_data.forEach( (student_entry, index) => {
+
+        if(student_entry.student_id === new_entry.student_id) {
+
+          if('attendance' in new_entry) {
+            student_entry.attendance = new_entry["attendance"];
+          }
+          for(let i = 1 ; i <= state.course_data.evalCount ; i++) {
+            const eval_id = 'eval_'+i;
+            if( eval_id in new_entry) {
+              student_entry["eval_"+i] = new_entry["eval_"+i];
+            }
+          }
+          state.student_data[index] = student_entry;
+        }
+      });
+    });
   },
   updateField
 
