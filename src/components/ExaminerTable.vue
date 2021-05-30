@@ -1,11 +1,12 @@
 <template>
-  <div class="q-pa-sm">
+  <div class="q-pa-sm column items-center">
     <h6>
       {{
         info.courseID + " (" + info.courseTitle + " ) - " + "Part " + info.part
       }}
     </h6>
     <q-checkbox v-model="canEdit" label="Edit" :disable="!info.hasEditAccess" />
+
     <q-markup-table>
       <thead>
         <tr>
@@ -15,11 +16,12 @@
       </thead>
       <tbody>
         <tr v-for="student in info.students" :key="student.studentID">
-          <td>{{ student.studentID }}</td>
-          <td>
+          <td style="align:center">{{ student.studentID }}</td>
+          <td style="align:center">
             <input
               type="number"
-              :value="student.marks"
+              style="text-align:center"
+              :value="student.mark"
               :disabled="!canEdit"
               @change="updateMarks($event, student.studentID)"
             />
@@ -28,13 +30,20 @@
       </tbody>
     </q-markup-table>
 
-    <q-btn color="primary" label="Save" class="q-mt-md" @click="saveMarks" />
-    <q-btn
-      color="primary"
-      label="Submit"
-      class="q-mt-md"
-      @click="submitMarks"
-    />
+    <div class="">
+      <q-btn color="primary" label="Save" class="q-ma-md" @click="saveMarks">
+      </q-btn>
+      <q-btn
+        color="primary"
+        label="Submit"
+        class="q-ma-md"
+        @click="submitMarks"
+      />
+    </div>
+
+    <!-- <h4 v-if="probRolls.length">
+      Please recheck the marks of {{ probRolls.join() }}!
+    </h4> -->
   </div>
 </template>
 
@@ -47,7 +56,8 @@ export default {
 
   data() {
     return {
-      canEdit: false
+      canEdit: false,
+      probRolls: []
     };
   },
 
@@ -55,7 +65,7 @@ export default {
     updateMarks(e, studentID) {
       this.$store.commit("examiner/mutSingleMark", {
         studentID,
-        marks: Number(e.target.value),
+        mark: Number(e.target.value)
       });
     },
 
@@ -64,24 +74,59 @@ export default {
       const session = this.currentSession;
       const part = this.info.part;
 
+      this.probRolls = [];
+      this.info.students.forEach(student => {
+        console.log(student.studentID);
+        console.log(student.mark);
+        console.log(this.info.totalMarks);
+
+        if (student.mark < 0 || student.mark > this.info.totalMarks)
+          this.probRolls.push(student.studentID);
+      });
+
+      console.log(this.probRolls);
+
+      if (this.probRolls.length) {
+        this.$q.notify({
+          icon: "error",
+          message: `Please recheck the marks of ${this.probRolls.join()}!`,
+          position: "bottom-left",
+          actions: [
+            {
+              label: "Dismiss",
+              color: "yellow",
+              handler: () => {
+                /* ... */
+              }
+            }
+          ]
+        });
+
+        return;
+      }
+
       const students = this.info.students.map(student => ({
         studentID: student.studentID,
-        mark: student.marks
+        mark: student.mark ? student.mark : null
       }));
 
-      const token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjA0Njc2Mn0.vdxf-sKNb5UnO26cQdDDyT0B2O9lDjD40smW2VnSAoU";
-
-      await api.put(
+      const ashbe = await api.put(
         `teacher/examiner/${courseID}/${session}/${dhoron}`,
         {
           part,
           students
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` }
         }
       );
+
+      console.log(ashbe);
+
+      const sucMes = dhoron === "save" ? "saved!" : "forwarded!";
+
+      this.$q.notify({
+        icon: "done",
+        message: sucMes,
+        position: "bottom-left"
+      });
     },
 
     async saveMarks() {
@@ -90,7 +135,8 @@ export default {
 
     async submitMarks() {
       await this.uploadMarks("forward");
-      this.$forceUpdate();
+      this.canEdit = false;
+      this.$store.commit("examiner/mutHasEditAccess");
     }
   },
 
