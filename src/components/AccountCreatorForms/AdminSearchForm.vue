@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import PrivilegePicker from "components/FormElements/PrivilegePicker";
+import PrivilegePicker from 'components/FormElements/PrivilegePicker'
 import columnMerger from 'src/utils/columnMerger'
 import search from 'src/mixins/search'
 
@@ -52,8 +52,9 @@ const format = val => {
   }
   let newVal = ''
   for (const privilege of val) {
-    newVal += privilege + ', '
+    newVal += `(${privilege}), `
   }
+  newVal = newVal.slice(0, newVal.length-2)
   return newVal
 }
 
@@ -77,8 +78,8 @@ export default {
   ],
   data() {
     return {
-      name: '',
-      id: '',
+      name: null,
+      id: null,
       privileges: [],
       columns
     }
@@ -90,27 +91,49 @@ export default {
         name: this.name,
         privileges: this.privileges
       }, 'Admin account')
+      // this.$router.push({
+      //   name: 'AdminAccountSearchPage',
+      //   query: {
+      //     type: 'admin',
+      //     id: this.id,
+      //     name: this.name,
+      //     privileges: this.privileges
+      //   }
+      // }).catch(() => {})
     },
-    resetForm() {
-      this.name = ''
-      this.id = ''
-      this.privileges = []
+    resetForm(query) {
+      if (!query) query = {}
+      this.name = query.name
+      this.id = query.id
+      this.privileges = query.privileges
     },
     onRowClick(event, row) {
-      this.$router.push({
+      const routeData = this.$router.resolve({
         name: 'AdminAccountEditPage',
         params: {
           userType: 'admin',
           id: row.id
         }
       })
+      window.open(routeData.href, '_blank')
     },
+    loadResults(query) {
+      if (query.type === 'admin') {
+        this.resetForm(query)
+        this.callSearchApi('account/admin/list', {
+          id: query.id,
+          name: query.name,
+          privileges: query.privileges
+        }, 'Admin account')
+      }
+    }
   },
+  // created() {
+  //   this.loadResults(this.$route.query)
+  // },
   // watch: {
   //   $route(to/*, from*/) {
-  //     if (to.name === 'AdminAccountSearchPage') {
-  //       this.searchAccount()
-  //     }
+  //     this.loadResults(to.query)
   //   }
   // }
 }

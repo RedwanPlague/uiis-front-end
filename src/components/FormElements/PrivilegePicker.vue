@@ -41,7 +41,7 @@ export default {
       default: null
     },
     classes: {
-      type: [Object, String]
+      type: [Object, Array, String]
     },
     multiple: {
       type: Boolean,

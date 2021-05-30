@@ -41,6 +41,7 @@
         <q-btn label="Reset" type="reset" color="primary" flat/>
       </div>
     </q-form>
+    <q-inner-loading :showing="oldDataLoading"/>
   </div>
 </template>
 
@@ -60,9 +61,9 @@ export default {
   ],
   data() {
     return {
-      name: '',
-      id: '',
-      password: '',
+      name: null,
+      id: null,
+      password: null,
       privileges: [],
     }
   },
@@ -76,13 +77,13 @@ export default {
       this.callEditApi('account/update/admin/' + this.loadID, {
         name: this.name,
         password: this.password,
-        privileges: this.privileges
+        privileges: this.privileges ? this.privileges : []
       }, 'Admin account')
     },
     resetForm() {
       this.name = this.oldData.name
       this.id = this.oldData.id
-      this.password = ''
+      this.password = null
       this.privileges = this.oldData.privileges
     }
   },

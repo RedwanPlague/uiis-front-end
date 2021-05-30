@@ -4,18 +4,6 @@
       Create New Course
     </div>
     <q-form class="row q-col-gutter-md" @submit="createCourse" @reset="resetForm">
-      <department-picker
-        classes="col-6"
-        label="Department (offered to)"
-        v-model="deptFor"
-        required
-      />
-      <department-picker
-        classes="col-6"
-        label="Department (offered from)"
-        v-model="deptFrom"
-        required
-      />
       <q-input
         class="col-6"
         v-model="syllabusID"
@@ -29,6 +17,18 @@
         label="Course ID"
         outlined
         :rules="[() => !!courseID || 'Please Enter Course ID']"
+      />
+      <department-picker
+        classes="col-6"
+        label="Department (offered to)"
+        v-model="deptFor"
+        required
+      />
+      <department-picker
+        classes="col-6"
+        label="Department (offered from)"
+        v-model="deptFrom"
+        required
       />
       <q-input
         class="col-12"
@@ -93,6 +93,7 @@
 import DepartmentPicker from 'components/FormElements/DepartmentPicker'
 import CoursePicker from 'components/FormElements/CoursePicker'
 import creator from 'src/mixins/creator'
+import {extract} from 'src/utils/apiDataPreProcessor'
 
 export default {
   name: 'CourseCreation',
@@ -105,16 +106,16 @@ export default {
   ],
   data() {
     return {
-      title: '',
-      courseID: '',
-      syllabusID: '',
+      title: null,
+      courseID: null,
+      syllabusID: null,
       deptFrom: null,
       deptFor: null,
-      level: '',
-      term: '',
-      credit: '',
+      level: null,
+      term: null,
+      credit: null,
       prerequisites: [],
-      description: '',
+      description: null,
     }
   },
   methods: {
@@ -123,26 +124,27 @@ export default {
         title: this.title,
         courseID: this.courseID,
         syllabusID: this.syllabusID,
-        offeredToDepartment: this.deptFor,
-        offeredByDepartment: this.deptFrom,
+        offeredToDepartment: extract(this.deptFor),
+        offeredByDepartment: extract(this.deptFrom),
         level: this.level,
         term: this.term,
         credit: this.credit,
-        prerequisites: this.prerequisites,
+        prerequisites: extract(this.prerequisites),
         description: this.description
       }, 'Course')
+      console.log(extract(this.prerequisites))
     },
     resetForm() {
-      this.title = ''
-      this.courseID = ''
-      this.syllabusID = ''
+      this.title = null
+      this.courseID = null
+      this.syllabusID = null
       this.deptFrom = null
       this.deptFor = null
-      this.level = ''
-      this.term = ''
-      this.credit = ''
+      this.level = null
+      this.term = null
+      this.credit = null
       this.prerequisites = []
-      this.description = ''
+      this.description = null
     }
   },
 }

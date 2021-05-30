@@ -1,13 +1,20 @@
 const process = data => {
-  const toIgnore = [null, '', [], {}]
+  const toIgnore = [null, '']
   for (const key of Object.keys(data)) {
     if (toIgnore.includes(data[key])) {
       delete data[key]
     }
-    else if (typeof data[key] === 'object') {
-      data[key] = data[key].value
-    }
   }
 }
 
-export {process}
+const extract = data => {
+  if (Array.isArray(data)) {
+    return data.map(x => x.value)
+  }
+  if (typeof data === 'string') {
+    return data
+  }
+  return data ? data.value : null
+}
+
+export {process, extract}

@@ -33,6 +33,7 @@
         <q-btn type="reset" label="Reset" color="primary" flat/>
       </div>
     </q-form>
+    <q-inner-loading :showing="oldDataLoading"/>
   </div>
 </template>
 
@@ -40,6 +41,7 @@
 import DepartmentPicker from 'components/FormElements/DepartmentPicker'
 import PasswordMakerField from 'components/FormElements/PasswordMakerField'
 import edit from 'src/mixins/edit'
+import {extract} from 'src/utils/apiDataPreProcessor'
 
 export default {
   name: 'TeacherCreatorForm',
@@ -52,10 +54,10 @@ export default {
   ],
   data() {
     return {
-      name: '',
-      id: '',
+      name: null,
+      id: null,
       department: null,
-      password: '',
+      password: null,
     }
   },
   computed: {
@@ -68,13 +70,13 @@ export default {
       this.callEditApi('/account/update/teacher/' + this.loadID, {
         name: this.name,
         password: this.password,
-        department: this.department
+        department: extract(this.department)
       })
     },
     resetForm() {
       this.name = this.oldData.name
       this.id = this.oldData.id
-      this.password = ''
+      this.password = null
       this.department = this.oldData.department
     }
   },

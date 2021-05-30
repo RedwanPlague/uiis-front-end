@@ -46,6 +46,7 @@
         <q-btn type="reset" label="Reset" color="primary" flat/>
       </div>
     </q-form>
+    <q-inner-loading :showing="oldDataLoading"/>
   </div>
 </template>
 
@@ -55,6 +56,7 @@ import PasswordMakerField from 'components/FormElements/PasswordMakerField'
 import TeacherPicker from 'components/FormElements/TeacherPicker'
 import HallPicker from 'components/FormElements/HallPicker'
 import edit from 'src/mixins/edit'
+import {extract} from 'src/utils/apiDataPreProcessor'
 
 export default {
   name: 'StudentCreatorForm',
@@ -69,12 +71,12 @@ export default {
   ],
   data() {
     return {
-      name: '',
-      id: '',
+      name: null,
+      id: null,
       department: null,
       hall: null,
       advisor: null,
-      password: '',
+      password: null,
     }
   },
   computed: {
@@ -87,15 +89,15 @@ export default {
       this.callEditApi('account/update/student/' + this.loadID, {
         name: this.name,
         password: this.password,
-        department: this.department,
-        hall: this.hall,
-        advisor: this.advisor
+        department: extract(this.department),
+        hall: extract(this.hall),
+        advisor: extract(this.advisor)
       }, 'Student Account')
     },
     resetForm() {
       this.name = this.oldData.name
       this.id = this.oldData.id
-      this.password = ''
+      this.password = null
       this.department = this.oldData.department
       this.hall= this.oldData.hall
       this.advisor = this.oldData.advisor

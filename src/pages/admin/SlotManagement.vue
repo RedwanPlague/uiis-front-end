@@ -107,9 +107,9 @@ export default {
     },
     localAddSlot() {
       this.slots.push({
-        id: '',
-        startingTime: '',
-        duration: '',
+        id: null,
+        startingTime: null,
+        duration: null,
         viewing: false,
         old: false
       })

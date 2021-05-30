@@ -55,6 +55,12 @@ export default {
     }
   },
   methods: {
+    fixValue() {
+      if (typeof this.value === 'string') {
+        const cur = this.hallList.filter(x => x.value === this.value)[0]
+        this.$emit('input', cur)
+      }
+    },
     fetchHalls() {
       apiFetch('/hall/list', null, 'All hall list')
         .then(response => {
@@ -64,10 +70,7 @@ export default {
               label: `(${x.id}) ${x.name}`
             }
           })
-          if (typeof this.value === 'string') {
-            const cur = this.hallList.filter(x => x.value === this.value)[0]
-            this.$emit('input', cur)
-          }
+          this.fixValue()
         })
     },
     hallFilter(value, update) {
@@ -84,7 +87,12 @@ export default {
   },
   created() {
     this.fetchHalls()
-  }
+  },
+  // watch: {
+  //   value() {
+  //     this.fixValue()
+  //   }
+  // }
 }
 </script>
 

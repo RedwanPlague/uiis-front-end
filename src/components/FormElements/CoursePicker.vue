@@ -37,7 +37,7 @@ export default {
     },
     value: {
       type: [Object, Array],
-      default: null
+      default: null,
     },
     classes: {
       type: [Object, String]
@@ -62,15 +62,32 @@ export default {
     }
   },
   methods: {
+    fixValue() {
+      if (Array.isArray(this.value)) {
+        for (let i = 0; i < this.value.length; i++) {
+          const format = this.value.map(x => JSON.stringify(x))
+          const cur = this.courseList.filter(x => format.includes(JSON.stringify(x.value)))
+          this.$emit('input', cur)
+        }
+      }
+      // else if (typeof this.value === 'object' && !this.value.hasOwnProperty('value')) {
+      //   const cur = this.courseList.filter(x => JSON.stringify(x.value) === JSON.stringify(this.value))[0]
+      //   this.$emit('input', cur)
+      // }
+    },
     fetchCourseList() {
       apiFetch('/course/list', null, 'all courses')
         .then(response => {
           this.courseList = response.data.map(x => {
             return {
-              value: `${x.courseID}${x.syllabusID}`,
+              value: {
+                courseID: x.courseID,
+                syllabusID: x.syllabusID
+              },
               label: `${x.courseID}(${x.syllabusID}): ${x.title}`
             }
           })
+          this.fixValue()
         }).catch()
     },
     courseFilter(value, update) {
@@ -87,7 +104,12 @@ export default {
   },
   created() {
     this.fetchCourseList()
-  }
+  },
+  // watch: {
+  //   value() {
+  //     this.fixValue()
+  //   }
+  // }
 }
 </script>
 

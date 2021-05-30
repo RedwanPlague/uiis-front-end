@@ -4,16 +4,6 @@
       Search New Course
     </div>
     <q-form class="row q-col-gutter-md" @submit="searchCourse" @reset="resetForm">
-      <department-picker
-        classes="col-6"
-        label="Department (offered to)"
-        v-model="deptFor"
-      />
-      <department-picker
-        classes="col-6"
-        label="Department (offered from)"
-        v-model="deptFrom"
-      />
       <q-input
         class="col-6"
         v-model="syllabusID"
@@ -27,6 +17,16 @@
         label="Course ID"
         outlined
         :rules="[() => !!columns || 'Dummy Text']"
+      />
+      <department-picker
+        classes="col-6"
+        label="Department (offered to)"
+        v-model="deptFor"
+      />
+      <department-picker
+        classes="col-6"
+        label="Department (offered from)"
+        v-model="deptFrom"
       />
       <q-input
         class="col-12"
@@ -92,6 +92,7 @@
 import DepartmentPicker from 'components/FormElements/DepartmentPicker'
 import search from 'src/mixins/search'
 import columnMerger from 'src/utils/columnMerger'
+import {extract} from 'src/utils/apiDataPreProcessor'
 
 const columns = [
   {name: 'courseID', label: 'Course ID', field: 'courseID', align: 'left', style: 'width: 10%'},
@@ -116,15 +117,15 @@ export default {
   ],
   data() {
     return {
-      title: '',
-      courseID: '',
-      syllabusID: '',
+      title: null,
+      courseID: null,
+      syllabusID: null,
       deptFrom: null,
       deptFor: null,
-      level: '',
-      term: '',
-      creditMin: '',
-      creditMax: '',
+      level: null,
+      term: null,
+      creditMin: null,
+      creditMax: null,
       columns
     }
   },
@@ -134,8 +135,8 @@ export default {
         title: this.title,
         courseID: this.courseID,
         syllabusID: this.syllabusID,
-        offeredToDepartment: this.deptFor,
-        offeredByDepartment: this.deptFrom,
+        offeredToDepartment: extract(this.deptFor),
+        offeredByDepartment: extract(this.deptFrom),
         level: this.level,
         term: this.term,
         creditMin: this.creditMin,
@@ -143,24 +144,25 @@ export default {
       }, 'Course')
     },
     resetForm() {
-      this.title = ''
-      this.courseID = ''
-      this.syllabusID = ''
+      this.title = null
+      this.courseID = null
+      this.syllabusID = null
       this.deptFrom = null
       this.deptFor = null
-      this.level = ''
-      this.term = ''
-      this.creditMin = ''
-      this.creditMax = ''
+      this.level = null
+      this.term = null
+      this.creditMin = null
+      this.creditMax = null
     },
     onRowClick(event, row) {
-      this.$router.push({
+      const routeData = this.$router.resolve({
         name: 'AdminCourseEditPage',
         params: {
           courseID: row.courseID,
           syllabusID: row.syllabusID
         }
       })
+      window.open(routeData.href, '_blank')
     },
   },
   // watch: {

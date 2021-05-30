@@ -10,20 +10,6 @@
       />
     </div>
     <q-form class="row q-col-gutter-md" @submit="editCourse" @reset="resetForm">
-      <department-picker
-        classes="col-6"
-        label="Department (offered to)"
-        v-model="deptFor"
-        required
-        :readonly="viewing"
-      />
-      <department-picker
-        classes="col-6"
-        label="Department (offered from)"
-        v-model="deptFrom"
-        required
-        :readonly="viewing"
-      />
       <q-input
         class="col-6"
         v-model="syllabusID"
@@ -39,6 +25,20 @@
         outlined
         readonly
         :rules="[() => !!courseID || 'Please Enter a Course ID']"
+      />
+      <department-picker
+        classes="col-6"
+        label="Department (offered to)"
+        v-model="deptFor"
+        required
+        :readonly="viewing"
+      />
+      <department-picker
+        classes="col-6"
+        label="Department (offered from)"
+        v-model="deptFrom"
+        required
+        :readonly="viewing"
       />
       <q-input
         class="col-12"
@@ -96,6 +96,7 @@
         <q-btn label="Reset" type="reset" color="primary" flat/>
       </div>
     </q-form>
+    <q-inner-loading :showing="oldDataLoading"/>
     <div style="min-height: 200px"></div>
   </q-page>
 </template>
@@ -104,6 +105,7 @@
 import DepartmentPicker from 'components/FormElements/DepartmentPicker'
 import CoursePicker from 'components/FormElements/CoursePicker'
 import edit from 'src/mixins/edit'
+import {extract} from 'src/utils/apiDataPreProcessor'
 
 export default {
   name: 'CourseEdit',
@@ -116,16 +118,16 @@ export default {
   ],
   data() {
     return {
-      title: '',
-      courseID: '',
-      syllabusID: '',
+      title: null,
+      courseID: null,
+      syllabusID: null,
       deptFrom: null,
       deptFor: null,
-      level: '',
-      term: '',
-      credit: '',
+      level: null,
+      term: null,
+      credit: null,
       prerequisites: [],
-      description: '',
+      description: null,
     }
   },
   computed: {
@@ -141,14 +143,16 @@ export default {
       const url = `/course/update/${this.loadCourseID}/${this.loadSyllabusID}`
       this.callEditApi(url, {
         title: this.title,
-        offeredToDepartment: this.deptFor,
-        offeredByDepartment: this.deptFrom,
+        offeredToDepartment: extract(this.deptFor),
+        offeredByDepartment: extract(this.deptFrom),
         level: this.level,
         term: this.term,
         credit: this.credit,
-        prerequisites: this.prerequisites,
+        prerequisites: extract(this.prerequisites),
         description: this.description
       }, 'Course')
+      console.log('**************')
+      console.log(this.prerequisites.map(x => x.value))
     },
     resetForm() {
       this.title = this.oldData.title

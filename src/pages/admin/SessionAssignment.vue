@@ -28,7 +28,7 @@ export default {
   mixins: [edit],
   data() {
     return {
-      date: '',
+      date: null,
     }
   },
   methods: {
@@ -38,7 +38,7 @@ export default {
       }, 'Session')
     },
     resetForm() {
-      this.date = ''
+      this.date = null
     },
   },
 }

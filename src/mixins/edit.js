@@ -1,11 +1,11 @@
 import {adminAPI} from 'boot/axios'
-import {process} from 'src/utils/apiDataPreProcessor'
 
 export default {
   data() {
     return {
       viewing: true,
       editLoading: false,
+      oldDataLoading: false,
       oldData: {}
     }
   },
@@ -16,15 +16,18 @@ export default {
   },
   methods: {
     fetchOldData(url, params, name) {
+      this.oldDataLoading = true
       return new Promise((resolve, reject) => {
         adminAPI.get(url, { params })
           .then(response => {
+            this.oldDataLoading = false
             this.oldData = response.data[0]
             console.log(`Old data for ${name} loaded`)
             console.log(response)
             resolve(response)
           })
           .catch(error => {
+            this.oldDataLoading = false
             console.log(`Failed to load Old data for ${name}`)
             console.log(error.response)
             reject(error)
@@ -32,7 +35,6 @@ export default {
       })
     },
     callEditApi(url, data, name) {
-      process(data)
       this.editLoading = true
       return new Promise((resolve, reject) => {
         adminAPI.patch(url, data)

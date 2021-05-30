@@ -69,6 +69,7 @@ import {apiFetch} from 'src/utils/apiWrappers'
 import TeacherPicker from 'components/FormElements/TeacherPicker'
 import creator from 'src/mixins/creator'
 import edit from 'src/mixins/edit'
+import {extract} from 'src/utils/apiDataPreProcessor'
 
 export default {
   name: 'DeptManagement',
@@ -99,8 +100,8 @@ export default {
     },
     localAddHall() {
       this.halls.push({
-        id: '',
-        name: '',
+        id: null,
+        name: null,
         provost: null,
         viewing: false,
         old: false
@@ -131,13 +132,13 @@ export default {
       this.callCreateApi('/hall/create', {
         id: hall.id,
         name: hall.name,
-        provost: hall.provost
+        provost: extract(hall.provost)
       }, `${hall.name} hall`)
     },
     editHall(hall) {
       this.callEditApi('/hall/update/' + hall.id, {
         name: hall.name,
-        provost: hall.provost
+        provost: extract(hall.provost)
       }, `${hall.name} hall`)
     },
     resetForm() {

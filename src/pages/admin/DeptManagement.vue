@@ -69,6 +69,7 @@ import {apiFetch} from 'src/utils/apiWrappers'
 import TeacherPicker from 'components/FormElements/TeacherPicker'
 import creator from 'src/mixins/creator'
 import edit from 'src/mixins/edit'
+import {extract} from 'src/utils/apiDataPreProcessor'
 
 export default {
   name: 'DeptManagement',
@@ -99,8 +100,8 @@ export default {
     },
     localAddDepartment() {
       this.departments.push({
-        id: '',
-        name: '',
+        id: null,
+        name: null,
         head: null,
         viewing: false,
         old: false
@@ -130,13 +131,13 @@ export default {
       this.callCreateApi('/department/create', {
         id: dept.id,
         name: dept.name,
-        head: dept.head
+        head: extract(dept.head)
       }, `${dept.id} department`)
     },
     editDepartment(dept) {
       this.callEditApi('/department/update/' + dept.id, {
         name: dept.name,
-        head: dept.head
+        head: extract(dept.head)
       }, `${dept.id} department`)
     },
     resetForm() {
