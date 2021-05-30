@@ -93,7 +93,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchAdvisee', 'fetchGrades', 'generateAvailableGrades']),
+    ...mapActions(['fetchAdvisee', 'fetchGrades', 'generateAvailableGrades', 'clearAvailableGrades']),
 
     getTotalCreditHourObtained() {
       let totalCredit = 0.0;
@@ -135,6 +135,7 @@ export default {
     },
 
     visitSemesterSelectionPage() {
+      this.clearAvailableGrades();
       this.$router.push({ name: 'adviseeSemesterSelection',
         params: {
           studentID: this.getAdvisee.id
@@ -147,13 +148,37 @@ export default {
 
   async created() {
     try {
-      await this.fetchAdvisee(this.$route.params.studentID);
-      await this.fetchGrades({
-        id: this.getAdvisee.id,
-        level: this.$route.query.level,
-        term: this.$route.query.term
+      const loading = this.$q.notify({
+        message: `Loading Grades`,
+        position: "bottom-left",
+        group: false, // required to be updatable
+        timeout: 0, // we want to be in control when it gets dismissed
+        spinner: true
       });
+
+      await this.fetchAdvisee(this.$route.params.studentID);
+      if(this.$route.query.filter === 'semester') {
+        await this.fetchGrades({
+          id: this.getAdvisee.id,
+          filter: this.$route.query.filter,
+          level: this.$route.query.level,
+          term: this.$route.query.term
+        });
+      } else if(this.$route.query.filter === 'grade') {
+        await this.fetchGrades({
+          id: this.getAdvisee.id,
+          filter: this.$route.query.filter,
+          grade: this.$route.query.grade
+        });
+      }
       this.generateAvailableGrades();
+
+      loading({
+        icon: 'done', // we add an icon
+        spinner: false, // we reset the spinner setting so the icon can be displayed
+        message: 'Grades Loaded',
+        timeout: 1500 // we will timeout it in 2.5s
+      });
     } catch(error) {
       console.log(error);
     }

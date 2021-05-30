@@ -56,15 +56,30 @@ const actions = {
   /* getting specific advisee's specific semester's grades */
   async fetchGrades({ commit }, params) {
     try {
-      const response = await api.get(url+'/advisees/'+params.id+'/grades', {
-        headers: {
-          Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
-        },
-        params: {
-          level: params.level,
-          term: params.term
-        }
-      });
+      let response = [];
+
+      if(params.filter === 'semester') {
+        response = await api.get(url+'/advisees/'+params.id+'/grades', {
+          headers: {
+            Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
+          },
+          params: {
+            filter: params.filter,
+            level: params.level,
+            term: params.term
+          }
+        });
+      } else if(params.filter === 'grade') {
+        response = await api.get(url+'/advisees/'+params.id+'/grades', {
+          headers: {
+            Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
+          },
+          params: {
+            filter: params.filter,
+            grade: params.grade
+          }
+        });
+      }
       commit('mutateGrades', response.data);
     } catch(err) {
       this.error = err.message;
@@ -134,6 +149,11 @@ const actions = {
       }
     }
     commit('mutateAvailableGrades', availableGrades);
+  },
+
+  /* clearing available grades for a specific advisee for a specific semester */
+  clearAvailableGrades({ commit }) {
+    commit('mutateAvailableGrades', []);
   }
 };
 

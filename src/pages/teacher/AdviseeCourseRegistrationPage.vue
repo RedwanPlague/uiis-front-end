@@ -106,7 +106,7 @@
       </q-card>
 
       <q-dialog v-model="adviseeWithApprovalOptionDialogBox" full-width>
-        <q-card>
+        <q-card class="q-pa-md">
           <q-card-section>
             <div class="text-h6">
               <p>
@@ -137,7 +137,7 @@
       </q-dialog>
 
       <q-dialog v-model="adviseeWithoutApprovalOptionDialogBox" full-width>
-        <q-card>
+        <q-card class="q-pa-md">
           <q-card-section>
             <div class="text-h6">
               <p>

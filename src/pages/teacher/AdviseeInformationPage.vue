@@ -28,7 +28,7 @@
       </q-card>
 
       <q-dialog v-model="adviseeInfoDialogBox" full-width>
-        <q-card>
+        <q-card class="q-pa-md">
           <q-card-section>
             <div class="text-h6">
               <p>
