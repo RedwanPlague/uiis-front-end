@@ -25,11 +25,11 @@
         >
         </q-table>
       </div>
-      <q-btn
+      <q-btn v-show="!(!canEdit || hasApprovedResult || !allCompleted)"
         class="q-mt-xl submit-btn"
         color="primary"
         label="Forward to department head"
-        :disable="hasApprovedResult || !allCompleted"
+        :disable="!canEdit || hasApprovedResult || !allCompleted"
         @click="forwardResult"
       />
     </div>
@@ -48,17 +48,23 @@ export default {
   name: "ScrutinizerTable",
 
   data() {
-    return {};
+    return {
+      canEdit: true
+    };
   },
 
   methods: {
     ...mapActions("scrutinizer", ["fillSingleCourse"]),
 
+
     async forwardResult() {
+
+      this.canEdit= false;
       await api.put(
         `/teacher/scrutinizer/${this.info.courseID}/${this.currentSession}/approve`
       );
       this.$store.commit("scrutinizer/mutHasApprovedResult");
+      console.log(this.hasApprovedResult);
 
       this.$q.notify({
         icon: 'done',
