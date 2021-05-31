@@ -1,4 +1,5 @@
 import {adminAPI} from 'boot/axios'
+import {process} from 'src/utils/apiDataPreProcessor'
 
 export default {
   data() {
@@ -8,6 +9,7 @@ export default {
   },
   methods: {
     callCreateApi(url, data, name) {
+      process(data)
       this.createLoading = true
       return new Promise((resolve, reject) => {
         adminAPI.post(url, data)

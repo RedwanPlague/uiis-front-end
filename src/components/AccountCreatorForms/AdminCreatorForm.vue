@@ -66,6 +66,7 @@ export default {
         name: this.name,
         privileges: this.privileges
       }, 'Admin account')
+        .catch(() => {})
     },
     resetForm() {
       this.name = null

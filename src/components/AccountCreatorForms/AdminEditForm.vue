@@ -79,6 +79,7 @@ export default {
         password: this.password,
         privileges: this.privileges ? this.privileges : []
       }, 'Admin account')
+        .catch(() => {})
     },
     resetForm() {
       this.loadOldDataIntoForm()

@@ -93,6 +93,7 @@ export default {
         hall: extract(this.hall),
         advisor: extract(this.advisor)
       }, 'Student Account')
+        .catch(() => {})
     },
     resetForm() {
       this.loadOldDataIntoForm()

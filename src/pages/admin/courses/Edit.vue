@@ -151,6 +151,7 @@ export default {
         prerequisites: extract(this.prerequisites),
         description: this.description
       }, 'Course')
+        .catch(() => {})
     },
     resetForm() {
       this.loadOldDataIntoForm()
