@@ -22,8 +22,8 @@
 </template>
 
 <script>
-import {apiFetch} from 'src/utils/apiWrappers'
 import {isSubstring} from 'src/utils/patternSearch'
+import {mapGetters, mapActions} from 'vuex'
 
 export default {
   name: 'DepartmentPicker',
@@ -50,11 +50,18 @@ export default {
   },
   data() {
     return {
-      deptList: [],
       deptOptions: []
     }
   },
+  computed: {
+    ...mapGetters([
+      'deptList'
+    ])
+  },
   methods: {
+    ...mapActions([
+      'loadDepartments'
+    ]),
     fixValue(value) {
       if (this.deptList.length === 0) return
       if (typeof value === 'string') {
@@ -63,16 +70,7 @@ export default {
       }
     },
     fetchDepartments() {
-      apiFetch('/department/list', null, 'All dept list')
-        .then(response => {
-          this.deptList = response.data.map(x => {
-            return {
-              value: x.id,
-              label: `${x.id} - ${x.name}`
-            }
-          })
-          this.fixValue(this.value)
-        })
+      this.loadDepartments().then(() => this.fixValue(this.value))
     },
     deptFilter(value, update) {
       if (value === '') {

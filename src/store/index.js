@@ -10,6 +10,7 @@ import scrutinizer from './teacher-modules/scrutinizer';
 import user from "src/store/user";
 
 import teachers from 'src/store/admin-modules/teachers'
+import departments from 'src/store/admin-modules/departments'
 
 /* loading Vuex */
 Vue.use(Vuex);
@@ -20,6 +21,7 @@ const store = new Vuex.Store({
   modules: {
     // example
     teachers,
+    departments,
     user,
     courses,
     courseEval,

@@ -3,21 +3,21 @@ import {apiFetch} from 'src/utils/apiWrappers'
 export default {
   state: {
     teachersLoaded: false,
-    teachers: []
+    teacherList: []
   },
   getters: {
     teacherList(state) {
-      return state.teachers
+      return state.teacherList
     }
   },
   mutations: {
     setTeachers(state, data) {
-      state.teachers = data
+      state.teacherList = data
       state.teachersLoaded = true
     }
   },
   actions: {
-    fetchTeachers(context, dept) {
+    loadTeachers(context, dept) {
       dept = null
       return new Promise((resolve, reject) => {
         if (context.state.teachersLoaded) {
@@ -26,7 +26,7 @@ export default {
         else {
           apiFetch('account/teacher/list',
             {department: dept},
-            `teachers of ${dept ? dept : 'all'}`)
+            `Teachers of ${dept ? dept : 'all'}`)
             .then(response => {
               context.commit('setTeachers', response.data.map(x => {
                 return {

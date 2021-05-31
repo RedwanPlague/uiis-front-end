@@ -25,7 +25,6 @@
 </template>
 
 <script>
-import {apiFetch} from 'src/utils/apiWrappers'
 import {isSubstring} from 'src/utils/patternSearch'
 import {mapGetters, mapActions} from 'vuex'
 
@@ -72,7 +71,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      'fetchTeachers'
+      'loadTeachers'
     ]),
     fixValue(value) {
       if (this.teacherList.length === 0) return
@@ -87,8 +86,8 @@ export default {
         this.$emit('input', cur)
       }
     },
-    loadTeachers(dept) {
-      this.fetchTeachers(dept).then(() => this.fixValue(this.value))
+    fetchTeachers(dept) {
+      this.loadTeachers(dept).then(() => this.fixValue(this.value))
     },
     teacherFilter(value, update) {
       if (value === '') {
@@ -103,7 +102,7 @@ export default {
     },
   },
   created() {
-    this.loadTeachers(this.department)
+    this.fetchTeachers(this.department)
   },
   watch: {
     value: {
@@ -113,7 +112,7 @@ export default {
     },
     department: {
       handler(newVal/*, oldVal*/) {
-        this.loadTeachers(newVal)
+        this.fetchTeachers(newVal)
       }
     }
   }
