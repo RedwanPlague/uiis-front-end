@@ -71,7 +71,8 @@ export default {
         name: this.name,
         password: this.password,
         department: extract(this.department)
-      })
+      }, 'Teacher Account')
+        .catch(() => {})
     },
     resetForm() {
       this.loadOldDataIntoForm()

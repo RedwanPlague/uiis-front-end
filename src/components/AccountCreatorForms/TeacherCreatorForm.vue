@@ -60,6 +60,7 @@ export default {
         password: this.password,
         department: extract(this.department)
       }, 'Teacher account')
+        .catch(() => {})
     },
     resetForm() {
       this.name = null

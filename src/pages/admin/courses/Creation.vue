@@ -132,7 +132,7 @@ export default {
         prerequisites: extract(this.prerequisites),
         description: this.description
       }, 'Course')
-      console.log(extract(this.prerequisites))
+        .catch(() => {})
     },
     resetForm() {
       this.title = null

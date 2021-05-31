@@ -1,5 +1,6 @@
 import {adminAPI} from 'boot/axios'
 import {deepCopy} from 'src/utils/utilities'
+import {process} from 'src/utils/apiDataPreProcessor'
 
 export default {
   data() {
@@ -45,6 +46,7 @@ export default {
       })
     },
     callEditApi(url, data, name) {
+      process(data)
       this.editLoading = true
       return new Promise((resolve, reject) => {
         adminAPI.patch(url, data)

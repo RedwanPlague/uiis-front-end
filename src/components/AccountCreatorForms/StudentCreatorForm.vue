@@ -80,6 +80,7 @@ export default {
         hall: extract(this.hall),
         advisor: extract(this.advisor)
       }, 'Student account')
+        .catch(() => {})
     },
     resetForm() {
       this.name = null

@@ -1,4 +1,5 @@
 import {adminAPI} from 'boot/axios'
+import {process} from 'src/utils/apiDataPreProcessor'
 
 export default {
   data() {
@@ -10,6 +11,7 @@ export default {
   },
   methods: {
     callSearchApi(url, params, name) {
+      process(params)
       this.searchLoading = true
       return new Promise((resolve, reject) => {
         adminAPI.get(url, { params })
