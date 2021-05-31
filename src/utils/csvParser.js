@@ -1,6 +1,7 @@
 const parseCSV = (input)=> {
   try {
-    const lines = input.split("\r\n");
+    const lines = input.split("\n");
+
     lines.forEach((line, index) => {
       lines[index] = line.split(",");
     });
