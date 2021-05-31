@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-sm column items-center">
+  <div class="q-pa-sm">
     <h6 class="q-mb-none">{{ info.courseID + " - " + info.courseTitle }}</h6>
     <div v-if="!courseLoading">
       <div>
@@ -30,6 +30,7 @@
         color="primary"
         label="Forward to department head"
         :disable="hasApprovedResult || !allCompleted"
+        @click="forwardResult"
       />
     </div>
     <h3 v-else>Loading</h3>
@@ -57,7 +58,7 @@ export default {
       await api.put(
         `/teacher/scrutinizer/${this.info.courseID}/${this.currentSession}/approve`
       );
-      this.$store.commit("mutHasApprovedResult");
+      this.$store.commit("scrutinizer/mutHasApprovedResult");
     }
   },
 
