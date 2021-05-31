@@ -29,7 +29,7 @@
           </q-btn>
         -->
 
-        <q-btn-dropdown color="primary" text-color="white" :label="user.name" dense flat no-caps>
+        <q-btn-dropdown v-if="user" color="primary" text-color="white" :label="user.name" dense flat no-caps>
           <q-list>
             <q-item clickable v-close-popup @click="$router.replace('/teacher/profile')" dense>
               <q-item-section>
