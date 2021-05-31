@@ -27,6 +27,7 @@
 <script>
 import {apiFetch} from 'src/utils/apiWrappers'
 import {isSubstring} from 'src/utils/patternSearch'
+import {mapGetters, mapActions} from 'vuex'
 
 export default {
   name: 'TeacherPicker',
@@ -61,11 +62,18 @@ export default {
   },
   data() {
     return {
-      teacherList: [],
       teacherOptions: [],
     }
   },
+  computed: {
+    ...mapGetters([
+      'teacherList'
+    ])
+  },
   methods: {
+    ...mapActions([
+      'fetchTeachers'
+    ]),
     fixValue(value) {
       if (this.teacherList.length === 0) return
       if (Array.isArray(value)) {
@@ -79,19 +87,8 @@ export default {
         this.$emit('input', cur)
       }
     },
-    fetchTeachers(dept) {
-      apiFetch('account/teacher/list',
-        {department: dept},
-        `teachers of ${dept ? dept : 'all'}`)
-        .then(response => {
-          this.teacherList = response.data.map(x => {
-            return {
-              value: x.id,
-              label: `(${x.id}) ${x.name}`
-            }
-          })
-          this.fixValue(this.value)
-        })
+    loadTeachers(dept) {
+      this.fetchTeachers(dept).then(() => this.fixValue(this.value))
     },
     teacherFilter(value, update) {
       if (value === '') {
@@ -106,7 +103,7 @@ export default {
     },
   },
   created() {
-    this.fetchTeachers(this.department)
+    this.loadTeachers(this.department)
   },
   watch: {
     value: {
@@ -116,7 +113,7 @@ export default {
     },
     department: {
       handler(newVal/*, oldVal*/) {
-        this.fetchTeachers(newVal)
+        this.loadTeachers(newVal)
       }
     }
   }
