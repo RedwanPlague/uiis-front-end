@@ -69,7 +69,7 @@ export default {
         const cur = this.courseList.filter(x => format.includes(JSON.stringify(x.value)))
         this.$emit('input', cur)
       }
-      if (typeof value === 'string') {
+      else if (typeof value === 'string') {
         const cur = this.courseList.filter(x => x.value === value)[0]
         this.$emit('input', cur)
       }
