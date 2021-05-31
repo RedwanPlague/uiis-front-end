@@ -23,7 +23,7 @@
         v-model="id"
         label="Teacher ID"
         outlined
-        :readonly="viewing"
+        readonly
         :rules="[() => !!id || 'Please Enter an ID']"
       />
       <department-picker classes="col-6" v-model="department" required :readonly="viewing"/>
@@ -33,6 +33,7 @@
         <q-btn type="reset" label="Reset" color="primary" flat/>
       </div>
     </q-form>
+    <q-inner-loading :showing="oldDataLoading"/>
   </div>
 </template>
 
@@ -40,6 +41,7 @@
 import DepartmentPicker from 'components/FormElements/DepartmentPicker'
 import PasswordMakerField from 'components/FormElements/PasswordMakerField'
 import edit from 'src/mixins/edit'
+import {extract} from 'src/utils/apiDataPreProcessor'
 
 export default {
   name: 'TeacherCreatorForm',
@@ -52,10 +54,10 @@ export default {
   ],
   data() {
     return {
-      name: '',
-      id: '',
+      name: null,
+      id: null,
       department: null,
-      password: '',
+      password: null,
     }
   },
   computed: {
@@ -65,25 +67,21 @@ export default {
   },
   methods: {
     editAccount() {
-      this.callEditApi('/account/update/teacher' + this.loadID, {
-        id: this.id,
+      this.callEditApi('/account/update/teacher/' + this.loadID, {
         name: this.name,
         password: this.password,
-        department: this.department
+        department: extract(this.department)
       })
     },
     resetForm() {
-      this.name = this.oldData.name
-      this.id = this.oldData.id
-      this.password = ''
-      this.department = this.oldData.department
+      this.loadOldDataIntoForm()
+      this.password = null
     }
   },
   created() {
     this.fetchOldData('/account/teacher/list', {
       id: this.loadID
     }, 'Teacher Account')
-      .then(() => this.resetForm())
   }
 }
 </script>

@@ -32,6 +32,7 @@
 import DepartmentPicker from 'components/FormElements/DepartmentPicker'
 import PasswordMakerField from 'components/FormElements/PasswordMakerField'
 import creator from 'src/mixins/creator'
+import {extract} from 'src/utils/apiDataPreProcessor'
 
 export default {
   name: 'TeacherCreatorForm',
@@ -44,10 +45,10 @@ export default {
   ],
   data() {
     return {
-      name: '',
-      id: '',
+      name: null,
+      id: null,
       department: null,
-      password: '',
+      password: null,
     }
   },
   methods: {
@@ -57,13 +58,13 @@ export default {
         id: this.id,
         name: this.name,
         password: this.password,
-        department: this.department.value
+        department: extract(this.department)
       }, 'Teacher account')
     },
     resetForm() {
-      this.name = ''
-      this.id = ''
-      this.password = ''
+      this.name = null
+      this.id = null
+      this.password = null
       this.department = null
     }
   }

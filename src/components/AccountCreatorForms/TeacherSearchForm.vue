@@ -8,14 +8,14 @@
         class="col-6"
         v-model="name"
         label="Name"
-        filled
+        outlined
         :rules="[() => !!columns || 'Dummy Text']"
       />
       <q-input
         class="col-6"
         v-model="id"
         label="Teacher ID"
-        filled
+        outlined
         :rules="[() => !!columns || 'Dummy Text']"
       />
       <department-picker classes="col-6" v-model="department"/>
@@ -29,7 +29,7 @@
         title="Results"
         :data="tableData"
         :columns="columns"
-        @row-click="$router.push({name: 'AdminAccountEditPage'})"
+        @row-click="onRowClick"
       />
     </div>
     <q-inner-loading :showing="searchLoading"/>
@@ -40,6 +40,7 @@
 import DepartmentPicker from 'components/FormElements/DepartmentPicker'
 import columnMerger from 'src/utils/columnMerger'
 import search from 'src/mixins/search'
+import {extract} from 'src/utils/apiDataPreProcessor'
 
 const columns = [
   {name: 'id', label: 'Student ID', field: 'id', style: 'width: 10%', sortable: true},
@@ -61,8 +62,8 @@ export default {
   ],
   data() {
     return {
-      name: '',
-      id: '',
+      name: null,
+      id: null,
       department: null,
       columns
     }
@@ -72,15 +73,53 @@ export default {
       this.callSearchApi('/account/teacher/list', {
         name: this.name,
         id: this.id,
-        department: this.department
+        department: extract(this.department)
       }, 'Teacher account')
+      // this.$router.push({
+      //   name: 'AdminAccountSearchPage',
+      //   query: {
+      //     type: 'teacher',
+      //     name: this.name,
+      //     id: this.id,
+      //     department: extract(this.department)
+      //   }
+      // }).catch(() => {})
     },
-    resetForm() {
-      this.name = ''
-      this.id = ''
-      this.department = null
+    resetForm(query) {
+      if (!query) query = {}
+      this.name = query.name
+      this.id = query.id
+      this.department = query.department
+    },
+    onRowClick(event, row) {
+      const routeData = this.$router.resolve({
+        name: 'AdminAccountEditPage',
+        params: {
+          userType: 'teacher',
+          id: row.id
+        }
+      })
+      window.open(routeData.href, '_blank')
+    },
+    loadResults(query) {
+      if (query.type === 'teacher') {
+        this.resetForm(query)
+        this.callSearchApi('/account/teacher/list', {
+          name: query.name,
+          id: query.id,
+          department: query.department
+        }, 'Teacher account')
+      }
     }
-  }
+  },
+  // created() {
+  //   this.loadResults(this.$route.query)
+  // },
+  // watch: {
+  //   $route(to/*, from*/) {
+  //     this.loadResults(to.query)
+  //   }
+  // }
 }
 </script>
 

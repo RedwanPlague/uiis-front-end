@@ -6,20 +6,20 @@
     <q-form
       class="row q-col-gutter-md"
       @submit="searchAccount"
-      @reset="resetForm"
+      @reset="resetForm($route.query)"
     >
       <q-input
         class="col-6"
         v-model="name"
         label="Name"
-        filled
+        outlined
         :rules="[() => !!columns || 'Dummy Text']"
       />
       <q-input
         class="col-6"
         v-model="id"
         label="Student ID"
-        filled
+        outlined
         :rules="[() => !!columns || 'Dummy Text']"
       />
       <department-picker classes="col-6" v-model="department"/>
@@ -53,12 +53,17 @@ import TeacherPicker from 'components/FormElements/TeacherPicker'
 import HallPicker from 'components/FormElements/HallPicker'
 import columnMerger from 'src/utils/columnMerger'
 import search from 'src/mixins/search'
+import {extract} from 'src/utils/apiDataPreProcessor'
+
+const format = (val, row) => {
+  return row.level + '-' + row.term
+}
 
 const columns = [
   {name: 'id', label: 'Student ID', field: 'id', style: 'width: 10%', sortable: true},
   {name: 'name', label: 'Name', field: 'name', align: 'left', style: 'width: 60%'},
   {name: 'department', label: 'Department', field: 'department', align: 'center'},
-  {name: 'lt', label: 'Level/Term', field: 'lt', align: 'center', sortable: true},
+  {name: 'lt', label: 'Level/Term', field: 'lt', align: 'center', sortable: true, format},
 ]
 const commonAttr = {
   style: 'font-size: 1.05em', headerStyle: 'font-size: 1.05em'
@@ -77,8 +82,8 @@ export default {
   ],
   data() {
     return {
-      name: '',
-      id: '',
+      name: null,
+      id: null,
       department: null,
       hall: null,
       advisor: null,
@@ -90,34 +95,61 @@ export default {
       this.callSearchApi('/account/student/list', {
         name: this.name,
         id: this.id,
-        department: this.department,
-        hall: this.hall,
-        advisor: this.advisor
+        department: extract(this.department),
+        hall: extract(this.hall),
+        advisor: extract(this.advisor)
       }, 'Student account')
-        .then(() => {
-          this.tableData = this.tableData.map(x => {
-            x.lt = x.level + '-' + x.term
-            return x
-          })
-        })
+      // this.$router.push({
+      //   name: 'AdminAccountSearchPage',
+      //   query: {
+      //     type: 'student',
+      //     name: this.name,
+      //     id: this.id,
+      //     department: extract(this.department),
+      //     hall: extract(this.hall),
+      //     advisor: extract(this.advisor)
+      //   }
+      // }).catch(() => {})
     },
-    resetForm() {
-      this.name = ''
-      this.id = ''
-      this.department = null
-      this.hall= null
-      this.advisor = null
+    resetForm(query) {
+      if (!query) query = {}
+      this.name = query.name
+      this.id = query.id
+      this.department = query.department
+      this.hall= query.hall
+      this.advisor = query.advisor
     },
     onRowClick(event, row) {
-      this.$router.push({
+      const routeData = this.$router.resolve({
         name: 'AdminAccountEditPage',
-        query: {
-          type: 'student',
+        params: {
+          userType: 'student',
           id: row.id
         }
       })
-    }
+      window.open(routeData.href, '_blank')
+    },
+    loadResults(query) {
+      if (query.type === 'student') {
+        this.resetForm(query)
+        this.callSearchApi('/account/student/list', {
+          name: query.name,
+          id: query.id,
+          department: query.department,
+          hall: query.hall,
+          advisor: query.advisor
+        }, 'Student account')
+      }
+    },
   },
+  // created() {
+  //   this.loadResults(this.$route.query)
+  // },
+  // watch: {
+  //   $route(to/*, from*/) {
+  //     this.loadResults(to.query)
+  //   }
+  // }
 }
 </script>
 

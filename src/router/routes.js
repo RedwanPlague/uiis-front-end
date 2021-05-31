@@ -68,27 +68,41 @@ const routes = [
             component: () => import('pages/admin/courses/Creation')
           },
           {
+            path: 'search',
+            name: 'AdminCourseSearchPage',
+            component: () => import('pages/admin/courses/Search')
+          },
+          {
+            path: 'edit/:courseID/:syllabusID',
+            name: 'AdminCourseEditPage',
+            component: () => import('pages/admin/courses/Edit')
+          },
+          {
             path: 'assign',
-            name: 'AdminCourseAssignmentPage',
+            name: 'AdminCourseAssignPage',
             component: () => import('pages/admin/courses/Assignment')
           }
         ]
       },
       {
-        path: 'slot',
-        component: () => import('pages/admin/slots/Wrapper'),
-        children: [
-          {
-            path: 'create',
-            name: 'AdminSlotCreationPage',
-            component: () => import('pages/admin/slots/Creation')
-          },
-        ]
+        path: 'slots',
+        name: 'AdminSlotManagePage',
+        component: () => import('pages/admin/SlotManagement'),
       },
       {
-        path: 'session/assign',
-        name: 'AdminSessionAssignmentPage',
+        path: 'session',
+        name: 'AdminSessionAssignPage',
         component: () => import('pages/admin/SessionAssignment'),
+      },
+      {
+        path: 'departments',
+        name: 'AdminDeptManagePage',
+        component: () => import('pages/admin/DeptManagement'),
+      },
+      {
+        path: 'halls',
+        name: 'AdminHallManagePage',
+        component: () => import('pages/admin/HallManagement'),
       },
     ],
     // beforeEnter(to, from, next) {

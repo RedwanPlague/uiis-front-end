@@ -1,49 +1,59 @@
 <template>
   <q-page padding>
     <div class="text-h5 q-my-md">
-      Create New Course
+      {{label}} New Course
+      <q-btn
+        :icon="viewing ? 'edit' : 'visibility'"
+        :color="viewing ? 'primary' : 'black'"
+        @click="viewing = !viewing"
+        flat dense
+      />
     </div>
-    <q-form class="row q-col-gutter-md" @submit="createCourse" @reset="resetForm">
+    <q-form class="row q-col-gutter-md" @submit="editCourse" @reset="resetForm">
       <q-input
         class="col-6"
         v-model="syllabusID"
         label="Syllabus ID"
         outlined
-        :rules="[() => !!syllabusID || 'Please Enter Syllabus ID']"
+        readonly
+        :rules="[() => !!syllabusID || 'Please Enter a Syllabus ID']"
       />
       <q-input
         class="col-6"
         v-model="courseID"
         label="Course ID"
         outlined
-        :rules="[() => !!courseID || 'Please Enter Course ID']"
+        readonly
+        :rules="[() => !!courseID || 'Please Enter a Course ID']"
       />
       <department-picker
         classes="col-6"
         label="Department (offered to)"
         v-model="offeredToDepartment"
         required
+        :readonly="viewing"
       />
       <department-picker
         classes="col-6"
-        label="Department (offered from)"
+        label="Department (offered by)"
         v-model="offeredByDepartment"
         required
+        :readonly="viewing"
       />
       <q-input
         class="col-12"
         v-model="title"
         label="Title"
         outlined
-        :rules="[() => !!title || 'Please Enter Title']"
+        :readonly="viewing"
+        :rules="[() => !!title || 'Please Enter a Title']"
       />
       <q-input
         class="col-4"
         v-model="level"
         label="Level"
         outlined
-        type="number"
-        min="1" max="4"
+        :readonly="viewing"
         :rules="[() => !!level || 'Please Enter Level']"
       />
       <q-input
@@ -51,8 +61,7 @@
         v-model="term"
         label="Term"
         outlined
-        type="number"
-        min="1" max="2"
+        :readonly="viewing"
         :rules="[() => !!term || 'Please Enter Term']"
       />
       <q-input
@@ -60,9 +69,9 @@
         v-model="credit"
         label="Credit"
         type="number"
-        min="0"
         step="0.25"
         outlined
+        :readonly="viewing"
         :rules="[() => !!credit || 'Please Enter Credit']"
       />
       <course-picker
@@ -71,6 +80,7 @@
         v-model="prerequisites"
         multiple
         required
+        :readonly="viewing"
       />
       <q-input
         class="col-12 q-pb-md"
@@ -79,12 +89,14 @@
         type="textarea"
         rows="10"
         outlined
+        :readonly="viewing"
       />
       <div class="col-12">
-        <q-btn label="Create" type="submit" color="primary" unelevated :loading="createLoading"/>
+        <q-btn label="Edit" type="submit" color="primary" unelevated/>
         <q-btn label="Reset" type="reset" color="primary" flat/>
       </div>
     </q-form>
+    <q-inner-loading :showing="oldDataLoading"/>
     <div style="min-height: 200px"></div>
   </q-page>
 </template>
@@ -92,17 +104,17 @@
 <script>
 import DepartmentPicker from 'components/FormElements/DepartmentPicker'
 import CoursePicker from 'components/FormElements/CoursePicker'
-import creator from 'src/mixins/creator'
+import edit from 'src/mixins/edit'
 import {extract} from 'src/utils/apiDataPreProcessor'
 
 export default {
-  name: 'CourseCreation',
+  name: 'CourseEdit',
   components: {
     CoursePicker,
     DepartmentPicker
   },
   mixins: [
-    creator
+    edit
   ],
   data() {
     return {
@@ -118,12 +130,19 @@ export default {
       description: null,
     }
   },
+  computed: {
+    loadCourseID() {
+      return this.$route.params.courseID
+    },
+    loadSyllabusID() {
+      return this.$route.params.syllabusID
+    }
+  },
   methods: {
-    createCourse() {
-      this.callCreateApi('/course/create', {
+    editCourse() {
+      const url = `/course/update/${this.loadCourseID}/${this.loadSyllabusID}`
+      this.callEditApi(url, {
         title: this.title,
-        courseID: this.courseID,
-        syllabusID: this.syllabusID,
         offeredToDepartment: extract(this.offeredToDepartment),
         offeredByDepartment: extract(this.offeredByDepartment),
         level: this.level,
@@ -132,20 +151,16 @@ export default {
         prerequisites: extract(this.prerequisites),
         description: this.description
       }, 'Course')
-      console.log(extract(this.prerequisites))
     },
     resetForm() {
-      this.title = null
-      this.courseID = null
-      this.syllabusID = null
-      this.offeredByDepartment = null
-      this.offeredToDepartment = null
-      this.level = null
-      this.term = null
-      this.credit = null
-      this.prerequisites = []
-      this.description = null
+      this.loadOldDataIntoForm()
     }
   },
+  created() {
+    this.fetchOldData('/course/list', {
+      courseID: this.loadCourseID,
+      syllabusID: this.loadSyllabusID
+    }, 'Course')
+  }
 }
 </script>

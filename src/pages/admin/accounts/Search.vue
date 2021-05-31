@@ -47,5 +47,20 @@ export default {
       tab: 'student',
     }
   },
+  methods: {
+    setTab(type) {
+      if (type) {
+        this.tab = type
+      }
+    }
+  },
+  created() {
+    this.setTab(this.$route.query.type)
+  },
+  watch: {
+    $route(to/*, from*/) {
+      this.setTab(to.query.type)
+    }
+  }
 }
 </script>

@@ -59,13 +59,13 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <router-view/>
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
-import QuickLink from "components/QuickLink";
+import QuickLink from 'components/QuickLink'
 import { mapGetters, mapActions } from 'vuex'
 
 const quickLinks = [
@@ -83,11 +83,6 @@ const quickLinks = [
         icon: 'school',
         link: { name: 'AdminAccountSearchPage' }
       },
-      {
-        title: 'Edit',
-        icon: 'school',
-        link: { name: 'AdminAccountEditPage' }
-      },
     ]
   },
   {
@@ -100,64 +95,79 @@ const quickLinks = [
         link: { name: 'AdminCourseCreationPage' }
       },
       {
+        title: 'Search',
+        icon: 'school',
+        link: { name: 'AdminCourseSearchPage' }
+      },
+      {
         title: 'Assign',
         icon: 'school',
-        link: { name: 'AdminCourseAssignmentPage' }
+        link: { name: 'AdminCourseAssignPage' }
       },
     ]
   },
   {
     title: 'Slots',
     icon: 'school',
-    link: { name: 'AdminSlotCreationPage' }
+    link: { name: 'AdminSlotManagePage' }
   },
   {
     title: 'Session',
     icon: 'school',
-    link: { name: 'AdminSessionAssignmentPage' }
+    link: { name: 'AdminSessionAssignPage' }
   },
   {
-    title: 'Docs2',
+    title: 'Departments',
     icon: 'school',
-    children: [
-      {
-        title: 'Docs4',
-        icon: 'school',
-        link: 'https://quasar.dev'
-      },
-      {
-        title: 'Docs5',
-        icon: 'school',
-        link: 'https://quasar.dev'
-      },
-      {
-        title: 'Docs6',
-        icon: 'school',
-        children: [
-          {
-            title: 'Docs7',
-            icon: 'school',
-            link: 'https://quasar.dev'
-          },
-          {
-            title: 'Docs8',
-            icon: 'school',
-            link: 'https://quasar.dev'
-          },
-          {
-            title: 'Docs9',
-            icon: 'school',
-            link: 'https://quasar.dev'
-          },
-        ]
-      },
-    ]
+    link: { name: 'AdminDeptManagePage' }
   },
   {
-    title: 'Docs3',
+    title: 'Halls',
     icon: 'school',
-    link: 'https://quasar.dev'
+    link: { name: 'AdminHallManagePage' }
   },
+  // {
+  //   title: 'Docs2',
+  //   icon: 'school',
+  //   children: [
+  //     {
+  //       title: 'Docs4',
+  //       icon: 'school',
+  //       link: 'https://quasar.dev'
+  //     },
+  //     {
+  //       title: 'Docs5',
+  //       icon: 'school',
+  //       link: 'https://quasar.dev'
+  //     },
+  //     {
+  //       title: 'Docs6',
+  //       icon: 'school',
+  //       children: [
+  //         {
+  //           title: 'Docs7',
+  //           icon: 'school',
+  //           link: 'https://quasar.dev'
+  //         },
+  //         {
+  //           title: 'Docs8',
+  //           icon: 'school',
+  //           link: 'https://quasar.dev'
+  //         },
+  //         {
+  //           title: 'Docs9',
+  //           icon: 'school',
+  //           link: 'https://quasar.dev'
+  //         },
+  //       ]
+  //     },
+  //   ]
+  // },
+  // {
+  //   title: 'Docs3',
+  //   icon: 'school',
+  //   link: 'https://quasar.dev'
+  // },
 ];
 
 export default {

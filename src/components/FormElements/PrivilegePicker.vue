@@ -6,8 +6,7 @@
     :options="privilegeOptions"
     :label="label"
     :readonly="readonly"
-    :filled="!required"
-    :outlined="required"
+    outlined
     :use-chips="multiple"
     :multiple="multiple"
     :clearable="multiple"
@@ -42,7 +41,7 @@ export default {
       default: null
     },
     classes: {
-      type: [Object, String]
+      type: [Object, Array, String]
     },
     multiple: {
       type: Boolean,

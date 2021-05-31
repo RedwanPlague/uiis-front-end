@@ -5,8 +5,7 @@
     @input="$emit('input', $event)"
     :options="hallOptions"
     :label="label"
-    :filled="!required"
-    :outlined="required"
+    outlined
     :readonly="readonly"
     :rules="[() => !required || !!value || `Please Assign a ${label}`]"
     use-input
@@ -34,7 +33,7 @@ export default {
       default: 'Hall'
     },
     value: {
-      type: Object,
+      type: [Object, String],
       default: null
     },
     classes: {
@@ -56,6 +55,13 @@ export default {
     }
   },
   methods: {
+    fixValue(value) {
+      if (this.hallList.length === 0) return
+      if (typeof value === 'string') {
+        const cur = this.hallList.filter(x => x.value === value)[0]
+        this.$emit('input', cur)
+      }
+    },
     fetchHalls() {
       apiFetch('/hall/list', null, 'All hall list')
         .then(response => {
@@ -65,6 +71,7 @@ export default {
               label: `(${x.id}) ${x.name}`
             }
           })
+          this.fixValue(this.value)
         })
     },
     hallFilter(value, update) {
@@ -81,6 +88,13 @@ export default {
   },
   created() {
     this.fetchHalls()
+  },
+  watch: {
+    value: {
+      handler(newVal/*, oldVal*/) {
+        this.fixValue(newVal)
+      }
+    },
   }
 }
 </script>

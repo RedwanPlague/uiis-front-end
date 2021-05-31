@@ -51,9 +51,9 @@ export default {
   ],
   data() {
     return {
-      name: '',
-      id: '',
-      password: '',
+      name: null,
+      id: null,
+      password: null,
       privileges: [],
     }
   },
@@ -68,9 +68,9 @@ export default {
       }, 'Admin account')
     },
     resetForm() {
-      this.name = ''
-      this.id = ''
-      this.password = ''
+      this.name = null
+      this.id = null
+      this.password = null
       this.privileges = []
     }
   },

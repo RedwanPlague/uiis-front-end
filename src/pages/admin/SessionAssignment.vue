@@ -4,31 +4,13 @@
       Current Session
     </div>
     <q-form class="row q-col-gutter-md" @submit="assignSession" @reset="resetForm">
-      <q-input
-        class="col-6"
-        outlined
-        input-class="cursor-pointer"
-        label="Session"
+      <session-field
+        classes="col-6"
         v-model="date"
-        @click="$refs.monthPicker.show()"
-      >
-        <template v-slot:append>
-          <q-icon name="event" class="cursor-pointer">
-            <q-popup-proxy ref="monthPicker" transition-show="scale" transition-hide="scale">
-              <q-date
-                minimal
-                mask="MMM YYYY"
-                emit-immediately
-                default-view="Years"
-                v-model="date"
-                @input="checkValue"
-              />
-            </q-popup-proxy>
-          </q-icon>
-        </template>
-      </q-input>
+        required
+      />
       <div class="col-12">
-        <q-btn label="Assign" type="submit" color="primary" unelevated :loading="assignLoading"/>
+        <q-btn label="Assign" type="submit" color="primary" unelevated :loading="editLoading"/>
         <q-btn label="Reset" type="reset" color="primary" flat/>
       </div>
     </q-form>
@@ -36,26 +18,28 @@
 </template>
 
 <script>
+import {monthYearToDate} from 'src/utils/dateFormatters'
+import SessionField from 'components/FormElements/SessionField'
+import edit from 'src/mixins/edit'
+
 export default {
   name: 'SessionAssigner',
+  components: {SessionField},
+  mixins: [edit],
   data() {
     return {
-      date: '',
-      assignLoading: false
+      date: null,
     }
   },
   methods: {
-    checkValue (val, reason/*, details*/) {
-      if (reason === 'month') {
-        this.$refs.monthPicker.hide()
-      }
-    },
     assignSession() {
-
+      this.callEditApi('/currentSession/update', {
+        session: monthYearToDate(this.date).toString()
+      }, 'Session')
     },
     resetForm() {
-      this.date = ''
-    }
-  }
+      this.date = null
+    },
+  },
 }
 </script>

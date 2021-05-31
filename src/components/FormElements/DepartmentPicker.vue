@@ -5,8 +5,7 @@
     @input="$emit('input', $event)"
     :options="deptOptions"
     :label="label"
-    :filled="!required"
-    :outlined="required"
+    outlined
     :readonly="readonly"
     :rules="[() => !required || !!value || `Please Select a ${label}`]"
     use-input
@@ -23,8 +22,8 @@
 </template>
 
 <script>
-import {apiFetch} from 'src/utils/apiWrappers'
 import {isSubstring} from 'src/utils/patternSearch'
+import {mapGetters, mapActions} from 'vuex'
 
 export default {
   name: 'DepartmentPicker',
@@ -34,7 +33,7 @@ export default {
       default: 'Department'
     },
     value: {
-      type: Object,
+      type: [Object, String],
       default: null
     },
     classes: {
@@ -51,21 +50,27 @@ export default {
   },
   data() {
     return {
-      deptList: [],
       deptOptions: []
     }
   },
+  computed: {
+    ...mapGetters([
+      'deptList'
+    ])
+  },
   methods: {
+    ...mapActions([
+      'loadDepartments'
+    ]),
+    fixValue(value) {
+      if (this.deptList.length === 0) return
+      if (typeof value === 'string') {
+        const cur = this.deptList.filter(x => x.value === value)[0]
+        this.$emit('input', cur)
+      }
+    },
     fetchDepartments() {
-      apiFetch('/department/list', null, 'All dept list')
-        .then(response => {
-          this.deptList = response.data.map(x => {
-            return {
-              value: x.id,
-              label: x.id
-            }
-          })
-        })
+      this.loadDepartments().then(() => this.fixValue(this.value))
     },
     deptFilter(value, update) {
       if (value === '') {
@@ -81,6 +86,13 @@ export default {
   },
   created() {
     this.fetchDepartments()
+  },
+  watch: {
+    value: {
+      handler(newVal/*, oldVal*/) {
+        this.fixValue(newVal)
+      }
+    },
   }
 }
 </script>
