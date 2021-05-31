@@ -46,8 +46,9 @@ const getters = {
         sec => sec.teacher === teacherID
       );
 
-      if (section.mark) return section.mark;
+      if (!isNaN(section.mark)) return section.mark;
       else throw new Error();
+
     } catch (error) {
       return "NA";
     }
@@ -78,7 +79,7 @@ const getters = {
         sec => sec.teacher === teacherID && sec.evalID === evalID
       );
 
-      if (section.mark) return section.mark;
+      if (!isNaN(section.mark)) return section.mark;
       else throw new Error();
     } catch (error) {
       return "NA";
@@ -109,7 +110,7 @@ const getters = {
         sec => sec.examiner === examinerID && sec.part === part
       );
 
-      if (section.mark) return section.mark;
+      if (!isNaN(section.mark)) return section.mark;
       else throw new Error();
 
     } catch (error) {

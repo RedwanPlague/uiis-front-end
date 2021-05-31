@@ -2,7 +2,7 @@
   <div class="q-pa-sm column items-center">
     <h6>
       {{
-        info.courseID + " (" + info.courseTitle + " ) - " + "Part " + info.part
+        info.courseID + " (" + info.courseTitle + ") - " + "Part " + info.part
       }}
     </h6>
     <q-checkbox v-model="canEdit" label="Edit" :disable="!info.hasEditAccess" />
@@ -31,13 +31,20 @@
     </q-markup-table>
 
     <div class="">
-      <q-btn color="primary" label="Save" class="q-ma-md" @click="saveMarks">
+      <q-btn
+        color="primary"
+        label="Save"
+        class="q-ma-md"
+        @click="saveMarks"
+        :disable="!info.hasEditAccess"
+      >
       </q-btn>
       <q-btn
         color="primary"
         label="Submit"
         class="q-ma-md"
         @click="submitMarks"
+        :disable="!info.hasEditAccess"
       />
     </div>
 
@@ -102,7 +109,7 @@ export default {
           ]
         });
 
-        return;
+        return false;
       }
 
       const students = this.info.students.map(student => ({
@@ -127,6 +134,8 @@ export default {
         message: sucMes,
         position: "bottom-left"
       });
+
+      return true;
     },
 
     async saveMarks() {
@@ -134,9 +143,11 @@ export default {
     },
 
     async submitMarks() {
-      await this.uploadMarks("forward");
-      this.canEdit = false;
-      this.$store.commit("examiner/mutHasEditAccess");
+      const paise = await this.uploadMarks("forward");
+      if (paise) {
+        this.canEdit = false;
+        this.$store.commit("examiner/mutHasEditAccess");
+      }
     }
   },
 
