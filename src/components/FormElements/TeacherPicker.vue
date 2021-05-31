@@ -76,10 +76,8 @@ export default {
     fixValue(value) {
       if (this.teacherList.length === 0) return
       if (Array.isArray(value)) {
-        for (let i = 0; i < value.length; i++) {
-          const cur = this.teacherList.filter(x => value.includes(x.value))
-          this.$emit('input', cur)
-        }
+        const cur = this.teacherList.filter(x => value.includes(x.value))
+        this.$emit('input', cur)
       }
       else if (typeof value === 'string') {
         const cur = this.teacherList.filter(x => x.value === value)[0]

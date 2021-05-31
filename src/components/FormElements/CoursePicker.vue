@@ -65,13 +65,11 @@ export default {
     fixValue(value) {
       if (this.courseList.length === 0) return
       if (Array.isArray(value)) {
-        for (let i = 0; i < value.length; i++) {
-          const format = value.map(x => JSON.stringify(x))
-          const cur = this.courseList.filter(x => format.includes(JSON.stringify(x.value)))
-          this.$emit('input', cur)
-        }
+        const format = value.map(x => JSON.stringify(x.value))
+        const cur = this.courseList.filter(x => format.includes(JSON.stringify(x.value)))
+        this.$emit('input', cur)
       }
-      else if (typeof value === 'string') {
+      if (typeof value === 'string') {
         const cur = this.courseList.filter(x => x.value === value)[0]
         this.$emit('input', cur)
       }
