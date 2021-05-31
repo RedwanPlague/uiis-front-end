@@ -7,7 +7,10 @@ const state = {
   advisee: {},
   grades: [],
   registrations: [],
-  specificRegistrations: []
+  specificRegistrations: [],
+
+  availableSemesters: [],
+  availableGrades: []
 };
 
 const getters = {
@@ -15,7 +18,10 @@ const getters = {
   getAdvisee: (state) => state.advisee,
   getGrades: (state) => state.grades,
   getRegistrations: (state) => state.registrations,
-  getSpecificRegistrations: (state) => state.specificRegistrations
+  getSpecificRegistrations: (state) => state.specificRegistrations,
+
+  getAvailableSemesters: (state) => state.availableSemesters,
+  getAvailableGrades: (state) => state.availableGrades
 };
 
 const actions = {
@@ -27,7 +33,7 @@ const actions = {
           Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
         }
       });
-      commit('mutateAdvisees', response.data);
+      commit('mutateAdvisees', response.data.sort((advisee1, advisee2) => (advisee1.id > advisee2.id)? 1: -1));
     } catch(err) {
       this.error = err.message;
     }
@@ -50,15 +56,30 @@ const actions = {
   /* getting specific advisee's specific semester's grades */
   async fetchGrades({ commit }, params) {
     try {
-      const response = await api.get(url+'/advisees/'+params.id+'/grades', {
-        headers: {
-          Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
-        },
-        params: {
-          level: params.level,
-          term: params.term
-        }
-      });
+      let response = [];
+
+      if(params.filter === 'semester') {
+        response = await api.get(url+'/advisees/'+params.id+'/grades', {
+          headers: {
+            Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
+          },
+          params: {
+            filter: params.filter,
+            level: params.level,
+            term: params.term
+          }
+        });
+      } else if(params.filter === 'grade') {
+        response = await api.get(url+'/advisees/'+params.id+'/grades', {
+          headers: {
+            Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
+          },
+          params: {
+            filter: params.filter,
+            grade: params.grade
+          }
+        });
+      }
       commit('mutateGrades', response.data);
     } catch(err) {
       this.error = err.message;
@@ -73,7 +94,7 @@ const actions = {
           Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
         }
       });
-      commit('mutateRegistrations', response.data);
+      commit('mutateRegistrations', response.data.sort((advisee1, advisee2) => (advisee1.id > advisee2.id)? 1: -1));
     } catch(err) {
       this.error = err.message;
     }
@@ -95,6 +116,44 @@ const actions = {
     } catch(err) {
       this.error = err.message;
     }
+  },
+
+  /* getting available semesters for a specific advisee */
+  generateAvailableSemesters({ commit }, params) {
+    let availableSemesters = [];
+    let availableSemestersCount = (params.level-1)*2+params.term-1;
+
+    for(let i=0; i<availableSemestersCount; i++) {
+      availableSemesters[i] = {
+        semesterID: i+1,
+        level: Math.floor(i/2)+1,
+        term: i%2+1
+      };
+    }
+    commit('mutateAvailableSemesters', availableSemesters);
+  },
+
+  /* getting available grades for a specific advisee for a specific semester */
+  generateAvailableGrades({ commit }) {
+    let availableGrades = [];
+
+    for(let i=0, index=0; i<state.grades.length; i++) {
+      if(state.grades[i].status === 'passed' || state.grades[i].status === 'failed') {
+        availableGrades[index++] = {
+          courseID: state.grades[i].courseSession.course.courseID,
+          title: state.grades[i].courseSession.course.title,
+          credit: state.grades[i].courseSession.course.credit,
+          gradeLetter: state.grades[i].result.gradeLetter,
+          gradePoint: state.grades[i].result.gradePoint
+        };
+      }
+    }
+    commit('mutateAvailableGrades', availableGrades);
+  },
+
+  /* clearing available grades for a specific advisee for a specific semester */
+  clearAvailableGrades({ commit }) {
+    commit('mutateAvailableGrades', []);
   }
 };
 
@@ -103,7 +162,10 @@ const mutations = {
   mutateAdvisee: (state, advisee) => (state.advisee = advisee),
   mutateGrades: (state, grades) => (state.grades = grades),
   mutateRegistrations: (state, registrations) => (state.registrations = registrations),
-  mutateSpecificRegistrations: (state, specificRegistrations) => (state.specificRegistrations = specificRegistrations)
+  mutateSpecificRegistrations: (state, specificRegistrations) => (state.specificRegistrations = specificRegistrations),
+
+  mutateAvailableSemesters: (state, availableSemesters) => (state.availableSemesters = availableSemesters),
+  mutateAvailableGrades: (state, availableGrades) => (state.availableGrades = availableGrades)
 };
 
 export default {

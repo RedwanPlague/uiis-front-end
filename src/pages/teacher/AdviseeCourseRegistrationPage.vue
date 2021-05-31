@@ -106,7 +106,7 @@
       </q-card>
 
       <q-dialog v-model="adviseeWithApprovalOptionDialogBox" full-width>
-        <q-card>
+        <q-card class="q-pa-md">
           <q-card-section>
             <div class="text-h6">
               <p>
@@ -137,7 +137,7 @@
       </q-dialog>
 
       <q-dialog v-model="adviseeWithoutApprovalOptionDialogBox" full-width>
-        <q-card>
+        <q-card class="q-pa-md">
           <q-card-section>
             <div class="text-h6">
               <p>
@@ -209,6 +209,7 @@ export default {
           align: 'left',
           label: 'Credit Hours',
           field: 'credit',
+          format: val => `${val.toFixed(2)}`,
           sortable: true
         },
         {
@@ -275,13 +276,8 @@ export default {
 
     /* approving course registration application */
     async approve() {
-      console.log(this.selectedAdvisee.id);
       try {
-        await api.patch(url+'/registrations/'+this.selectedAdvisee.id+'/approve', {
-          headers: {
-            Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
-          }
-        });
+        await api.patch(url+'/registrations/'+this.selectedAdvisee.id+'/approve');
         await this.fetchRegistrations();
       } catch(error) {
         console.log(error);
@@ -291,11 +287,7 @@ export default {
     /* rejecting course registration application */
     async reject() {
       try {
-        await api.patch(url+'/registrations/'+this.selectedAdvisee.id+'/reject', {
-          headers: {
-            Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
-          }
-        });
+        await api.patch(url+'/registrations/'+this.selectedAdvisee.id+'/reject');
         await this.fetchRegistrations();
       } catch(error) {
         console.log(error);

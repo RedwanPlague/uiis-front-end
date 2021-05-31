@@ -15,7 +15,7 @@ const getters = {
     }));
   },
 
-  currentCourseName: state => state.currentCourse,
+  currentCourse: state => state.currentCourse,
 
   currentCourseInfo: state =>
     state.courses.find(course => course.courseID === state.currentCourse),
@@ -32,7 +32,7 @@ const mutations = {
    const curCourse = state.courses.find(course => course.courseID === state.currentCourse);
    const student = curCourse.students.find(student => student.studentID === payload.studentID);
    
-   student.marks = payload.marks;
+   student.mark = payload.mark;
   },
 
   mutAllCourses: (state, allCourses) => {
@@ -41,19 +41,20 @@ const mutations = {
 
   mutCurSession: (state, currentSession) => {
     state.currentSession = currentSession;
+  },
+
+  mutHasEditAccess: (state) => {
+    const curCor = state.courses.find(course => course.courseID === state.currentCourse);
+    curCor.hasEditAccess = false;
   }
 };
 
 const actions = {
   async fillCourses(context) {
     const session = context.state.currentSession;
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjA0Njc2Mn0.vdxf-sKNb5UnO26cQdDDyT0B2O9lDjD40smW2VnSAoU";
 
     const shob = await api.get(
       `/teacher/examiner/${session}`,
-      {
-        headers: { Authorization: `Bearer ${token}`, },
-      }
     );
 
     const courseSum = shob.data.toRet;
@@ -65,9 +66,6 @@ const actions = {
       //console.log(`/teacher/examiner/${cr.courseID}/${session}?part=${cr.part}`);
       const courseInfo = (await api.get(
         `/teacher/examiner/${cr.courseID}/${session}?part=${cr.part}`,
-        {
-          headers: { Authorization: `Bearer ${token}`, },
-        }
       )).data;
 
       console.log(courseInfo);

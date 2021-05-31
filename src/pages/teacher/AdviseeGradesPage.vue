@@ -2,21 +2,21 @@
   <q-page padding>
     <div class="q-pa-md">
       <div class="text-subtitle1">
-        <strong>Student ID:</strong> {{ getAdvisee._id }} <br />
+        <strong>Student ID:</strong> {{ getAdvisee.id }} <br />
         <strong>Name:</strong> {{ getAdvisee.name }} <br />
         <strong>Department:</strong> {{ getAdvisee.department }} <br />
-        <strong>Level/Term:</strong> {{ this.$route.params.level }}/{{ this.$route.params.term }}
+        <strong>Level/Term:</strong> {{ this.$route.query.level }}/{{ this.$route.query.term }}
       </div><br />
 
       <q-table
-        dense bordered :data="grades" :columns="gradeColumns" row-key="courseID"
+        dense bordered :data="getAvailableGrades" :columns="gradeColumns" row-key="courseID"
       /><br />
 
       <div class="row">
         <div class="text-subtitle1">
-          <strong>Registered Credit Hours in this Term:</strong> {{ getTotalCreditHour() }}<br />
-          <strong>Credit Hours Earned in this Term:</strong> {{ getTotalCreditHourObtained }}<br />
-          <strong>Total Credit Hours:</strong> {{ getTotalCreditHoursCompleted() }}
+          <strong>Registered Credit Hours in this Term:</strong> {{ getTotalCreditHour().toFixed(2) }}<br />
+          <strong>Credit Hours Earned in this Term:</strong> {{ getTotalCreditHourObtained().toFixed(2) }}<br />
+          <strong>Total Credit Hours:</strong> {{ getTotalCreditHoursCompleted().toFixed(2) }}
         </div>
 
         <q-space />
@@ -24,8 +24,8 @@
         <q-card>
           <q-card-section>
             <div class="text-subtitle1">
-              <strong>Obtained GPA:</strong> {{ getGPA() }}<br />
-              <strong>Current CGPA:</strong> {{ getCGPA() }}
+              <strong>Obtained GPA:</strong> {{ getGPA().toFixed(2) }}<br />
+              <strong>Current CGPA:</strong> {{ getCGPA().toFixed(2) }}
             </div>
           </q-card-section>
         </q-card>
@@ -70,6 +70,7 @@ export default {
           align: 'left',
           label: 'Credit Hours',
           field: 'credit',
+          format: val => `${val.toFixed(2)}`,
           sortable: true
         },
         {
@@ -84,24 +85,22 @@ export default {
           align: 'left',
           label: 'Grade Point',
           field: 'gradePoint',
+          format: val => `${val.toFixed(2)}`,
           sortable: true
         }
-      ],
-
-      /* passed or failed courses' grades */
-      grades: []
+      ]
     };
   },
 
   methods: {
-    ...mapActions(['fetchAdvisee', 'fetchGrades']),
+    ...mapActions(['fetchAdvisee', 'fetchGrades', 'generateAvailableGrades', 'clearAvailableGrades']),
 
     getTotalCreditHourObtained() {
       let totalCredit = 0.0;
 
-      for(let i=0; i<this.grades.length; i++) {
-        if(this.grades[i].status === 'passed') {
-          totalCredit += this.grades[i].credit;
+      for(let i=0; i<this.$store.getters.getAvailableGrades.length; i++) {
+        if(this.$store.getters.getAvailableGrades[i].status === 'passed') {
+          totalCredit += this.$store.getters.getAvailableGrades[i].credit;
         }
       }
       return totalCredit;
@@ -110,8 +109,8 @@ export default {
     getTotalCreditHour() {
       let totalCredit = 0.0;
 
-      for(let i=0; i<this.grades.length; i++) {
-        totalCredit += this.grades[i].credit;
+      for(let i=0; i<this.$store.getters.getAvailableGrades.length; i++) {
+        totalCredit += this.$store.getters.getAvailableGrades[i].credit;
       }
       return totalCredit;
     },
@@ -119,37 +118,70 @@ export default {
     getGPA() {
       let sum = 0.0;
 
-      for(let i=0; i<this.grades.length; i++) {
-        sum += this.grades[i].credit*this.grades[i].result.gradePoint;
+      for(let i=0; i<this.$store.getters.getAvailableGrades.length; i++) {
+        sum += this.$store.getters.getAvailableGrades[i].credit*this.$store.getters.getAvailableGrades[i].gradePoint;
       }
       return sum/this.getTotalCreditHour();
     },
 
     getCGPA() {
       /* NOTICE: this should change later */
-      return this.$store.getters.getAdvisee.cgpa;
+      return this.getAdvisee.cgpa;
     },
 
     getTotalCreditHoursCompleted() {
       /* NOTICE: this should change later */
-      return this.$store.getters.getAdvisee.totalCreditHoursCompleted;
+      return this.getAdvisee.totalCreditHoursCompleted;
     },
 
     visitSemesterSelectionPage() {
-      this.$router.push({ name: 'adviseeSemesterSelection', params: {}});
+      this.clearAvailableGrades();
+      this.$router.push({ name: 'adviseeSemesterSelection',
+        params: {
+          studentID: this.getAdvisee.id
+        },
+        query: {} });
     }
   },
 
-  computed: mapGetters(['getAdvisee', 'getGrades']),
+  computed: mapGetters(['getAdvisee', 'getGrades', 'getAvailableGrades']),
 
   async created() {
     try {
-      await this.fetchAdvisee(this.$route.params._id);
-      await this.fetchGrades(this.$route.params._id, this.$route.params.level, this.$route.params.term);
+      const loading = this.$q.notify({
+        message: `Loading Grades`,
+        position: "bottom-left",
+        group: false, // required to be updatable
+        timeout: 0, // we want to be in control when it gets dismissed
+        spinner: true
+      });
+
+      await this.fetchAdvisee(this.$route.params.studentID);
+      if(this.$route.query.filter === 'semester') {
+        await this.fetchGrades({
+          id: this.getAdvisee.id,
+          filter: this.$route.query.filter,
+          level: this.$route.query.level,
+          term: this.$route.query.term
+        });
+      } else if(this.$route.query.filter === 'grade') {
+        await this.fetchGrades({
+          id: this.getAdvisee.id,
+          filter: this.$route.query.filter,
+          grade: this.$route.query.grade
+        });
+      }
+      this.generateAvailableGrades();
+
+      loading({
+        icon: 'done', // we add an icon
+        spinner: false, // we reset the spinner setting so the icon can be displayed
+        message: 'Grades Loaded',
+        timeout: 1500 // we will timeout it in 2.5s
+      });
     } catch(error) {
       console.log(error);
     }
-    this.grades = this.$store.getters.getGrades.filter(grade => grade.status === 'passed' || grade.status === 'failed');
   }
 }
 </script>

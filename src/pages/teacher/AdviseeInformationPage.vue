@@ -28,7 +28,7 @@
       </q-card>
 
       <q-dialog v-model="adviseeInfoDialogBox" full-width>
-        <q-card>
+        <q-card class="q-pa-md">
           <q-card-section>
             <div class="text-h6">
               <p>
@@ -89,13 +89,11 @@ export default {
     },
 
     visitSemesterSelectionPage() {
-      this.$router.push({ name: 'adviseeSemesterSelection', params: {
-        studentID: this.$store.getters.getAdvisee.id
-      },
-      query: {
-        level: this.$store.getters.getAdvisee.level,
-        term: this.$store.getters.getAdvisee.term
-      }});
+      this.$router.push({ name: 'adviseeSemesterSelection',
+        params: {
+          studentID: this.getAdvisee.id
+        },
+        query: {} });
     }
   },
 
