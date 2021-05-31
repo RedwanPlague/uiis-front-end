@@ -92,7 +92,7 @@
         :readonly="viewing"
       />
       <div class="col-12">
-        <q-btn label="Edit" type="submit" color="primary" unelevated/>
+        <q-btn label="Update" type="submit" color="primary" unelevated/>
         <q-btn label="Reset" type="reset" color="primary" flat/>
       </div>
     </q-form>

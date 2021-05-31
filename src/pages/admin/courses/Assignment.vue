@@ -274,7 +274,7 @@
       </q-expansion-item>
       <q-separator class="q-mb-lg"/>
       <div class="col-12 q-mt-lg">
-        <q-btn label="Assign" color="primary" unelevated @click="updateCourseSession" :loading="assignLoading"/>
+        <q-btn label="Update" color="primary" unelevated @click="updateCourseSession" :loading="assignLoading"/>
         <q-btn label="Reset" color="primary" flat @click="resetForm"/>
       </div>
     </q-form>

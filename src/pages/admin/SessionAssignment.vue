@@ -10,7 +10,7 @@
         required
       />
       <div class="col-12">
-        <q-btn label="Assign" type="submit" color="primary" unelevated :loading="editLoading"/>
+        <q-btn label="Update" type="submit" color="primary" unelevated :loading="editLoading"/>
         <q-btn label="Reset" type="reset" color="primary" flat/>
       </div>
     </q-form>

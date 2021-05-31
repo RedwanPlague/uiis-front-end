@@ -42,7 +42,7 @@
       />
       <password-maker-field v-if="!viewing" classes="col-6" v-model="password"/>
       <div class="col-12" v-if="!viewing">
-        <q-btn type="submit" label="Edit" color="primary" unelevated :loading="editLoading"/>
+        <q-btn type="submit" label="Update" color="primary" unelevated :loading="editLoading"/>
         <q-btn type="reset" label="Reset" color="primary" flat/>
       </div>
     </q-form>
