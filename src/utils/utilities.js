@@ -12,8 +12,8 @@ const deepEqual = (obj1, obj2) => {
 }
 
 const numEqual = (num1, num2) => {
-  if (num1 === num2) return true
-  if (!num1 || !num2) return false
+  if (!num1) num1 = ''
+  if (!num2) num2 = ''
   return num1.toString() === num2.toString()
 }
 
