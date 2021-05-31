@@ -65,7 +65,7 @@ export default {
     fixValue(value) {
       if (this.courseList.length === 0) return
       if (Array.isArray(value)) {
-        const format = value.map(x => JSON.stringify(x.value))
+        const format = value.map(x => JSON.stringify(x))
         const cur = this.courseList.filter(x => format.includes(JSON.stringify(x.value)))
         this.$emit('input', cur)
       }
@@ -108,13 +108,13 @@ export default {
   created() {
     this.fetchCourseList()
   },
-  watch: {
-    value: {
-      handler(newVal/*, oldVal*/) {
-        this.fixValue(newVal)
-      }
-    },
-  }
+  // watch: {
+  //   value: {
+  //     handler(newVal/*, oldVal*/) {
+  //       this.fixValue(newVal)
+  //     }
+  //   },
+  // }
 }
 </script>
 
