@@ -26,7 +26,7 @@
         </q-table>
       </div>
       <q-btn
-        class="q-mt-xl"
+        class="q-mt-xl submit-btn"
         color="primary"
         label="Forward to department head"
         :disable="hasApprovedResult || !allCompleted"
@@ -59,6 +59,12 @@ export default {
         `/teacher/scrutinizer/${this.info.courseID}/${this.currentSession}/approve`
       );
       this.$store.commit("scrutinizer/mutHasApprovedResult");
+
+      this.$q.notify({
+        icon: 'done',
+        message: 'Result Forwarded to Department Head',
+        position: "bottom-left"
+      });
     }
   },
 
@@ -236,4 +242,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+  .submit-btn {
+    margin-left: 200px;
+  }
+</style>
