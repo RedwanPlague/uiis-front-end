@@ -33,7 +33,7 @@
 
       <div class="row">
         <q-space />
-        <q-btn flat class="bg-primary text-white" label="Back" @click="visitSemesterSelectionPage" />
+        <q-btn class="bg-primary text-white" label="Back" @click="visitSemesterSelectionPage" />
       </div>
     </div>
   </q-page>
@@ -168,7 +168,7 @@ export default {
         await this.fetchGrades({
           id: this.getAdvisee.id,
           filter: this.$route.query.filter,
-          grade: this.$route.query.grade
+          gradeLetter: this.$route.query.gradeLetter
         });
       }
       this.generateAvailableGrades();

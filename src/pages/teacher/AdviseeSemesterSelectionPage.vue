@@ -23,45 +23,45 @@
         <q-separator /><br />
 
         <q-card-actions align="center">
-          <q-btn-dropdown no-caps color="primary" label="Filter with Level/Term">
-            <q-list>
-              <q-item
-                clickable
-                class="bg-grey-2"
-                v-for="semester in getAvailableSemesters"
-                :key="semester.semesterID"
-                v-bind="semester"
-                @click.native="selectedSemester = semester; onSemesterClick();"
-              >
-                <q-item-section>
-                  <q-item-label>Level/Term: <strong>{{ semester.level }}/{{ semester.term }}</strong></q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
-        </q-card-actions><br />
+          <div class="row q-gutter-lg">
+            <q-btn-dropdown no-caps color="primary" label="Filter with Level/Term">
+              <q-list>
+                <q-item
+                  clickable
+                  class="bg-grey-2"
+                  v-for="semester in getAvailableSemesters"
+                  :key="semester.semesterID"
+                  v-bind="semester"
+                  @click.native="selectedSemester = semester; onSemesterClick();"
+                >
+                  <q-item-section>
+                    <q-item-label>Level/Term: <strong>{{ semester.level }}/{{ semester.term }}</strong></q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-btn-dropdown>
 
-        <q-card-actions align="center">
-          <q-btn-dropdown no-caps color="primary" label="Select a Grade">
-            <q-list>
-              <q-item
-                clickable
-                class="bg-grey-2"
-                v-for="grade in grades"
-                :key="grade"
-                v-bind="grade"
-                @click.native="selectedGrade = grade; onGradeClick();"
-              >
-                <q-item-section>
-                  <q-item-label>Grade: <strong>{{ grade }}</strong></q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
+            <q-btn-dropdown no-caps color="primary" label="Filter with GradeLetter">
+              <q-list>
+                <q-item
+                  clickable
+                  class="bg-grey-2"
+                  v-for="gradeLetter in gradeLetters"
+                  :key="gradeLetter"
+                  v-bind="gradeLetter"
+                  @click.native="selectedGradeLetter = gradeLetter; onGradeClick();"
+                >
+                  <q-item-section>
+                    <q-item-label>Grade: <strong>{{ gradeLetter }}</strong></q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-btn-dropdown>
+          </div>
         </q-card-actions><br />
 
         <q-card-actions align="right">
-          <q-btn flat class="bg-primary text-white" label="Back" @click="visitInformationPage" />
+          <q-btn class="bg-primary text-white" label="Back" @click="visitInformationPage" />
         </q-card-actions>
       </q-card>
     </div>
@@ -80,8 +80,8 @@ export default {
       selectedSemester: {},
 
       /* for filtering results based on a certain grade */
-      grades: ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'D', 'F'],
-      selectedGrade: ''
+      gradeLetters: ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'D', 'F'],
+      selectedGradeLetter: ''
     };
   },
 
@@ -108,7 +108,7 @@ export default {
         },
         query: {
           filter: 'grade',
-          gradeLetter: this.selectedGrade
+          gradeLetter: this.selectedGradeLetter
         }
       });
     },

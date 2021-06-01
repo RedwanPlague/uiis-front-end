@@ -13,9 +13,9 @@
         <q-separator />
 
         <q-card-section>
-          <div class="q-gutter-sm">
+          <div class="q-gutter-md">
             <q-btn
-              flat class="bg-primary text-white"
+              class="bg-primary text-white"
               v-for="advisee in getAdvisees"
               :key="advisee.id"
               v-bind="advisee"
@@ -53,8 +53,8 @@
           </q-card-section>
 
           <q-card-actions align="right">
-            <q-btn flat class="bg-secondary text-white" label="View Grades" @click="visitSemesterSelectionPage" />
-            <q-btn flat class="bg-primary text-white" label="Back" v-close-popup />
+            <q-btn class="bg-secondary text-white" label="View Grades" @click="visitSemesterSelectionPage" />
+            <q-btn class="bg-primary text-white" label="Back" v-close-popup />
           </q-card-actions>
         </q-card>
       </q-dialog>
