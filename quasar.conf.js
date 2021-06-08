@@ -46,6 +46,7 @@ module.exports = function (/* ctx */) {
     // Full list of options: https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
+      publicPath: process.env.NODE_ENV === 'production' ? '/hosted-websites/uiis/' : '/',
 
       // transpile: false,
 
