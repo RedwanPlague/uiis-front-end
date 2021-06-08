@@ -27,8 +27,8 @@
         </q-card-section>
       </q-card>
 
-      <q-dialog v-model="adviseeInfoDialogBox" full-width>
-        <q-card class="q-pa-md">
+      <q-dialog v-model="adviseeInfoDialogBox" >
+        <q-card class="q-pa-md student-card" >
           <q-card-section>
             <div class="text-h6">
               <p>
@@ -110,5 +110,7 @@ export default {
 </script>
 
 <style scoped>
-
+  .student-card {
+    width: 600px;
+  }
 </style>
