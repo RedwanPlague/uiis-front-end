@@ -1,5 +1,3 @@
-import store from '../store/index'
-
 const routes = [
   {
     path: '/',
@@ -18,9 +16,9 @@ const routes = [
 
       { path: 'courses', component: () => import('pages/teacher/CourseListPage.vue') },
 
-      { path: 'advisor/advisee_info', name: 'adviseeInfo', component: () => import('pages/teacher/AdviseeInformationPage.vue') },
-      { path: 'advisor/advisee_info/advisee_semester_selection/:studentID', name: 'adviseeSemesterSelection', component: () => import('pages/teacher/AdviseeSemesterSelectionPage.vue') },
-      { path: 'advisor/advisee_info/advisee_semester_selection/:studentID/advisee_grades', name: 'adviseeGrades', component: () => import('pages/teacher/AdviseeGradesPage') },
+      { path: 'advisor/advisee_selection', name: 'adviseeSelection', component: () => import('pages/teacher/AdviseeSelectionPage.vue') },
+      { path: 'advisor/advisee_selection/advisee_info/:studentID', name: 'adviseeInformation', component: () => import('pages/teacher/AdviseeInformationPage.vue') },
+      { path: 'advisor/advisee_selection/advisee_info/:studentID/advisee_grades', name: 'adviseeGrades', component: () => import('pages/teacher/AdviseeGradesPage') },
       { path: 'advisor/course_registration', name: 'adviseeCourseRegistration', component: () => import('pages/teacher/AdviseeCourseRegistrationPage') },
       { path: 'advisor/conversation', name: 'adviseeConversation', component: () => import('pages/teacher/AdviseeConversationPage.vue') },
 

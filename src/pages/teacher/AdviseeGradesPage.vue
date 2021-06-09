@@ -40,7 +40,7 @@
 
       <div class="row">
         <q-space />
-        <q-btn class="bg-primary text-white" label="Back" @click="visitSemesterSelectionPage" />
+        <q-btn class="bg-primary text-white" label="Back" @click="visitInformationPage" />
       </div>
     </div>
   </q-page>
@@ -141,9 +141,9 @@ export default {
       return this.getAdvisee.totalCreditHoursCompleted;
     },
 
-    visitSemesterSelectionPage() {
+    visitInformationPage() {
       this.clearAvailableGrades();
-      this.$router.push({ name: 'adviseeSemesterSelection',
+      this.$router.push({ name: 'adviseeInformation',
         params: {
           studentID: this.getAdvisee.id
         },
