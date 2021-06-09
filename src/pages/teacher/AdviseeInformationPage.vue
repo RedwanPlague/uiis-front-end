@@ -3,25 +3,43 @@
     <div class="q-pa-md">
       <q-card bordered>
         <q-card-section>
-          <div class="text-h5">View Grade Statistics</div><br />
-          <div class="text-subtitle2">
-            <p>
-              <strong>Student ID: </strong>{{ getAdvisee.id }}
-            </p>
-            <p>
-              <strong>Name:</strong> {{ getAdvisee.name }}
-            </p>
-            <p>
-              <strong>Current Level/Term:</strong> {{ getAdvisee.level }}/{{ getAdvisee.term }}
-            </p>
-            <p>
-              <strong>Department:</strong> {{ getAdvisee.department }}
-            </p>
+          <div class="row q-gutter-lg">
+            <div>
+              <div class="text-h5">Advisee Information</div><br />
+              <div class="text-subtitle2">
+                <p>
+                  <strong>Student ID:</strong> {{ getAdvisee.id }}
+                </p>
+                <p>
+                  <strong>Name:</strong> {{ getAdvisee.name }}
+                </p>
+                <p>
+                  <strong>Level/Term:</strong> {{ getAdvisee.level }}/{{ getAdvisee.term }}
+                </p>
+                <p>
+                  <strong>Department:</strong> {{ getAdvisee.department }}
+                </p>
+                <p>
+                  <strong>Contact Number:</strong> {{ getAdvisee.contactNumber }}
+                </p>
+                <p>
+                  <strong>Email Address:</strong> {{ getAdvisee.email }}
+                </p>
+              </div>
+            </div>
+
+            <q-space />
+
+            <!-- we should be working on images -->
+            <img alt="" class="profile-photo" src="https://discourse.disneyheroesgame.com/uploads/default/original/3X/c/2/c23f54aea2065f106e4dbb8218d0ce2d7853351c.png" />
           </div>
         </q-card-section>
 
         <q-separator /><br />
 
+        <q-card-section>
+          <div class="text-h5">View Grade Statistics</div><br />
+        </q-card-section>
         <q-card-actions align="center">
           <div class="row q-gutter-lg">
             <q-btn-dropdown no-caps color="primary" label="Filter with Level/Term">
@@ -60,7 +78,8 @@
           </div>
         </q-card-actions><br />
 
-        <q-card-actions align="right">
+        <q-card-actions>
+          <q-space />
           <q-btn class="bg-primary text-white" label="Back" @click="visitSelectionPage" />
         </q-card-actions>
       </q-card>
@@ -135,5 +154,8 @@ export default {
 </script>
 
 <style scoped>
-
+  .profile-photo {
+    width: 100%;
+    max-width: 200px;
+  }
 </style>
