@@ -13,9 +13,9 @@
         <q-separator />
 
         <q-card-section>
-          <div class="q-gutter-sm">
+          <div class="q-gutter-md">
             <q-btn
-              flat class="bg-primary text-white"
+              class="bg-primary text-white"
               v-for="registeredAdvisee in getRegistrations.filter(registration => registration.status === 'registered')"
               :key="registeredAdvisee.id"
               v-bind="registeredAdvisee"
@@ -41,7 +41,7 @@
         <q-card-section>
           <div class="q-gutter-sm">
             <q-btn
-              flat class="bg-primary text-white"
+              class="bg-primary text-white"
               v-for="waitingForHeadApprovalAdvisee in getRegistrations.filter(registration => registration.status === 'waiting')"
               :key="waitingForHeadApprovalAdvisee.id"
               v-bind="waitingForHeadApprovalAdvisee"
@@ -67,7 +67,7 @@
         <q-card-section>
           <div class="q-gutter-sm">
             <q-btn
-              flat class="bg-primary text-white"
+              class="bg-primary text-white"
               v-for="waitingForAdvisorApprovalAdvisee in getRegistrations.filter(registration => registration.status === 'applied')"
               :key="waitingForAdvisorApprovalAdvisee.id"
               v-bind="waitingForAdvisorApprovalAdvisee"
@@ -93,7 +93,7 @@
         <q-card-section>
           <div class="q-gutter-sm">
             <q-btn
-              flat class="bg-primary text-white"
+              class="bg-primary text-white"
               v-for="notAppliedForRegistrationAdvisee in getRegistrations.filter(registration => registration.status === 'unregistered')"
               :key="notAppliedForRegistrationAdvisee.id"
               v-bind="notAppliedForRegistrationAdvisee"
@@ -129,9 +129,9 @@
           </q-card-section>
 
           <q-card-actions align="right">
-            <q-btn flat class="bg-secondary text-white" label="Approve" @click="approve" v-close-popup />
-            <q-btn flat class="bg-secondary text-white" label="Reject" @click="reject" v-close-popup />
-            <q-btn flat class="bg-primary text-white" label="Back" v-close-popup />
+            <q-btn class="bg-secondary text-white" label="Approve" @click="approve" v-close-popup />
+            <q-btn class="bg-secondary text-white" label="Reject" @click="reject" v-close-popup />
+            <q-btn class="bg-primary text-white" label="Back" v-close-popup />
           </q-card-actions>
         </q-card>
       </q-dialog>
@@ -160,7 +160,7 @@
           </q-card-section>
 
           <q-card-actions align="right">
-            <q-btn flat class="bg-primary text-white" label="Back" v-close-popup />
+            <q-btn class="bg-primary text-white" label="Back" v-close-popup />
           </q-card-actions>
         </q-card>
       </q-dialog>

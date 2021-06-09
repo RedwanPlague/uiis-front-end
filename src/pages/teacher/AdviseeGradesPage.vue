@@ -5,14 +5,21 @@
         <strong>Student ID:</strong> {{ getAdvisee.id }} <br />
         <strong>Name:</strong> {{ getAdvisee.name }} <br />
         <strong>Department:</strong> {{ getAdvisee.department }} <br />
-        <strong>Level/Term:</strong> {{ this.$route.query.level }}/{{ this.$route.query.term }}
+
+        <div v-if="$route.query.filter === 'semester'">
+          <strong>Level/Term:</strong> {{ $route.query.level }}/{{ $route.query.term }}
+        </div>
+        <div v-else-if="$route.query.filter === 'grade'">
+          <strong>Grade:</strong> {{ $route.query.gradeLetter }}
+        </div>
+
       </div><br />
 
       <q-table
         dense bordered :data="getAvailableGrades" :columns="gradeColumns" row-key="courseID"
       /><br />
 
-      <div class="row">
+      <div v-if="$route.query.filter === 'semester'" class="row">
         <div class="text-subtitle1">
           <strong>Registered Credit Hours in this Term:</strong> {{ getTotalCreditHour().toFixed(2) }}<br />
           <strong>Credit Hours Earned in this Term:</strong> {{ getTotalCreditHourObtained().toFixed(2) }}<br />
@@ -33,7 +40,7 @@
 
       <div class="row">
         <q-space />
-        <q-btn flat class="bg-primary text-white" label="Back" @click="visitSemesterSelectionPage" />
+        <q-btn class="bg-primary text-white" label="Back" @click="visitInformationPage" />
       </div>
     </div>
   </q-page>
@@ -134,9 +141,9 @@ export default {
       return this.getAdvisee.totalCreditHoursCompleted;
     },
 
-    visitSemesterSelectionPage() {
+    visitInformationPage() {
       this.clearAvailableGrades();
-      this.$router.push({ name: 'adviseeSemesterSelection',
+      this.$router.push({ name: 'adviseeInformation',
         params: {
           studentID: this.getAdvisee.id
         },
@@ -168,7 +175,7 @@ export default {
         await this.fetchGrades({
           id: this.getAdvisee.id,
           filter: this.$route.query.filter,
-          grade: this.$route.query.grade
+          gradeLetter: this.$route.query.gradeLetter
         });
       }
       this.generateAvailableGrades();

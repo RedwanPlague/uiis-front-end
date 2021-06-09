@@ -76,7 +76,7 @@ const actions = {
           },
           params: {
             filter: params.filter,
-            grade: params.grade
+            gradeLetter: params.gradeLetter
           }
         });
       }

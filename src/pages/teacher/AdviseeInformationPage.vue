@@ -1,63 +1,122 @@
 <template>
   <q-page padding>
     <div class="q-pa-md">
-      <q-card bordered class="bg-grey-2">
+      <q-card bordered>
         <q-card-section>
-          <div class="text-h6">
-            <p>
-              <strong>Advisees</strong>
-            </p>
-          </div>
-        </q-card-section>
-
-        <q-separator />
-
-        <q-card-section>
-          <div class="q-gutter-sm">
-            <q-btn
-              flat class="bg-primary text-white"
-              v-for="advisee in getAdvisees"
-              :key="advisee.id"
-              v-bind="advisee"
-              @click.native="selectedAdvisee = advisee; onAdviseeClick();"
-            >
-              {{ advisee.id }}
-            </q-btn>
-          </div>
-        </q-card-section>
-      </q-card>
-
-      <q-dialog v-model="adviseeInfoDialogBox" >
-        <q-card class="q-pa-md student-card" >
-          <q-card-section>
-            <div class="text-h6">
-              <p>
-                <strong>Student ID:</strong> {{ getAdvisee.id }}
-              </p>
-              <p>
-                <strong>Name:</strong> {{ getAdvisee.name }}
-              </p>
-              <p>
-                <strong>Level/Term:</strong> {{ getAdvisee.level }}/{{ getAdvisee.term }}
-              </p>
-              <p>
-                <strong>Department:</strong> {{ getAdvisee.department }}
-              </p>
-              <p>
-                <strong>Contact Number:</strong> {{ getAdvisee.contactNumber }}
-              </p>
-              <p>
-                <strong>Email Address:</strong> {{ getAdvisee.email }}
-              </p>
+          <div class="row q-gutter-lg">
+            <div>
+              <div class="text-h5">Advisee Information</div><br />
+              <div class="text-subtitle2">
+                <p>
+                  <strong>Student ID:</strong> {{ getAdvisee.id }}
+                </p>
+                <p>
+                  <strong>Name:</strong> {{ getAdvisee.name }}
+                </p>
+                <p>
+                  <strong>Level/Term:</strong> {{ getAdvisee.level }}/{{ getAdvisee.term }}
+                </p>
+                <p>
+                  <strong>Department:</strong> {{ getAdvisee.department }}
+                </p>
+                <p>
+                  <strong>Contact Number:</strong> {{ getAdvisee.contactNumber }}
+                </p>
+                <p>
+                  <strong>Email Address:</strong> {{ getAdvisee.email }}
+                </p>
+              </div>
             </div>
-          </q-card-section>
 
-          <q-card-actions align="right">
-            <q-btn flat class="bg-secondary text-white" label="View Grades" @click="visitSemesterSelectionPage" />
-            <q-btn flat class="bg-primary text-white" label="Back" v-close-popup />
-          </q-card-actions>
-        </q-card>
-      </q-dialog>
+            <q-space />
+
+            <!-- we should be working on images -->
+            <img alt="" class="profile-photo" src="https://discourse.disneyheroesgame.com/uploads/default/original/3X/c/2/c23f54aea2065f106e4dbb8218d0ce2d7853351c.png" />
+          </div>
+        </q-card-section>
+
+        <q-separator /><br />
+
+        <q-card-section>
+          <div class="text-h5">View Grade Statistics</div><br />
+        </q-card-section>
+        <q-card-actions align="center">
+          <div class="row q-gutter-lg">
+            <q-btn-dropdown no-caps color="primary" label="Filter with Level/Term">
+              <q-list>
+                <q-item
+                  clickable
+                  class="bg-grey-2"
+                  v-for="semester in getAvailableSemesters"
+                  :key="semester.semesterID"
+                  v-bind="semester"
+                  @click.native="selectedSemester = semester; onSemesterClick();"
+                >
+                  <q-item-section>
+                    <q-item-label>Level/Term: <strong>{{ semester.level }}/{{ semester.term }}</strong></q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-btn-dropdown>
+
+<!--<<<<<<< HEAD-->
+<!--      <q-dialog v-model="adviseeInfoDialogBox" >-->
+<!--        <q-card class="q-pa-md student-card" >-->
+<!--          <q-card-section>-->
+<!--            <div class="text-h6">-->
+<!--              <p>-->
+<!--                <strong>Student ID:</strong> {{ getAdvisee.id }}-->
+<!--              </p>-->
+<!--              <p>-->
+<!--                <strong>Name:</strong> {{ getAdvisee.name }}-->
+<!--              </p>-->
+<!--              <p>-->
+<!--                <strong>Level/Term:</strong> {{ getAdvisee.level }}/{{ getAdvisee.term }}-->
+<!--              </p>-->
+<!--              <p>-->
+<!--                <strong>Department:</strong> {{ getAdvisee.department }}-->
+<!--              </p>-->
+<!--              <p>-->
+<!--                <strong>Contact Number:</strong> {{ getAdvisee.contactNumber }}-->
+<!--              </p>-->
+<!--              <p>-->
+<!--                <strong>Email Address:</strong> {{ getAdvisee.email }}-->
+<!--              </p>-->
+<!--            </div>-->
+<!--          </q-card-section>-->
+
+<!--          <q-card-actions align="right">-->
+<!--            <q-btn flat class="bg-secondary text-white" label="View Grades" @click="visitSemesterSelectionPage" />-->
+<!--            <q-btn flat class="bg-primary text-white" label="Back" v-close-popup />-->
+<!--          </q-card-actions>-->
+<!--        </q-card>-->
+<!--      </q-dialog>-->
+<!--=======-->
+            <q-btn-dropdown no-caps color="primary" label="Filter with GradeLetter">
+              <q-list>
+                <q-item
+                  clickable
+                  class="bg-grey-2"
+                  v-for="gradeLetter in gradeLetters"
+                  :key="gradeLetter"
+                  v-bind="gradeLetter"
+                  @click.native="selectedGradeLetter = gradeLetter; onGradeClick();"
+                >
+                  <q-item-section>
+                    <q-item-label>Grade: <strong>{{ gradeLetter }}</strong></q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-btn-dropdown>
+          </div>
+        </q-card-actions><br />
+
+        <q-card-actions>
+          <q-space />
+          <q-btn class="bg-primary text-white" label="Back" @click="visitSelectionPage" />
+        </q-card-actions>
+      </q-card>
+<!--&gt;>>>>>> origin/advisor-->
     </div>
   </q-page>
 </template>
@@ -70,47 +129,72 @@ export default {
 
   data() {
     return {
-      /* for showing selected Advisee information in dialog box */
-      selectedAdvisee: {},
-      adviseeInfoDialogBox: false  /* open when true */
+      /* for keeping track of selected semester */
+      selectedSemester: {},
+
+      /* for filtering results based on a certain grade */
+      gradeLetters: ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'D', 'F'],
+      selectedGradeLetter: ''
     };
   },
 
   methods: {
-    ...mapActions(['fetchAdvisees', 'fetchAdvisee']),
+    ...mapActions(['fetchAdvisee', 'generateAvailableSemesters']),
 
-    async onAdviseeClick() {
-      try {
-        await this.fetchAdvisee(this.selectedAdvisee.id);
-      } catch(error) {
-        console.log(error);
-      }
-      this.adviseeInfoDialogBox = true;
-    },
-
-    visitSemesterSelectionPage() {
-      this.$router.push({ name: 'adviseeSemesterSelection',
+    onSemesterClick() {
+      this.$router.push({ name: 'adviseeGrades',
         params: {
           studentID: this.getAdvisee.id
         },
-        query: {} });
+        query: {
+          filter: 'semester',
+          level: this.selectedSemester.level,
+          term: this.selectedSemester.term
+        }
+      });
+    },
+
+    onGradeClick() {
+      this.$router.push({ name: 'adviseeGrades',
+        params: {
+          studentID: this.getAdvisee.id
+        },
+        query: {
+          filter: 'grade',
+          gradeLetter: this.selectedGradeLetter
+        }
+      });
+    },
+
+    visitSelectionPage() {
+      this.$router.push({ name: 'adviseeSelection', params: {}, query: {} });
     }
   },
 
-  computed: mapGetters(['getAdvisees', 'getAdvisee']),
+  computed: mapGetters(['getAdvisee', 'getAvailableSemesters']),
 
   async created() {
     try {
-      await this.fetchAdvisees();
+      await this.fetchAdvisee(this.$route.params.studentID);
+      this.generateAvailableSemesters({
+        level: this.getAdvisee.level,
+        term: this.getAdvisee.term
+      });
     } catch(error) {
       console.log(error);
     }
   }
-};
+}
 </script>
 
 <style scoped>
-  .student-card {
-    width: 600px;
+/*<<<<<<< HEAD*/
+/*  .student-card {*/
+/*    width: 600px;*/
+/*=======*/
+  .profile-photo {
+    width: 100%;
+    max-width: 200px;
+/*>>>>>>> origin/advisor*/
   }
 </style>
