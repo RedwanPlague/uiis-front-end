@@ -2,18 +2,18 @@
   <q-page padding>
     <div class="q-pa-sm absolute-center">
       <h3>
-        Basic Information
+        Personal Profile
       </h3>
-      <h3>
-        Class Routine
-      </h3>
+      <p>
+        One can maintain and update his/her personal profile here.
+      </p>
     </div>
   </q-page>
 </template>
 
 <script>
 export default {
-  name: "Home"
+  name: "PersonalProfilePage"
 }
 </script>
 
