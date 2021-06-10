@@ -6,13 +6,22 @@ const routes = [
       { path: '', name: 'Index', component: () => import('pages/Index') }
     ]
   },
+
+  {
+    path: '/student',
+    component: () => import('layouts/StudentLayout'),
+    children: [
+      { path: '', name: 'studentHome', component: () => import('src/pages/student/Home') }
+    ]
+  },
+
   {
     path: '/teacher',
     component: () => import('layouts/TeacherLayout'),
     children: [
-      { path: '', name: 'home', component: () => import('src/pages/teacher/Home.vue') },
+      { path: '', name: 'teacherHome', component: () => import('src/pages/teacher/Home.vue') },
 
-      { path: 'profile', component: () => import('src/pages/teacher/PersonalProfilePage.vue') },
+      { path: 'teacherProfile', component: () => import('src/pages/teacher/PersonalProfilePage.vue') },
 
       { path: 'courses', component: () => import('pages/teacher/CourseListPage.vue') },
 
