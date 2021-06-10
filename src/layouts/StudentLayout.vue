@@ -111,6 +111,11 @@ const menuOptions = [
     title: "Course Registration",
     icon: "how_to_reg",
     path: "/student/course_registration"
+  },
+  {
+    title: "View Grades",
+    icon: "grading",
+    path: "/student/grades"
   }
 ];
 

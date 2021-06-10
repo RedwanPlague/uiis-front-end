@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <div class="q-pa-md absolute-center">
+    <div class="q-pa-md">
       <q-card bordered>
         <q-card-section>
           <div class="row q-gutter-lg">
@@ -43,11 +43,37 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
-  name: "Home"
+  name: "Home",
+
+  data() {
+    return {
+
+    };
+  },
+
+  methods: {
+    ...mapActions(['fetchStudentBasicInfo'])
+  },
+
+  computed: mapGetters(['getStudent']),
+
+  async created() {
+    try {
+      await this.fetchStudentBasicInfo();
+    } catch(error) {
+      console.log(error);
+    }
+  }
 }
 </script>
 
 <style scoped>
-
+  .profile-photo {
+    width: 100%;
+    max-width: 200px;
+    height: 100%;
+  }
 </style>

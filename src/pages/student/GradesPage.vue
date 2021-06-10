@@ -8,7 +8,7 @@
 
 <script>
 export default {
-  name: "CourseRegistration"
+  name: "GradesPage"
 }
 </script>
 

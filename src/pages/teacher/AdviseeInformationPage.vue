@@ -157,5 +157,6 @@ export default {
   .profile-photo {
     width: 100%;
     max-width: 200px;
+    height: 100%;
   }
 </style>

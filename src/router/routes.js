@@ -9,7 +9,7 @@ const routes = [
 
   {
     path: '/student',
-    component: () => import('layouts/StudentLayout'),
+    component: () => import('layouts/StudentLayout.vue'),
     children: [
       {
         path: '',
@@ -25,6 +25,11 @@ const routes = [
         path: 'course_registration',
         name: 'courseRegistration',
         component: () => import('src/pages/student/CourseRegistration.vue')
+      },
+      {
+        path: 'grades',
+        name: 'grades',
+        component: () => import('src/pages/student/GradesPage.vue')
       }
     ]
   },
