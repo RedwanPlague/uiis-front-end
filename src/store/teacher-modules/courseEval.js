@@ -58,10 +58,25 @@ const getters = {
 
 const actions = {
 
+
   async fetchCourseDetails({commit}, {courseID, session}) {
     const res = await api.get(`/teacher/courses/${courseID}/${session}`);
     res.data.student_details = reformat_student_input_data(res.data.student_details, res.data.teacher_details.evalCount);
     commit('setCourseDetails', res.data);
+  },
+
+  async studentDataFilledCheck() {
+    let ret = true;
+    state.student_data.forEach(student => {
+      if(!student['attendance']) ret = false;
+      for( let i = 1 ; i <= state.course_data.evalCount ; i++) {
+        if(!student['eval_'+i] ) ret = false;
+      }
+    });
+    return ret;
+  },
+  async removeEditAccess({commit}) {
+    commit('setEditAccess', false);
   },
   async saveStudentData() {
 
@@ -77,15 +92,18 @@ const actions = {
   },
 
   updateEvaluationTable({commit}, input) {
-
     commit('setEvaluationTable', input);
   }
 };
 
 const mutations = {
+  setEditAccess:(state, editAccess) => {
+    state.course_data.editAccess = editAccess;
+  },
   setCourseDetails: (state, courseDetails) => {
     state.course_data = courseDetails.teacher_details;
     state.student_data = courseDetails.student_details;
+    // state.course_data.editAccess = true;
   },
   setClassCount: (state, classCount) => {
     state.course_data.classCount = classCount;
