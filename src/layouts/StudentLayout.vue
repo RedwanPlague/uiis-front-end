@@ -115,7 +115,7 @@ const menuOptions = [
   {
     title: "View Grades",
     icon: "grading",
-    path: "/student/grades"
+    path: "/student/semester_selection"
   }
 ];
 

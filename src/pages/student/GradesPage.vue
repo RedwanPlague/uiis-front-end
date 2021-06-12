@@ -1,14 +1,140 @@
 <template>
   <q-page padding>
     <div class="q-pa-md">
+      <div class="text-subtitle1">
+        <strong>Student ID:</strong> {{ getStudent.id }} <br />
+        <strong>Name:</strong> {{ getStudent.name }} <br />
+        <strong>Department:</strong> {{ getStudent.department }} <br />
 
+        <div v-if="$route.query.filter === 'semester'">
+          <strong>Level/Term:</strong> {{ $route.query.level }}/{{ $route.query.term }}
+        </div>
+      </div><br />
+
+      <q-table
+        dense bordered :data="getAvailableGrades" :columns="getGradeColumns" row-key="courseID"
+      /><br />
+
+      <div v-if="$route.query.filter === 'semester'" class="row">
+        <div class="text-subtitle1">
+          <strong>Registered Credit Hours in this Term:</strong> {{ getTotalCreditHour().toFixed(2) }}<br />
+          <strong>Credit Hours Earned in this Term:</strong> {{ getTotalCreditHourObtained().toFixed(2) }}<br />
+          <strong>Total Credit Hours:</strong> {{ getTotalCreditHoursCompleted().toFixed(2) }}
+        </div>
+
+        <q-space />
+
+        <q-card>
+          <q-card-section>
+            <div class="text-subtitle1">
+              <strong>Obtained GPA:</strong> {{ getGPA().toFixed(2) }}<br />
+              <strong>Current CGPA:</strong> {{ getCGPA().toFixed(2) }}
+            </div>
+          </q-card-section>
+        </q-card>
+      </div><br />
+
+      <div class="row">
+        <q-space />
+        <q-btn class="bg-primary text-white" label="Back" @click="visitSemesterSelectionPage" />
+      </div>
     </div>
   </q-page>
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
-  name: "GradesPage"
+  name: "GradesPage",
+
+  data() {
+    return {
+
+    };
+  },
+
+  methods: {
+    ...mapActions(['fetchStudentGradesProfileInfo', 'fetchGrades', 'generateAvailableGrades', 'clearAvailableGrades']),
+
+    getTotalCreditHourObtained() {
+      let totalCredit = 0.0;
+
+      for(let i=0; i<this.getAvailableGrades.length; i++) {
+        if(this.getAvailableGrades[i].status === 'passed') {
+          totalCredit += this.getAvailableGrades[i].credit;
+        }
+      }
+      return totalCredit;
+    },
+
+    getTotalCreditHour() {
+      let totalCredit = 0.0;
+
+      for(let i=0; i<this.getAvailableGrades.length; i++) {
+        totalCredit += this.getAvailableGrades[i].credit;
+      }
+      return totalCredit;
+    },
+
+    getGPA() {
+      let sum = 0.0;
+
+      for(let i=0; i<this.getAvailableGrades.length; i++) {
+        sum += this.getAvailableGrades[i].credit*this.getAvailableGrades[i].gradePoint;
+      }
+      return sum/this.getTotalCreditHour();
+    },
+
+    getTotalCreditHoursCompleted() {
+      /* NOTICE: this should change later */
+      return this.getStudent.totalCreditHoursCompleted;
+    },
+
+    getCGPA() {
+      /* NOTICE: this should change later */
+      return this.getStudent.cgpa;
+    },
+
+    visitSemesterSelectionPage() {
+      this.clearAvailableGrades();
+      this.$router.push({ name: 'semesterSelection', params: {}, query: {} });
+    }
+  },
+
+  computed: mapGetters(['getStudent', 'getGrades', 'getAvailableGrades', 'getGradeColumns']),
+
+  async created() {
+    try {
+      const loading = this.$q.notify({
+        message: `Loading Grades`,
+        position: "bottom-left",
+        group: false, // required to be updatable
+        timeout: 0, // we want to be in control when it gets dismissed
+        spinner: true
+      });
+
+      await this.fetchStudentGradesProfileInfo();
+      if(this.$route.query.filter === 'semester') {
+        await this.fetchGrades({
+          id: this.getStudent.id,
+          filter: this.$route.query.filter,
+          level: this.$route.query.level,
+          term: this.$route.query.term
+        });
+      }
+      this.generateAvailableGrades();
+
+      loading({
+        icon: 'done', // we add an icon
+        spinner: false, // we reset the spinner setting so the icon can be displayed
+        message: 'Grades Loaded',
+        timeout: 1500 // we will timeout it in 2.5s
+      });
+    } catch(error) {
+      console.log(error);
+    }
+  }
 }
 </script>
 

@@ -5,6 +5,7 @@
         <q-card-section>
           <div class="row q-gutter-lg">
             <div>
+              <div class="text-h5">Profile</div><br />
               <div class="text-subtitle2">
                 <p>
                   <strong>Student ID:</strong> {{ getStudent.id }}
@@ -42,7 +43,7 @@
       </q-card><br />
 
       <div >
-        <q-btn class="q-mx-auto" color="primary" text-color="white" label="Edit" />
+        <q-btn color="primary" text-color="white" label="Edit" />
       </div>
     </div>
   </q-page>
@@ -61,14 +62,14 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchStudentDetailsInfo'])
+    ...mapActions(['fetchStudentProfileInfo'])
   },
 
   computed: mapGetters(['getStudent']),
 
   async created() {
     try {
-      await this.fetchStudentDetailsInfo();
+      await this.fetchStudentProfileInfo();
     } catch(error) {
       console.log(error);
     }

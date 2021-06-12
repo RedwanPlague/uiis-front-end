@@ -38,7 +38,7 @@
         <q-separator /><br />
 
         <q-card-section>
-          <div class="text-h5">View Grade Statistics</div><br />
+          <div class="text-h5">View Grades</div><br />
         </q-card-section>
         <q-card-actions align="center">
           <div class="row q-gutter-lg">
@@ -64,7 +64,7 @@
                 <q-item
                   clickable
                   class="bg-grey-2"
-                  v-for="gradeLetter in gradeLetters"
+                  v-for="gradeLetter in getGradeLetters"
                   :key="gradeLetter"
                   v-bind="gradeLetter"
                   @click.native="selectedGradeLetter = gradeLetter; onGradeClick();"
@@ -99,7 +99,6 @@ export default {
       selectedSemester: {},
 
       /* for filtering results based on a certain grade */
-      gradeLetters: ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'D', 'F'],
       selectedGradeLetter: ''
     };
   },
@@ -137,7 +136,7 @@ export default {
     }
   },
 
-  computed: mapGetters(['getAdvisee', 'getAvailableSemesters']),
+  computed: mapGetters(['getAdvisee', 'getAvailableSemesters', 'getGradeLetters']),
 
   async created() {
     try {

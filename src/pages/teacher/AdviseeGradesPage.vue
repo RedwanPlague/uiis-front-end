@@ -12,11 +12,10 @@
         <div v-else-if="$route.query.filter === 'grade'">
           <strong>Grade:</strong> {{ $route.query.gradeLetter }}
         </div>
-
       </div><br />
 
       <q-table
-        dense bordered :data="getAvailableGrades" :columns="gradeColumns" row-key="courseID"
+        dense bordered :data="getAvailableGrades" :columns="getGradeColumns" row-key="courseID"
       /><br />
 
       <div v-if="$route.query.filter === 'semester'" class="row">
@@ -54,48 +53,7 @@ export default {
 
   data() {
     return {
-      /* for tabulation */
-      gradeColumns: [
-        {
-          name: 'courseID',
-          required: true,
-          label: 'Course ID',
-          align: 'left',
-          field: row => row.courseID,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'title',
-          align: 'left',
-          label: 'Course Title',
-          field: 'title',
-          sortable: true
-        },
-        {
-          name: 'credit',
-          align: 'left',
-          label: 'Credit Hours',
-          field: 'credit',
-          format: val => `${val.toFixed(2)}`,
-          sortable: true
-        },
-        {
-          name: 'gradeLetter',
-          align: 'left',
-          label: 'Grade',
-          field: 'gradeLetter',
-          sortable: true
-        },
-        {
-          name: 'gradePoint',
-          align: 'left',
-          label: 'Grade Point',
-          field: 'gradePoint',
-          format: val => `${val.toFixed(2)}`,
-          sortable: true
-        }
-      ]
+
     };
   },
 
@@ -105,9 +63,9 @@ export default {
     getTotalCreditHourObtained() {
       let totalCredit = 0.0;
 
-      for(let i=0; i<this.$store.getters.getAvailableGrades.length; i++) {
-        if(this.$store.getters.getAvailableGrades[i].status === 'passed') {
-          totalCredit += this.$store.getters.getAvailableGrades[i].credit;
+      for(let i=0; i<this.getAvailableGrades.length; i++) {
+        if(this.getAvailableGrades[i].status === 'passed') {
+          totalCredit += this.getAvailableGrades[i].credit;
         }
       }
       return totalCredit;
@@ -116,8 +74,8 @@ export default {
     getTotalCreditHour() {
       let totalCredit = 0.0;
 
-      for(let i=0; i<this.$store.getters.getAvailableGrades.length; i++) {
-        totalCredit += this.$store.getters.getAvailableGrades[i].credit;
+      for(let i=0; i<this.getAvailableGrades.length; i++) {
+        totalCredit += this.getAvailableGrades[i].credit;
       }
       return totalCredit;
     },
@@ -125,20 +83,20 @@ export default {
     getGPA() {
       let sum = 0.0;
 
-      for(let i=0; i<this.$store.getters.getAvailableGrades.length; i++) {
-        sum += this.$store.getters.getAvailableGrades[i].credit*this.$store.getters.getAvailableGrades[i].gradePoint;
+      for(let i=0; i<this.getAvailableGrades.length; i++) {
+        sum += this.getAvailableGrades[i].credit*this.getAvailableGrades[i].gradePoint;
       }
       return sum/this.getTotalCreditHour();
-    },
-
-    getCGPA() {
-      /* NOTICE: this should change later */
-      return this.getAdvisee.cgpa;
     },
 
     getTotalCreditHoursCompleted() {
       /* NOTICE: this should change later */
       return this.getAdvisee.totalCreditHoursCompleted;
+    },
+
+    getCGPA() {
+      /* NOTICE: this should change later */
+      return this.getAdvisee.cgpa;
     },
 
     visitInformationPage() {
@@ -151,7 +109,7 @@ export default {
     }
   },
 
-  computed: mapGetters(['getAdvisee', 'getGrades', 'getAvailableGrades']),
+  computed: mapGetters(['getAdvisee', 'getGrades', 'getAvailableGrades', 'getGradeColumns']),
 
   async created() {
     try {

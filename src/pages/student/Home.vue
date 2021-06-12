@@ -5,7 +5,7 @@
         <q-card-section>
           <div class="row q-gutter-lg">
             <div>
-              <div class="text-h5">Student Information</div><br />
+              <div class="text-h5">Home</div><br />
               <div class="text-subtitle2">
                 <p>
                   <strong>Student ID:</strong> {{ getStudent.id }}
@@ -55,14 +55,14 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchStudentBasicInfo'])
+    ...mapActions(['fetchStudentHomeInfo'])
   },
 
   computed: mapGetters(['getStudent']),
 
   async created() {
     try {
-      await this.fetchStudentBasicInfo();
+      await this.fetchStudentHomeInfo();
     } catch(error) {
       console.log(error);
     }
