@@ -10,7 +10,6 @@
 
       <div class="issue-header-row">
         <q-chip class="bg-deep-orange-9"  text-color="white" style="margin-top: 20px" icon="error" size="15px">Unresolved</q-chip>
-<!--        <div class="header-col-issue-creator"><b>SlowDecay</b> created an issue on June 1</div>-->
       </div>
 
       <div class="issue-header-row" style="margin-top: 10px">
@@ -31,78 +30,60 @@
 
     <q-separator class="bg-blue-2" inset="true"/>
 
-    <div class ="container-row" >
-      <div class="img-left">
-        <img src="https://avatars.githubusercontent.com/u/31519659?s=80&amp;v=4" width="40" height="40" alt="@MahirSez">
-      </div>
-      <div class="text-bubble">
-        <div class="bubble-single-slot"><b>SlowDecay</b> created this issue on June 1</div>
-      </div>
-    </div>
+    <user-activity
+      image-link="https://avatars.githubusercontent.com/u/31519659?s=80&amp;v=4"
+      user-name="SlowDecay"
+      date="June 1"
+      activity="created this issue"
+    />
 
-    <div class ="container-row" >
-      <div class="img-left">
-        <img src="https://avatars.githubusercontent.com/u/31519659?s=80&amp;v=4" width="40" height="40" alt="@MahirSez">
-      </div>
-      <div class="text-bubble">
-        <div class="bubble-top-slot"><b>SlowDecay</b> commented on June 1</div>
-        <div class="bubble-down-slot">Marks diye dei</div>
-      </div>
-    </div>
+    <user-comment
+      imageLink = 'https://avatars.githubusercontent.com/u/31519659?s=80&amp;v=4'
+      userName = "SlowDecay"
+      date = "June 1"
+      comment = "Marks diye dei"
+    />
 
+    <user-comment
+      imageLink = 'https://avatars.githubusercontent.com/u/32516061?s=80&amp;v=4'
+      userName = "MahirSez"
+      date = "June 2"
+      comment = "No"
+    />
 
-    <div class ="container-row" >
-      <div class="img-left">
-        <img src="https://avatars.githubusercontent.com/u/32516061?s=80&amp;v=4" width="40" height="40" alt="@MahirSez">
-      </div>
-      <div class="text-bubble">
-        <div class="bubble-top-slot"><b>MahirSez</b> commented on June 2</div>
-        <div class="bubble-down-slot">No</div>
-      </div>
-    </div>
+    <user-activity
+      image-link="https://avatars.githubusercontent.com/u/32516061?s=80&amp;v=4"
+      user-name="MahirSez"
+      date="June 3"
+      activity="uptated marks"
+    />
 
-    <div class ="container-row" >
-      <div class="img-left">
-        <img src="https://avatars.githubusercontent.com/u/32516061?s=80&amp;v=4" width="40" height="40" alt="@MahirSez">
-      </div>
-      <div class="text-bubble">
-        <div class="bubble-single-slot"><b>MahirSez</b> updated marks on June 3</div>
-      </div>
-    </div>
-
-    <div class ="container-row" >
-      <div class="img-left">
-        <img src="https://avatars.githubusercontent.com/u/31519659?s=80&amp;v=4" width="40" height="40" alt="@MahirSez">
-      </div>
-      <div class="text-bubble">
-        <div class="bubble-top-slot"><b>SlowDecay</b> commented on June 1</div>
-        <div class="bubble-down-slot">Bleh bleh bleh</div>
-      </div>
-    </div>
-
-
-
-    <div class="container-row" style="margin-bottom: 50px">
-      <div class="img-left">
-        <img src="https://avatars.githubusercontent.com/u/32516061?s=80&amp;v=4" width="40" height="40" alt="@MahirSez">
-      </div>
-      <div class="text-bubble button-row">
-        <div class="bubble-top-slot">Add a comment:</div>
-        <div class="bubble-down-slot">
-          <q-editor class="text-editor" v-model="editor" min-height="5rem" />
-        </div>
-        <q-btn  style="margin-left: 900px; " color="blue-4" label="Comment" no-caps/>
-      </div>
-
-    </div>
-
+    <user-comment
+      imageLink = 'https://avatars.githubusercontent.com/u/31519659?s=80&amp;v=4'
+      userName = "SlowDecay"
+      date = "June 3"
+      comment = "Bleh bleh bleh"
+    />
+    <editor
+      imageLink="https://avatars.githubusercontent.com/u/32516061?s=80&amp;v=4"
+      userName="MahirSez"
+    />
   </div>
 </template>
 
 <script>
+import Comment from 'src/components/IssueComponents/Comment';
+import Activity from "components/IssueComponents/Activity";
+import Editor from "components/IssueComponents/Editor";
 export default {
-  name: "IssuePage.vue"
+  name: "IssuePage.vue",
+  components: {
+    'user-comment': Comment,
+    'user-activity': Activity,
+    'editor': Editor
+  }
 }
+
 </script>
 
 <style scoped>
@@ -114,11 +95,6 @@ export default {
 .header-col-1 {
   line-height: 36px;
   margin-right: 10px;
-}
-
-.header-col-issue-creator {
-  line-height: 72px;
-  margin-left: 15px;
 }
 
 .issue-header-row {
@@ -135,92 +111,10 @@ h4 {
   margin-bottom: 16px;
 }
 
-.text-editor {
-  margin-left:-20px;
-}
-
-.img-left {
-  padding-top: 6px;
-
-}
-
 img {
   border-radius: 50%;
 }
 .container {
   margin-right: 30px;
-}
-.bubble-top-slot {
-  background: #f1f8ff;
-  border-bottom: #c8e1ff solid 1px;
-  border-radius: 9px 9px 0 0;
-  padding-left:20px;
-  line-height: 45px;
-}
-.bubble-single-slot {
-  background: #f1f8ff;
-  /*border-bottom: #c8e1ff solid 1px;*/
-  border-radius: 9px 9px 9px 9px;
-  padding-left:20px;
-  line-height: 50px;
-}
-.bubble-down-slot {
-  border-radius: 0 0 9px 9px;
-  text-align: left;
-  padding-left:20px;
-  line-height: 50px;
-}
-
-.button-row {
-  display: flex;
-  flex-direction: column;
-
-}
-.container-row {
-  display: inline-flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  margin-left: 30px;
-  margin-top: 20px;
-  /*padding-left: -20px;*/
-  /*padding-top: 50px;*/
-}
-.container-row > div {
-  margin-left: 17px;
-}
-.text-bubble {
-  position: relative;
-  background: #ffffff;
-  color: #000000;
-  width: 1000px;
-  border-radius: 9px;
-  /*margin-left: -90px;*/
-  border: #c8e1ff solid 1px;
-}
-.text-bubble:after {
-  content: '';
-  position: absolute;
-  display: block;
-  width: 0;
-  z-index: 1;
-  border-style: solid;
-  border-color: transparent #f1f8ff;
-  border-width: 11px 12px 11px 0;
-  top: 25px;
-  left: -12px;
-  margin-top: -11px;
-}
-.text-bubble:before {
-  content: '';
-  position: absolute;
-  width: 0;
-  z-index: 0;
-  border-style: solid;
-  border-color: transparent #c8e1ff;
-  border-width: 12px 13px 12px 0;
-  top: 25px;
-  left: -13.5px;
-  margin-top: -12px;
-  display: block;
 }
 </style>
