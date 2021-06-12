@@ -2,15 +2,32 @@
   <div class="container">
 
     <div class="issue-header">
-      <h4>Marks Discrepancy</h4>
       <div class="issue-header-row">
-        <q-chip class="square bg-deep-orange-9"  text-color="white" style="margin-top: 20px" icon="error" size="15px">Unresolved</q-chip>
-        <div class="header-col-2"><b>SlowDecay</b> created an issue on June 1</div>
+        <h4>Marks Discrepancy</h4>
+        <q-chip style="margin-top: 56px; margin-left: 20px; " color="teal" text-color="white"  >CSE203: Data Structure & Algorithms-1</q-chip>
       </div>
+
+
       <div class="issue-header-row">
-        <div class="header-col-1"></div>
+        <q-chip class="bg-deep-orange-9"  text-color="white" style="margin-top: 20px" icon="error" size="15px">Unresolved</q-chip>
+<!--        <div class="header-col-issue-creator"><b>SlowDecay</b> created an issue on June 1</div>-->
       </div>
-    </div>
+
+      <div class="issue-header-row" style="margin-top: 10px">
+        <div class="header-col-1"><b>Students:</b></div>
+        <q-chip color="black" text-color="white" square outline >1605001</q-chip>
+        <q-chip color="black" text-color="white" square outline>1605002</q-chip>
+      </div>
+
+      <div class="issue-header-row" style="margin-top: 10px">
+        <div class="header-col-1"><b>Current Audience:</b></div>
+          <q-chip color="black" text-color="white" removable square outline>Teacher-1</q-chip>
+          <q-chip color="black" text-color="white" removable square outline>SlowDecay</q-chip>
+          <q-chip color="black" text-color="white" removable square outline>Mahirsez</q-chip>
+
+          <q-btn class="resolve-btn" color="teal" label="Mark As Resolved"  icon="check_circle"  no-caps/>
+        </div>
+      </div>
 
     <q-separator class="bg-blue-2" inset="true"/>
 
@@ -19,10 +36,20 @@
         <img src="https://avatars.githubusercontent.com/u/31519659?s=80&amp;v=4" width="40" height="40" alt="@MahirSez">
       </div>
       <div class="text-bubble">
-        <div class="bubble-top-slot"><b>SlowDecay</b> commented on June 1</div>
-        <div class="bubble-down-slot">This is nice</div>
+        <div class="bubble-single-slot"><b>SlowDecay</b> created this issue on June 1</div>
       </div>
     </div>
+
+    <div class ="container-row" >
+      <div class="img-left">
+        <img src="https://avatars.githubusercontent.com/u/31519659?s=80&amp;v=4" width="40" height="40" alt="@MahirSez">
+      </div>
+      <div class="text-bubble">
+        <div class="bubble-top-slot"><b>SlowDecay</b> commented on June 1</div>
+        <div class="bubble-down-slot">Marks diye dei</div>
+      </div>
+    </div>
+
 
     <div class ="container-row" >
       <div class="img-left">
@@ -34,20 +61,40 @@
       </div>
     </div>
 
-    <div class="container-row">
+    <div class ="container-row" >
       <div class="img-left">
         <img src="https://avatars.githubusercontent.com/u/32516061?s=80&amp;v=4" width="40" height="40" alt="@MahirSez">
       </div>
-      <div class="text-bubble ">
-        <div class="bubble-top-slot">Add a comment:</div>
+      <div class="text-bubble">
+        <div class="bubble-single-slot"><b>MahirSez</b> updated marks on June 3</div>
+      </div>
+    </div>
 
+    <div class ="container-row" >
+      <div class="img-left">
+        <img src="https://avatars.githubusercontent.com/u/31519659?s=80&amp;v=4" width="40" height="40" alt="@MahirSez">
+      </div>
+      <div class="text-bubble">
+        <div class="bubble-top-slot"><b>SlowDecay</b> commented on June 1</div>
+        <div class="bubble-down-slot">Bleh bleh bleh</div>
+      </div>
+    </div>
+
+
+
+    <div class="container-row" style="margin-bottom: 50px">
+      <div class="img-left">
+        <img src="https://avatars.githubusercontent.com/u/32516061?s=80&amp;v=4" width="40" height="40" alt="@MahirSez">
+      </div>
+      <div class="text-bubble button-row">
+        <div class="bubble-top-slot">Add a comment:</div>
         <div class="bubble-down-slot">
           <q-editor class="text-editor" v-model="editor" min-height="5rem" />
         </div>
+        <q-btn  style="margin-left: 900px; " color="blue-4" label="Comment" no-caps/>
       </div>
 
     </div>
-
 
   </div>
 </template>
@@ -60,13 +107,18 @@ export default {
 
 <style scoped>
 
-.header-col-1 {
-
+.resolve-btn {
+  margin-left: 420px;
 }
 
-.header-col-2 {
+.header-col-1 {
+  line-height: 36px;
+  margin-right: 10px;
+}
+
+.header-col-issue-creator {
   line-height: 72px;
-  margin-left: 20px;
+  margin-left: 15px;
 }
 
 .issue-header-row {
@@ -96,7 +148,7 @@ img {
   border-radius: 50%;
 }
 .container {
-
+  margin-right: 30px;
 }
 .bubble-top-slot {
   background: #f1f8ff;
@@ -105,6 +157,13 @@ img {
   padding-left:20px;
   line-height: 45px;
 }
+.bubble-single-slot {
+  background: #f1f8ff;
+  /*border-bottom: #c8e1ff solid 1px;*/
+  border-radius: 9px 9px 9px 9px;
+  padding-left:20px;
+  line-height: 50px;
+}
 .bubble-down-slot {
   border-radius: 0 0 9px 9px;
   text-align: left;
@@ -112,17 +171,22 @@ img {
   line-height: 50px;
 }
 
+.button-row {
+  display: flex;
+  flex-direction: column;
+
+}
 .container-row {
   display: inline-flex;
   flex-direction: row;
-  margin-top: 10px;
   flex-wrap: wrap;
   margin-left: 30px;
+  margin-top: 20px;
   /*padding-left: -20px;*/
   /*padding-top: 50px;*/
 }
 .container-row > div {
-  margin: 15px;
+  margin-left: 17px;
 }
 .text-bubble {
   position: relative;
