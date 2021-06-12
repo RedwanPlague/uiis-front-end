@@ -103,7 +103,7 @@ const mutations = {
   setCourseDetails: (state, courseDetails) => {
     state.course_data = courseDetails.teacher_details;
     state.student_data = courseDetails.student_details;
-    // state.course_data.editAccess = true;
+    state.course_data.editAccess = true;
   },
   setClassCount: (state, classCount) => {
     state.course_data.classCount = classCount;
