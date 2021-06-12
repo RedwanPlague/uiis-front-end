@@ -7,7 +7,6 @@
         <q-chip style="margin-top: 56px; margin-left: 20px; " color="teal" text-color="white"  >CSE203: Data Structure & Algorithms-1</q-chip>
       </div>
 
-
       <div class="issue-header-row">
         <q-chip class="bg-deep-orange-9"  text-color="white" style="margin-top: 20px" icon="error" size="15px">Unresolved</q-chip>
       </div>
@@ -31,41 +30,41 @@
     <q-separator class="bg-blue-2" inset="true"/>
 
     <user-activity
-      image-link="https://avatars.githubusercontent.com/u/31519659?s=80&amp;v=4"
+      :imageLink = slowDecayImage
       user-name="SlowDecay"
       date="June 1"
       activity="created this issue"
     />
 
     <user-comment
-      imageLink = 'https://avatars.githubusercontent.com/u/31519659?s=80&amp;v=4'
+      :imageLink = slowDecayImage
       userName = "SlowDecay"
       date = "June 1"
       comment = "Marks diye dei"
     />
 
     <user-comment
-      imageLink = 'https://avatars.githubusercontent.com/u/32516061?s=80&amp;v=4'
+      :imageLink = mahirSezImage
       userName = "MahirSez"
       date = "June 2"
       comment = "No"
     />
 
     <user-activity
-      image-link="https://avatars.githubusercontent.com/u/32516061?s=80&amp;v=4"
+      :imageLink = mahirSezImage
       user-name="MahirSez"
       date="June 3"
       activity="uptated marks"
     />
 
     <user-comment
-      imageLink = 'https://avatars.githubusercontent.com/u/31519659?s=80&amp;v=4'
+      :imageLink= slowDecayImage
       userName = "SlowDecay"
       date = "June 3"
       comment = "Bleh bleh bleh"
     />
     <editor
-      imageLink="https://avatars.githubusercontent.com/u/32516061?s=80&amp;v=4"
+      :imageLink= mahirSezImage
       userName="MahirSez"
     />
   </div>
@@ -81,6 +80,12 @@ export default {
     'user-comment': Comment,
     'user-activity': Activity,
     'editor': Editor
+  },
+  data() {
+    return {
+      slowDecayImage: 'https://avatars.githubusercontent.com/u/31519659?s=80&amp;v=4',
+      mahirSezImage: 'https://avatars.githubusercontent.com/u/32516061?s=80&amp;v=4'
+    }
   }
 }
 

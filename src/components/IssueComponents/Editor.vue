@@ -6,7 +6,7 @@
     <div class="text-bubble button-row">
       <div class="bubble-top-slot">Add a comment:</div>
       <div class="bubble-down-slot">
-        <q-editor class="text-editor" v-model="editor" min-height="5rem" />
+        <q-editor toolbar-toggle-color="blue" class="text-editor" v-model="editorText" min-height="5rem" />
       </div>
       <q-btn  style="margin-left: 900px; " color="blue-4" label="Comment" no-caps/>
     </div>
@@ -20,7 +20,11 @@ export default {
   props: {
     imageLink: String,
     userName: String,
-
+  },
+  data() {
+    return {
+      editorText: 'Hello'
+    }
   }
 }
 </script>
@@ -57,7 +61,7 @@ img {
   border-radius: 0 0 9px 9px;
   text-align: left;
   padding-left:20px;
-  line-height: 50px;
+  /*line-height: 50px;*/
 }
 
 .button-row {
