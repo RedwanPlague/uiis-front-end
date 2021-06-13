@@ -34,3 +34,6 @@ yarn-error.log*
 
 # added because creates conflict every time
 package-lock.json
+
+# local deployment script
+deploy.sh

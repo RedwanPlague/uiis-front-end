@@ -274,7 +274,7 @@
       </q-expansion-item>
       <q-separator class="q-mb-lg"/>
       <div class="col-12 q-mt-lg">
-        <q-btn label="Assign" color="primary" unelevated @click="updateCourseSession" :loading="assignLoading"/>
+        <q-btn label="Update" color="primary" unelevated @click="updateCourseSession" :loading="assignLoading"/>
         <q-btn label="Reset" color="primary" flat @click="resetForm"/>
       </div>
     </q-form>
@@ -404,6 +404,13 @@ export default {
           perEvalWeight: this.perEvalWeight,
           attendanceWeight: this.attendanceWeight,
         }, 'Evaluation Details')
+          .then(() => {
+            this.oldData.totalEvalCount = this.totalEvalCount
+            this.oldData.consideredEvalCount = this.consideredEvalCount
+            this.oldData.totalMarks = this.totalMarks
+            this.oldData.perEvalWeight = this.perEvalWeight
+            this.oldData.attendanceWeight = this.attendanceWeight
+          })
       }
     },
     updateList(type) {
@@ -423,15 +430,16 @@ export default {
           .then(() => {
             this.oldData[type] = list
           })
+          .catch(() => {})
       }
     },
     updateCourseSession() {
       this.updateEvaluationDetails()
-      this.updateList('teachers')
-      this.updateList('schedule')
-      this.updateList('examiners')
-      this.updateList('scrutinizers')
-      this.updateList('resultAccessHolders')
+      setTimeout(() => this.updateList('teachers'), 200)
+      setTimeout(() => this.updateList('schedule'), 400)
+      setTimeout(() => this.updateList('examiners'), 600)
+      setTimeout(() => this.updateList('scrutinizers'), 800)
+      setTimeout(() => this.updateList('resultAccessHolders'), 1000)
     },
     showErrorNotification(error) {
       const message = `Failed to load Course data`

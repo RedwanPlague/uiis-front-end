@@ -37,7 +37,7 @@
         required
       />
       <div class="col-12" v-if="!viewing">
-        <q-btn label="Edit" type="submit" color="primary" unelevated :loading="editLoading"/>
+        <q-btn label="Update" type="submit" color="primary" unelevated :loading="editLoading"/>
         <q-btn label="Reset" type="reset" color="primary" flat/>
       </div>
     </q-form>

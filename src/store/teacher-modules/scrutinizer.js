@@ -46,8 +46,9 @@ const getters = {
         sec => sec.teacher === teacherID
       );
 
-      if (section.mark) return section.mark;
+      if (!isNaN(section.mark)) return section.mark;
       else throw new Error();
+
     } catch (error) {
       return "NA";
     }
@@ -78,7 +79,7 @@ const getters = {
         sec => sec.teacher === teacherID && sec.evalID === evalID
       );
 
-      if (section.mark) return section.mark;
+      if (!isNaN(section.mark)) return section.mark;
       else throw new Error();
     } catch (error) {
       return "NA";
@@ -109,7 +110,7 @@ const getters = {
         sec => sec.examiner === examinerID && sec.part === part
       );
 
-      if (section.mark) return section.mark;
+      if (!isNaN(section.mark)) return section.mark;
       else throw new Error();
 
     } catch (error) {
@@ -129,7 +130,7 @@ const mutations = {
 
   mutSingleCourse(state, payload) {
     let curCor = state.courses.find(course => course.courseID === state.currentCourse);
-    
+
     for(const prop in payload) {
       curCor[prop] = payload[prop];
     }
@@ -153,8 +154,6 @@ const actions = {
         await api.get(`/teacher/scrutinizer/${context.state.currentSession}`)
       ).data.toRet;
       context.commit("mutAllCourses", courses);
-
-      console.log(courses);
     } catch (error) {
       console.log(error);
     }
@@ -172,7 +171,6 @@ const actions = {
       context.commit("mutSingleCourse", course);
       context.commit("mutCourseLoading", false);
 
-      //console.log(course);
     } catch (error) {
       console.log(error);
     }

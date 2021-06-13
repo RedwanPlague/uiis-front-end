@@ -29,17 +29,23 @@
           </q-btn>
         -->
 
-        <q-btn-dropdown color="primary" text-color="white" dense flat>
+        <q-btn-dropdown v-if="user" color="primary" text-color="white" :label="user.name" dense flat no-caps>
           <q-list>
-            <q-item clickable v-close-popup @click="$router.replace('/teacher/profile')">
+            <q-item clickable v-close-popup @click="$router.replace('/teacher/profile')" dense>
               <q-item-section>
-                <q-item-label>Profile</q-item-label>
+                <q-item-label>
+                  <q-avatar icon="account_circle"/>
+                  Profile
+                </q-item-label>
               </q-item-section>
             </q-item>
 
-            <q-item clickable v-close-popup @click="$router.replace('/')">
+            <q-item clickable v-close-popup @click="$router.replace('/')" dense>
               <q-item-section>
-                <q-item-label>Logout</q-item-label>
+                <q-item-label>
+                  <q-avatar icon="logout"/>
+                  Logout
+                </q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
@@ -123,6 +129,8 @@
 <script>
 import SidebarOption from "components/SidebarOption";
 
+import { mapGetters, mapActions} from 'vuex';
+
 const menuOptionsTeacher = [
   {
     title: "Home",
@@ -145,7 +153,7 @@ const menuOptionsAdvisor = [
   {
     title: "Advisee Information",
     icon: "groups",
-    path: "/teacher/advisor/advisee_info"
+    path: "/teacher/advisor/advisee_selection"
   },
   {
     title: "Course Registration",
@@ -191,6 +199,9 @@ const menuOptionsScrutinizer = [
 export default {
   name: "TeacherLayout",
   components: { SidebarOption },
+  computed: {
+    ...mapGetters(['user']),
+  },
   methods: {
   },
   data() {

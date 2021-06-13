@@ -28,11 +28,7 @@ const actions = {
   /* getting advisees */
   async fetchAdvisees({ commit }) {
     try {
-      const response = await api.get(url+'/advisees', {
-        headers: {
-          Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
-        }
-      });
+      const response = await api.get(url+'/advisees');
       commit('mutateAdvisees', response.data.sort((advisee1, advisee2) => (advisee1.id > advisee2.id)? 1: -1));
     } catch(err) {
       this.error = err.message;
@@ -42,11 +38,7 @@ const actions = {
   /* getting specific advisee */
   async fetchAdvisee({ commit }, id) {
     try {
-      const response = await api.get(url+'/advisees/'+id, {
-        headers: {
-          Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
-        }
-      });
+      const response = await api.get(url+'/advisees/'+id);
       commit('mutateAdvisee', response.data);
     } catch(err) {
       this.error = err.message;
@@ -60,9 +52,6 @@ const actions = {
 
       if(params.filter === 'semester') {
         response = await api.get(url+'/advisees/'+params.id+'/grades', {
-          headers: {
-            Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
-          },
           params: {
             filter: params.filter,
             level: params.level,
@@ -71,12 +60,9 @@ const actions = {
         });
       } else if(params.filter === 'grade') {
         response = await api.get(url+'/advisees/'+params.id+'/grades', {
-          headers: {
-            Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
-          },
           params: {
             filter: params.filter,
-            grade: params.grade
+            gradeLetter: params.gradeLetter
           }
         });
       }
@@ -89,11 +75,7 @@ const actions = {
   /* getting registrations */
   async fetchRegistrations({ commit }) {
     try {
-      const response = await api.get(url+'/registrations', {
-        headers: {
-          Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
-        }
-      });
+      const response = await api.get(url+'/registrations');
       commit('mutateRegistrations', response.data.sort((advisee1, advisee2) => (advisee1.id > advisee2.id)? 1: -1));
     } catch(err) {
       this.error = err.message;
@@ -104,9 +86,6 @@ const actions = {
   async fetchSpecificRegistrations({ commit }, params) {
     try {
       const response = await api.get(url+'/registrations/'+params.id, {
-        headers: {
-          Authorization: 'Bearer '+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0MSIsImlhdCI6MTYyMjE4Mjg1MX0.OiY5IYKmnjDv3Mh1H0XDBRULpq4d2PorJRyTEDVYulw'
-        },
         params: {
           level: params.level,
           term: params.term
