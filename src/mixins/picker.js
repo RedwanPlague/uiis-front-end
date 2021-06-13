@@ -1,4 +1,5 @@
 import {isSubstring} from 'src/utils/patternSearch'
+import {deepEqual} from 'src/utils/utilities'
 
 export default {
   props: {
@@ -37,10 +38,13 @@ export default {
     fixValue() {
       if (this.mainList.length === 0) return
       if (this.multiple) {
-        if (Array.isArray(this.value)) {
+        if (Array.isArray(this.value) && this.value.length > 0) {
+          if (this.mainList.includes(this.value[0])) return
           const valueStrList = this.value.map(x => JSON.stringify(x))
           const newValue = this.mainList.filter(x => valueStrList.includes(JSON.stringify(x.value)))
-          this.$emit('input', newValue)
+          if (!deepEqual(this.value, newValue)) {
+            this.$emit('input', newValue)
+          }
         }
       }
       else {
@@ -65,7 +69,7 @@ export default {
   },
   watch: {
     value: {
-      handler(/*newVal, oldVal*/) {
+      handler(newVal, oldVal) {
         this.fixValue()
       }
     },
