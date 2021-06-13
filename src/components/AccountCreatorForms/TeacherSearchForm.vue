@@ -18,7 +18,7 @@
         outlined
         :rules="[() => !!columns || 'Dummy Text']"
       />
-      <department-picker classes="col-6" v-model="department"/>
+      <department-picker classes="col-6" label="Department" v-model="department"/>
       <div class="col-12">
         <q-btn type="submit" label="Search" color="primary" unelevated/>
         <q-btn type="reset" label="Reset" color="primary" flat/>

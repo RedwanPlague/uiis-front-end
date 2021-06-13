@@ -26,7 +26,7 @@
         readonly
         :rules="[() => !!id || 'Please Enter an ID']"
       />
-      <department-picker classes="col-6" v-model="department" required :readonly="viewing"/>
+      <department-picker classes="col-6" label="Department" v-model="department" required :readonly="viewing"/>
       <password-maker-field v-if="!viewing" classes="col-6" v-model="password"/>
       <div class="col-12" v-if="!viewing">
         <q-btn type="submit" label="Edit" color="primary" unelevated :loading="editLoading"/>

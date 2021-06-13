@@ -18,7 +18,7 @@
         outlined
         :rules="[() => !!id || 'Please Enter an ID']"
       />
-      <department-picker classes="col-6" v-model="department" required/>
+      <department-picker classes="col-6" label="Department" v-model="department" required/>
       <password-maker-field classes="col-6" v-model="password"/>
       <div class="col-12">
         <q-btn type="submit" label="Create" color="primary" unelevated :loading="createLoading"/>

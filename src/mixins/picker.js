@@ -39,14 +39,15 @@ export default {
       if (this.multiple) {
         if (Array.isArray(this.value)) {
           const valueStrList = this.value.map(x => JSON.stringify(x))
-          this.value = this.mainList.filter(x => valueStrList.includes(JSON.stringify(x.value)))
+          const newValue = this.mainList.filter(x => valueStrList.includes(JSON.stringify(x.value)))
+          this.$emit('input', newValue)
         }
       }
       else {
         const valueStr = JSON.stringify(this.value)
         const match = this.mainList.filter(x => JSON.stringify(x.value) === valueStr)
         if (match.length > 0) {
-          this.value = match[0]
+          this.$emit('input', match[0])
         }
       }
     },

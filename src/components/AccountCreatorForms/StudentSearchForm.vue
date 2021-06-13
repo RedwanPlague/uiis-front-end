@@ -22,7 +22,7 @@
         outlined
         :rules="[() => !!columns || 'Dummy Text']"
       />
-      <department-picker classes="col-6" v-model="department"/>
+      <department-picker classes="col-6" label="Department" v-model="department"/>
       <hall-picker classes="col-6" v-model="hall"/>
       <teacher-picker
         classes="col-6"

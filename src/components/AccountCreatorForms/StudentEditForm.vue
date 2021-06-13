@@ -30,7 +30,7 @@
         readonly
         :rules="[() => !!id || 'Please Enter an ID']"
       />
-      <department-picker classes="col-6" v-model="department" required :readonly="viewing"/>
+      <department-picker classes="col-6" label="Department" v-model="department" required :readonly="viewing"/>
       <hall-picker classes="col-6" v-model="hall" required :readonly="viewing"/>
       <teacher-picker
         classes="col-6"
