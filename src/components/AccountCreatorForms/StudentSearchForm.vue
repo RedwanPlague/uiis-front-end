@@ -41,6 +41,7 @@
         :data="tableData"
         :columns="columns"
         @row-click="onRowClick"
+        wrap-cells flat
       />
     </div>
     <q-inner-loading :showing="searchLoading"/>
@@ -60,7 +61,7 @@ const format = (val, row) => {
 }
 
 const columns = [
-  {name: 'id', label: 'Student ID', field: 'id', style: 'width: 10%', sortable: true},
+  {name: 'id', label: 'Student ID', field: 'id', style: 'width: 12%', sortable: true},
   {name: 'name', label: 'Name', field: 'name', align: 'left', style: 'width: 60%'},
   {name: 'department', label: 'Department', field: 'department', align: 'center'},
   {name: 'lt', label: 'Level/Term', field: 'lt', align: 'center', sortable: true, format},
