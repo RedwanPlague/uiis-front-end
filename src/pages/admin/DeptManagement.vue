@@ -120,12 +120,13 @@ export default {
             prev.head !== dept.head.value
           ) {
             this.editDepartment(dept)
+            this.fetchDepartments()
           }
         } else {
           this.createDepartment(dept)
+          this.fetchDepartments()
         }
       })
-      this.fetchDepartments()
     },
     createDepartment(dept) {
       this.callCreateApi('/department/create', {

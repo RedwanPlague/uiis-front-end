@@ -26,28 +26,27 @@
 
 <script>
 import picker from 'src/mixins/picker'
-import {apiFetch} from 'src/utils/apiWrappers'
+import {mapActions, mapGetters} from 'vuex'
 
 export default {
   name: 'CoursePicker',
   mixins: [
     picker
   ],
+  computed: {
+    ...mapGetters('admin', [
+      'courseList'
+    ])
+  },
   methods: {
+    ...mapActions('admin', [
+      'loadCourses'
+    ]),
     fetchCourseList() {
-      apiFetch('/course/list', null, 'all courses')
-        .then(response => {
-          this.mainList = response.data.map(x => {
-            return {
-              value: {
-                courseID: x.courseID,
-                syllabusID: x.syllabusID
-              },
-              label: `${x.courseID}(${x.syllabusID}): ${x.title}`
-            }
-          })
-          this.fixValue()
-        })
+      this.loadCourses().then(() => {
+        this.mainList = this.courseList
+        this.fixValue()
+      })
     },
   },
   created() {

@@ -40,12 +40,12 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
+    ...mapGetters('admin', [
       'teacherList'
     ])
   },
   methods: {
-    ...mapActions([
+    ...mapActions('admin', [
       'loadTeachers'
     ]),
     fetchTeachers(dept) {

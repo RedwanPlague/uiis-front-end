@@ -31,12 +31,12 @@ export default {
     picker
   ],
   computed: {
-    ...mapGetters([
+    ...mapGetters('admin', [
       'hallList'
     ])
   },
   methods: {
-    ...mapActions([
+    ...mapActions('admin', [
       'loadHalls'
     ]),
     fetchHalls() {

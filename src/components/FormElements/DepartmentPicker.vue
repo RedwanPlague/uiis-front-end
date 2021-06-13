@@ -31,12 +31,12 @@ export default {
     picker
   ],
   computed: {
-    ...mapGetters([
+    ...mapGetters('admin', [
       'deptList'
     ])
   },
   methods: {
-    ...mapActions([
+    ...mapActions('admin', [
       'loadDepartments'
     ]),
     fetchDepartments() {
