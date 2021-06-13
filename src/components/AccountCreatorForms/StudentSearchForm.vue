@@ -23,7 +23,7 @@
         :rules="[() => !!columns || 'Dummy Text']"
       />
       <department-picker classes="col-6" label="Department" v-model="department"/>
-      <hall-picker classes="col-6" v-model="hall"/>
+      <hall-picker classes="col-6" label="Hall" v-model="hall"/>
       <teacher-picker
         classes="col-6"
         label="Advisor"

@@ -11,6 +11,7 @@ import user from "src/store/user";
 
 import teachers from 'src/store/admin-modules/teachers'
 import departments from 'src/store/admin-modules/departments'
+import halls from 'src/store/admin-modules/halls'
 
 /* loading Vuex */
 Vue.use(Vuex);
@@ -22,6 +23,7 @@ const store = new Vuex.Store({
     // example
     teachers,
     departments,
+    halls,
     user,
     courses,
     courseEval,
