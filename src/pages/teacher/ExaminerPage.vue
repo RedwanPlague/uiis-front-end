@@ -1,9 +1,9 @@
 <template>
-  <q-page padding>
+  <q-page class="container">
     <div class="column items-center">
       <h6>Current Session: {{ currentSession }}</h6>
-      <div>
-        <span>Select course: </span>
+      <!-- <div> -->
+      <!-- <span>Select course: </span>
         <select v-model="currentCourse">
           <option disabled value="">Please select one</option>
           <option
@@ -20,9 +20,19 @@
             }}
           </option>
         </select>
-      </div>
+      </div> -->
 
-      <ExaminerTable v-if="currentCourse" :key="currentCourse" />
+      <q-table
+        class="table"
+        title="Current Courses"
+        :data="allCourses"
+        :columns="columns"
+        row-key="courseID"
+        separator="cell"
+        @row-click="onRowClick"
+      />
+
+      <!-- <ExaminerTable v-if="currentCourse" :key="currentCourse" /> -->
     </div>
   </q-page>
 </template>
@@ -34,22 +44,57 @@ import { mapGetters, mapMutations } from "vuex";
 export default {
   name: "ExaminerPage",
   components: {
-    ExaminerTable: () => import("../../components/ExaminerTable.vue")
+    // ExaminerTable: () => import("../../components/ExaminerTable.vue")
   },
   data() {
-    return {};
+    return {
+      columns: [
+        {
+          name: "courseID",
+          label: "CourseID",
+          field: "courseID",
+          required: true,
+          align: "left",
+          sortable: true,
+          headerClasses: 'bg-primary text-white'
+        },
+        {
+          name: "courseTitle",
+          label: "Course Title",
+          field: "courseTitle",
+          required: true,
+          align: "left",
+          sortable: true,
+          headerClasses: 'bg-primary text-white'
+        },
+        {
+          name: "part",
+          label: "Part",
+          field: "part",
+          required: true,
+          align: "left",
+          headerClasses: 'bg-primary text-white'
+        }
+      ]
+    };
   },
 
   async created() {
-    // API call
-    /*axios.get("http://localhost:3000/courses").then(cutu=> {
-      this.courses = cutu.data;
-    });*/
-
     await this.$store.dispatch("examiner/fillCourses");
   },
 
-  methods: {},
+  methods: {
+    onRowClick(evt, row) {
+      this.$store.commit("examiner/mutCurCourse", row.courseID);
+
+      this.$router.push({
+        name: "examiner-evaluation-page",
+        params: {
+          courseID: row.courseID
+        }
+      });
+    }
+  },
 
   computed: {
     ...mapGetters("examiner", ["allCourses", "currentSession"]),
@@ -67,4 +112,14 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+  .container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+  .table {
+    width: 800px;
+    margin-top: 30px;
+  }
+</style>

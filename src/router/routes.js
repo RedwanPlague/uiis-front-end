@@ -26,7 +26,10 @@ const routes = [
       { path: 'head/result_evaluation', component: () => import('pages/teacher/HeadResultEvaluationPage.vue') },
 
       { path: 'examiner', component: () => import('src/pages/teacher/ExaminerPage.vue') },
+      { path: 'examiner/:courseID', name: "examiner-evaluation-page", component: () => import('src/pages/teacher/ExaminerEvaluationPage.vue') },
+
       { path: 'scrutinizer', component: () => import('src/pages/teacher/ScrutinizerPage.vue') },
+
       { path: 'course/:courseID/:courseSession/', name: 'course_page', component: () => import('src/pages/teacher/CourseEvaluationPage.vue') }
     ]
   },
