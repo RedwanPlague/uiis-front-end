@@ -22,9 +22,9 @@ const getters = {
 
 const actions = {
   /* getting student basic info (id, level, term) */
-  async fetchStudentBasicInfo({ commit }) {
+  async fetchStudentBasicInfo({ commit }, id) {
     try {
-      const response = await api.get(url+'/basic');
+      const response = await api.get(url+'/basic'+id);
       commit('mutateStudent', response.data);
     } catch(err) {
       this.error = err.message;
@@ -32,9 +32,9 @@ const actions = {
   },
 
   /* getting student home info (id, name, level, term, department, hall) */
-  async fetchStudentHomeInfo({ commit }) {
+  async fetchStudentHomeInfo({ commit }, id) {
     try {
-      const response = await api.get(url+'/home');
+      const response = await api.get(url+'/home'+id);
       commit('mutateStudent', response.data);
     } catch(err) {
       this.error = err.message;
@@ -42,9 +42,9 @@ const actions = {
   },
 
   /* getting student profile info (id, name, level, term, department, hall, contactNumber, email, residentialAddress) */
-  async fetchStudentProfileInfo({ commit }) {
+  async fetchStudentProfileInfo({ commit }, id) {
     try {
-      const response = await api.get(url+'/profile');
+      const response = await api.get(url+'/profile'+id);
       commit('mutateStudent', response.data);
     } catch(err) {
       this.error = err.message;
@@ -52,9 +52,9 @@ const actions = {
   },
 
   /* getting student profile info (id, name, department, totalCreditHoursCompleted, cgpa) */
-  async fetchStudentGradesProfileInfo({ commit }) {
+  async fetchStudentGradesProfileInfo({ commit }, id) {
     try {
-      const response = await api.get(url+'/grades_profile');
+      const response = await api.get(url+'/grades_profile'+id);
       commit('mutateStudent', response.data);
     } catch(err) {
       this.error = err.message;
