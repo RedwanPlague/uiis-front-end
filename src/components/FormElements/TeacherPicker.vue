@@ -38,6 +38,10 @@ export default {
       type: String,
       default: null
     },
+    preList: {
+      type: Array,
+      default: null
+    }
   },
   computed: {
     ...mapGetters('admin', [
@@ -49,10 +53,15 @@ export default {
       'loadTeachers'
     ]),
     fetchTeachers(dept) {
-      this.loadTeachers(dept).then(() => {
-        this.mainList = this.teacherList
-        this.fixValue()
-      })
+      if (this.preList) {
+        this.mainList = this.preList
+      }
+      else {
+        this.loadTeachers(dept).then(() => {
+          this.mainList = this.teacherList
+          this.fixValue()
+        })
+      }
     },
   },
   created() {
