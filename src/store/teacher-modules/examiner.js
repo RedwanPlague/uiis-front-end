@@ -20,7 +20,7 @@ const getters = {
   currentCourseInfo: state =>
     state.courses.find(course => course.courseID === state.currentCourse),
 
-  currentSession: state => state.currentSession,
+  currentSession: state => state.currentSession
 };
 
 const mutations = {
@@ -29,22 +29,35 @@ const mutations = {
   },
 
   mutSingleMark: (state, payload) => {
-   const curCourse = state.courses.find(course => course.courseID === state.currentCourse);
-   const student = curCourse.students.find(student => student.studentID === payload.studentID);
-   
-   student.mark = payload.mark;
+    const curCourse = state.courses.find(
+      course => course.courseID === state.currentCourse
+    );
+    const student = curCourse.students.find(
+      student => student.studentID === payload.studentID
+    );
+
+    student.mark = payload.mark;
   },
 
   mutAllCourses: (state, allCourses) => {
     state.courses = allCourses;
   },
 
+  mutSingleCourse: (state, payload) => {
+    let curCor = state.courses.find(cour => cour.courseID === state.currentCourse);
+    for(const prop in payload) {
+      curCor[prop] = payload[prop];
+    }
+  },
+
   mutCurSession: (state, currentSession) => {
     state.currentSession = currentSession;
   },
 
-  mutHasEditAccess: (state) => {
-    const curCor = state.courses.find(course => course.courseID === state.currentCourse);
+  mutHasEditAccess: state => {
+    const curCor = state.courses.find(
+      course => course.courseID === state.currentCourse
+    );
     curCor.hasEditAccess = false;
   }
 };
@@ -53,38 +66,51 @@ const actions = {
   async fillCourses(context) {
     const session = context.state.currentSession;
 
-    const shob = await api.get(
-      `/teacher/examiner/${session}`,
+    const shob = await api.get(`/teacher/examiner/${session}`);
+
+    // const courseSum = shob.data.toRet;
+    // console.log(courseSum);
+
+    // const shobCourses = [];
+
+    // for(const cr of courseSum) {
+    //   //console.log(`/teacher/examiner/${cr.courseID}/${session}?part=${cr.part}`);
+    //   const courseInfo = (await api.get(
+    //     `/teacher/examiner/${cr.courseID}/${session}?part=${cr.part}`,
+    //   )).data;
+
+    //   console.log(courseInfo);
+
+    //   const newCourse = {
+    //     courseID: cr.courseID,
+    //     courseTitle: cr.courseTitle,
+    //     part: cr.part,
+    //     totalMarks: courseInfo.totalMarks,
+    //     hasEditAccess: courseInfo.editAccess,
+    //     students: courseInfo.students,
+    //   };
+
+    //   shobCourses.push(newCourse);
+    // }
+
+    context.commit("mutAllCourses", shob.data.toRet);
+  },
+
+  async fillCurrentCourse(context) {
+    const session = context.state.currentSession;
+
+    const curCor = context.state.courses.find(
+      cr => cr.courseID === context.state.currentCourse
     );
 
-    const courseSum = shob.data.toRet;
-    console.log(courseSum);
+    const courseInfo = (
+      await api.get(
+        `/teacher/examiner/${curCor.courseID}/${session}?part=${curCor.part}`
+      )
+    ).data;
 
-    const shobCourses = [];
-
-    for(const cr of courseSum) {
-      //console.log(`/teacher/examiner/${cr.courseID}/${session}?part=${cr.part}`);
-      const courseInfo = (await api.get(
-        `/teacher/examiner/${cr.courseID}/${session}?part=${cr.part}`,
-      )).data;
-
-      console.log(courseInfo);
-
-      const newCourse = {
-        courseID: cr.courseID,
-        courseTitle: cr.courseTitle,
-        part: cr.part,
-        totalMarks: courseInfo.totalMarks,
-        hasEditAccess: courseInfo.editAccess,
-        students: courseInfo.students,
-      };
-
-      shobCourses.push(newCourse);
-    }
-
-    context.commit("mutAllCourses", shobCourses);
+    context.commit("mutSingleCourse", courseInfo);
   }
-
 };
 
 export default {

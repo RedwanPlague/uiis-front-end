@@ -84,8 +84,10 @@ export default {
   },
 
   methods: {
-    onRowClick(evt, row) {
+    async onRowClick(evt, row) {
       this.$store.commit("examiner/mutCurCourse", row.courseID);
+
+      await this.$store.dispatch("examiner/fillCurrentCourse");
 
       this.$router.push({
         name: "examiner-evaluation-page",
