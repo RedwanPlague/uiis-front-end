@@ -49,9 +49,9 @@ export default {
       }
       else {
         const valueStr = JSON.stringify(this.value)
-        const match = this.mainList.filter(x => JSON.stringify(x.value) === valueStr)
-        if (match.length > 0) {
-          this.$emit('input', match[0])
+        const match = this.mainList.find(x => JSON.stringify(x.value) === valueStr)
+        if (match) {
+          this.$emit('input', match)
         }
       }
     },
