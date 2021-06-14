@@ -5,14 +5,14 @@
     </div>
     <div class="text-bubble">
       <div class="bubble-top-slot"><b>{{ userName }}</b> commented on {{ date }}</div>
-      <div class="bubble-down-slot">{{ comment }}</div>
+      <div class="bubble-down-slot" v-html="comment"></div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "Comment.vue",
+  name: "Comment",
   props: {
     imageLink: String,
     userName: String,
@@ -86,14 +86,14 @@ img {
   border-bottom: #c8e1ff solid 1px;
   border-radius: 9px 9px 0 0;
   padding-left:20px;
+  padding-right:20px;
   line-height: 45px;
 }
 
 .bubble-down-slot {
   border-radius: 0 0 9px 9px;
   text-align: left;
-  padding-left:20px;
-  line-height: 50px;
+  padding: 15px 20px;
 }
 
 

@@ -8,22 +8,39 @@
       <div class="bubble-down-slot">
         <q-editor toolbar-toggle-color="blue" class="text-editor" v-model="editorText" min-height="5rem" />
       </div>
-      <q-btn  style="margin-left: 900px; " color="blue-4" label="Comment" no-caps/>
+      <q-btn  style="margin-left: 900px; " color="blue-4" label="Comment" no-caps @click="submitButtonClicked"/>
     </div>
 
   </div>
 </template>
 
 <script>
+
 export default {
   name: "Editor",
   props: {
     imageLink: String,
     userName: String,
   },
+  methods: {
+    submitButtonClicked(event) {
+      this.$emit('submitClicked', this.editorText);
+      this.editorText = '';
+    }
+  },
   data() {
     return {
-      editorText: 'Hello'
+      editorText: '',
+      items: [
+        {
+          value: 'SlowDecay',
+          label: 'SlowDecay',
+        },
+        {
+          value: 'MahirSez',
+          label: 'MahirSez',
+        },
+      ],
     }
   }
 }
@@ -119,3 +136,4 @@ img {
   display: block;
 }
 </style>
+

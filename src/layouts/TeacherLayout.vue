@@ -205,7 +205,7 @@ const menuOptionsIssues = [
   {
     title: "Result Issues",
     icon: "error",
-    path: {name: "issue_page" }
+    path: "/teacher/issues"
   }
 ];
 

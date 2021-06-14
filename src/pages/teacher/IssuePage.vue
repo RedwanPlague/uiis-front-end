@@ -29,43 +29,30 @@
 
     <q-separator class="bg-blue-2" inset="true"/>
 
-    <user-activity
-      :imageLink = slowDecayImage
-      user-name="SlowDecay"
-      date="June 1"
-      activity="created this issue"
-    />
 
-    <user-comment
-      :imageLink = slowDecayImage
-      userName = "SlowDecay"
-      date = "June 1"
-      comment = "Marks diye dei"
-    />
+    <div v-for="(issue,index) in issueEntries" :key="index">
+      <div v-if="issue.type === 'activity'">
+        <user-activity
+          :image-link = issue.imageLink
+          :user-name = issue.userName
+          :date = issue.date
+          :activity= issue.activity
+        />
+      </div>
+      <div v-else>
+        <user-comment
+          :image-link = issue.imageLink
+          :user-name = issue.userName
+          :date = issue.date
+          :comment= issue.comment
+        />
+      </div>
+    </div>
 
-    <user-comment
-      :imageLink = mahirSezImage
-      userName = "MahirSez"
-      date = "June 2"
-      comment = "No"
-    />
-
-    <user-activity
-      :imageLink = mahirSezImage
-      user-name="MahirSez"
-      date="June 3"
-      activity="uptated marks"
-    />
-
-    <user-comment
-      :imageLink= slowDecayImage
-      userName = "SlowDecay"
-      date = "June 3"
-      comment = "Bleh bleh bleh"
-    />
     <editor
-      :imageLink= mahirSezImage
+      imageLink= 'https://avatars.githubusercontent.com/u/32516061?s=80&amp;v=4'
       userName="MahirSez"
+      @submitClicked="appendNewComment"
     />
   </div>
 </template>
@@ -74,6 +61,10 @@
 import Comment from 'src/components/IssueComponents/Comment';
 import Activity from "components/IssueComponents/Activity";
 import Editor from "components/IssueComponents/Editor";
+
+const slowDecayImage =  'https://avatars.githubusercontent.com/u/31519659?s=80&amp;v=4';
+const mahirSezImage = 'https://avatars.githubusercontent.com/u/32516061?s=80&amp;v=4';
+
 export default {
   name: "IssuePage.vue",
   components: {
@@ -83,8 +74,56 @@ export default {
   },
   data() {
     return {
-      slowDecayImage: 'https://avatars.githubusercontent.com/u/31519659?s=80&amp;v=4',
-      mahirSezImage: 'https://avatars.githubusercontent.com/u/32516061?s=80&amp;v=4'
+
+
+      issueEntries: [
+        {
+          type: 'activity',
+          imageLink : slowDecayImage,
+          userName: "SlowDecay",
+          date: "June 1",
+          activity: "created this issue",
+        },
+        {
+          type: 'comment',
+          imageLink : slowDecayImage,
+          userName: "SlowDecay",
+          date: "June 1",
+          comment: "Marks diye dei",
+        },
+        {
+          type: 'comment',
+          imageLink : mahirSezImage,
+          userName: "MahirSez",
+          date: "June 2",
+          comment: "No",
+        },
+        {
+          type: 'activity',
+          imageLink : mahirSezImage,
+          userName: "MahirSez",
+          date: "June 3",
+          activity: "updated Marks",
+        },
+        {
+          type: 'comment',
+          imageLink: slowDecayImage,
+          userName: "SlowDecay",
+          date: "June 3",
+          comment: "Bleh bleh bleh",
+        }
+      ]
+    }
+  },
+  methods: {
+    appendNewComment(comment) {
+      this.issueEntries.push({
+        type: 'comment',
+        imageLink: mahirSezImage,
+        userName: "MahirSez",
+        date: "June 13",
+        comment: comment
+      })
     }
   }
 }

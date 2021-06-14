@@ -111,7 +111,9 @@
 
 <script>
 
-  import { mapGetters, mapActions} from 'vuex';
+  import {createNamespacedHelpers} from 'vuex';
+  const {mapGetters, mapActions} = createNamespacedHelpers('courseEval');
+
   import { mapMultiRowFields } from 'vuex-map-fields';
   import parseCSV from '../../utils/csvParser';
 
@@ -130,7 +132,7 @@
 
     computed: {
       ...mapGetters(['course_data']),
-      ...mapMultiRowFields(['student_data']),
+      ...mapMultiRowFields('courseEval', ['student_data']),
       classCount: {
         get () {
           return this.course_data.classCount
