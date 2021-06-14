@@ -30,6 +30,26 @@
       </tbody>
     </q-markup-table>
 
+    <!-- <q-table
+      class="table"
+      title="Marks"
+      :data="info.students"
+      :columns="columns"
+      row-key="studentID"
+      separator="cell"
+    >
+      <template v-slot:body="props">
+        <q-tr :props="props">
+          <q-td key="studentID" :props="props">
+            {{ props.row.studentID }}
+          </q-td>
+          <q-td key="mark" :props="props">
+            hello
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table> -->
+
     <div class="">
       <q-btn
         color="primary"
@@ -47,10 +67,6 @@
         :disable="!info.hasEditAccess"
       />
     </div>
-
-    <!-- <h4 v-if="probRolls.length">
-      Please recheck the marks of {{ probRolls.join() }}!
-    </h4> -->
   </div>
 </template>
 
@@ -64,7 +80,26 @@ export default {
   data() {
     return {
       canEdit: false,
-      probRolls: []
+      probRolls: [],
+
+      columns: [
+        {
+          name: "studentID",
+          label: "Student ID",
+          field: "studentID",
+          required: true,
+          align: "left",
+          sortable: true,
+          headerClasses: "bg-primary text-white"
+        },
+        {
+          name: "mark",
+          label: "Mark",
+          field: "mark",
+          align: "left",
+          headerClasses: "bg-primary text-white"
+        }
+      ]
     };
   },
 

@@ -1,22 +1,19 @@
 <template>
-  <q-page padding>
+  <q-page class="container">
     <div class="column items-center">
       <h6>Current Session: {{ currentSession }}</h6>
-      <div>
-        <span>Select course: </span>
-        <select v-model="currentCourse">
-          <option disabled value="">Please select one</option>
-          <option
-            v-for="course in allCourses"
-            :value="course.courseID"
-            :key="course.courseID"
-          >
-            {{ course.courseID + " - " + course.courseTitle }}
-          </option>
-        </select>
-      </div>
 
-      <ScrutinizerTable v-if="currentCourse" :key="currentCourse" />
+      <q-table
+        class="table"
+        title="Current Courses"
+        :data="allCourses"
+        :columns="columns"
+        row-key="courseID"
+        separator="cell"
+        @row-click="onRowClick"
+      />
+
+      <!-- <ScrutinizerTable v-if="currentCourse" :key="currentCourse" /> -->
     </div>
   </q-page>
 </template>
@@ -27,14 +24,54 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   name: "ScrutinizerPage",
   components: {
-    ScrutinizerTable: () => import("../../components/ScrutinizerTable.vue")
+    // ScrutinizerTable: () => import("../../components/ScrutinizerTable.vue")
   },
   data() {
-    return {};
+    return {
+      columns: [
+        {
+          name: "courseID",
+          label: "CourseID",
+          field: "courseID",
+          required: true,
+          align: "left",
+          sortable: true,
+          headerClasses: "bg-primary text-white"
+        },
+        {
+          name: "courseTitle",
+          label: "Course Title",
+          field: "courseTitle",
+          required: true,
+          align: "left",
+          sortable: true,
+          headerClasses: "bg-primary text-white"
+        }
+      ]
+    };
   },
 
   methods: {
-    ...mapActions("scrutinizer", ["fillCourses", "fillSingleCourse"])
+    ...mapActions("scrutinizer", ["fillCourses", "fillSingleCourse"]),
+
+    async onRowClick(evt, row) {
+      // this.$store.commit("scrutinizer/mutCurCourse", row.courseID);
+
+      // this.$q.loading.show({
+      //   delay: 100 // ms
+      // });
+
+      // await this.$store.dispatch("scrutinizer/fillSingleCourse");
+
+      // this.$q.loading.hide();
+
+      this.$router.push({
+        name: "scrutinizer-course-page",
+        params: {
+          courseID: row.courseID
+        }
+      });
+    }
   },
 
   computed: {
@@ -58,12 +95,22 @@ export default {
     }
   },
 
-  created() {
+  async created() {
     // API call
 
-    this.$store.dispatch("scrutinizer/fillCourses");
+    await this.$store.dispatch("scrutinizer/fillCourses");
   }
 };
 </script>
 
-<style></style>
+<style scoped>
+  .container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+  .table {
+    width: 800px;
+    margin-top: 30px;
+  }
+</style>
