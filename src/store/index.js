@@ -1,33 +1,40 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
+import user from "src/store/user";
+
+import teachers from 'src/store/admin-modules/teachers'
+import departments from 'src/store/admin-modules/departments'
+
 import courses from "src/store/teacher-modules/courses";
 import courseEval from "src/store/teacher-modules/courseEval";
 import advisor from './teacher-modules/advisor';
 import examiner from './teacher-modules/examiner';
 import scrutinizer from './teacher-modules/scrutinizer';
 
-import user from "src/store/user";
+import student from './student-modules/student';
 
-import teachers from 'src/store/admin-modules/teachers'
-import departments from 'src/store/admin-modules/departments'
+import grades from './utility-modules/grades';
 
 /* loading Vuex */
 Vue.use(Vuex);
 
-
 const store = new Vuex.Store({
-
   modules: {
-    // example
+    user,
+
     teachers,
     departments,
-    user,
+
     courses,
     courseEval,
     advisor,
     examiner,
     scrutinizer,
+
+    student,
+
+    grades
   },
 
   /*
@@ -35,8 +42,6 @@ const store = new Vuex.Store({
     for dev mode only
   */
   strict: process.env.DEBUGGING
-
-})
+});
 
 export default store
-

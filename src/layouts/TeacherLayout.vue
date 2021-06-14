@@ -15,20 +15,6 @@
           UIIS
         </q-toolbar-title>
 
-        <!--
-          <q-btn
-            round
-            color="primary"
-            style="font-size: 30px"
-            unelevated
-            stack
-            padding="0px"
-            dense
-          >
-            <q-icon name="account_circle" style="font-size:60px"></q-icon>
-          </q-btn>
-        -->
-
         <q-btn-dropdown v-if="user" color="primary" text-color="white" :label="user.name" dense flat no-caps>
           <q-list>
             <q-item clickable v-close-popup @click="$router.replace('/teacher/profile')" dense>
@@ -78,14 +64,6 @@
           :key="menuOption.title"
           v-bind="menuOption"
         />
-
-<!--        <q-expansion-item :content-inset-level="0.5" icon="class" label="Courses" default-closed>-->
-<!--          <SidebarOption-->
-<!--            v-for="menuOption in menuOptionsCourseTeacher"-->
-<!--            :key="menuOption.title"-->
-<!--            v-bind="menuOption"-->
-<!--          />-->
-<!--        </q-expansion-item>-->
 
         <q-expansion-item :content-inset-level="0.5" icon="school" label="Advisor" default-closed>
           <SidebarOption
@@ -230,3 +208,7 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+
+</style>

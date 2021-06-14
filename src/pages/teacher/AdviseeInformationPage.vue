@@ -38,7 +38,7 @@
         <q-separator /><br />
 
         <q-card-section>
-          <div class="text-h5">View Grade Statistics</div><br />
+          <div class="text-h5">View Grades</div><br />
         </q-card-section>
         <q-card-actions align="center">
           <div class="row q-gutter-lg">
@@ -59,45 +59,12 @@
               </q-list>
             </q-btn-dropdown>
 
-<!--<<<<<<< HEAD-->
-<!--      <q-dialog v-model="adviseeInfoDialogBox" >-->
-<!--        <q-card class="q-pa-md student-card" >-->
-<!--          <q-card-section>-->
-<!--            <div class="text-h6">-->
-<!--              <p>-->
-<!--                <strong>Student ID:</strong> {{ getAdvisee.id }}-->
-<!--              </p>-->
-<!--              <p>-->
-<!--                <strong>Name:</strong> {{ getAdvisee.name }}-->
-<!--              </p>-->
-<!--              <p>-->
-<!--                <strong>Level/Term:</strong> {{ getAdvisee.level }}/{{ getAdvisee.term }}-->
-<!--              </p>-->
-<!--              <p>-->
-<!--                <strong>Department:</strong> {{ getAdvisee.department }}-->
-<!--              </p>-->
-<!--              <p>-->
-<!--                <strong>Contact Number:</strong> {{ getAdvisee.contactNumber }}-->
-<!--              </p>-->
-<!--              <p>-->
-<!--                <strong>Email Address:</strong> {{ getAdvisee.email }}-->
-<!--              </p>-->
-<!--            </div>-->
-<!--          </q-card-section>-->
-
-<!--          <q-card-actions align="right">-->
-<!--            <q-btn flat class="bg-secondary text-white" label="View Grades" @click="visitSemesterSelectionPage" />-->
-<!--            <q-btn flat class="bg-primary text-white" label="Back" v-close-popup />-->
-<!--          </q-card-actions>-->
-<!--        </q-card>-->
-<!--      </q-dialog>-->
-<!--=======-->
             <q-btn-dropdown no-caps color="primary" label="Filter with GradeLetter">
               <q-list>
                 <q-item
                   clickable
                   class="bg-grey-2"
-                  v-for="gradeLetter in gradeLetters"
+                  v-for="gradeLetter in getGradeLetters"
                   :key="gradeLetter"
                   v-bind="gradeLetter"
                   @click.native="selectedGradeLetter = gradeLetter; onGradeClick();"
@@ -116,7 +83,6 @@
           <q-btn class="bg-primary text-white" label="Back" @click="visitSelectionPage" />
         </q-card-actions>
       </q-card>
-<!--&gt;>>>>>> origin/advisor-->
     </div>
   </q-page>
 </template>
@@ -133,7 +99,6 @@ export default {
       selectedSemester: {},
 
       /* for filtering results based on a certain grade */
-      gradeLetters: ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'D', 'F'],
       selectedGradeLetter: ''
     };
   },
@@ -171,7 +136,7 @@ export default {
     }
   },
 
-  computed: mapGetters(['getAdvisee', 'getAvailableSemesters']),
+  computed: mapGetters(['getAdvisee', 'getAvailableSemesters', 'getGradeLetters']),
 
   async created() {
     try {
@@ -188,13 +153,9 @@ export default {
 </script>
 
 <style scoped>
-/*<<<<<<< HEAD*/
-/*  .student-card {*/
-/*    width: 600px;*/
-/*=======*/
   .profile-photo {
     width: 100%;
     max-width: 200px;
-/*>>>>>>> origin/advisor*/
+    height: 100%;
   }
 </style>
