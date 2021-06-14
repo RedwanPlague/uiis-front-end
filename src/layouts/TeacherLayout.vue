@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lff">
+  <q-layout view="lhh Lpr lff">
     <q-header elevated>
       <q-toolbar>
         <q-btn
@@ -114,6 +114,11 @@
           :key="menuOption.title"
           v-bind="menuOption"
         />
+        <SidebarOption
+          v-for="menuOption in menuOptionsIssues"
+          :key="menuOption.title"
+          v-bind="menuOption"
+        />
       </q-list>
     </q-drawer>
 
@@ -196,6 +201,14 @@ const menuOptionsScrutinizer = [
   }
 ];
 
+const menuOptionsIssues = [
+  {
+    title: "Result Issues",
+    icon: "error",
+    path: "/teacher/issues"
+  }
+];
+
 export default {
   name: "TeacherLayout",
   components: { SidebarOption },
@@ -211,7 +224,8 @@ export default {
       menuOptionsAdvisor,
       menuOptionsHead,
       menuOptionsExaminer,
-      menuOptionsScrutinizer
+      menuOptionsScrutinizer,
+      menuOptionsIssues
     };
   }
 };

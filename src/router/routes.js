@@ -15,6 +15,7 @@ const routes = [
       { path: 'profile', component: () => import('src/pages/teacher/PersonalProfilePage.vue') },
 
       { path: 'courses', component: () => import('pages/teacher/CourseListPage.vue') },
+      { path: 'course/:courseID/:courseSession/', name: 'course_page', component: () => import('src/pages/teacher/CourseEvaluationPage.vue') },
 
       { path: 'advisor/advisee_selection', name: 'adviseeSelection', component: () => import('pages/teacher/AdviseeSelectionPage.vue') },
       { path: 'advisor/advisee_selection/advisee_info/:studentID', name: 'adviseeInformation', component: () => import('pages/teacher/AdviseeInformationPage.vue') },
@@ -31,7 +32,7 @@ const routes = [
       { path: 'scrutinizer', component: () => import('src/pages/teacher/ScrutinizerPage.vue') },
       { path: 'scrutinizer/:courseID', name: "scrutinizer-course-page", component: () => import('src/pages/teacher/ScrutinizerCoursePage.vue') },
 
-      { path: 'course/:courseID/:courseSession/', name: 'course_page', component: () => import('src/pages/teacher/CourseEvaluationPage.vue') }
+      { path: 'issues', name: 'issue_page', component: () => import('src/pages/teacher/IssuePage.vue') }
     ]
   },
 

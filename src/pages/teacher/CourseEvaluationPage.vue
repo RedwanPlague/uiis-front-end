@@ -101,7 +101,7 @@
         </q-card-section>
         <q-card-actions align="right">
           <q-btn flat label="Cancel" color="primary" v-close-popup />
-          <q-btn flat label="Yes, Submit Evaluation" color="primary" v-close-popup @click="course_data.editAccess= false; "/>
+          <q-btn flat label="Yes, Submit Evaluation" color="primary" v-close-popup @click="submitButtonClicked"/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -111,7 +111,9 @@
 
 <script>
 
-  import { mapGetters, mapActions} from 'vuex';
+  import {createNamespacedHelpers} from 'vuex';
+  const {mapGetters, mapActions} = createNamespacedHelpers('courseEval');
+
   import { mapMultiRowFields } from 'vuex-map-fields';
   import parseCSV from '../../utils/csvParser';
 
@@ -130,7 +132,7 @@
 
     computed: {
       ...mapGetters(['course_data']),
-      ...mapMultiRowFields(['student_data']),
+      ...mapMultiRowFields('courseEval', ['student_data']),
       classCount: {
         get () {
           return this.course_data.classCount
@@ -162,7 +164,7 @@
       }
     },
     methods: {
-      ...mapActions(['fetchCourseDetails', 'saveStudentData', 'updateEvaluationTable']),
+      ...mapActions(['fetchCourseDetails', 'saveStudentData', 'updateEvaluationTable', 'studentDataFilledCheck', 'removeEditAccess']),
 
 
       loadCSVData(input) {
@@ -226,6 +228,47 @@
             });
           }
         };
+      },
+
+      async submitButtonClicked(e) {
+        e.preventDefault();
+
+        this.editMode = false;
+
+        const notif = this.$q.notify({
+          message: `Saving Evaluation`,
+          position: "bottom-left",
+          group: false, // required to be updatable
+          timeout: 0, // we want to be in control when it gets dismissed
+          spinner: true,
+        });
+        const ret = await this.saveStudentData();
+        const tableFilled = await this.studentDataFilledCheck();
+
+        if(tableFilled && !ret.error) {
+          await this.removeEditAccess();
+          await this.saveStudentData();
+
+          notif({
+            icon: 'done', // we add an icon
+            spinner: false, // we reset the spinner setting so the icon can be displayed
+            message: 'Result Submitted',
+            timeout: 1500 // we will timeout it in 2.5s
+          });
+        }
+        else {
+          let errorMsg = ret;
+          if( !ret.error) errorMsg = 'Please fill all table cells';
+
+          notif({
+            icon: 'error', // we add an icon
+            spinner: false, // we reset the spinner setting so the icon can be displayed
+            message: 'Error: ' + errorMsg,
+            actions: [
+              { label: 'Dismiss', color: 'yellow', handler: () => { /* ... */ } }
+            ]
+          });
+        }
       },
 
       async toggleEditMode(e) {
