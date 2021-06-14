@@ -5,7 +5,7 @@
         info.courseID + " (" + info.courseTitle + ") - " + "Part " + info.part
       }}
     </h6>
-    <q-checkbox v-model="canEdit" label="Edit" :disable="!info.hasEditAccess" />
+    <q-checkbox v-model="canEdit" label="Edit" :disable="!info.editAccess" />
 
     <q-markup-table>
       <thead>
@@ -36,7 +36,7 @@
         label="Save"
         class="q-ma-md"
         @click="saveMarks"
-        :disable="!info.hasEditAccess"
+        :disable="!info.editAccess"
       >
       </q-btn>
       <q-btn
@@ -44,7 +44,7 @@
         label="Submit"
         class="q-ma-md"
         @click="submitMarks"
-        :disable="!info.hasEditAccess"
+        :disable="!info.editAccess"
       />
     </div>
 

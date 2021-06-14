@@ -60,6 +60,7 @@ export default {
       // this.$q.loading.show({
       //   delay: 100 // ms
       // });
+      // this.$q.loading.hide();
 
       // await this.$store.dispatch("scrutinizer/fillSingleCourse");
 
@@ -98,19 +99,24 @@ export default {
   async created() {
     // API call
 
+    this.$q.loading.show({
+      delay: 100 // ms
+    });
+
     await this.$store.dispatch("scrutinizer/fillCourses");
+    this.$q.loading.hide();
   }
 };
 </script>
 
 <style scoped>
-  .container {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-  }
-  .table {
-    width: 800px;
-    margin-top: 30px;
-  }
+.container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.table {
+  width: 800px;
+  margin-top: 30px;
+}
 </style>

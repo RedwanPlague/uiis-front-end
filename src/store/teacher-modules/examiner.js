@@ -40,7 +40,12 @@ const mutations = {
   },
 
   mutAllCourses: (state, allCourses) => {
+    for(const cr of allCourses) {
+      cr.totalMarks = cr.editAccess = cr.students = null;
+    }
+
     state.courses = allCourses;
+
   },
 
   mutSingleCourse: (state, payload) => {

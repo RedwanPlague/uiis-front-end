@@ -59,14 +59,15 @@ export default {
   },
 
   async created() {
+    this.$q.loading.show({
+      delay: 100 // ms
+    });
     await this.$store.dispatch("examiner/fillCourses");
+    this.$q.loading.hide();
   },
 
   methods: {
     async onRowClick(evt, row) {
-      this.$store.commit("examiner/mutCurCourse", row.courseID);
-
-      await this.$store.dispatch("examiner/fillCurrentCourse");
 
       this.$router.push({
         name: "examiner-evaluation-page",

@@ -1,11 +1,11 @@
 <template>
-  <div class="q-pa-sm column items-center">
+  <div class="q-pa-sm column items-center" :key="info.courseID">
     <h6>
       {{
         info.courseID + " (" + info.courseTitle + ") - " + "Part " + info.part
       }}
     </h6>
-    <q-checkbox v-model="canEdit" label="Edit" :disable="!info.hasEditAccess" />
+    <q-checkbox v-model="canEdit" label="Edit" :disable="!info.editAccess" />
 
     <q-markup-table>
       <thead>
@@ -56,7 +56,7 @@
         label="Save"
         class="q-ma-md"
         @click="saveMarks"
-        :disable="!info.hasEditAccess"
+        :disable="!info.editAccess"
       >
       </q-btn>
       <q-btn
@@ -64,7 +64,7 @@
         label="Submit"
         class="q-ma-md"
         @click="submitMarks"
-        :disable="!info.hasEditAccess"
+        :disable="!info.editAccess"
       />
     </div>
   </div>
@@ -191,7 +191,20 @@ export default {
       info: "currentCourseInfo",
       currentSession: "currentSession"
     })
-  }
+  },
+
+  async created() {
+    this.$q.loading.show({
+      delay: 100 // ms
+    });
+
+    if(!this.info) await this.$store.dispatch("examiner/fillCourses");
+
+    this.$store.commit("examiner/mutCurCourse", this.$route.params.courseID);
+    await this.$store.dispatch("examiner/fillCurrentCourse");
+    
+    this.$q.loading.hide();
+  },
 };
 </script>
 

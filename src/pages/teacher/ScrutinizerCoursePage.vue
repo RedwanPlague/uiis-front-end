@@ -27,6 +27,7 @@
             v-for="(teacherInfo, index) in allTeacherInfo"
             :key="index"
             :name="teacherInfo.fakeTeacherID"
+            class="column no-wrap flex-center"
           >
             <div class="q-mt-md text-center">
               <q-table
