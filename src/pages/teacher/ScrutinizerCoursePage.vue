@@ -315,8 +315,9 @@ export default {
 
   async created() {
     this.courseLoading = true;
-    if (this.$store.getters["allCourses"].length == 0)
-      await this.$store.dispatch("scrutinizer/fillCourses");
+    // if (this.$store.getters["allCourses"].length == 0)
+      if(!this.allCourses || this.allCourses.length === 0)
+        await this.$store.dispatch("scrutinizer/fillCourses");
 
     this.$store.commit("scrutinizer/mutCurCourse", this.$route.params.courseID);
 
