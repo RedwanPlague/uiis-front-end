@@ -1,5 +1,3 @@
-import { api } from "boot/axios";
-
 const state = {
   /* for filtering with grades */
   gradeLetters: ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'D', 'S', 'F'],

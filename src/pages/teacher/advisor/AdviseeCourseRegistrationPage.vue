@@ -172,8 +172,6 @@
 import { mapGetters, mapActions } from 'vuex';
 import { api } from "boot/axios";
 
-const url = "/teacher/advisor";
-
 export default {
   name: "AdviseeCourseRegistrationPage",
 
@@ -241,7 +239,7 @@ export default {
     /* approving course registration application */
     async approve() {
       try {
-        await api.patch(url+'/registrations/'+this.getStudent.id+'/approve');
+        await api.patch('/teacher/advisor/registrations/'+this.getStudent.id+'/approve');
         await this.fetchAdvisees();
       } catch(error) {
         console.log(error);
@@ -251,7 +249,10 @@ export default {
     /* rejecting course registration application */
     async reject() {
       try {
-        await api.patch(url+'/registrations/'+this.getStudent.id+'/reject');
+        await api.patch('/teacher/advisor/registrations/'+this.getStudent.id+'/reject');
+        await api.patch('/student/registrations/course_offered', {
+          _id: this.getCourseRegistrations.map(courseRegistration => courseRegistration._id)
+        });
         await this.fetchAdvisees();
       } catch(error) {
         console.log(error);
