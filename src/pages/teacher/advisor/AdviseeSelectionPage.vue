@@ -3,10 +3,8 @@
     <div class="q-pa-md">
       <q-card bordered class="bg-grey-2">
         <q-card-section>
-          <div class="text-h6">
-            <p>
-              <strong>Advisees</strong>
-            </p>
+          <div class="text-h5">
+            <p>Advisees</p>
           </div>
         </q-card-section>
 

@@ -45,9 +45,10 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchStudentIDInfo', 'fetchStudentBasicInfo', 'generateAvailableSemesters']),
+    ...mapActions(['fetchStudentIDInfo', 'fetchStudentProfileInfo', 'generateAvailableSemesters', 'clearAvailableGrades']),
 
     onSemesterClick() {
+      this.clearAvailableGrades();
       this.$router.push({ name: 'studentGrades', params: {},
         query: {
           filter: 'semester',
@@ -63,7 +64,7 @@ export default {
   async created() {
     try {
       await this.fetchStudentIDInfo();
-      await this.fetchStudentBasicInfo(this.getID.id);
+      await this.fetchStudentProfileInfo(this.getID.id);
       this.generateAvailableSemesters({
         level: this.getStudent.level,
         term: this.getStudent.term

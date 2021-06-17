@@ -3,10 +3,8 @@
     <div class="q-pa-md">
       <q-card bordered class="bg-grey-2">
         <q-card-section>
-          <div class="text-h6">
-            <p>
-              <strong>Registered Students</strong>
-            </p>
+          <div class="text-h5">
+            <p>Registered</p>
           </div>
         </q-card-section>
 
@@ -16,7 +14,7 @@
           <div class="q-gutter-md">
             <q-btn
               class="bg-primary text-white"
-              v-for="registeredAdvisee in getRegistrations.filter(registration => registration.status === 'registered')"
+              v-for="registeredAdvisee in getAdvisees.filter(registration => registration.status === 'registered')"
               :key="registeredAdvisee.id"
               v-bind="registeredAdvisee"
               @click.native="selectedAdvisee = registeredAdvisee; onAdviseeWithoutApprovalOptionClick();"
@@ -29,10 +27,8 @@
 
       <q-card bordered class="bg-grey-2">
         <q-card-section>
-          <div class="text-h6">
-            <p>
-              <strong>Waiting for Head's Approval</strong>
-            </p>
+          <div class="text-h5">
+            <p>Waiting for Head's Approval</p>
           </div>
         </q-card-section>
 
@@ -42,7 +38,7 @@
           <div class="q-gutter-sm">
             <q-btn
               class="bg-primary text-white"
-              v-for="waitingForHeadApprovalAdvisee in getRegistrations.filter(registration => registration.status === 'waiting')"
+              v-for="waitingForHeadApprovalAdvisee in getAdvisees.filter(registration => registration.status === 'waiting')"
               :key="waitingForHeadApprovalAdvisee.id"
               v-bind="waitingForHeadApprovalAdvisee"
               @click.native="selectedAdvisee = waitingForHeadApprovalAdvisee; onAdviseeWithoutApprovalOptionClick();"
@@ -55,10 +51,8 @@
 
       <q-card bordered class="bg-grey-2">
         <q-card-section>
-          <div class="text-h6">
-            <p>
-              <strong>Waiting for Advisor's Approval</strong>
-            </p>
+          <div class="text-h5">
+            <p>Waiting for Advisor's Approval</p>
           </div>
         </q-card-section>
 
@@ -68,7 +62,7 @@
           <div class="q-gutter-sm">
             <q-btn
               class="bg-primary text-white"
-              v-for="waitingForAdvisorApprovalAdvisee in getRegistrations.filter(registration => registration.status === 'applied')"
+              v-for="waitingForAdvisorApprovalAdvisee in getAdvisees.filter(registration => registration.status === 'applied')"
               :key="waitingForAdvisorApprovalAdvisee.id"
               v-bind="waitingForAdvisorApprovalAdvisee"
               @click.native="selectedAdvisee = waitingForAdvisorApprovalAdvisee; onAdviseeWithApprovalOptionClick();"
@@ -81,10 +75,8 @@
 
       <q-card bordered class="bg-grey-2">
         <q-card-section>
-          <div class="text-h6">
-            <p>
-              <strong>Not Applied for Registration</strong>
-            </p>
+          <div class="text-h5">
+            <p>Not Applied for Registration</p>
           </div>
         </q-card-section>
 
@@ -94,7 +86,7 @@
           <div class="q-gutter-sm">
             <q-btn
               class="bg-primary text-white"
-              v-for="notAppliedForRegistrationAdvisee in getRegistrations.filter(registration => registration.status === 'unregistered')"
+              v-for="notAppliedForRegistrationAdvisee in getAdvisees.filter(registration => registration.status === 'unregistered')"
               :key="notAppliedForRegistrationAdvisee.id"
               v-bind="notAppliedForRegistrationAdvisee"
               @click.native="selectedAdvisee = notAppliedForRegistrationAdvisee; onAdviseeWithoutApprovalOptionClick();"
@@ -108,7 +100,8 @@
       <q-dialog v-model="adviseeWithApprovalOptionDialogBox" full-width>
         <q-card class="q-pa-md">
           <q-card-section>
-            <div class="text-h6">
+            <div class="text-h5">Course Registration Information</div><br />
+            <div class="text-subtitle2">
               <p>
                 <strong>Student ID:</strong> {{ getStudent.id }}
               </p>
@@ -122,12 +115,12 @@
                 <strong>Department:</strong> {{ getStudent.department }}
               </p>
               <p>
-                <strong>Hall:</strong> {{ getStudent.hall }}
+                <strong>Residential Hall:</strong> {{ getStudent.hall }}
               </p>
             </div>
 
             <q-table
-              title="Courses" dense bordered :data="courseRegistrations" :columns="courseColumns" row-key="courseID"
+              title="Courses" dense bordered :data="courseRegistrations" :columns="getRegistrationColumns" row-key="courseID"
             />
           </q-card-section>
 
@@ -142,7 +135,8 @@
       <q-dialog v-model="adviseeWithoutApprovalOptionDialogBox" full-width>
         <q-card class="q-pa-md">
           <q-card-section>
-            <div class="text-h6">
+            <div class="text-h5">Course Registration Information</div><br />
+            <div class="text-subtitle2">
               <p>
                 <strong>Student ID:</strong> {{ getStudent.id }}
               </p>
@@ -156,12 +150,12 @@
                 <strong>Department:</strong> {{ getStudent.department }}
               </p>
               <p>
-                <strong>Hall:</strong> {{ getStudent.hall }}
+                <strong>Residential Hall:</strong> {{ getStudent.hall }}
               </p>
             </div>
 
             <q-table
-              title="Courses" dense bordered :data="courseRegistrations" :columns="courseColumns" row-key="courseID"
+              title="Courses" dense bordered :data="courseRegistrations" :columns="getRegistrationColumns" row-key="courseID"
             />
           </q-card-section>
 
@@ -185,48 +179,6 @@ export default {
 
   data() {
     return {
-      /* for tabulation */
-      courseColumns: [
-        {
-          name: 'courseID',
-          required: true,
-          label: 'Course ID',
-          align: 'left',
-          field: row => row.courseID,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'syllabusID',
-          align: 'left',
-          label: 'Syllabus ID',
-          field: 'syllabusID',
-          sortable: true
-        },
-        {
-          name: 'title',
-          align: 'left',
-          label: 'Course Title',
-          field: 'title',
-          sortable: true
-        },
-        {
-          name: 'credit',
-          align: 'left',
-          label: 'Credit Hours',
-          field: 'credit',
-          format: val => `${val.toFixed(2)}`,
-          sortable: true
-        },
-        {
-          name: 'status',
-          align: 'left',
-          label: 'Status',
-          field: 'status',
-          sortable: true
-        }
-      ],
-
       /* for showing selected Advisee information in dialog box */
       selectedAdvisee: {},
       courseRegistrations: [],
@@ -236,7 +188,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchRegistrations', 'fetchStudentHomeInfo', 'fetchCourseRegistrations']),
+    ...mapActions(['fetchAdvisees', 'fetchStudentProfileInfo', 'fetchCourseRegistrations']),
 
     generateCourseRegistrations() {
       this.courseRegistrations = [];
@@ -254,7 +206,10 @@ export default {
 
     async onAdviseeWithApprovalOptionClick() {
       try {
-        await this.fetchStudentHomeInfo(this.selectedAdvisee.id);
+        await this.fetchStudentProfileInfo(this.selectedAdvisee.id);
+        this.courseRegistrations = [];
+        this.adviseeWithApprovalOptionDialogBox = true;
+
         await this.fetchCourseRegistrations({
           id: this.selectedAdvisee.id,
           level: this.selectedAdvisee.level,
@@ -264,12 +219,14 @@ export default {
       } catch(error) {
         console.log(error);
       }
-      this.adviseeWithApprovalOptionDialogBox = true;
     },
 
     async onAdviseeWithoutApprovalOptionClick() {
       try {
-        await this.fetchStudentHomeInfo(this.selectedAdvisee.id);
+        await this.fetchStudentProfileInfo(this.selectedAdvisee.id);
+        this.courseRegistrations = [];
+        this.adviseeWithoutApprovalOptionDialogBox = true;
+
         await this.fetchCourseRegistrations({
           id: this.selectedAdvisee.id,
           level: this.selectedAdvisee.level,
@@ -279,14 +236,13 @@ export default {
       } catch(error) {
         console.log(error);
       }
-      this.adviseeWithoutApprovalOptionDialogBox = true;
     },
 
     /* approving course registration application */
     async approve() {
       try {
         await api.patch(url+'/registrations/'+this.getStudent.id+'/approve');
-        await this.fetchRegistrations();
+        await this.fetchAdvisees();
       } catch(error) {
         console.log(error);
       }
@@ -296,18 +252,18 @@ export default {
     async reject() {
       try {
         await api.patch(url+'/registrations/'+this.getStudent.id+'/reject');
-        await this.fetchRegistrations();
+        await this.fetchAdvisees();
       } catch(error) {
         console.log(error);
       }
     }
   },
 
-  computed: mapGetters(['getRegistrations', 'getStudent', 'getCourseRegistrations']),
+  computed: mapGetters(['getAdvisees', 'getStudent', 'getCourseRegistrations', 'getRegistrationColumns']),
 
   async created() {
     try {
-      await this.fetchRegistrations();
+      await this.fetchAdvisees();
     } catch(error) {
       console.log(error);
     }

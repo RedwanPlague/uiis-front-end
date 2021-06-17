@@ -37,40 +37,10 @@ const actions = {
     }
   },
 
-  /* getting student basic info (id, level, term) */
-  async fetchStudentBasicInfo({ commit }, id) {
-    try {
-      const response = await api.get(url+'/basic/'+id);
-      commit('mutateStudent', response.data);
-    } catch(err) {
-      this.error = err.message;
-    }
-  },
-
-  /* getting student home info (id, name, level, term, department, hall) */
-  async fetchStudentHomeInfo({ commit }, id) {
-    try {
-      const response = await api.get(url+'/home/'+id);
-      commit('mutateStudent', response.data);
-    } catch(err) {
-      this.error = err.message;
-    }
-  },
-
   /* getting student profile info (id, name, level, term, department, hall, contactNumber, email, residentialAddress) */
   async fetchStudentProfileInfo({ commit }, id) {
     try {
       const response = await api.get(url+'/profile/'+id);
-      commit('mutateStudent', response.data);
-    } catch(err) {
-      this.error = err.message;
-    }
-  },
-
-  /* getting student grades profile info (id, name, department, totalCreditHoursCompleted, cgpa) */
-  async fetchStudentGradesProfileInfo({ commit }, id) {
-    try {
-      const response = await api.get(url+'/grades_profile/'+id);
       commit('mutateStudent', response.data);
     } catch(err) {
       this.error = err.message;

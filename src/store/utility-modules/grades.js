@@ -45,12 +45,55 @@ const state = {
       format: val => `${val.toFixed(2)}`,
       sortable: true
     }
+  ],
+
+  /* for course registration tabulation */
+  registrationColumns: [
+    {
+      name: 'courseID',
+      required: true,
+      label: 'Course ID',
+      align: 'left',
+      field: row => row.courseID,
+      format: val => `${val}`,
+      sortable: true
+    },
+    {
+      name: 'syllabusID',
+      align: 'left',
+      label: 'Syllabus ID',
+      field: 'syllabusID',
+      sortable: true
+    },
+    {
+      name: 'title',
+      align: 'left',
+      label: 'Course Title',
+      field: 'title',
+      sortable: true
+    },
+    {
+      name: 'credit',
+      align: 'left',
+      label: 'Credit Hours',
+      field: 'credit',
+      format: val => `${val.toFixed(2)}`,
+      sortable: true
+    },
+    {
+      name: 'status',
+      align: 'left',
+      label: 'Status',
+      field: 'status',
+      sortable: true
+    }
   ]
 };
 
 const getters = {
   getGradeLetters: (state) => state.gradeLetters,
-  getGradeColumns: (state) => state.gradeColumns
+  getGradeColumns: (state) => state.gradeColumns,
+  getRegistrationColumns: (state) => state.registrationColumns
 };
 
 const actions = {
