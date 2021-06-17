@@ -4,18 +4,12 @@ const url = "/teacher/advisor";
 
 const state = {
   advisees: [],
-  advisee: {},
-
-  registrations: [],
-  specificRegistrations: []
+  registrations: []
 };
 
 const getters = {
   getAdvisees: (state) => state.advisees,
-  getAdvisee: (state) => state.advisee,
-
-  getRegistrations: (state) => state.registrations,
-  getSpecificRegistrations: (state) => state.specificRegistrations
+  getRegistrations: (state) => state.registrations
 };
 
 const actions = {
@@ -29,16 +23,6 @@ const actions = {
     }
   },
 
-  /* getting specific advisee */
-  async fetchAdvisee({ commit }, id) {
-    try {
-      const response = await api.get(url+'/advisees/'+id);
-      commit('mutateAdvisee', response.data);
-    } catch(err) {
-      this.error = err.message;
-    }
-  },
-
   /* getting registrations */
   async fetchRegistrations({ commit }) {
     try {
@@ -47,30 +31,12 @@ const actions = {
     } catch(err) {
       this.error = err.message;
     }
-  },
-
-  /* getting specific advisee's registrations */
-  async fetchSpecificRegistrations({ commit }, params) {
-    try {
-      const response = await api.get(url+'/registrations/'+params.id, {
-        params: {
-          level: params.level,
-          term: params.term
-        }
-      });
-      commit('mutateSpecificRegistrations', response.data);
-    } catch(err) {
-      this.error = err.message;
-    }
   }
 };
 
 const mutations = {
   mutateAdvisees: (state, advisees) => (state.advisees = advisees),
-  mutateAdvisee: (state, advisee) => (state.advisee = advisee),
-
   mutateRegistrations: (state, registrations) => (state.registrations = registrations),
-  mutateSpecificRegistrations: (state, specificRegistrations) => (state.specificRegistrations = specificRegistrations)
 };
 
 export default {

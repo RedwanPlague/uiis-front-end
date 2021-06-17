@@ -55,14 +55,15 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchStudentHomeInfo'])
+    ...mapActions(['fetchStudentIDInfo', 'fetchStudentHomeInfo'])
   },
 
-  computed: mapGetters(['getStudent']),
+  computed: mapGetters(['getID', 'getStudent']),
 
   async created() {
     try {
-      await this.fetchStudentHomeInfo();
+      await this.fetchStudentIDInfo();
+      await this.fetchStudentHomeInfo(this.getID.id);
     } catch(error) {
       console.log(error);
     }

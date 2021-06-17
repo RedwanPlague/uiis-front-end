@@ -45,7 +45,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchStudentBasicInfo', 'generateAvailableSemesters']),
+    ...mapActions(['fetchStudentIDInfo', 'fetchStudentBasicInfo', 'generateAvailableSemesters']),
 
     onSemesterClick() {
       this.$router.push({ name: 'studentGrades', params: {},
@@ -58,11 +58,12 @@ export default {
     }
   },
 
-  computed: mapGetters(['getStudent', 'getAvailableSemesters']),
+  computed: mapGetters(['getID', 'getStudent', 'getAvailableSemesters']),
 
   async created() {
     try {
-      await this.fetchStudentBasicInfo();
+      await this.fetchStudentIDInfo();
+      await this.fetchStudentBasicInfo(this.getID.id);
       this.generateAvailableSemesters({
         level: this.getStudent.level,
         term: this.getStudent.term

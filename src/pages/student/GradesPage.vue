@@ -55,7 +55,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchStudentGradesProfileInfo', 'fetchGrades', 'generateAvailableGrades', 'clearAvailableGrades']),
+    ...mapActions(['fetchStudentIDInfo', 'fetchStudentGradesProfileInfo', 'fetchGrades', 'generateAvailableGrades', 'clearAvailableGrades']),
 
     getTotalCreditHourObtained() {
       let totalCredit = 0.0;
@@ -102,7 +102,7 @@ export default {
     }
   },
 
-  computed: mapGetters(['getStudent', 'getGrades', 'getAvailableGrades', 'getGradeColumns']),
+  computed: mapGetters(['getID', 'getStudent', 'getGrades', 'getAvailableGrades', 'getGradeColumns']),
 
   async created() {
     try {
@@ -114,7 +114,8 @@ export default {
         spinner: true
       });
 
-      await this.fetchStudentGradesProfileInfo();
+      await this.fetchStudentIDInfo();
+      await this.fetchStudentGradesProfileInfo(this.getID.id);
       if(this.$route.query.filter === 'semester') {
         await this.fetchGrades({
           id: this.getStudent.id,

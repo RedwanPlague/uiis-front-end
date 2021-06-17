@@ -2,9 +2,9 @@
   <q-page padding>
     <div class="q-pa-md">
       <div class="text-subtitle1">
-        <strong>Student ID:</strong> {{ getAdvisee.id }} <br />
-        <strong>Name:</strong> {{ getAdvisee.name }} <br />
-        <strong>Department:</strong> {{ getAdvisee.department }} <br />
+        <strong>Student ID:</strong> {{ getStudent.id }} <br />
+        <strong>Name:</strong> {{ getStudent.name }} <br />
+        <strong>Department:</strong> {{ getStudent.department }} <br />
 
         <div v-if="$route.query.filter === 'semester'">
           <strong>Level/Term:</strong> {{ $route.query.level }}/{{ $route.query.term }}
@@ -58,7 +58,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchAdvisee', 'fetchGrades', 'generateAvailableGrades', 'clearAvailableGrades']),
+    ...mapActions(['fetchStudentGradesProfileInfo', 'fetchGrades', 'generateAvailableGrades', 'clearAvailableGrades']),
 
     getTotalCreditHourObtained() {
       let totalCredit = 0.0;
@@ -91,25 +91,25 @@ export default {
 
     getTotalCreditHoursCompleted() {
       /* NOTICE: this should change later */
-      return this.getAdvisee.totalCreditHoursCompleted;
+      return this.getStudent.totalCreditHoursCompleted;
     },
 
     getCGPA() {
       /* NOTICE: this should change later */
-      return this.getAdvisee.cgpa;
+      return this.getStudent.cgpa;
     },
 
     visitInformationPage() {
       this.clearAvailableGrades();
       this.$router.push({ name: 'adviseeInformation',
         params: {
-          studentID: this.getAdvisee.id
+          studentID: this.getStudent.id
         },
         query: {} });
     }
   },
 
-  computed: mapGetters(['getAdvisee', 'getGrades', 'getAvailableGrades', 'getGradeColumns']),
+  computed: mapGetters(['getStudent', 'getGrades', 'getAvailableGrades', 'getGradeColumns']),
 
   async created() {
     try {
@@ -121,17 +121,17 @@ export default {
         spinner: true
       });
 
-      await this.fetchAdvisee(this.$route.params.studentID);
+      await this.fetchStudentGradesProfileInfo(this.$route.params.studentID);
       if(this.$route.query.filter === 'semester') {
         await this.fetchGrades({
-          id: this.getAdvisee.id,
+          id: this.getStudent.id,
           filter: this.$route.query.filter,
           level: this.$route.query.level,
           term: this.$route.query.term
         });
       } else if(this.$route.query.filter === 'grade') {
         await this.fetchGrades({
-          id: this.getAdvisee.id,
+          id: this.getStudent.id,
           filter: this.$route.query.filter,
           gradeLetter: this.$route.query.gradeLetter
         });

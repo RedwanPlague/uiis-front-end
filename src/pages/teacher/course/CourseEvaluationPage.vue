@@ -115,7 +115,7 @@
   const {mapGetters, mapActions} = createNamespacedHelpers('courseEval');
 
   import { mapMultiRowFields } from 'vuex-map-fields';
-  import parseCSV from '../../utils/csvParser';
+  import parseCSV from '../../../utils/csvParser';
 
   let eval_column_entry = {
     name: 'eval_',

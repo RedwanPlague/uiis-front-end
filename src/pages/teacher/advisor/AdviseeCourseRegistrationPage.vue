@@ -110,21 +110,24 @@
           <q-card-section>
             <div class="text-h6">
               <p>
-                <strong>Student ID:</strong> {{ selectedAdvisee.id }}
+                <strong>Student ID:</strong> {{ getStudent.id }}
               </p>
               <p>
-                <strong>Name:</strong> {{ selectedAdvisee.name }}
+                <strong>Name:</strong> {{ getStudent.name }}
               </p>
               <p>
-                <strong>Level/Term:</strong> {{ selectedAdvisee.level }}/{{ selectedAdvisee.term }}
+                <strong>Level/Term:</strong> {{ getStudent.level }}/{{ getStudent.term }}
               </p>
               <p>
-                <strong>Department:</strong> {{ selectedAdvisee.department }}
+                <strong>Department:</strong> {{ getStudent.department }}
+              </p>
+              <p>
+                <strong>Hall:</strong> {{ getStudent.hall }}
               </p>
             </div>
 
             <q-table
-              title="Courses" dense bordered :data="specificRegistrations" :columns="courseColumns" row-key="courseID"
+              title="Courses" dense bordered :data="courseRegistrations" :columns="courseColumns" row-key="courseID"
             />
           </q-card-section>
 
@@ -141,21 +144,24 @@
           <q-card-section>
             <div class="text-h6">
               <p>
-                <strong>Student ID:</strong> {{ selectedAdvisee.id }}
+                <strong>Student ID:</strong> {{ getStudent.id }}
               </p>
               <p>
-                <strong>Name:</strong> {{ selectedAdvisee.name }}
+                <strong>Name:</strong> {{ getStudent.name }}
               </p>
               <p>
-                <strong>Level/Term:</strong> {{ selectedAdvisee.level }}/{{ selectedAdvisee.term }}
+                <strong>Level/Term:</strong> {{ getStudent.level }}/{{ getStudent.term }}
               </p>
               <p>
-                <strong>Department:</strong> {{ selectedAdvisee.department }}
+                <strong>Department:</strong> {{ getStudent.department }}
+              </p>
+              <p>
+                <strong>Hall:</strong> {{ getStudent.hall }}
               </p>
             </div>
 
             <q-table
-              title="Courses" dense bordered :data="specificRegistrations" :columns="courseColumns" row-key="courseID"
+              title="Courses" dense bordered :data="courseRegistrations" :columns="courseColumns" row-key="courseID"
             />
           </q-card-section>
 
@@ -223,37 +229,38 @@ export default {
 
       /* for showing selected Advisee information in dialog box */
       selectedAdvisee: {},
-      specificRegistrations: [],
+      courseRegistrations: [],
       adviseeWithApprovalOptionDialogBox: false,  /* open when true */
       adviseeWithoutApprovalOptionDialogBox: false  /* open when true */
     };
   },
 
   methods: {
-    ...mapActions(['fetchRegistrations', 'fetchSpecificRegistrations']),
+    ...mapActions(['fetchRegistrations', 'fetchStudentHomeInfo', 'fetchCourseRegistrations']),
 
-    generateSpecificRegistrations() {
-      this.specificRegistrations = [];
+    generateCourseRegistrations() {
+      this.courseRegistrations = [];
 
-      for(let i=0; i<this.$store.getters.getSpecificRegistrations.length; i++) {
-        this.specificRegistrations[i] = {
-          courseID: this.$store.getters.getSpecificRegistrations[i].courseSession.course.courseID,
-          syllabusID: this.$store.getters.getSpecificRegistrations[i].courseSession.course.syllabusID,
-          title: this.$store.getters.getSpecificRegistrations[i].courseSession.course.title,
-          credit: this.$store.getters.getSpecificRegistrations[i].courseSession.course.credit,
-          status: this.$store.getters.getSpecificRegistrations[i].status
+      for(let i=0; i<this.$store.getters.getCourseRegistrations.length; i++) {
+        this.courseRegistrations[i] = {
+          courseID: this.$store.getters.getCourseRegistrations[i].courseSession.course.courseID,
+          syllabusID: this.$store.getters.getCourseRegistrations[i].courseSession.course.syllabusID,
+          title: this.$store.getters.getCourseRegistrations[i].courseSession.course.title,
+          credit: this.$store.getters.getCourseRegistrations[i].courseSession.course.credit,
+          status: this.$store.getters.getCourseRegistrations[i].status
         };
       }
     },
 
     async onAdviseeWithApprovalOptionClick() {
       try {
-        await this.fetchSpecificRegistrations({
+        await this.fetchStudentHomeInfo(this.selectedAdvisee.id);
+        await this.fetchCourseRegistrations({
           id: this.selectedAdvisee.id,
           level: this.selectedAdvisee.level,
           term: this.selectedAdvisee.term
         });
-        this.generateSpecificRegistrations();
+        this.generateCourseRegistrations();
       } catch(error) {
         console.log(error);
       }
@@ -262,12 +269,13 @@ export default {
 
     async onAdviseeWithoutApprovalOptionClick() {
       try {
-        await this.fetchSpecificRegistrations({
+        await this.fetchStudentHomeInfo(this.selectedAdvisee.id);
+        await this.fetchCourseRegistrations({
           id: this.selectedAdvisee.id,
           level: this.selectedAdvisee.level,
           term: this.selectedAdvisee.term
         });
-        this.generateSpecificRegistrations();
+        this.generateCourseRegistrations();
       } catch(error) {
         console.log(error);
       }
@@ -277,7 +285,7 @@ export default {
     /* approving course registration application */
     async approve() {
       try {
-        await api.patch(url+'/registrations/'+this.selectedAdvisee.id+'/approve');
+        await api.patch(url+'/registrations/'+this.getStudent.id+'/approve');
         await this.fetchRegistrations();
       } catch(error) {
         console.log(error);
@@ -287,7 +295,7 @@ export default {
     /* rejecting course registration application */
     async reject() {
       try {
-        await api.patch(url+'/registrations/'+this.selectedAdvisee.id+'/reject');
+        await api.patch(url+'/registrations/'+this.getStudent.id+'/reject');
         await this.fetchRegistrations();
       } catch(error) {
         console.log(error);
@@ -295,7 +303,7 @@ export default {
     }
   },
 
-  computed: mapGetters(['getRegistrations', 'getSpecificRegistrations']),
+  computed: mapGetters(['getRegistrations', 'getStudent', 'getCourseRegistrations']),
 
   async created() {
     try {

@@ -62,14 +62,15 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchStudentProfileInfo'])
+    ...mapActions(['fetchStudentIDInfo', 'fetchStudentProfileInfo'])
   },
 
-  computed: mapGetters(['getStudent']),
+  computed: mapGetters(['getID', 'getStudent']),
 
   async created() {
     try {
-      await this.fetchStudentProfileInfo();
+      await this.fetchStudentIDInfo();
+      await this.fetchStudentProfileInfo(this.getID.id);
     } catch(error) {
       console.log(error);
     }
