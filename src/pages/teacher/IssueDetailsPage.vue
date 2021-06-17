@@ -19,9 +19,9 @@
 
       <div class="issue-header-row" style="margin-top: 10px">
         <div class="header-col-1"><b>Current Audience:</b></div>
-          <q-chip color="black" text-color="white" removable square outline>Teacher-1</q-chip>
-          <q-chip color="black" text-color="white" removable square outline>SlowDecay</q-chip>
-          <q-chip color="black" text-color="white" removable square outline>Mahirsez</q-chip>
+          <q-chip color="black" text-color="white" square outline>Teacher-1</q-chip>
+          <q-chip color="black" text-color="white" square outline>SlowDecay</q-chip>
+          <q-chip color="black" text-color="white" square outline>Mahirsez</q-chip>
 
           <q-btn class="resolve-btn" color="teal" label="Mark As Resolved"  icon="check_circle"  no-caps/>
         </div>

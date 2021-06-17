@@ -11,6 +11,7 @@ import courseEval from "src/store/teacher-modules/courseEval";
 import advisor from './teacher-modules/advisor';
 import examiner from './teacher-modules/examiner';
 import scrutinizer from './teacher-modules/scrutinizer';
+import issues from "src/store/teacher-modules/issues";
 
 import student from './student-modules/student';
 
@@ -31,6 +32,7 @@ const store = new Vuex.Store({
     advisor,
     examiner,
     scrutinizer,
+    issues,
 
     student,
 

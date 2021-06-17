@@ -62,6 +62,7 @@ const actions = {
   async fetchCourseDetails({commit}, {courseID, session}) {
     const res = await api.get(`/teacher/courses/${courseID}/${session}`);
     res.data.student_details = reformat_student_input_data(res.data.student_details, res.data.teacher_details.evalCount);
+    console.log(res.data.teacher_details.hasForwarded);
     commit('setCourseDetails', res.data);
   },
 
@@ -75,15 +76,16 @@ const actions = {
     });
     return ret;
   },
-  async removeEditAccess({commit}) {
-    commit('setEditAccess', false);
+  async setHasForwarded({commit}) {
+    commit('setHasForwarded', true);
   },
   async saveStudentData() {
 
     const student_formatted_data = validate_student_output_data(state.student_data);
     if(student_formatted_data.error) return {
       error: student_formatted_data.error
-    };
+    }
+
     await api.patch(`/teacher/courses/${state.course_data.courseID}/${state.course_data.session}`,{
         course_data: state.course_data,
         student_data: student_formatted_data
@@ -97,13 +99,12 @@ const actions = {
 };
 
 const mutations = {
-  setEditAccess:(state, editAccess) => {
-    state.course_data.editAccess = editAccess;
+  setHasForwarded:(state, hasForwarded) => {
+    state.course_data.hasForwarded = hasForwarded;
   },
   setCourseDetails: (state, courseDetails) => {
     state.course_data = courseDetails.teacher_details;
     state.student_data = courseDetails.student_details;
-    state.course_data.editAccess = true;
   },
   setClassCount: (state, classCount) => {
     state.course_data.classCount = classCount;

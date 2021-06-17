@@ -22,7 +22,7 @@
     </q-dialog>
 
 
-      <div class="button-row" v-show="course_data.editAccess">
+      <div class="button-row" v-show="!course_data.hasForwarded">
         <div class="col">
         <q-btn :icon='buttonIcon' size='md' color="primary" :label="buttonText" class="" @click="toggleEditMode" ></q-btn>
       </div>
@@ -87,7 +87,7 @@
     <div class="row q-pa-lg" >
         <q-input  outlined dense  v-model="classCount" label="Total Classes:" type="number" min="0" :disable="!editMode"/>
         <q-space />
-      <div  v-show="course_data.editAccess">
+      <div  v-show="!course_data.hasForwarded">
         <q-btn no-caps icon='check_circle' size='md' style="height:40px" color="primary" label="Submit Evalution" @click="submitFlag = true"></q-btn>
       </div>
       </div>
@@ -164,7 +164,7 @@
       }
     },
     methods: {
-      ...mapActions(['fetchCourseDetails', 'saveStudentData', 'updateEvaluationTable', 'studentDataFilledCheck', 'removeEditAccess']),
+      ...mapActions(['fetchCourseDetails', 'saveStudentData', 'updateEvaluationTable', 'studentDataFilledCheck', 'setHasForwarded']),
 
 
       loadCSVData(input) {
@@ -233,7 +233,7 @@
       async submitButtonClicked(e) {
         e.preventDefault();
 
-        this.editMode = false;
+        if(this.editMode) await this.toggleEditMode(e);
 
         const notif = this.$q.notify({
           message: `Saving Evaluation`,
@@ -242,11 +242,10 @@
           timeout: 0, // we want to be in control when it gets dismissed
           spinner: true,
         });
-        const ret = await this.saveStudentData();
         const tableFilled = await this.studentDataFilledCheck();
 
-        if(tableFilled && !ret.error) {
-          await this.removeEditAccess();
+        if(tableFilled) {
+          await this.setHasForwarded();
           await this.saveStudentData();
 
           notif({
@@ -257,13 +256,11 @@
           });
         }
         else {
-          let errorMsg = ret;
-          if( !ret.error) errorMsg = 'Please fill all table cells';
 
           notif({
             icon: 'error', // we add an icon
             spinner: false, // we reset the spinner setting so the icon can be displayed
-            message: 'Error: ' + errorMsg,
+            message: 'Error: Please fill all table cells',
             actions: [
               { label: 'Dismiss', color: 'yellow', handler: () => { /* ... */ } }
             ]
@@ -336,7 +333,6 @@
           submitFlag: false,
           editMode: false,
 
-          editAccess: true,
           buttonIcon:'edit',
           buttonText:'Edit',
           pagination: {
