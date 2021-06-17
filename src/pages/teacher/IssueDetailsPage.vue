@@ -62,6 +62,9 @@ import Comment from 'src/components/IssueComponents/Comment';
 import Activity from "components/IssueComponents/Activity";
 import Editor from "components/IssueComponents/Editor";
 
+import {createNamespacedHelpers} from 'vuex';
+const {mapGetters, mapActions} = createNamespacedHelpers('issues');
+
 const slowDecayImage =  'https://avatars.githubusercontent.com/u/31519659?s=80&amp;v=4';
 const mahirSezImage = 'https://avatars.githubusercontent.com/u/32516061?s=80&amp;v=4';
 
@@ -72,10 +75,35 @@ export default {
     'user-activity': Activity,
     'editor': Editor
   },
+
+  computed: {
+    ...mapGetters(['issueDetails']),
+  },
+  async created() {
+    await this.fetchIssueDetails( { issueID: this.$route.params.issueID});
+  },
+  watch: {
+    async '$route.params' (to, from) {
+      if(!this.$route.params.issueID ) {
+        return;
+      }
+      await this.fetchIssueDetails( { issueID: this.$route.params.issueID});
+    }
+  },
+  methods: {
+    ...mapActions(['fetchIssueDetails']),
+    appendNewComment(comment) {
+      this.issueEntries.push({
+        type: 'comment',
+        imageLink: mahirSezImage,
+        userName: "MahirSez",
+        date: "June 13",
+        comment: comment
+      })
+    }
+  },
   data() {
     return {
-
-
       issueEntries: [
         {
           type: 'activity',
@@ -113,17 +141,6 @@ export default {
           comment: "Bleh bleh bleh",
         }
       ]
-    }
-  },
-  methods: {
-    appendNewComment(comment) {
-      this.issueEntries.push({
-        type: 'comment',
-        imageLink: mahirSezImage,
-        userName: "MahirSez",
-        date: "June 13",
-        comment: comment
-      })
     }
   }
 }

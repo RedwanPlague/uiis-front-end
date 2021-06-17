@@ -105,7 +105,7 @@ export default {
       this.$router.push( {
         name: 'issue_details',
         params: {
-          id: row._id
+          issueID: row._id
         }});
     },
     ...mapActions(['fetchIssues']),
