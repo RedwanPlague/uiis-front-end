@@ -1,10 +1,17 @@
 <template>
   <q-page padding>
     <div class="q-pa-md">
-      <div class="text-subtitle1">
-        <strong>Student ID:</strong> {{ getStudent.id }} <br />
-        <strong>Name:</strong> {{ getStudent.name }} <br />
-        <strong>Department:</strong> {{ getStudent.department }} <br />
+      <div class="text-h5">Grades</div><br />
+      <div class="text-subtitle2">
+        <p>
+          <strong>Student ID:</strong> {{ getStudent.id }}
+        </p>
+        <p>
+          <strong>Name:</strong> {{ getStudent.name }}
+        </p>
+        <p>
+          <strong>Department:</strong> {{ getStudent.department }}
+        </p>
 
         <div v-if="$route.query.filter === 'semester'">
           <strong>Level/Term:</strong> {{ $route.query.level }}/{{ $route.query.term }}
@@ -19,19 +26,29 @@
       /><br />
 
       <div v-if="$route.query.filter === 'semester'" class="row">
-        <div class="text-subtitle1">
-          <strong>Registered Credit Hours in this Term:</strong> {{ getTotalCreditHour().toFixed(2) }}<br />
-          <strong>Credit Hours Earned in this Term:</strong> {{ getTotalCreditHourObtained().toFixed(2) }}<br />
-          <strong>Total Credit Hours:</strong> {{ getTotalCreditHoursCompleted().toFixed(2) }}
+        <div class="text-subtitle2">
+          <p>
+            <strong>Registered Credit Hours in this Term:</strong> {{ getTotalCreditHour().toFixed(2) }}
+          </p>
+          <p>
+            <strong>Credit Hours Earned in this Term:</strong> {{ getTotalCreditHourObtained().toFixed(2) }}
+          </p>
+          <p>
+            <strong>Total Credit Hours:</strong> {{ getTotalCreditHoursCompleted().toFixed(2) }}
+          </p>
         </div>
 
         <q-space />
 
         <q-card>
           <q-card-section>
-            <div class="text-subtitle1">
-              <strong>Obtained GPA:</strong> {{ getGPA().toFixed(2) }}<br />
-              <strong>Current CGPA:</strong> {{ getCGPA().toFixed(2) }}
+            <div class="text-subtitle2">
+              <p>
+                <strong>Obtained GPA:</strong> {{ getGPA().toFixed(2) }}
+              </p>
+              <p>
+                <strong>Current CGPA:</strong> {{ getCGPA().toFixed(2) }}
+              </p>
             </div>
           </q-card-section>
         </q-card>
@@ -58,7 +75,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchStudentGradesProfileInfo', 'fetchGrades', 'generateAvailableGrades', 'clearAvailableGrades']),
+    ...mapActions(['fetchStudentProfileInfo', 'fetchGrades', 'generateAvailableGrades']),
 
     getTotalCreditHourObtained() {
       let totalCredit = 0.0;
@@ -91,16 +108,17 @@ export default {
 
     getTotalCreditHoursCompleted() {
       /* NOTICE: this should change later */
-      return this.getStudent.totalCreditHoursCompleted;
+      // return this.getStudent.totalCreditHoursCompleted;
+      return 0.0;
     },
 
     getCGPA() {
       /* NOTICE: this should change later */
-      return this.getStudent.cgpa;
+      // return this.getStudent.cgpa;
+      return 0.0;
     },
 
     visitInformationPage() {
-      this.clearAvailableGrades();
       this.$router.push({ name: 'adviseeInformation',
         params: {
           studentID: this.getStudent.id
@@ -121,7 +139,7 @@ export default {
         spinner: true
       });
 
-      await this.fetchStudentGradesProfileInfo(this.$route.params.studentID);
+      await this.fetchStudentProfileInfo(this.$route.params.studentID);
       if(this.$route.query.filter === 'semester') {
         await this.fetchGrades({
           id: this.getStudent.id,

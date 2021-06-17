@@ -110,9 +110,10 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchStudentProfileInfo', 'generateAvailableSemesters']),
+    ...mapActions(['fetchStudentProfileInfo', 'generateAvailableSemesters', 'clearAvailableGrades']),
 
     onSemesterClick() {
+      this.clearAvailableGrades();
       this.$router.push({ name: 'adviseeGrades',
         params: {
           studentID: this.getStudent.id
@@ -126,6 +127,7 @@ export default {
     },
 
     onGradeClick() {
+      this.clearAvailableGrades();
       this.$router.push({ name: 'adviseeGrades',
         params: {
           studentID: this.getStudent.id
