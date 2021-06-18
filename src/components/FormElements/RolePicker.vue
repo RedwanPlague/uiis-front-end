@@ -78,7 +78,7 @@ export default {
       this.callCreateApi('/role/create', {
         role: this.newRole,
         privileges: []
-      }, 'Role')
+      }, `Role '${this.newRole}'`)
         .then(() => {
           this.fetchRoleList().catch(() => {})
           const newRoleElement = {

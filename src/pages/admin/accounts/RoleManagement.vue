@@ -12,7 +12,11 @@
         @input="resetForm"
       />
     </div>
-    <q-form class="row q-col-gutter-sm" @submit="updateRole" @reset="resetForm">
+    <q-form
+      class="row q-col-gutter-sm"
+      @submit="updateRole" @reset="resetForm"
+      v-if="roleToEdit"
+    >
       <privilege-picker
         classes="col-12"
         v-model="privileges"
