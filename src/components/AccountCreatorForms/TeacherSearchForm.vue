@@ -18,7 +18,7 @@
         outlined
         :rules="[() => !!columns || 'Dummy Text']"
       />
-      <department-picker classes="col-6" v-model="department"/>
+      <department-picker classes="col-6" label="Department" v-model="department"/>
       <div class="col-12">
         <q-btn type="submit" label="Search" color="primary" unelevated/>
         <q-btn type="reset" label="Reset" color="primary" flat/>
@@ -30,6 +30,7 @@
         :data="tableData"
         :columns="columns"
         @row-click="onRowClick"
+        wrap-cells flat
       />
     </div>
     <q-inner-loading :showing="searchLoading"/>
@@ -43,7 +44,7 @@ import search from 'src/mixins/search'
 import {extract} from 'src/utils/apiDataPreProcessor'
 
 const columns = [
-  {name: 'id', label: 'Student ID', field: 'id', style: 'width: 10%', sortable: true},
+  {name: 'id', label: 'Teacher ID', field: 'id', style: 'width: 13%', sortable: true},
   {name: 'name', label: 'Name', field: 'name', align: 'left', sortable: true},
   {name: 'department', label: 'Department', field: 'department', align: 'center'},
 ]

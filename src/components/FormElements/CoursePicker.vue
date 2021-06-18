@@ -3,7 +3,7 @@
     :class="classes"
     :value="value"
     @input="$emit('input', $event)"
-    :options="courseOptions"
+    :options="options"
     :label="label"
     outlined
     :readonly="readonly"
@@ -12,7 +12,7 @@
     :multiple="multiple"
     :clearable="multiple"
     use-input
-    @filter="courseFilter"
+    @filter="optionFilter"
   >
     <template v-slot:no-option>
       <q-item>
@@ -25,96 +25,33 @@
 </template>
 
 <script>
-import {isSubstring} from 'src/utils/patternSearch'
-import {apiFetch} from 'src/utils/apiWrappers'
+import picker from 'src/mixins/picker'
+import {mapActions, mapGetters} from 'vuex'
 
 export default {
   name: 'CoursePicker',
-  props: {
-    label: {
-      type: String,
-      default: 'Course'
-    },
-    value: {
-      type: [Object, Array, String],
-      default: null,
-    },
-    classes: {
-      type: [Object, String]
-    },
-    multiple: {
-      type: Boolean,
-      default: false
-    },
-    required: {
-      type: Boolean,
-      default: false
-    },
-    readonly: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data() {
-    return {
-      courseOptions: [],
-      courseList: []
-    }
+  mixins: [
+    picker
+  ],
+  computed: {
+    ...mapGetters('admin', [
+      'courseList'
+    ])
   },
   methods: {
-    fixValue(value) {
-      if (this.courseList.length === 0) return
-      if (Array.isArray(value)) {
-        const format = value.map(x => JSON.stringify(x))
-        const cur = this.courseList.filter(x => format.includes(JSON.stringify(x.value)))
-        this.$emit('input', cur)
-      }
-      else if (typeof value === 'string') {
-        const cur = this.courseList.filter(x => x.value === value)[0]
-        this.$emit('input', cur)
-      }
-      // else if (typeof value === 'object' && !value.hasOwnProperty('value')) {
-      //   const cur = this.courseList.filter(x => JSON.stringify(x.value) === JSON.stringify(value))[0]
-      //   this.$emit('input', cur)
-      // }
-    },
+    ...mapActions('admin', [
+      'loadCourses'
+    ]),
     fetchCourseList() {
-      apiFetch('/course/list', null, 'all courses')
-        .then(response => {
-          this.courseList = response.data.map(x => {
-            return {
-              value: {
-                courseID: x.courseID,
-                syllabusID: x.syllabusID
-              },
-              label: `${x.courseID}(${x.syllabusID}): ${x.title}`
-            }
-          })
-          this.fixValue(this.value)
-        })
-    },
-    courseFilter(value, update) {
-      if (value === '') {
-        update(() => {
-          this.courseOptions = this.courseList
-        })
-        return
-      }
-      update(() => {
-        this.courseOptions = this.courseList.filter(x => isSubstring(x.label, value))
+      this.loadCourses().then(() => {
+        this.mainList = this.courseList
+        this.fixValue()
       })
-    }
+    },
   },
   created() {
     this.fetchCourseList()
   },
-  // watch: {
-  //   value: {
-  //     handler(newVal/*, oldVal*/) {
-  //       this.fixValue(newVal)
-  //     }
-  //   },
-  // }
 }
 </script>
 

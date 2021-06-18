@@ -107,6 +107,16 @@ const quickLinks = [
     ]
   },
   {
+    title: 'Fees',
+    icon: 'school',
+    link: { name: 'AdminDuesAssignPage' }
+  },
+  {
+    title: 'Fines',
+    icon: 'school',
+    link: { name: 'AdminFineAssignPage' }
+  },
+  {
     title: 'Slots',
     icon: 'school',
     link: { name: 'AdminSlotManagePage' }

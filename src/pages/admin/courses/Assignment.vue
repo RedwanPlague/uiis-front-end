@@ -85,6 +85,7 @@
               <span class="col-1 text-h6">{{i+1}}.</span>
               <teacher-picker
                 classes="col-11"
+                label="Teacher"
                 v-model="item.teacher"
                 required
               />

@@ -81,6 +81,7 @@
         :columns="columns"
         flat
         @row-click="onRowClick"
+        wrap-cells
       />
     </div>
     <div style="min-height: 200px"></div>

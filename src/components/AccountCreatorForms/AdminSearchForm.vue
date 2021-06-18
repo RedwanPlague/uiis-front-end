@@ -35,7 +35,14 @@
         :data="tableData"
         :columns="columns"
         @row-click="onRowClick"
-      />
+        wrap-cells flat
+      >
+        <template v-slot:body-cell-privileges="props">
+          <q-td :props="props">
+            <q-chip v-for="(privilege, i) in props.value" :key="i" :label="privilege"/>
+          </q-td>
+        </template>
+      </q-table>
     </div>
     <q-inner-loading :showing="searchLoading"/>
   </div>
@@ -46,22 +53,10 @@ import PrivilegePicker from 'components/FormElements/PrivilegePicker'
 import columnMerger from 'src/utils/columnMerger'
 import search from 'src/mixins/search'
 
-const format = val => {
-  if (val.length === 0) {
-    return 'None'
-  }
-  let newVal = ''
-  for (const privilege of val) {
-    newVal += `(${privilege}), `
-  }
-  newVal = newVal.slice(0, newVal.length-2)
-  return newVal
-}
-
 const columns = [
-  {name: 'id', label: 'Admin ID', field: 'id', style: 'width: 10%;', sortable: true},
+  {name: 'id', label: 'Admin ID', field: 'id', style: 'width: 12%;', sortable: true},
   {name: 'name', label: 'Name', field: 'name', align: 'left'},
-  {name: 'privileges', label: 'Privileges', field: 'privileges', format},
+  {name: 'privileges', label: 'Privileges', field: 'privileges'},
 ]
 const commonAttr = {
   style: 'font-size: 1.05em;', headerStyle: 'font-size: 1.05em;'

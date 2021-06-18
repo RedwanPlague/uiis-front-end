@@ -3,13 +3,13 @@
     :class="classes"
     :value="value"
     @input="$emit('input', $event)"
-    :options="hallOptions"
+    :options="options"
     :label="label"
     outlined
     :readonly="readonly"
-    :rules="[() => !required || !!value || `Please Assign a ${label}`]"
+    :rules="[() => !required || !!value || `Please Select a ${label}`]"
     use-input
-    @filter="hallFilter"
+    @filter="optionFilter"
   >
     <template v-slot:no-option>
       <q-item>
@@ -22,79 +22,32 @@
 </template>
 
 <script>
-import {apiFetch} from 'src/utils/apiWrappers'
-import {isSubstring} from 'src/utils/patternSearch'
+import picker from 'src/mixins/picker'
+import {mapGetters, mapActions} from 'vuex'
 
 export default {
   name: 'HallPicker',
-  props: {
-    label: {
-      type: String,
-      default: 'Hall'
-    },
-    value: {
-      type: [Object, String],
-      default: null
-    },
-    classes: {
-      type: [Object, String]
-    },
-    required: {
-      type: Boolean,
-      default: false
-    },
-    readonly: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data() {
-    return {
-      hallList: [],
-      hallOptions: [],
-    }
+  mixins: [
+    picker
+  ],
+  computed: {
+    ...mapGetters('admin', [
+      'hallList'
+    ])
   },
   methods: {
-    fixValue(value) {
-      if (this.hallList.length === 0) return
-      if (typeof value === 'string') {
-        const cur = this.hallList.filter(x => x.value === value)[0]
-        this.$emit('input', cur)
-      }
-    },
+    ...mapActions('admin', [
+      'loadHalls'
+    ]),
     fetchHalls() {
-      apiFetch('/hall/list', null, 'All hall list')
-        .then(response => {
-          this.hallList = response.data.map(x => {
-            return {
-              value: x.id,
-              label: `(${x.id}) ${x.name}`
-            }
-          })
-          this.fixValue(this.value)
-        })
-    },
-    hallFilter(value, update) {
-      if (value === '') {
-        update(() => {
-          this.hallOptions = this.hallList
-        })
-        return
-      }
-      update(() => {
-        this.hallOptions = this.hallList.filter(x => isSubstring(x.label, value))
+      this.loadHalls().then(() => {
+        this.mainList = this.hallList
+        this.fixValue()
       })
     },
   },
   created() {
     this.fetchHalls()
-  },
-  watch: {
-    value: {
-      handler(newVal/*, oldVal*/) {
-        this.fixValue(newVal)
-      }
-    },
   }
 }
 </script>

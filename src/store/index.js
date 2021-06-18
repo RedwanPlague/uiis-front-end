@@ -1,10 +1,9 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import user from "src/store/user";
+import admin from 'src/store/admin'
 
-import teachers from 'src/store/admin-modules/teachers'
-import departments from 'src/store/admin-modules/departments'
+import user from "src/store/user";
 
 import courses from "src/store/teacher-modules/courses";
 import courseEval from "src/store/teacher-modules/courseEval";
@@ -21,11 +20,9 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   modules: {
+    // example
+    admin,
     user,
-
-    teachers,
-    departments,
-
     courses,
     courseEval,
     advisor,

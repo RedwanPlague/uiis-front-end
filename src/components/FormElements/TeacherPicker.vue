@@ -3,16 +3,16 @@
     :class="classes"
     :value="value"
     @input="$emit('input', $event)"
-    :options="teacherOptions"
+    :options="options"
     :label="label"
     outlined
     :readonly="readonly"
-    :rules="[() => !required || !!value || `Please Assign ${label}`]"
+    :rules="[() => !required || !!value || `Please Select ${label}`]"
     :use-chips="multiple"
     :multiple="multiple"
     :clearable="multiple"
     use-input
-    @filter="teacherFilter"
+    @filter="optionFilter"
   >
     <template v-slot:no-option>
       <q-item>
@@ -25,89 +25,49 @@
 </template>
 
 <script>
-import {isSubstring} from 'src/utils/patternSearch'
+import picker from 'src/mixins/picker'
 import {mapGetters, mapActions} from 'vuex'
 
 export default {
   name: 'TeacherPicker',
+  mixins: [
+    picker
+  ],
   props: {
-    label: {
-      type: String,
-      default: 'Teacher'
-    },
-    value: {
-      type: [Object, Array, String],
-      default: null
-    },
     department: {
       type: String,
       default: null
     },
-    classes: {
-      type: [Object, String]
-    },
-    multiple: {
-      type: Boolean,
-      default: false
-    },
-    required: {
-      type: Boolean,
-      default: false
-    },
-    readonly: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data() {
-    return {
-      teacherOptions: [],
+    preList: {
+      type: Array,
+      default: null
     }
   },
   computed: {
-    ...mapGetters([
+    ...mapGetters('admin', [
       'teacherList'
     ])
   },
   methods: {
-    ...mapActions([
+    ...mapActions('admin', [
       'loadTeachers'
     ]),
-    fixValue(value) {
-      if (this.teacherList.length === 0) return
-      if (Array.isArray(value)) {
-        const cur = this.teacherList.filter(x => value.includes(x.value))
-        this.$emit('input', cur)
-      }
-      else if (typeof value === 'string') {
-        const cur = this.teacherList.filter(x => x.value === value)[0]
-        this.$emit('input', cur)
-      }
-    },
     fetchTeachers(dept) {
-      this.loadTeachers(dept).then(() => this.fixValue(this.value))
-    },
-    teacherFilter(value, update) {
-      if (value === '') {
-        update(() => {
-          this.teacherOptions = this.teacherList
-        })
-        return
+      if (this.preList) {
+        this.mainList = this.preList
       }
-      update(() => {
-        this.teacherOptions = this.teacherList.filter(x => isSubstring(x.label, value))
-      })
+      else {
+        this.loadTeachers(dept).then(() => {
+          this.mainList = this.teacherList
+          this.fixValue()
+        })
+      }
     },
   },
   created() {
     this.fetchTeachers(this.department)
   },
   watch: {
-    value: {
-      handler(newVal/*, oldVal*/) {
-        this.fixValue(newVal)
-      }
-    },
     department: {
       handler(newVal/*, oldVal*/) {
         this.fetchTeachers(newVal)
