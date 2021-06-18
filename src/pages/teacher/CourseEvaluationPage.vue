@@ -22,11 +22,11 @@
     </q-dialog>
 
 
-      <div class="button-row" v-show="!course_data.hasForwarded">
-        <div class="col">
+      <div class="button-row" >
+        <div class="col" v-show="showEditButton">
         <q-btn :icon='buttonIcon' size='md' color="primary" :label="buttonText" class="" @click="toggleEditMode" ></q-btn>
       </div>
-      <div class="col csv-button">
+      <div class="col csv-button" v-show="!course_data.hasForwarded">
           <q-btn
             size='md'
             color="primary"
@@ -138,7 +138,7 @@
     name: "CourseEvaluationPage",
 
     computed: {
-      ...mapGetters(['course_data', 'selected_students']),
+      ...mapGetters(['course_data', 'selected_students', 'showEditButton']),
       ...mapMultiRowFields('courseEval', ['student_data']),
       classCount: {
         get () {
@@ -433,7 +433,7 @@
     flex-direction: row;
     align-self: center;
     align-items: center;
-    margin-left: 50px;
+    /*margin-left: 50px;*/
   }
 
   .csv-button {

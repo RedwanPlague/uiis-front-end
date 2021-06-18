@@ -4,29 +4,9 @@ import { getField, updateField } from 'vuex-map-fields';
 const state = {
   course_data: {},
   student_data: [],
-  selected_students: []
+  selected_students: [],
+  showEditButton: true
 };
-function reformat_student_input_data(student_data, tot_courses) {
-  let formatted_data = [];
-
-  student_data.forEach(student=>{
-    let entry = {
-      student_id: student.student_id,
-      student_name: student.student_name,
-      attendance: "",
-    }
-    for(let i = 1 ; i <= tot_courses ; i++) entry['eval_' + i] = "";
-    if(student.attendanceMarks.length > 0) entry.attendance = student.attendanceMarks[0].mark;
-
-    entry.editAccess = false;
-    student.evalMarks.forEach(evalulation=> {
-      entry['eval_' + evalulation.evalID] = evalulation.mark;
-      entry.editAccess |= evalulation.editAccess;
-    });
-    formatted_data.push(entry)
-  })
-  return formatted_data;
-}
 
 function validate_student_output_data(student_data) {
   let error_message = "";
@@ -58,11 +38,36 @@ const getters = {
   course_data: state => state.course_data,
   student_data: state => state.student_data,
   selected_students: state => state.selected_students,
+  showEditButton: state => state.showEditButton,
   getField,
 };
 
 
 const actions = {
+
+  reformat_student_input_data({commit}, {student_data, tot_courses}) {
+
+    let formatted_data = [];
+
+    student_data.forEach(student=>{
+      let entry = {
+        student_id: student.student_id,
+        student_name: student.student_name,
+        attendance: "",
+      }
+      for(let i = 1 ; i <= tot_courses ; i++) entry['eval_' + i] = "";
+      if(student.attendanceMarks.length > 0) entry.attendance = student.attendanceMarks[0].mark;
+
+      entry.editAccess = false;
+      student.evalMarks.forEach(evalulation=> {
+        entry['eval_' + evalulation.evalID] = evalulation.mark;
+        entry.editAccess |= evalulation.editAccess;
+      });
+      if(entry.editAccess) commit('setEditButton', true );
+      formatted_data.push(entry)
+    });
+    return formatted_data;
+  },
 
   updateSelectedStudents({commit}) {
     commit('clearSelectedStudentsList');
@@ -74,9 +79,12 @@ const actions = {
   },
   async fetchCourseDetails({commit, dispatch}, {courseID, session}) {
     const res = await api.get(`/teacher/courses/${courseID}/${session}`);
-    res.data.student_details = reformat_student_input_data(res.data.student_details, res.data.teacher_details.evalCount);
+    commit('setEditButton', false);
+
+    res.data.student_details = await dispatch('reformat_student_input_data', {student_data: res.data.student_details, tot_courses: res.data.teacher_details.evalCount});
     commit('setCourseDetails', res.data);
 
+    if(!state.course_data.hasForwarded) commit('setEditButton', true );
     dispatch('updateSelectedStudents');
   },
 
@@ -113,22 +121,15 @@ const actions = {
 };
 
 const mutations = {
-  clearSelectedStudentsList: state => {
-    state.selected_students = [];
-  },
-  addToSelectedStudents: (state, student) => {
-    state.selected_students.push(student);
-  },
-  setHasForwarded:(state, hasForwarded) => {
-    state.course_data.hasForwarded = hasForwarded;
-  },
+  setEditButton: (state, show) => state.showEditButton = show,
+  clearSelectedStudentsList: state => state.selected_students = [],
+  addToSelectedStudents: (state, student) => state.selected_students.push(student),
+  setHasForwarded:(state, hasForwarded) => state.course_data.hasForwarded = hasForwarded,
   setCourseDetails: (state, courseDetails) => {
     state.course_data = courseDetails.teacher_details;
     state.student_data = courseDetails.student_details;
   },
-  setClassCount: (state, classCount) => {
-    state.course_data.classCount = classCount;
-  },
+  setClassCount: (state, classCount) => state.course_data.classCount = classCount,
   setEvaluationTable: (state, input) => {
 
     input.forEach(new_entry => {
