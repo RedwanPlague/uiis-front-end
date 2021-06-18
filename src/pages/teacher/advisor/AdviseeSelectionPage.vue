@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <div class="q-pa-md">
-      <q-card bordered class="bg-grey-2">
+      <q-card bordered>
         <q-card-section>
           <div class="text-h5">
             <p>Advisees</p>

@@ -11,7 +11,8 @@ const state = {
   grades: [],
   availableGrades: [],
 
-  courseRegistrations: []
+  courseRegistrations: [],
+  availableCourseRegistrations: []
 };
 
 const getters = {
@@ -23,7 +24,8 @@ const getters = {
   getGrades: (state) => state.grades,
   getAvailableGrades: (state) => state.availableGrades,
 
-  getCourseRegistrations: (state) => state.courseRegistrations
+  getCourseRegistrations: (state) => state.courseRegistrations,
+  getAvailableCourseRegistrations: (state) => state.availableCourseRegistrations
 };
 
 const actions = {
@@ -125,6 +127,22 @@ const actions = {
     } catch(err) {
       this.error = err.message;
     }
+  },
+
+  /* generating specific student's list of available course registrations for tabulation purpose in course registration page */
+  generateAvailableCourseRegistrations({ commit }) {
+    let availableCourseRegistrations = [];
+
+    for(let i=0; i<state.courseRegistrations.length; i++) {
+      availableCourseRegistrations[i] = {
+        courseID: state.courseRegistrations[i].courseSession.course.courseID,
+        syllabusID: state.courseRegistrations[i].courseSession.course.syllabusID,
+        title: state.courseRegistrations[i].courseSession.course.title,
+        credit: state.courseRegistrations[i].courseSession.course.credit,
+        status: state.courseRegistrations[i].status
+      };
+    }
+    commit('mutateAvailableCourseRegistrations', availableCourseRegistrations);
   }
 };
 
@@ -137,7 +155,8 @@ const mutations = {
   mutateGrades: (state, grades) => (state.grades = grades),
   mutateAvailableGrades: (state, availableGrades) => (state.availableGrades = availableGrades),
 
-  mutateCourseRegistrations: (state, courseRegistrations) => (state.courseRegistrations = courseRegistrations)
+  mutateCourseRegistrations: (state, courseRegistrations) => (state.courseRegistrations = courseRegistrations),
+  mutateAvailableCourseRegistrations: (state, availableCourseRegistrations) => (state.availableCourseRegistrations = availableCourseRegistrations)
 };
 
 export default {

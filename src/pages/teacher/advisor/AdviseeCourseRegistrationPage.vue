@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <div class="q-pa-md">
-      <q-card bordered class="bg-grey-2">
+      <q-card bordered>
         <q-card-section>
           <div class="text-h5">
             <p>Registered</p>
@@ -25,7 +25,7 @@
         </q-card-section>
       </q-card><br />
 
-      <q-card bordered class="bg-grey-2">
+      <q-card bordered>
         <q-card-section>
           <div class="text-h5">
             <p>Waiting for Head's Approval</p>
@@ -49,7 +49,7 @@
         </q-card-section>
       </q-card><br />
 
-      <q-card bordered class="bg-grey-2">
+      <q-card bordered>
         <q-card-section>
           <div class="text-h5">
             <p>Waiting for Advisor's Approval</p>
@@ -73,7 +73,7 @@
         </q-card-section>
       </q-card><br />
 
-      <q-card bordered class="bg-grey-2">
+      <q-card bordered>
         <q-card-section>
           <div class="text-h5">
             <p>Not Applied for Registration</p>
@@ -98,7 +98,7 @@
       </q-card>
 
       <q-dialog v-model="adviseeWithApprovalOptionDialogBox" full-width>
-        <q-card class="q-pa-md">
+        <q-card bordered class="q-pa-md">
           <q-card-section>
             <div class="text-h5">Course Registration Information</div><br />
             <div class="text-subtitle2">
@@ -114,11 +114,12 @@
               <p>
                 <strong>Department:</strong> {{ getStudent.department }}
               </p>
-              <p>
-                <strong>Residential Hall:</strong> {{ getStudent.hall }}
-              </p>
             </div>
+          </q-card-section>
 
+          <q-separator /><br />
+
+          <q-card-section>
             <q-table
               title="Courses" dense bordered :data="courseRegistrations" :columns="getRegistrationColumns" row-key="courseID"
             />
@@ -133,7 +134,7 @@
       </q-dialog>
 
       <q-dialog v-model="adviseeWithoutApprovalOptionDialogBox" full-width>
-        <q-card class="q-pa-md">
+        <q-card bordered class="q-pa-md">
           <q-card-section>
             <div class="text-h5">Course Registration Information</div><br />
             <div class="text-subtitle2">
@@ -149,11 +150,12 @@
               <p>
                 <strong>Department:</strong> {{ getStudent.department }}
               </p>
-              <p>
-                <strong>Residential Hall:</strong> {{ getStudent.hall }}
-              </p>
             </div>
+          </q-card-section>
 
+          <q-separator /><br />
+
+          <q-card-section>
             <q-table
               title="Courses" dense bordered :data="courseRegistrations" :columns="getRegistrationColumns" row-key="courseID"
             />
