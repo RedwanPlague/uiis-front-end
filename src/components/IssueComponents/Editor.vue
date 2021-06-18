@@ -1,14 +1,14 @@
 <template>
   <div class="container-row" >
     <div class="img-left">
-      <img v-bind:src='imageLink' width="40" height="40" v-bind:alt='userName'>
+      <img v-bind:src='imageLink' width="40" height="40" alt='user'>
     </div>
     <div class="text-bubble button-row">
       <div class="bubble-top-slot">Add a comment:</div>
       <div class="bubble-down-slot">
         <q-editor toolbar-toggle-color="blue" class="text-editor" v-model="editorText" min-height="5rem" />
       </div>
-      <q-btn  style="margin-left: 900px; " color="blue-4" label="Comment" no-caps @click="submitButtonClicked"/>
+      <q-btn  style="margin-left: 900px; " color="blue-4" label="Comment" no-caps @click="submitButtonClicked" :disable="!editorText"/>
     </div>
 
   </div>
@@ -20,7 +20,6 @@ export default {
   name: "Editor",
   props: {
     imageLink: String,
-    userName: String,
   },
   methods: {
     submitButtonClicked(event) {

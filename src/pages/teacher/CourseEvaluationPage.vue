@@ -22,11 +22,11 @@
     </q-dialog>
 
 
-      <div class="button-row" v-show="course_data.editAccess">
-        <div class="col">
+      <div class="button-row" >
+        <div class="col" v-show="showEditButton">
         <q-btn :icon='buttonIcon' size='md' color="primary" :label="buttonText" class="" @click="toggleEditMode" ></q-btn>
       </div>
-      <div class="col csv-button">
+      <div class="col csv-button" v-show="!course_data.hasForwarded">
           <q-btn
             size='md'
             color="primary"
@@ -48,7 +48,9 @@
       separator="cell"
       :pagination.sync="pagination"
       :filter="studentFilter"
-      :row-key="student_data.student_id"
+      :row-key="student_data => student_data.student_id"
+      selection="multiple"
+      :selected.sync="selected_students"
       >
 
       <template v-slot:top>
@@ -61,11 +63,17 @@
         </q-input>
       </template>
 
+        <template v-slot:header="props">
+          <q-tr :props="props">
+            <q-th v-for="col in props.cols" :key="col.name" :props="props">
+              {{ col.label }}
+            </q-th>
+          </q-tr>
+        </template>
 
-
-      <template v-slot:body="props">
-        <q-tr :props="props">
-          <q-td key="student_id" :props="props">
+        <template v-slot:body="props">
+        <q-tr :props="props" >
+          <q-td key="student_id" :props="props" >
             {{ props.row.student_id }}
           </q-td>
           <q-td key="student_name" :props="props">
@@ -73,13 +81,12 @@
           </q-td>
 
           <q-td v-for="i in course_data.evalCount" :props="props" :key="'eval_'+i">
-            <q-input type="number" min="0" v-model="props.row['eval_'+i]" autofocus dense :disable="!editMode" input-class="text-center" />
+            <q-input type="number" min="0" v-model="props.row['eval_'+i]" autofocus dense :disable="!props.row.editAccess || !editMode" input-class="text-center" />
           </q-td>
 
           <q-td key="attendance" :props="props">
-            <q-input type="number" min="0" v-model="props.row.attendance" autofocus dense :disable="!editMode" input-class="text-center"/>
+            <q-input type="number" min="0" v-model="props.row.attendance" autofocus dense :disable="!props.row.editAccess || !editMode" input-class="text-center"/>
           </q-td>
-
         </q-tr>
       </template>
     </q-table>
@@ -87,7 +94,7 @@
     <div class="row q-pa-lg" >
         <q-input  outlined dense  v-model="classCount" label="Total Classes:" type="number" min="0" :disable="!editMode"/>
         <q-space />
-      <div  v-show="course_data.editAccess">
+      <div  v-show="!course_data.hasForwarded">
         <q-btn no-caps icon='check_circle' size='md' style="height:40px" color="primary" label="Submit Evalution" @click="submitFlag = true"></q-btn>
       </div>
       </div>
@@ -131,7 +138,7 @@
     name: "CourseEvaluationPage",
 
     computed: {
-      ...mapGetters(['course_data']),
+      ...mapGetters(['course_data', 'selected_students', 'showEditButton']),
       ...mapMultiRowFields('courseEval', ['student_data']),
       classCount: {
         get () {
@@ -154,6 +161,9 @@
         new_eval_entry.field += i;
         this.columns.splice(this.columns.length - 1, 0, new_eval_entry);
       }
+
+      this.selected.push(this.student_data[0]);
+      this.selected.push(this.student_data[3]);
     },
     watch: {
       async '$route.params' (to, from) {
@@ -164,9 +174,7 @@
       }
     },
     methods: {
-      ...mapActions(['fetchCourseDetails', 'saveStudentData', 'updateEvaluationTable', 'studentDataFilledCheck', 'removeEditAccess']),
-
-
+      ...mapActions(['fetchCourseDetails', 'saveStudentData', 'updateEvaluationTable', 'studentDataFilledCheck', 'setHasForwarded']),
       loadCSVData(input) {
         let csvData ;
         try {
@@ -233,7 +241,7 @@
       async submitButtonClicked(e) {
         e.preventDefault();
 
-        this.editMode = false;
+        if(this.editMode) await this.toggleEditMode(e);
 
         const notif = this.$q.notify({
           message: `Saving Evaluation`,
@@ -242,11 +250,10 @@
           timeout: 0, // we want to be in control when it gets dismissed
           spinner: true,
         });
-        const ret = await this.saveStudentData();
         const tableFilled = await this.studentDataFilledCheck();
 
-        if(tableFilled && !ret.error) {
-          await this.removeEditAccess();
+        if(tableFilled) {
+          await this.setHasForwarded();
           await this.saveStudentData();
 
           notif({
@@ -257,13 +264,11 @@
           });
         }
         else {
-          let errorMsg = ret;
-          if( !ret.error) errorMsg = 'Please fill all table cells';
 
           notif({
             icon: 'error', // we add an icon
             spinner: false, // we reset the spinner setting so the icon can be displayed
-            message: 'Error: ' + errorMsg,
+            message: 'Error: Please fill all table cells',
             actions: [
               { label: 'Dismiss', color: 'yellow', handler: () => { /* ... */ } }
             ]
@@ -309,10 +314,7 @@
             });
           }
         }
-
-
-
-        if( this.editMode ) {
+        if( !this.course_data.hasForwarded && this.editMode ) {
           this.buttonIcon =  'done';
           this.buttonText = 'Save';
           this.columns.forEach( (cell,index) => {
@@ -331,12 +333,12 @@
       data() {
         return {
 
+          selected: [],
           csvButton: false,
           studentFilter: '',
           submitFlag: false,
           editMode: false,
 
-          editAccess: true,
           buttonIcon:'edit',
           buttonText:'Edit',
           pagination: {
@@ -350,7 +352,7 @@
               name: 'Total Mark',
               label: 'Total Mark',
               align: 'center',
-              field: 'student_id',
+              field: 'total_mark',
               classes: 'bg-grey-1',
               headerClasses: 'bg-primary text-white',
               // style: 'width: 100px',
@@ -360,7 +362,7 @@
               name: 'Eval - 1',
               label: 'Student ID',
               align: 'center',
-              field: 'student_id',
+              field: 'eval_1',
               classes: 'bg-grey-1',
               headerClasses: 'bg-primary text-white',
               // style: 'width: 100px',
@@ -428,13 +430,17 @@
     flex-direction: row;
     align-self: center;
     align-items: center;
-    margin-left: 50px;
+    /*margin-left: 50px;*/
   }
 
   .csv-button {
     width: 400px;
     /*margin-left: 30px;*/
     padding-left: 110px;
+  }
+
+  .q-table tbody td:after{
+    background: rgba(255,0,0,0.2);
   }
 
 
