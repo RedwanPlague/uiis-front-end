@@ -43,20 +43,20 @@
         />
         <div class="col-1">
           <q-btn
-            v-if="slot.old"
+            v-if="!slot.old"
+            icon="delete" color="primary" flat dense
+            @click="localRemoveSlot(idx)"
+          />
+          <q-btn
+            v-else-if="canUpdate"
             :icon="slot.viewing ? 'edit' : 'visibility'"
             :color="slot.viewing ? 'primary' : 'black'"
             @click="slot.viewing = !slot.viewing"
             flat dense
           />
-          <q-btn
-            v-else
-            icon="delete" color="primary" flat dense
-            @click="localRemoveSlot(idx)"
-          />
         </div>
       </div>
-      <div class="row">
+      <div class="row" v-if="canCreate">
         <div class="col-3"></div>
         <q-btn
           class="col-6" color="primary"
@@ -78,6 +78,8 @@ import {apiFetch} from 'src/utils/apiWrappers'
 import {secondsToHour24, hour24ToSeconds} from 'src/utils/dateFormatters'
 import creator from 'src/mixins/creator'
 import edit from 'src/mixins/edit'
+import {mapGetters} from 'vuex'
+import {PRIVILEGES} from 'src/utils/constants'
 
 export default {
   name: 'SlotManagement',
@@ -90,6 +92,17 @@ export default {
       slots: [],
       slotList: [],
       dataLoading: false,
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'userHasPrivilege'
+    ]),
+    canCreate() {
+      return this.userHasPrivilege(PRIVILEGES.SLOT_CREATION)
+    },
+    canUpdate() {
+      return this.userHasPrivilege(PRIVILEGES.SLOT_UPDATE)
     }
   },
   methods: {

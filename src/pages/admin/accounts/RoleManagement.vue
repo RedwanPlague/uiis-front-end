@@ -9,7 +9,7 @@
         v-model="roleToEdit"
         label="Role"
         required
-        :allow-add-new="userHasPrivilege(PRIVILEGES.ROLE_UPDATE)"
+        :allow-add-new="canCreate"
         @input="resetForm"
       />
     </div>
@@ -54,7 +54,6 @@ export default {
     return {
       roleToEdit: null,
       privileges: [],
-      PRIVILEGES
     }
   },
   computed: {
@@ -64,7 +63,10 @@ export default {
     ...mapGetters('admin', [
       'roleList',
       'roleListLoading'
-    ])
+    ]),
+    canCreate() {
+      return this.userHasPrivilege(PRIVILEGES.ROLE_UPDATE)
+    }
   },
   methods: {
     use(data) {

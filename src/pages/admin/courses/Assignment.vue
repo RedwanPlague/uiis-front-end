@@ -28,252 +28,262 @@
         label="Evaluation Details"
         header-class="text-h6 q-pl-none"
       >
-      <div class="row q-col-gutter-md q-mb-md q-pt-md">
-        <q-input
-          class="col-6"
-          v-model="totalEvalCount"
-          label="Total Evaluation Count"
-          type="number"
-          outlined
-          :rules="[() => !!totalEvalCount || 'Please Fill this Field']"
-        />
-        <q-input
-          class="col-6"
-          v-model="consideredEvalCount"
-          label="Considered Evaluation Count"
-          type="number"
-          outlined
-          :rules="[() => !!consideredEvalCount || 'Please Fill this Field']"
-        />
-        <q-input
-          class="col-6"
-          v-model="totalMarks"
-          label="Total Marks"
-          type="number"
-          outlined
-          :rules="[() => !!totalMarks || 'Please Fill this Field']"
-        />
-        <q-input
-          class="col-6"
-          v-model="perEvalWeight"
-          label="Per Evaluation Weight"
-          type="number"
-          outlined
-          suffix="%"
-          :rules="[() => !!perEvalWeight || 'Please Fill this Field']"
-        />
-        <q-input
-          class="col-6"
-          v-model="attendanceWeight"
-          label="Attendance Weight"
-          type="number"
-          suffix="%"
-          outlined
-          :rules="[() => !!attendanceWeight || 'Please Fill this Field']"
-        />
+        <div class="row q-col-gutter-md q-mb-md q-pt-md">
+          <q-input
+            class="col-6"
+            v-model="totalEvalCount"
+            label="Total Evaluation Count"
+            type="number"
+            outlined
+            :rules="[() => !!totalEvalCount || 'Please Fill this Field']"
+          />
+          <q-input
+            class="col-6"
+            v-model="consideredEvalCount"
+            label="Considered Evaluation Count"
+            type="number"
+            outlined
+            :rules="[() => !!consideredEvalCount || 'Please Fill this Field']"
+          />
+          <q-input
+            class="col-6"
+            v-model="totalMarks"
+            label="Total Marks"
+            type="number"
+            outlined
+            :rules="[() => !!totalMarks || 'Please Fill this Field']"
+          />
+          <q-input
+            class="col-6"
+            v-model="perEvalWeight"
+            label="Per Evaluation Weight"
+            type="number"
+            outlined
+            suffix="%"
+            :rules="[() => !!perEvalWeight || 'Please Fill this Field']"
+          />
+          <q-input
+            class="col-6"
+            v-model="attendanceWeight"
+            label="Attendance Weight"
+            type="number"
+            suffix="%"
+            outlined
+            :rules="[() => !!attendanceWeight || 'Please Fill this Field']"
+          />
+        </div>
+      </q-expansion-item>
+      <q-separator class="q-mb-lg"/>
+      <div v-if="userHasPrivilege(PRIVILEGES.COURSE_SESSION_ASSIGN_TEACHER)">
+        <q-separator/>
+        <q-expansion-item
+          label="Assign Course Teachers"
+          header-class="text-h6 q-pl-none"
+        >
+          <div class="q-pb-md q-col-gutter-md">
+            <div v-for="(item, i) in teachers" :key="i" class="row q-col-gutter-md">
+              <div class="col-7 row">
+                <span class="col-1 text-h6">{{i+1}}.</span>
+                <teacher-picker
+                  classes="col-11"
+                  label="Teacher"
+                  v-model="item.teacher"
+                  required
+                />
+              </div>
+              <q-input
+                class="col-4"
+                v-model="item.evalCount"
+                label="Evaluation Count"
+                type="number"
+                :max="totalEvalCount"
+                :min="0"
+                outlined
+                :rules="[() => !!item.evalCount || 'Please Enter Evaluation Count']"
+              />
+              <div class="col-1">
+                <q-btn
+                  icon="delete" color="primary" flat dense
+                  @click="removeCourseTeacher(i)"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-3"></div>
+              <q-btn
+                class="col-6" color="primary"
+                outline icon="add" :ripple="false"
+                @click="addNewCourseTeacher"
+              />
+            </div>
+          </div>
+        </q-expansion-item>
+        <q-separator class="q-mb-lg"/>
       </div>
-      </q-expansion-item>
-      <q-separator class="q-mb-lg"/>
-      <q-separator/>
-      <q-expansion-item
-        label="Assign Course Teachers"
-        header-class="text-h6 q-pl-none"
-      >
-        <div class="q-pb-md q-col-gutter-md">
-          <div v-for="(item, i) in teachers" :key="i" class="row q-col-gutter-md">
-            <div class="col-7 row">
-              <span class="col-1 text-h6">{{i+1}}.</span>
+      <div v-if="userHasPrivilege(PRIVILEGES.COURSE_SESSION_ALLOT_SCHEDULE)">
+        <q-separator/>
+        <q-expansion-item
+          label="Fix Schedule"
+          header-class="text-h6 q-pl-none"
+        >
+          <div class="q-pb-md q-col-gutter-md">
+            <div v-for="(item, i) in schedule" :key="i" class="row q-col-gutter-md">
+              <div class="col-5 row">
+                <span class="col-1 text-h6">{{i+1}}.</span>
+                <slot-picker
+                  classes="col-11"
+                  v-model="item.slot"
+                />
+              </div>
+              <q-input
+                class="col-3"
+                v-model="item.room"
+                label="Room"
+                outlined
+                :rules="[() => !!item.room || 'Please Assign a Room']"
+              />
+              <day-of-week-picker
+                class="col-3"
+                v-model="item.day"
+                label="Day of Week"
+                required
+              />
+              <div class="col-1">
+                <q-btn
+                  icon="delete" color="primary" flat dense
+                  @click="removeSlot(i)"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-3"></div>
+              <q-btn
+                class="col-6" color="primary"
+                outline icon="add" :ripple="false"
+                @click="addSlot"
+              />
+            </div>
+          </div>
+        </q-expansion-item>
+        <q-separator class="q-mb-lg"/>
+      </div>
+      <div v-if="userHasPrivilege(PRIVILEGES.COURSE_SESSION_ASSIGN_EXAMINER)">
+        <q-separator/>
+        <q-expansion-item
+          label="Assign Examiners"
+          header-class="text-h6 q-pl-none"
+        >
+          <div class="q-pb-md q-col-gutter-md">
+            <div v-for="(item, i) in examiners" :key="i" class="row q-col-gutter-md">
+              <div class="col-7 row">
+                <span class="col-1 text-h6">{{i+1}}.</span>
+                <teacher-picker
+                  classes="col-11"
+                  label="Examiner"
+                  v-model="item.teacher"
+                  required
+                />
+              </div>
+              <q-input
+                class="col-4"
+                v-model="item.part"
+                label="Part"
+                outlined
+                :rules="[() => !!item.part || 'Please Assign a Part']"
+              />
+              <div class="col-1">
+                <q-btn
+                  icon="delete" color="primary" flat dense
+                  @click="removeExaminer(i)"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-3"></div>
+              <q-btn
+                class="col-6" color="primary"
+                outline icon="add" :ripple="false"
+                @click="addExaminer"
+              />
+            </div>
+          </div>
+        </q-expansion-item>
+        <q-separator class="q-mb-lg"/>
+      </div>
+      <div v-if="userHasPrivilege(PRIVILEGES.COURSE_SESSION_ASSIGN_SCRUTINIZER)">
+        <q-separator/>
+        <q-expansion-item
+          label="Assign Scrutinizers"
+          header-class="text-h6 q-pl-none"
+        >
+          <div class="row q-col-gutter-md q-pt-sm">
+            <div
+              class="row col-4"
+              v-for="(item, i) in scrutinizers"
+              :key="i"
+            >
               <teacher-picker
                 classes="col-11"
-                label="Teacher"
+                label="Scrutinizer"
                 v-model="item.teacher"
                 required
               />
-            </div>
-            <q-input
-              class="col-4"
-              v-model="item.evalCount"
-              label="Evaluation Count"
-              type="number"
-              :max="totalEvalCount"
-              :min="0"
-              outlined
-              :rules="[() => !!item.evalCount || 'Please Enter Evaluation Count']"
-            />
-            <div class="col-1">
-              <q-btn
-                icon="delete" color="primary" flat dense
-                @click="removeCourseTeacher(i)"
-              />
+              <div class="col-1">
+                <q-btn
+                  icon="delete" color="primary" flat dense
+                  @click="removeScrutinizer(i)"
+                />
+              </div>
             </div>
           </div>
-          <div class="row">
+          <div class="row q-pb-md">
             <div class="col-3"></div>
             <q-btn
               class="col-6" color="primary"
               outline icon="add" :ripple="false"
-              @click="addNewCourseTeacher"
+              @click="addScrutinizer"
             />
           </div>
-        </div>
-      </q-expansion-item>
-      <q-separator class="q-mb-lg"/>
-      <q-separator/>
-      <q-expansion-item
-        label="Fix Schedule"
-        header-class="text-h6 q-pl-none"
-      >
-        <div class="q-pb-md q-col-gutter-md">
-          <div v-for="(item, i) in schedule" :key="i" class="row q-col-gutter-md">
-            <div class="col-5 row">
-              <span class="col-1 text-h6">{{i+1}}.</span>
-              <slot-picker
-                classes="col-11"
-                v-model="item.slot"
-              />
-            </div>
-            <q-input
-              class="col-3"
-              v-model="item.room"
-              label="Room"
-              outlined
-              :rules="[() => !!item.room || 'Please Assign a Room']"
-            />
-            <day-of-week-picker
-              class="col-3"
-              v-model="item.day"
-              label="Day of Week"
-              required
-            />
-            <div class="col-1">
-              <q-btn
-                icon="delete" color="primary" flat dense
-                @click="removeSlot(i)"
-              />
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-3"></div>
-            <q-btn
-              class="col-6" color="primary"
-              outline icon="add" :ripple="false"
-              @click="addSlot"
-            />
-          </div>
-        </div>
-      </q-expansion-item>
-      <q-separator class="q-mb-lg"/>
-      <q-separator/>
-      <q-expansion-item
-        label="Assign Examiners"
-        header-class="text-h6 q-pl-none"
-      >
-        <div class="q-pb-md q-col-gutter-md">
-          <div v-for="(item, i) in examiners" :key="i" class="row q-col-gutter-md">
-            <div class="col-7 row">
-              <span class="col-1 text-h6">{{i+1}}.</span>
+        </q-expansion-item>
+        <q-separator class="q-mb-lg"/>
+      </div>
+      <div v-if="userHasPrivilege(PRIVILEGES.COURSE_SESSION_ASSIGN_RESULT_ACCESS_HOLDER)">
+        <q-separator/>
+        <q-expansion-item
+          label="Assign Result Access Holders"
+          header-class="text-h6 q-pl-none"
+        >
+          <div class="row q-col-gutter-md q-pt-sm">
+            <div
+              class="row col-4"
+              v-for="(item, i) in resultAccessHolders"
+              :key="i"
+            >
               <teacher-picker
                 classes="col-11"
-                label="Examiner"
+                label="Access Holder"
                 v-model="item.teacher"
                 required
               />
-            </div>
-            <q-input
-              class="col-4"
-              v-model="item.part"
-              label="Part"
-              outlined
-              :rules="[() => !!item.part || 'Please Assign a Part']"
-            />
-            <div class="col-1">
-              <q-btn
-                icon="delete" color="primary" flat dense
-                @click="removeExaminer(i)"
-              />
+              <div class="col-1">
+                <q-btn
+                  icon="delete" color="primary" flat dense
+                  @click="removeResultAccessHolder(i)"
+                />
+              </div>
             </div>
           </div>
-          <div class="row">
+          <div class="row q-pb-md">
             <div class="col-3"></div>
             <q-btn
               class="col-6" color="primary"
               outline icon="add" :ripple="false"
-              @click="addExaminer"
+              @click="addResultAccessHolder"
             />
           </div>
-        </div>
-      </q-expansion-item>
-      <q-separator class="q-mb-lg"/>
-      <q-separator/>
-      <q-expansion-item
-        label="Assign Scrutinizers"
-        header-class="text-h6 q-pl-none"
-      >
-        <div class="row q-col-gutter-md q-pt-sm">
-          <div
-            class="row col-4"
-            v-for="(item, i) in scrutinizers"
-            :key="i"
-          >
-            <teacher-picker
-              classes="col-11"
-              label="Scrutinizer"
-              v-model="item.teacher"
-              required
-            />
-            <div class="col-1">
-              <q-btn
-                icon="delete" color="primary" flat dense
-                @click="removeScrutinizer(i)"
-              />
-            </div>
-          </div>
-        </div>
-        <div class="row q-pb-md">
-          <div class="col-3"></div>
-          <q-btn
-            class="col-6" color="primary"
-            outline icon="add" :ripple="false"
-            @click="addScrutinizer"
-          />
-        </div>
-      </q-expansion-item>
-      <q-separator class="q-mb-lg"/>
-      <q-separator/>
-      <q-expansion-item
-        label="Assign Result Access Holders"
-        header-class="text-h6 q-pl-none"
-      >
-        <div class="row q-col-gutter-md q-pt-sm">
-          <div
-            class="row col-4"
-            v-for="(item, i) in resultAccessHolders"
-            :key="i"
-          >
-            <teacher-picker
-              classes="col-11"
-              label="Access Holder"
-              v-model="item.teacher"
-              required
-            />
-            <div class="col-1">
-              <q-btn
-                icon="delete" color="primary" flat dense
-                @click="removeResultAccessHolder(i)"
-              />
-            </div>
-          </div>
-        </div>
-        <div class="row q-pb-md">
-          <div class="col-3"></div>
-          <q-btn
-            class="col-6" color="primary"
-            outline icon="add" :ripple="false"
-            @click="addResultAccessHolder"
-          />
-        </div>
-      </q-expansion-item>
-      <q-separator class="q-mb-lg"/>
+        </q-expansion-item>
+        <q-separator class="q-mb-lg"/>
+      </div>
       <div class="col-12 q-mt-lg">
         <q-btn label="Update" color="primary" unelevated @click="updateCourseSession" :loading="assignLoading"/>
         <q-btn label="Reset" color="primary" flat @click="resetForm"/>
@@ -293,6 +303,8 @@ import SessionField from 'components/FormElements/SessionField'
 import edit from 'src/mixins/edit'
 import {monthYearToDate} from 'src/utils/dateFormatters'
 import {deepCopy, deepEqual, numEqual} from 'src/utils/utilities'
+import {PRIVILEGES} from 'src/utils/constants'
+import {mapGetters} from 'vuex'
 
 const getLast = (array, fallback) => {
   return array.length > 0 ? array[array.length-1] : fallback
@@ -340,10 +352,14 @@ export default {
       examiners: listDefaults.examiners,
       resultAccessHolders: listDefaults.resultAccessHolders,
       scrutinizers: listDefaults.scrutinizers,
-      assignLoading: false
+      assignLoading: false,
+      PRIVILEGES
     }
   },
   computed: {
+    ...mapGetters([
+      'userHasPrivilege'
+    ]),
     courseID() {
       return this.courseToEdit ? this.courseToEdit.value.courseID : null
     },
