@@ -16,7 +16,7 @@
     @filter="optionFilter"
     :rules="[() => !required || multiple || !!value || `Please Select ${label}`]"
   >
-    <template v-slot:append v-if="notDuplicate">
+    <template v-slot:append v-if="allowAddNew && notDuplicate">
       <q-btn icon="add" flat color="primary" @click="addNewRole"/>
     </template>
     <template v-slot:no-option>

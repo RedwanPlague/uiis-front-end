@@ -2,7 +2,7 @@ import {apiFetch} from 'src/utils/apiWrappers'
 
 export default {
   state: {
-    teacherListLoaded: false,
+    teacherListRequested: false,
     teacherList: []
   },
   getters: {
@@ -14,18 +14,18 @@ export default {
     setTeacherList(state, data) {
       state.teacherList = data
     },
-    setTeacherListLoaded(state) {
-      state.teacherListLoaded = true
+    setTeacherListRequested(state) {
+      state.teacherListRequested = true
     }
   },
   actions: {
     fetchTeacherList(context) {
       return new Promise((resolve, reject) => {
-        if (context.state.teacherListLoaded) {
+        if (context.state.teacherListRequested) {
           resolve()
         }
         else {
-          context.commit('setTeacherListLoaded')
+          context.commit('setTeacherListRequested')
           apiFetch('account/teacher/list', null, 'teacherList')
             .then(response => {
               context.commit('setTeacherList', response.data)

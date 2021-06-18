@@ -2,7 +2,7 @@ import {apiFetch} from 'src/utils/apiWrappers'
 
 export default {
   state: {
-    courseListLoaded: false,
+    courseListRequested: false,
     courseList: []
   },
   getters: {
@@ -14,18 +14,18 @@ export default {
     setCourseList(state, data) {
       state.courseList = data
     },
-    setCourseListLoaded(state) {
-      state.coursesLoaded = true
+    setCourseListRequested(state) {
+      state.coursesRequested = true
     }
   },
   actions: {
     fetchCourseList(context) {
       return new Promise((resolve, reject) => {
-        if (context.state.coursesLoaded) {
+        if (context.state.coursesRequested) {
           resolve()
         }
         else {
-          context.commit('setCourseListLoaded')
+          context.commit('setCourseListRequested')
           apiFetch('/course/list', null, 'courseList')
             .then(response => {
               context.commit('setCourseList', response.data)

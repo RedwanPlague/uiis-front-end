@@ -27,30 +27,20 @@
 
 <script>
 import picker from 'src/mixins/picker'
-import {mapGetters, mapActions} from 'vuex'
+import {PRIVILEGES} from 'src/utils/constants'
 
 export default {
   name: 'PrivilegePicker',
   mixins: [
     picker
   ],
-  computed: {
-    ...mapGetters('admin', [
-      'privilegeList'
-    ]),
-  },
   methods: {
-    ...mapActions('admin', [
-      'fetchPrivilegeList'
-    ]),
     loadPrivileges() {
-      this.fetchPrivilegeList().then(() => {
-        this.mainList = Object.values(this.privilegeList).map(x => {
-          return {
-            value: x,
-            label: x
-          }
-        })
+      this.mainList = Object.values(PRIVILEGES).map(x => {
+        return {
+          value: x,
+          label: x
+        }
       })
       this.fixValue()
     },

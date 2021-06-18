@@ -2,7 +2,7 @@ import {apiFetch} from 'src/utils/apiWrappers'
 
 export default {
   state: {
-    hallListLoaded: false,
+    hallListRequested: false,
     hallList: []
   },
   getters: {
@@ -14,18 +14,18 @@ export default {
     setHallList(state, data) {
       state.hallList = data
     },
-    setHallListLoaded(state) {
-      state.hallListLoaded = true
+    setHallListRequested(state) {
+      state.hallListRequested = true
     }
   },
   actions: {
     fetchHallList(context) {
       return new Promise((resolve, reject) => {
-        if (context.state.hallListLoaded) {
+        if (context.state.hallListRequested) {
           resolve()
         }
         else {
-          context.commit('setHallListLoaded')
+          context.commit('setHallListRequested')
           apiFetch('/hall/list', null, 'hallList')
             .then(response => {
               context.commit('setHallList', response.data)

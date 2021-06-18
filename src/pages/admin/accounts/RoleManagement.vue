@@ -9,6 +9,7 @@
         v-model="roleToEdit"
         label="Role"
         required
+        :allow-add-new="userHasPrivilege(PRIVILEGES.ROLE_UPDATE)"
         @input="resetForm"
       />
     </div>
@@ -28,6 +29,7 @@
         <q-btn label="Reset" type="reset" color="primary" flat/>
       </div>
     </q-form>
+    <q-inner-loading :showing="roleListLoading"/>
   </q-page>
 </template>
 
@@ -37,6 +39,7 @@ import PrivilegePicker from 'components/FormElements/PrivilegePicker'
 import edit from 'src/mixins/edit'
 import {mapGetters} from 'vuex'
 import {extract} from 'src/utils/apiDataPreProcessor'
+import {PRIVILEGES} from 'src/utils/constants'
 
 export default {
   name: 'RoleManagement',
@@ -50,12 +53,17 @@ export default {
   data() {
     return {
       roleToEdit: null,
-      privileges: []
+      privileges: [],
+      PRIVILEGES
     }
   },
   computed: {
+    ...mapGetters([
+      'userHasPrivilege'
+    ]),
     ...mapGetters('admin', [
-      'roleList'
+      'roleList',
+      'roleListLoading'
     ])
   },
   methods: {

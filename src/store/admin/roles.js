@@ -1,32 +1,37 @@
 import {apiFetch} from 'src/utils/apiWrappers'
-import {adminAPI} from 'boot/axios'
 
 export default {
   state: {
-    roleListLoaded: false,
+    roleListRequested: false,
+    roleListLoading: false,
     roleList: []
   },
   getters: {
     roleList(state) {
       return state.roleList
+    },
+    roleListLoading(state) {
+      return state.roleListLoading
     }
   },
   mutations: {
     setRoleList(state, data) {
       state.roleList = data
+      state.roleListLoading = false
     },
-    setRoleListLoaded(state) {
-      state.roleListLoaded = true
+    setRoleListRequested(state) {
+      state.roleListRequested = true
+      state.roleListLoading = true
     }
   },
   actions: {
     fetchRoleList(context) {
       return new Promise((resolve, reject) => {
-        if (context.state.roleListLoaded) {
+        if (context.state.roleListRequested) {
           resolve()
         }
         else {
-          context.commit('setRoleListLoaded')
+          context.commit('setRoleListRequested')
           apiFetch('/role/list', null, 'roleList')
             .then(response => {
               context.commit('setRoleList', response.data)
