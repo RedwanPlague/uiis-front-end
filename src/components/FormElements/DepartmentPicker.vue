@@ -37,10 +37,10 @@ export default {
   },
   methods: {
     ...mapActions('admin', [
-      'loadDepartments'
+      'fetchDeptList'
     ]),
-    fetchDepartments() {
-      this.loadDepartments().then(() => {
+    loadDepartments() {
+      this.fetchDeptList().then(() => {
         this.mainList = this.deptList.map(x => {
           return {
             value: x.id,
@@ -52,11 +52,11 @@ export default {
     },
   },
   created() {
-    this.fetchDepartments()
+    this.loadDepartments()
   },
   watch: {
     deptList() {
-      this.fixValue()
+      this.loadDepartments()
     }
   }
 }

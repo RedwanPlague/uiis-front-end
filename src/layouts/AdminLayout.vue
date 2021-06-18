@@ -67,130 +67,14 @@
 <script>
 import QuickLink from 'components/QuickLink'
 import { mapGetters, mapActions } from 'vuex'
-
-const quickLinks = [
-  {
-    title: 'Accounts',
-    icon: 'school',
-    children: [
-      {
-        title: 'Create',
-        icon: 'school',
-        link: { name: 'AdminAccountCreationPage' }
-      },
-      {
-        title: 'Search',
-        icon: 'school',
-        link: { name: 'AdminAccountSearchPage' }
-      },
-      {
-        title: 'Roles',
-        icon: 'school',
-        link: { name: 'AdminRoleManagePage' }
-      },
-    ]
-  },
-  {
-    title: 'Courses',
-    icon: 'school',
-    children: [
-      {
-        title: 'Create',
-        icon: 'school',
-        link: { name: 'AdminCourseCreationPage' }
-      },
-      {
-        title: 'Search',
-        icon: 'school',
-        link: { name: 'AdminCourseSearchPage' }
-      },
-      {
-        title: 'Assign',
-        icon: 'school',
-        link: { name: 'AdminCourseAssignPage' }
-      },
-    ]
-  },
-  {
-    title: 'Fees',
-    icon: 'school',
-    link: { name: 'AdminDuesAssignPage' }
-  },
-  {
-    title: 'Fines',
-    icon: 'school',
-    link: { name: 'AdminFineAssignPage' }
-  },
-  {
-    title: 'Slots',
-    icon: 'school',
-    link: { name: 'AdminSlotManagePage' }
-  },
-  {
-    title: 'Session',
-    icon: 'school',
-    link: { name: 'AdminSessionAssignPage' }
-  },
-  {
-    title: 'Departments',
-    icon: 'school',
-    link: { name: 'AdminDeptManagePage' }
-  },
-  {
-    title: 'Halls',
-    icon: 'school',
-    link: { name: 'AdminHallManagePage' }
-  },
-  // {
-  //   title: 'Docs2',
-  //   icon: 'school',
-  //   children: [
-  //     {
-  //       title: 'Docs4',
-  //       icon: 'school',
-  //       link: 'https://quasar.dev'
-  //     },
-  //     {
-  //       title: 'Docs5',
-  //       icon: 'school',
-  //       link: 'https://quasar.dev'
-  //     },
-  //     {
-  //       title: 'Docs6',
-  //       icon: 'school',
-  //       children: [
-  //         {
-  //           title: 'Docs7',
-  //           icon: 'school',
-  //           link: 'https://quasar.dev'
-  //         },
-  //         {
-  //           title: 'Docs8',
-  //           icon: 'school',
-  //           link: 'https://quasar.dev'
-  //         },
-  //         {
-  //           title: 'Docs9',
-  //           icon: 'school',
-  //           link: 'https://quasar.dev'
-  //         },
-  //       ]
-  //     },
-  //   ]
-  // },
-  // {
-  //   title: 'Docs3',
-  //   icon: 'school',
-  //   link: 'https://quasar.dev'
-  // },
-];
+import {PRIVILEGES} from 'src/utils/constants'
 
 export default {
   name: 'AdminLayout',
   data() {
     return {
       leftDrawerOpen: false,
-      quickLinks,
+      quickLinks: [],
     }
   },
   components: {
@@ -198,13 +82,136 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'user'
+      'user',
+      'userHasPrivilege',
     ])
   },
   methods: {
     ...mapActions([
       'userLogOut'
-    ])
+    ]),
+    buildLinks() {
+      const links = []
+      const has = this.userHasPrivilege
+
+      const accountLinks = []
+      if (has(PRIVILEGES.ACCOUNT_CREATION)) {
+        accountLinks.push({
+          title: 'Create',
+          icon: 'school',
+          link: { name: 'AdminAccountCreationPage' }
+        })
+      }
+      if (has(PRIVILEGES.ACCOUNT_UPDATE)) {
+        accountLinks.push({
+          title: 'Search',
+          icon: 'school',
+          link: { name: 'AdminAccountSearchPage' }
+        })
+      }
+      if (has(PRIVILEGES.ROLE_CREATION) || has(PRIVILEGES.ROLE_UPDATE)) {
+        accountLinks.push({
+          title: 'Roles',
+          icon: 'school',
+          link: { name: 'AdminRoleManagePage' }
+        })
+      }
+      if (accountLinks.length > 0) {
+        links.push({
+          title: 'Accounts',
+          icon: 'school',
+          children: accountLinks
+        })
+      }
+
+      const courseLinks = []
+      if (has(PRIVILEGES.COURSE_CREATION)) {
+        courseLinks.push({
+          title: 'Create',
+          icon: 'school',
+          link: { name: 'AdminCourseCreationPage' }
+        })
+      }
+      if (has(PRIVILEGES.COURSE_UPDATE)) {
+        courseLinks.push({
+          title: 'Search',
+          icon: 'school',
+          link: { name: 'AdminCourseSearchPage' }
+        })
+      }
+      if (
+        has(PRIVILEGES.COURSE_SESSION_CREATION) ||
+        has(PRIVILEGES.COURSE_SESSION_UPDATE) ||
+        has(PRIVILEGES.COURSE_SESSION_ALLOT_SCHEDULE) ||
+        has(PRIVILEGES.COURSE_SESSION_ASSIGN_TEACHER) ||
+        has(PRIVILEGES.COURSE_SESSION_ASSIGN_EXAMINER) ||
+        has(PRIVILEGES.COURSE_SESSION_ASSIGN_SCRUTINIZER) ||
+        has(PRIVILEGES.COURSE_SESSION_ASSIGN_RESULT_ACCESS_HOLDER)
+      ) {
+        courseLinks.push({
+          title: 'Assign',
+          icon: 'school',
+          link: { name: 'AdminCourseAssignPage' }
+        })
+      }
+      if (courseLinks.length > 0) {
+        links.push({
+          title: 'Courses',
+          icon: 'school',
+          children: courseLinks
+        })
+      }
+
+      links.push({
+        title: 'Fees',
+        icon: 'school',
+        link: { name: 'AdminDuesAssignPage' }
+      })
+      links.push({
+        title: 'Fines',
+        icon: 'school',
+        link: { name: 'AdminFineAssignPage' }
+      })
+
+      if (has(PRIVILEGES.SLOT_CREATION) || has(PRIVILEGES.SLOT_UPDATE)) {
+        links.push({
+          title: 'Slots',
+          icon: 'school',
+          link: { name: 'AdminSlotManagePage' }
+        })
+      }
+
+      if (has(PRIVILEGES.CURRENT_SESSION_UPDATE)) {
+        links.push({
+          title: 'Session',
+          icon: 'school',
+          link: { name: 'AdminSessionAssignPage' }
+        })
+      }
+
+      if (has(PRIVILEGES.DEPARTMENT_CREATION) || has(PRIVILEGES.DEPARTMENT_UPDATE)) {
+        links.push({
+          title: 'Departments',
+          icon: 'school',
+          link: { name: 'AdminDeptManagePage' }
+        })
+      }
+
+      if (has(PRIVILEGES.HALL_CREATION) || has(PRIVILEGES.HALL_UPDATE)) {
+        links.push({
+          title: 'Halls',
+          icon: 'school',
+          link: { name: 'AdminHallManagePage' }
+        })
+      }
+
+      this.quickLinks = links
+    }
+  },
+  watch: {
+    user() {
+      this.buildLinks()
+    }
   }
 }
 </script>

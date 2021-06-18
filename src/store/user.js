@@ -22,7 +22,6 @@ export default {
     },
     userHasPrivilege(state) {
       return (privilegeName) => !!state.user &&
-        state.user.hasOwnProperty('mergedPrivileges') &&
         state.user.mergedPrivileges.includes(privilegeName)
     },
   },
