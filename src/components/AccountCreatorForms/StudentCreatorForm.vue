@@ -22,8 +22,8 @@
         outlined
         :rules="[() => !!id || 'Please Enter an ID']"
       />
-      <department-picker classes="col-6" v-model="department" required/>
-      <hall-picker classes="col-6" v-model="hall" required/>
+      <department-picker classes="col-6" label="Department" v-model="department" required/>
+      <hall-picker classes="col-6" label="Hall" v-model="hall" required/>
       <teacher-picker
         classes="col-6"
         label="Advisor"

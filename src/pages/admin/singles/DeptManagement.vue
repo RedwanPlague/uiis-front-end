@@ -30,7 +30,6 @@
           v-model="dept.head"
           label="Head"
           :readonly="dept.viewing"
-          :required="dept.old"
         />
         <div class="col-1">
           <q-btn
@@ -125,7 +124,6 @@ export default {
           this.createDepartment(dept)
         }
       })
-      this.fetchDepartments()
     },
     createDepartment(dept) {
       this.callCreateApi('/department/create', {
@@ -133,12 +131,21 @@ export default {
         name: dept.name,
         head: extract(dept.head)
       }, `${dept.id} department`)
+        .then(() => {
+          const created = this.departments.find(x => x.id === dept.id)
+          created.viewing = true
+          created.old = true
+        })
     },
     editDepartment(dept) {
       this.callEditApi('/department/update/' + dept.id, {
         name: dept.name,
         head: extract(dept.head)
       }, `${dept.id} department`)
+        .then(() => {
+          const created = this.departments.find(x => x.id === dept.id)
+          created.viewing = true
+        })
     },
     resetForm() {
       this.departments = this.deptList.map(x => {

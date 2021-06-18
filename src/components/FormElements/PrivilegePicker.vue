@@ -66,7 +66,7 @@ export default {
     fetchPrivilegeList() {
       apiFetch('/account/privileges', null, 'List of ALL privileges')
         .then(response => {
-          this.privilegeList = response.data
+          this.privilegeList = Object.values(response.data)
         })
     },
     privilegeFilter(value, update) {
