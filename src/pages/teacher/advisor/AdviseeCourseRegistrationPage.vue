@@ -98,7 +98,7 @@
       </q-card>
 
       <q-dialog v-model="adviseeWithApprovalOptionDialogBox" full-width>
-        <q-card bordered class="q-pa-md">
+        <q-card bordered>
           <q-card-section>
             <div class="text-h5">Course Registration Information</div><br />
             <div class="text-subtitle2">
@@ -114,6 +114,9 @@
               <p>
                 <strong>Department:</strong> {{ getStudent.department }}
               </p>
+              <p>
+                <strong>Course Registration Status:</strong> {{ getStudent.status }}
+              </p>
             </div>
           </q-card-section>
 
@@ -121,7 +124,7 @@
 
           <q-card-section>
             <q-table
-              title="Courses" dense bordered :data="courseRegistrations" :columns="getRegistrationColumns" row-key="courseID"
+              title="Courses Available" dense bordered :data="courseRegistrations" :columns="getRegistrationColumns" row-key="courseID"
             />
           </q-card-section>
 
@@ -134,7 +137,7 @@
       </q-dialog>
 
       <q-dialog v-model="adviseeWithoutApprovalOptionDialogBox" full-width>
-        <q-card bordered class="q-pa-md">
+        <q-card bordered>
           <q-card-section>
             <div class="text-h5">Course Registration Information</div><br />
             <div class="text-subtitle2">
@@ -150,6 +153,9 @@
               <p>
                 <strong>Department:</strong> {{ getStudent.department }}
               </p>
+              <p>
+                <strong>Course Registration Status:</strong> {{ getStudent.status }}
+              </p>
             </div>
           </q-card-section>
 
@@ -157,7 +163,7 @@
 
           <q-card-section>
             <q-table
-              title="Courses" dense bordered :data="courseRegistrations" :columns="getRegistrationColumns" row-key="courseID"
+              title="Courses Available" dense bordered :data="courseRegistrations" :columns="getRegistrationColumns" row-key="courseID"
             />
           </q-card-section>
 
@@ -241,8 +247,25 @@ export default {
     /* approving course registration application */
     async approve() {
       try {
+        const loading = this.$q.notify({
+          message: `Forwarding application to Head.`,
+          position: "bottom-left",
+          color: 'info',
+          group: false,
+          timeout: 0,
+          spinner: true
+        });
+
         await api.patch('/teacher/advisor/registrations/'+this.getStudent.id+'/approve');
         await this.fetchAdvisees();
+
+        loading({
+          message: 'Application forwarded.',
+          color: 'positive',
+          icon: 'done',
+          timeout: 1500,
+          spinner: false
+        });
       } catch(error) {
         console.log(error);
       }
@@ -251,11 +274,28 @@ export default {
     /* rejecting course registration application */
     async reject() {
       try {
+        const loading = this.$q.notify({
+          message: `Rejecting application.`,
+          position: "bottom-left",
+          color: 'info',
+          group: false,
+          timeout: 0,
+          spinner: true
+        });
+
         await api.patch('/teacher/advisor/registrations/'+this.getStudent.id+'/reject');
         await api.patch('/student/registrations/course_offered', {
           _id: this.getCourseRegistrations.map(courseRegistration => courseRegistration._id)
         });
         await this.fetchAdvisees();
+
+        loading({
+          message: 'Application rejected.',
+          color: 'positive',
+          icon: 'done',
+          timeout: 1500,
+          spinner: false
+        });
       } catch(error) {
         console.log(error);
       }

@@ -134,6 +134,7 @@ export default {
       const loading = this.$q.notify({
         message: `Loading Grades`,
         position: "bottom-left",
+        color: 'info',
         group: false, // required to be updatable
         timeout: 0, // we want to be in control when it gets dismissed
         spinner: true
@@ -157,6 +158,7 @@ export default {
       this.generateAvailableGrades();
 
       loading({
+        color: 'positive',
         icon: 'done', // we add an icon
         spinner: false, // we reset the spinner setting so the icon can be displayed
         message: 'Grades Loaded',

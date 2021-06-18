@@ -24,7 +24,7 @@ const routes = [
       {
         path: 'course_registration',
         name: 'courseRegistration',
-        component: () => import('src/pages/student/CourseRegistration.vue')
+        component: () => import('pages/student/CourseRegistrationPage.vue')
       },
       {
         path: 'semester_selection',

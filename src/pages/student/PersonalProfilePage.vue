@@ -40,11 +40,11 @@
             <img alt="" class="profile-photo" src="https://discourse.disneyheroesgame.com/uploads/default/original/3X/c/2/c23f54aea2065f106e4dbb8218d0ce2d7853351c.png" />
           </div>
         </q-card-section>
-      </q-card><br />
 
-      <div >
-        <q-btn color="primary" text-color="white" label="Edit" />
-      </div>
+        <q-card-actions align="right">
+          <q-btn class="bg-primary text-white" label="Edit" v-close-popup />
+        </q-card-actions>
+      </q-card>
     </div>
   </q-page>
 </template>

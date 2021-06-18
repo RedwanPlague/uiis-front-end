@@ -10,11 +10,13 @@ import courses from "src/store/teacher-modules/courses";
 import courseEval from "src/store/teacher-modules/courseEval";
 import advisor from './teacher-modules/advisor';
 import examiner from './teacher-modules/examiner';
+import head from './teacher-modules/head'
 import scrutinizer from './teacher-modules/scrutinizer';
 
 import student from './student-modules/student';
 
 import grades from './utility-modules/grades';
+import registrations from './utility-modules/registrations';
 
 /* loading Vuex */
 Vue.use(Vuex);
@@ -30,11 +32,13 @@ const store = new Vuex.Store({
     courseEval,
     advisor,
     examiner,
+    head,
     scrutinizer,
 
     student,
 
-    grades
+    grades,
+    registrations
   },
 
   /*

@@ -32,7 +32,7 @@
 import { mapGetters, mapActions } from 'vuex';
 
 export default {
-  name: "SemesterSelection",
+  name: "SemesterSelectionPage",
 
   data() {
     return {

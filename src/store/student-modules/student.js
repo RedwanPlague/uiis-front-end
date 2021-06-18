@@ -139,7 +139,8 @@ const actions = {
         syllabusID: state.courseRegistrations[i].courseSession.course.syllabusID,
         title: state.courseRegistrations[i].courseSession.course.title,
         credit: state.courseRegistrations[i].courseSession.course.credit,
-        status: state.courseRegistrations[i].status
+        status: state.courseRegistrations[i].status,
+        _id: state.courseRegistrations[i]._id
       };
     }
     commit('mutateAvailableCourseRegistrations', availableCourseRegistrations);
