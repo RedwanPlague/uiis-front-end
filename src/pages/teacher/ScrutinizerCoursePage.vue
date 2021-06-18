@@ -17,9 +17,9 @@
           transition-prev="slide-right"
           transition-next="slide-left"
           animated
-          swipeable
           padding
           arrows
+          draggable="false"
           control-color="primary"
           height="100%"
         >
@@ -36,12 +36,35 @@
                 :columns="teacherInfo.mathas"
                 separator="cell"
                 row-key="studentID"
+                :selected-rows-label="getSelectedString"
+                selection="multiple"
+                :selected.sync="selected"
+                class="table"
+              >
+              </q-table>
+              <IssueForm class="self-start"/>
+            </div>
+            
+          </q-carousel-slide>
+          <q-carousel-slide
+            v-for="(examinerInfo, index) in allTfInfo"
+            :key="index"
+            :name="examinerInfo.fakeExaminerID"
+            class="column no-wrap flex-center"
+          >
+            <div class="q-mt-md text-center">
+              <q-table
+                :title="examinerInfo.examinerName"
+                :data="examinerInfo.deho"
+                :columns="examinerInfo.mathas"
+                separator="cell"
+                row-key="studentID"
                 class="table"
               >
               </q-table>
             </div>
           </q-carousel-slide>
-          <q-carousel-slide
+          <!-- <q-carousel-slide
             name="term-final"
             class="column no-wrap flex-center"
           >
@@ -56,12 +79,12 @@
               >
               </q-table>
             </div>
-          </q-carousel-slide>
+          </q-carousel-slide> -->
         </q-carousel>
 
         <div class="row justify-center">
           <q-btn
-            v-show="!(!canEdit || hasApprovedResult || !allCompleted)"
+            v-show="!(!canEdit || hasForwarded)"
             class="q-mt-xl submit-btn"
             color="primary"
             label="Forward to department head"
@@ -85,11 +108,24 @@ export default {
     return {
       canEdit: true,
       slide: null,
-      courseLoading: true
+      courseLoading: true,
+      selected: []
     };
   },
 
+  components: {
+    IssueForm: () => import("components/IssueForm")
+  },
+
   methods: {
+    getSelectedString() {
+      return this.selected.length === 0
+        ? ""
+        : `${this.selected.length} students${
+            this.selected.length > 1 ? "s" : ""
+          } selected`;
+    },
+
     ...mapActions("scrutinizer", ["fillSingleCourse"]),
 
     async forwardResult() {
@@ -97,8 +133,8 @@ export default {
       await api.put(
         `/teacher/scrutinizer/${this.info.courseID}/${this.currentSession}/approve`
       );
-      this.$store.commit("scrutinizer/mutHasApprovedResult");
-      console.log(this.hasApprovedResult);
+      this.$store.commit("scrutinizer/mutHasForwarded");
+      console.log(this.hasForwarded);
 
       this.$q.notify({
         icon: "done",
@@ -118,7 +154,7 @@ export default {
       tfTotal: "tfTotal",
       tfStudent: "tfStudent",
       //courseLoading: "courseLoading",
-      hasApprovedResult: "hasApprovedResult",
+      hasForwarded: "hasForwarded",
       currentSession: "currentSession"
     }),
 
@@ -226,6 +262,58 @@ export default {
       return shob;
     },
 
+    allTfInfo() {
+      const shob = [];
+
+      for (const examiner of this.info.examiners) {
+        const mathas = [];
+        const deho = [];
+
+        const stu = {
+          name: "studentID",
+          label: `Student ID`,
+          field: "studentID",
+          sortable: true,
+          headerClasses: "bg-primary text-white",
+          align: "center"
+        };
+
+        mathas.push(stu);
+
+        const partMark = {
+          name: "mark",
+          label: `Mark`,
+          field: "mark",
+          sortable: true,
+          align: "center",
+          headerClasses: "bg-primary text-white"
+        };
+
+        mathas.push(partMark);
+
+        for (const regi of this.info.students) {
+          const notun = {};
+
+          notun["studentID"] = regi.student.id;
+
+          notun["mark"] = this.tfStudent(
+            examiner.teacher,
+            examiner.part,
+            regi.student.id
+          );
+
+          deho.push(notun);
+        }
+
+        const examinerName = this.info.names[examiner.teacher];
+        const fakeExaminerID = "examiner-" + examiner.teacher;
+
+        shob.push({ fakeExaminerID, examinerName, mathas, deho });
+      }
+
+      return shob;
+    },
+
     tfInfo() {
       const mathas = [];
       const deho = [];
@@ -281,10 +369,17 @@ export default {
         value: "teacher-" + teacher.teacher
       }));
 
-      teachers.push({
-        label: "Term Final",
-        value: "term-final"
-      });
+      const examiners = this.info.examiners.map(examiner => ({
+        label: `Term Final - Part ${examiner.part}`,
+        value: "examiner-" + examiner.teacher
+      }));
+
+      teachers.push(...examiners);
+
+      // teachers.push({
+      //   label: "Term Final",
+      //   value: "term-final"
+      // });
 
       return teachers;
     }
@@ -316,8 +411,8 @@ export default {
   async created() {
     this.courseLoading = true;
     // if (this.$store.getters["allCourses"].length == 0)
-      if(!this.allCourses || this.allCourses.length === 0)
-        await this.$store.dispatch("scrutinizer/fillCourses");
+    if (!this.allCourses || this.allCourses.length === 0)
+      await this.$store.dispatch("scrutinizer/fillCourses");
 
     this.$store.commit("scrutinizer/mutCurCourse", this.$route.params.courseID);
 
