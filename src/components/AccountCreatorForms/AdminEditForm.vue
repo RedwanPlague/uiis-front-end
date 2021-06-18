@@ -36,6 +36,14 @@
         :readonly="viewing"
         required
       />
+      <role-picker
+        classes="col-12"
+        v-model="roles"
+        label="Roles"
+        multiple
+        :readonly="viewing"
+        required
+      />
       <div class="col-12" v-if="!viewing">
         <q-btn label="Update" type="submit" color="primary" unelevated :loading="editLoading"/>
         <q-btn label="Reset" type="reset" color="primary" flat/>
@@ -48,13 +56,16 @@
 <script>
 import PasswordMakerField from 'components/FormElements/PasswordMakerField'
 import PrivilegePicker from 'components/FormElements/PrivilegePicker';
+import RolePicker from 'components/FormElements/RolePicker'
 import edit from 'src/mixins/edit'
+import {extract} from 'src/utils/apiDataPreProcessor'
 
 export default {
   name: 'AdminEditForm',
   components: {
     PrivilegePicker,
-    PasswordMakerField
+    PasswordMakerField,
+    RolePicker
   },
   mixins: [
     edit
@@ -65,6 +76,7 @@ export default {
       id: null,
       password: null,
       privileges: [],
+      roles: []
     }
   },
   computed: {
@@ -74,12 +86,15 @@ export default {
   },
   methods: {
     editAccount() {
+      console.log(this.privileges)
+      console.log(this.privileges ? extract(this.privileges) : [])
+      console.log(this.roles ? extract(this.roles) : [])
       this.callEditApi('account/update/admin/' + this.loadID, {
         name: this.name,
         password: this.password,
-        privileges: this.privileges ? this.privileges : []
-      }, 'Admin account')
-        .catch(() => {})
+        privileges: this.privileges ? extract(this.privileges) : [],
+        roles: this.roles ? extract(this.roles) : []
+      }, 'Admin account').catch(() => {})
     },
     resetForm() {
       this.loadOldDataIntoForm()

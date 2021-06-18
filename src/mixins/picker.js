@@ -69,7 +69,7 @@ export default {
   },
   watch: {
     value: {
-      handler(newVal, oldVal) {
+      handler(/*newVal, oldVal*/) {
         this.fixValue()
       }
     },

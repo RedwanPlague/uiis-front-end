@@ -52,7 +52,7 @@ export default {
         adminAPI.patch(url, data)
           .then(response => {
             this.editLoading = false
-            const message = `${name} edited successfully`
+            const message = `${name} updated successfully`
             this.$q.notify({
               message,
               type: 'positive'
@@ -63,7 +63,7 @@ export default {
           })
           .catch(error => {
             this.editLoading = false
-            const message = `Failed to edit ${name}`
+            const message = `Failed to update ${name}`
             this.$q.notify({
               message,
               type: 'negative'

@@ -41,13 +41,23 @@ export default {
     ]),
     fetchDepartments() {
       this.loadDepartments().then(() => {
-        this.mainList = this.deptList
+        this.mainList = this.deptList.map(x => {
+          return {
+            value: x.id,
+            label: `${x.id} - ${x.name}`
+          }
+        })
         this.fixValue()
       })
     },
   },
   created() {
     this.fetchDepartments()
+  },
+  watch: {
+    deptList() {
+      this.fixValue()
+    }
   }
 }
 </script>

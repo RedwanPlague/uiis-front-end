@@ -1,32 +1,76 @@
 <template>
   <q-page padding>
     <div class="text-h5 q-my-md">
-      User Roles
+      Manage Roles
     </div>
-    <div class="row q-col-gutter-md">
-      <course-picker
+    <div class="row q-col-gutter-md q-pb-sm">
+      <role-picker
         classes="col-6"
-        v-model="courseToEdit"
-        label="Course to Edit"
+        v-model="roleToEdit"
+        label="Role"
         required
-        @input="loadCourseSessionData"
+        @input="resetForm"
       />
-      <session-field
-        classes="col-5"
-        v-model="sessionToEdit"
-        label="Session"
-        required
-        readonly
-      />
-      <div class="col-1" v-if="courseToEdit">
-        <q-btn icon="refresh" size="lg" dense flat @click="loadCourseSessionData"/>
-      </div>
     </div>
+    <q-form
+      class="row q-col-gutter-sm"
+      @submit="updateRole" @reset="resetForm"
+      v-if="roleToEdit"
+    >
+      <privilege-picker
+        classes="col-12"
+        v-model="privileges"
+        label="Privileges"
+        multiple
+      />
+      <div class="col-12">
+        <q-btn label="Update" type="submit" color="primary" unelevated/>
+        <q-btn label="Reset" type="reset" color="primary" flat/>
+      </div>
+    </q-form>
   </q-page>
 </template>
 
 <script>
+import RolePicker from 'components/FormElements/RolePicker'
+import PrivilegePicker from 'components/FormElements/PrivilegePicker'
+import edit from 'src/mixins/edit'
+import {mapGetters} from 'vuex'
+import {extract} from 'src/utils/apiDataPreProcessor'
+
 export default {
-  // name: 'PageName',
+  name: 'RoleManagement',
+  components: {
+    PrivilegePicker,
+    RolePicker
+  },
+  mixins: [
+    edit
+  ],
+  data() {
+    return {
+      roleToEdit: null,
+      privileges: []
+    }
+  },
+  computed: {
+    ...mapGetters('admin', [
+      'roleList'
+    ])
+  },
+  methods: {
+    use(data) {
+      this.roleToEdit = data
+    },
+    updateRole() {
+      this.callEditApi('/role/update/' + this.roleToEdit.value, {
+        privileges: extract(this.privileges)
+      }, `Role '${this.roleToEdit.value}'`)
+    },
+    resetForm() {
+      const role = this.roleList.find(x => x._id === this.roleToEdit.value)
+      this.privileges = role ? role.privileges : null
+    }
+  }
 }
 </script>

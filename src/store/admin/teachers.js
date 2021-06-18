@@ -2,7 +2,7 @@ import {apiFetch} from 'src/utils/apiWrappers'
 
 export default {
   state: {
-    teachersLoaded: false,
+    teacherListLoaded: false,
     teacherList: []
   },
   getters: {
@@ -11,29 +11,24 @@ export default {
     }
   },
   mutations: {
-    setTeachers(state, data) {
+    setTeacherList(state, data) {
       state.teacherList = data
-      state.teachersLoaded = true
+    },
+    setTeacherListLoaded(state) {
+      state.teacherListLoaded = true
     }
   },
   actions: {
-    loadTeachers(context, dept) {
-      dept = null
+    fetchTeacherList(context) {
       return new Promise((resolve, reject) => {
-        if (context.state.teachersLoaded) {
+        if (context.state.teacherListLoaded) {
           resolve()
         }
         else {
-          apiFetch('account/teacher/list',
-            {department: dept},
-            `Teachers of ${dept ? dept : 'all'}`)
+          context.commit('setTeacherListLoaded')
+          apiFetch('account/teacher/list', null, 'teacherList')
             .then(response => {
-              context.commit('setTeachers', response.data.map(x => {
-                return {
-                  value: x.id,
-                  label: `(${x.id}) ${x.name}`
-                }
-              }))
+              context.commit('setTeacherList', response.data)
               resolve(response)
             })
             .catch(error => reject(error))

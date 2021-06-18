@@ -40,18 +40,31 @@ export default {
   },
   methods: {
     ...mapActions('admin', [
-      'loadCourses'
+      'fetchCourseList'
     ]),
-    fetchCourseList() {
-      this.loadCourses().then(() => {
-        this.mainList = this.courseList
+    loadCourses() {
+      this.fetchCourseList().then(() => {
+        this.mainList = this.courseList.map(x => {
+          return {
+            value: {
+              courseID: x.courseID,
+              syllabusID: x.syllabusID
+            },
+            label: `${x.courseID}(${x.syllabusID}) - ${x.title}`
+          }
+        })
         this.fixValue()
       })
     },
   },
   created() {
-    this.fetchCourseList()
+    this.loadCourses()
   },
+  watch: {
+    courseList() {
+      this.loadCourses()
+    }
+  }
 }
 </script>
 

@@ -24,6 +24,12 @@
         label="Privileges"
         multiple
       />
+      <role-picker
+        classes="col-12"
+        v-model="roles"
+        label="Roles"
+        multiple
+      />
       <div class="col-12">
         <q-btn label="Search" type="submit" color="primary" unelevated/>
         <q-btn label="Reset" type="reset" color="primary" flat/>
@@ -50,8 +56,10 @@
 
 <script>
 import PrivilegePicker from 'components/FormElements/PrivilegePicker'
+import RolePicker from 'components/FormElements/RolePicker'
 import columnMerger from 'src/utils/columnMerger'
 import search from 'src/mixins/search'
+import {extract} from 'src/utils/apiDataPreProcessor'
 
 const columns = [
   {name: 'id', label: 'Admin ID', field: 'id', style: 'width: 12%;', sortable: true},
@@ -67,6 +75,7 @@ export default {
   name: 'AdminCreatorForm',
   components: {
     PrivilegePicker,
+    RolePicker
   },
   mixins: [
     search
@@ -76,6 +85,7 @@ export default {
       name: null,
       id: null,
       privileges: [],
+      roles: [],
       columns
     }
   },
@@ -84,7 +94,8 @@ export default {
       this.callSearchApi('account/admin/list', {
         id: this.id,
         name: this.name,
-        privileges: this.privileges
+        privileges: extract(this.privileges),
+        roles: extract(this.privileges)
       }, 'Admin account')
       // this.$router.push({
       //   name: 'AdminAccountSearchPage',

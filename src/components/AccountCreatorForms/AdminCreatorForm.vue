@@ -27,6 +27,13 @@
         multiple
         required
       />
+      <role-picker
+        classes="col-12"
+        v-model="roles"
+        label="Roles"
+        multiple
+        required
+      />
       <div class="col-12">
         <q-btn label="Create" type="submit" color="primary" unelevated :loading="createLoading"/>
         <q-btn label="Reset" type="reset" color="primary" flat/>
@@ -37,14 +44,17 @@
 
 <script>
 import PasswordMakerField from 'components/FormElements/PasswordMakerField'
+import RolePicker from 'components/FormElements/RolePicker'
 import PrivilegePicker from 'components/FormElements/PrivilegePicker'
 import creator from 'src/mixins/creator'
+import {extract} from 'src/utils/apiDataPreProcessor'
 
 export default {
   name: 'AdminCreatorForm',
   components: {
     PasswordMakerField,
     PrivilegePicker,
+    RolePicker
   },
   mixins: [
     creator
@@ -55,6 +65,7 @@ export default {
       id: null,
       password: null,
       privileges: [],
+      roles: []
     }
   },
   methods: {
@@ -64,7 +75,8 @@ export default {
         id: this.id,
         password: this.password,
         name: this.name,
-        privileges: this.privileges
+        privileges: extract(this.privileges),
+        roles: extract(this.roles)
       }, 'Admin account')
         .catch(() => {})
     },
@@ -73,6 +85,7 @@ export default {
       this.id = null
       this.password = null
       this.privileges = []
+      this.roles = []
     }
   },
 }

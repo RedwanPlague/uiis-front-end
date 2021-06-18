@@ -33,16 +33,6 @@ export default {
   mixins: [
     picker
   ],
-  props: {
-    department: {
-      type: String,
-      default: null
-    },
-    preList: {
-      type: Array,
-      default: null
-    }
-  },
   computed: {
     ...mapGetters('admin', [
       'teacherList'
@@ -50,28 +40,26 @@ export default {
   },
   methods: {
     ...mapActions('admin', [
-      'loadTeachers'
+      'fetchTeacherList'
     ]),
-    fetchTeachers(dept) {
-      if (this.preList) {
-        this.mainList = this.preList
-      }
-      else {
-        this.loadTeachers(dept).then(() => {
-          this.mainList = this.teacherList
-          this.fixValue()
+    loadTeachers() {
+      this.fetchTeacherList().then(() => {
+        this.mainList = this.teacherList.map(x => {
+          return {
+            value: x.id,
+            label: `(${x.id}) ${x.name}`
+          }
         })
-      }
+        this.fixValue()
+      })
     },
   },
   created() {
-    this.fetchTeachers(this.department)
+    this.loadTeachers()
   },
   watch: {
-    department: {
-      handler(newVal/*, oldVal*/) {
-        this.fetchTeachers(newVal)
-      }
+    teacherList() {
+      this.loadTeachers()
     }
   }
 }

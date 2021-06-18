@@ -2,7 +2,7 @@ import {apiFetch} from 'src/utils/apiWrappers'
 
 export default {
   state: {
-    coursesLoaded: false,
+    courseListLoaded: false,
     courseList: []
   },
   getters: {
@@ -11,26 +11,24 @@ export default {
     }
   },
   mutations: {
-    setCourses(state, data) {
+    setCourseList(state, data) {
       state.courseList = data
+    },
+    setCourseListLoaded(state) {
       state.coursesLoaded = true
     }
   },
   actions: {
-    loadCourses(context) {
+    fetchCourseList(context) {
       return new Promise((resolve, reject) => {
         if (context.state.coursesLoaded) {
           resolve()
         }
         else {
-          apiFetch('/course/list', null, 'All course list')
+          context.commit('setCourseListLoaded')
+          apiFetch('/course/list', null, 'courseList')
             .then(response => {
-              context.commit('setCourses', response.data.map(x => {
-                return {
-                  value: x.id,
-                  label: `${x.id} - ${x.name}`
-                }
-              }))
+              context.commit('setCourseList', response.data)
               resolve(response)
             })
             .catch(error => reject(error))

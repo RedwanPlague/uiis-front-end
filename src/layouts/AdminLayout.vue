@@ -83,6 +83,11 @@ const quickLinks = [
         icon: 'school',
         link: { name: 'AdminAccountSearchPage' }
       },
+      {
+        title: 'Roles',
+        icon: 'school',
+        link: { name: 'AdminRoleManagePage' }
+      },
     ]
   },
   {
