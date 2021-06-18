@@ -95,9 +95,11 @@ export default {
   },
   methods: {
     ...mapActions(['fetchIssueDetails', 'sendComment']),
+
+    // fixme: incomplete method
     resolveClicked(e) {
       e.preventDefault();
-      //
+
     },
     async addComment(comment) {
       await this.sendComment({comment});

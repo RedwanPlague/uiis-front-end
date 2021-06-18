@@ -48,7 +48,9 @@
       separator="cell"
       :pagination.sync="pagination"
       :filter="studentFilter"
-      :row-key="student_data.student_id"
+      :row-key="student_data => student_data.student_id"
+      selection="multiple"
+      :selected.sync="selected_students"
       >
 
       <template v-slot:top>
@@ -61,11 +63,17 @@
         </q-input>
       </template>
 
+        <template v-slot:header="props">
+          <q-tr :props="props">
+            <q-th v-for="col in props.cols" :key="col.name" :props="props">
+              {{ col.label }}
+            </q-th>
+          </q-tr>
+        </template>
 
-
-      <template v-slot:body="props">
-        <q-tr :props="props">
-          <q-td key="student_id" :props="props">
+        <template v-slot:body="props">
+        <q-tr :props="props" >
+          <q-td key="student_id" :props="props" >
             {{ props.row.student_id }}
           </q-td>
           <q-td key="student_name" :props="props">
@@ -79,7 +87,6 @@
           <q-td key="attendance" :props="props">
             <q-input type="number" min="0" v-model="props.row.attendance" autofocus dense :disable="!editMode" input-class="text-center"/>
           </q-td>
-
         </q-tr>
       </template>
     </q-table>
@@ -131,7 +138,7 @@
     name: "CourseEvaluationPage",
 
     computed: {
-      ...mapGetters(['course_data']),
+      ...mapGetters(['course_data', 'selected_students']),
       ...mapMultiRowFields('courseEval', ['student_data']),
       classCount: {
         get () {
@@ -154,6 +161,9 @@
         new_eval_entry.field += i;
         this.columns.splice(this.columns.length - 1, 0, new_eval_entry);
       }
+
+      this.selected.push(this.student_data[0]);
+      this.selected.push(this.student_data[3]);
     },
     watch: {
       async '$route.params' (to, from) {
@@ -165,8 +175,6 @@
     },
     methods: {
       ...mapActions(['fetchCourseDetails', 'saveStudentData', 'updateEvaluationTable', 'studentDataFilledCheck', 'setHasForwarded']),
-
-
       loadCSVData(input) {
         let csvData ;
         try {
@@ -328,6 +336,7 @@
       data() {
         return {
 
+          selected: [],
           csvButton: false,
           studentFilter: '',
           submitFlag: false,
@@ -346,7 +355,7 @@
               name: 'Total Mark',
               label: 'Total Mark',
               align: 'center',
-              field: 'student_id',
+              field: 'total_mark',
               classes: 'bg-grey-1',
               headerClasses: 'bg-primary text-white',
               // style: 'width: 100px',
@@ -356,7 +365,7 @@
               name: 'Eval - 1',
               label: 'Student ID',
               align: 'center',
-              field: 'student_id',
+              field: 'eval_1',
               classes: 'bg-grey-1',
               headerClasses: 'bg-primary text-white',
               // style: 'width: 100px',
@@ -431,6 +440,10 @@
     width: 400px;
     /*margin-left: 30px;*/
     padding-left: 110px;
+  }
+
+  .q-table tbody td:after{
+    background: rgba(255,0,0,0.2);
   }
 
 

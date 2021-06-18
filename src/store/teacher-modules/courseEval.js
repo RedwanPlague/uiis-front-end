@@ -4,6 +4,7 @@ import { getField, updateField } from 'vuex-map-fields';
 const state = {
   course_data: {},
   student_data: [],
+  selected_students: []
 };
 function reformat_student_input_data(student_data, tot_courses) {
   let formatted_data = [];
@@ -17,7 +18,11 @@ function reformat_student_input_data(student_data, tot_courses) {
     for(let i = 1 ; i <= tot_courses ; i++) entry['eval_' + i] = "";
     if(student.attendanceMarks.length > 0) entry.attendance = student.attendanceMarks[0].mark;
 
-    student.evalMarks.forEach(evalulation=> entry['eval_' + evalulation.evalID] = evalulation.mark);
+    entry.editAccess = false;
+    student.evalMarks.forEach(evalulation=> {
+      entry['eval_' + evalulation.evalID] = evalulation.mark;
+      entry.editAccess |= evalulation.editAccess;
+    });
     formatted_data.push(entry)
   })
   return formatted_data;
@@ -50,20 +55,29 @@ function validate_student_output_data(student_data) {
 }
 
 const getters = {
-  course_data: (state) => state.course_data,
-  student_data: (state) => state.student_data,
+  course_data: state => state.course_data,
+  student_data: state => state.student_data,
+  selected_students: state => state.selected_students,
   getField,
 };
 
 
 const actions = {
 
+  updateSelectedStudents({commit}) {
+    commit('clearSelectedStudentsList');
 
-  async fetchCourseDetails({commit}, {courseID, session}) {
+    if(!state.course_data.hasForwarded) return;
+    state.student_data.forEach(student => {
+      if(student.editAccess) commit('addToSelectedStudents', student);
+    });
+  },
+  async fetchCourseDetails({commit, dispatch}, {courseID, session}) {
     const res = await api.get(`/teacher/courses/${courseID}/${session}`);
     res.data.student_details = reformat_student_input_data(res.data.student_details, res.data.teacher_details.evalCount);
-    console.log(res.data.teacher_details.hasForwarded);
     commit('setCourseDetails', res.data);
+
+    dispatch('updateSelectedStudents');
   },
 
   async studentDataFilledCheck() {
@@ -99,6 +113,12 @@ const actions = {
 };
 
 const mutations = {
+  clearSelectedStudentsList: state => {
+    state.selected_students = [];
+  },
+  addToSelectedStudents: (state, student) => {
+    state.selected_students.push(student);
+  },
   setHasForwarded:(state, hasForwarded) => {
     state.course_data.hasForwarded = hasForwarded;
   },
