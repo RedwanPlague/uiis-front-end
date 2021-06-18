@@ -39,6 +39,7 @@
 import PasswordMakerField from 'components/FormElements/PasswordMakerField'
 import PrivilegePicker from 'components/FormElements/PrivilegePicker'
 import creator from 'src/mixins/creator'
+import {extract} from 'src/utils/apiDataPreProcessor'
 
 export default {
   name: 'AdminCreatorForm',
@@ -64,7 +65,7 @@ export default {
         id: this.id,
         password: this.password,
         name: this.name,
-        privileges: this.privileges
+        privileges: extract(this.privileges)
       }, 'Admin account')
         .catch(() => {})
     },

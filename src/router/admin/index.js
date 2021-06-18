@@ -22,6 +22,11 @@ export default {
           name: 'AdminAccountEditPage',
           component: () => import('pages/admin/accounts/Edit')
         },
+        {
+          path: 'role',
+          name: 'AdminRoleManagePage',
+          component: () => import('pages/admin/accounts/RoleManagement')
+        },
       ]
     },
     {

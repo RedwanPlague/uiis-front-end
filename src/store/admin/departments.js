@@ -2,7 +2,7 @@ import {apiFetch} from 'src/utils/apiWrappers'
 
 export default {
   state: {
-    departmentsLoaded: false,
+    deptListLoaded: false,
     deptList: []
   },
   getters: {
@@ -11,26 +11,24 @@ export default {
     }
   },
   mutations: {
-    setDepartments(state, data) {
+    setDeptList(state, data) {
       state.deptList = data
-      state.departmentsLoaded = true
+    },
+    setDeptListLoaded(state) {
+      state.deptListLoaded = true
     }
   },
   actions: {
-    loadDepartments(context) {
+    fetchDeptList(context) {
       return new Promise((resolve, reject) => {
-        if (context.state.departmentsLoaded) {
+        if (context.state.deptListLoaded) {
           resolve()
         }
         else {
-          apiFetch('/department/list', null, 'All dept list')
+          context.commit('setDeptListLoaded')
+          apiFetch('/department/list', null, 'deptList')
             .then(response => {
-              context.commit('setDepartments', response.data.map(x => {
-                return {
-                  value: x.id,
-                  label: `${x.id} - ${x.name}`
-                }
-              }))
+              context.commit('setDeptList', response.data)
               resolve(response)
             })
             .catch(error => reject(error))

@@ -49,6 +49,7 @@
 import PasswordMakerField from 'components/FormElements/PasswordMakerField'
 import PrivilegePicker from 'components/FormElements/PrivilegePicker';
 import edit from 'src/mixins/edit'
+import {extract} from 'src/utils/apiDataPreProcessor'
 
 export default {
   name: 'AdminEditForm',
@@ -77,9 +78,8 @@ export default {
       this.callEditApi('account/update/admin/' + this.loadID, {
         name: this.name,
         password: this.password,
-        privileges: this.privileges ? this.privileges : []
-      }, 'Admin account')
-        .catch(() => {})
+        privileges: this.privileges ? extract(this.privileges) : []
+      }, 'Admin account').catch(() => {})
     },
     resetForm() {
       this.loadOldDataIntoForm()

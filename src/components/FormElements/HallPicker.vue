@@ -37,17 +37,27 @@ export default {
   },
   methods: {
     ...mapActions('admin', [
-      'loadHalls'
+      'fetchHallList'
     ]),
-    fetchHalls() {
-      this.loadHalls().then(() => {
-        this.mainList = this.hallList
+    loadHalls() {
+      this.fetchHallList().then(() => {
+        this.mainList = this.hallList.map(x => {
+          return {
+            value: x.id,
+            label: `${x.id} - ${x.name}`
+          }
+        })
         this.fixValue()
       })
     },
   },
   created() {
-    this.fetchHalls()
+    this.loadHalls()
+  },
+  watch: {
+    hallList() {
+      this.loadHalls()
+    }
   }
 }
 </script>

@@ -3,7 +3,7 @@
     :class="classes"
     :value="value"
     @input="$emit('input', $event)"
-    :options="privilegeOptions"
+    :options="options"
     :label="label"
     :readonly="readonly"
     outlined
@@ -12,7 +12,7 @@
     :clearable="multiple"
     use-input
     input-debounce="0"
-    @filter="privilegeFilter"
+    @filter="optionFilter"
     :rules="[() => !required || multiple || !!value || `Please Select ${label}`]"
   >
     <template v-slot:no-option>
@@ -26,63 +26,42 @@
 </template>
 
 <script>
-import {apiFetch} from 'src/utils/apiWrappers'
-import {isSubstring} from 'src/utils/patternSearch'
+import picker from 'src/mixins/picker'
+import {mapGetters, mapActions} from 'vuex'
 
 export default {
   name: 'PrivilegePicker',
-  props: {
-    label: {
-      type: String,
-      default: 'Privilege'
-    },
-    value: {
-      type: Array,
-      default: null
-    },
-    classes: {
-      type: [Object, Array, String]
-    },
-    multiple: {
-      type: Boolean,
-      default: false
-    },
-    required: {
-      type: Boolean,
-      default: false
-    },
-    readonly: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data() {
-    return {
-      privilegeOptions: [],
-      privilegeList: [],
-    }
+  mixins: [
+    picker
+  ],
+  computed: {
+    ...mapGetters('admin', [
+      'privilegeList'
+    ]),
   },
   methods: {
-    fetchPrivilegeList() {
-      apiFetch('/account/privileges', null, 'List of ALL privileges')
-        .then(response => {
-          this.privilegeList = Object.values(response.data)
+    ...mapActions('admin', [
+      'fetchPrivilegeList'
+    ]),
+    loadPrivileges() {
+      this.fetchPrivilegeList().then(() => {
+        this.mainList = Object.values(this.privilegeList).map(x => {
+          return {
+            value: x,
+            label: x
+          }
         })
-    },
-    privilegeFilter(value, update) {
-      if (value === '') {
-        update(() => {
-          this.privilegeOptions = this.privilegeList
-        })
-        return
-      }
-      update(() => {
-        this.privilegeOptions = this.privilegeList.filter(x => isSubstring(x, value))
       })
+      this.fixValue()
     },
   },
   created() {
-    this.fetchPrivilegeList()
+    this.loadPrivileges()
+  },
+  watch: {
+    privilegeList() {
+      this.loadPrivileges()
+    }
   }
 }
 </script>
