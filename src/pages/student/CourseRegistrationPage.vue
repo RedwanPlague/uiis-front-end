@@ -29,20 +29,22 @@
           <q-table
             v-if="getStudent.status === 'unregistered'"
             title="Courses Available"
-            dense bordered
+            bordered
             :data="getAvailableCourseRegistrations"
             :columns="getRegistrationColumns"
             row-key="courseID"
             selection="multiple"
             :selected.sync="selected"
+            separator="cell"
           />
           <q-table
             v-else
             title="Courses Available"
-            dense bordered
+            bordered
             :data="getAvailableCourseRegistrations"
             :columns="getRegistrationColumns"
             row-key="courseID"
+            separator="cell"
           />
         </q-card-section>
 

@@ -19,7 +19,11 @@
       </div><br />
 
       <q-table
-        dense bordered :data="getAvailableGrades" :columns="getGradeColumns" row-key="courseID"
+        bordered
+        :data="getAvailableGrades"
+        :columns="getGradeColumns"
+        row-key="courseID"
+        separator="cell"
       /><br />
 
       <div v-if="$route.query.filter === 'semester'" class="row">

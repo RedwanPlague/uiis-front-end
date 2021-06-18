@@ -124,7 +124,12 @@
 
           <q-card-section>
             <q-table
-              title="Courses Available" dense bordered :data="courseRegistrations" :columns="getRegistrationColumns" row-key="courseID"
+              title="Courses Available"
+              bordered
+              :data="courseRegistrations"
+              :columns="getRegistrationColumns"
+              row-key="courseID"
+              separator="cell"
             />
           </q-card-section>
 
@@ -163,7 +168,12 @@
 
           <q-card-section>
             <q-table
-              title="Courses Available" dense bordered :data="courseRegistrations" :columns="getRegistrationColumns" row-key="courseID"
+              title="Courses Available"
+              bordered
+              :data="courseRegistrations"
+              :columns="getRegistrationColumns"
+              row-key="courseID"
+              separator="cell"
             />
           </q-card-section>
 
