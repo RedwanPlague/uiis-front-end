@@ -81,11 +81,11 @@
           </q-td>
 
           <q-td v-for="i in course_data.evalCount" :props="props" :key="'eval_'+i">
-            <q-input type="number" min="0" v-model="props.row['eval_'+i]" autofocus dense :disable="!editMode" input-class="text-center" />
+            <q-input type="number" min="0" v-model="props.row['eval_'+i]" autofocus dense :disable="!props.row.editAccess || !editMode" input-class="text-center" />
           </q-td>
 
           <q-td key="attendance" :props="props">
-            <q-input type="number" min="0" v-model="props.row.attendance" autofocus dense :disable="!editMode" input-class="text-center"/>
+            <q-input type="number" min="0" v-model="props.row.attendance" autofocus dense :disable="!props.row.editAccess || !editMode" input-class="text-center"/>
           </q-td>
         </q-tr>
       </template>
@@ -314,10 +314,7 @@
             });
           }
         }
-
-
-
-        if( this.editMode ) {
+        if( !this.course_data.hasForwarded && this.editMode ) {
           this.buttonIcon =  'done';
           this.buttonText = 'Save';
           this.columns.forEach( (cell,index) => {
