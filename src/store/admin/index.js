@@ -3,15 +3,16 @@ import halls from 'src/store/admin/halls'
 import teachers from 'src/store/admin/teachers'
 import courses from 'src/store/admin/courses'
 
-const merged = {
+const admin = {
+  namespaced: true,
   state: {},
   getters: {},
   mutations: {},
   actions: {}
 }
 
-for (const key of Object.keys(merged)) {
-  merged[key] = {
+for (const key of Object.keys(admin)) {
+  admin[key] = {
     ...departments[key],
     ...halls[key],
     ...teachers[key],
@@ -19,9 +20,4 @@ for (const key of Object.keys(merged)) {
   }
 }
 
-console.log(merged)
-
-export default {
-  namespaced: true,
-  ...merged
-}
+export default admin
