@@ -22,13 +22,14 @@ export default {
     },
     userHasPrivilege(state) {
       return (privilegeName) => !!state.user &&
-        state.user.hasOwnProperty('privilegeList') &&
-        state.user.privilegeList.includes(privilegeName)
+        state.user.hasOwnProperty('mergedPrivileges') &&
+        state.user.mergedPrivileges.includes(privilegeName)
     },
   },
   mutations: {
     userLogIn(state, data) {
       state.user = data.user
+      state.user.mergedPrivileges = data.mergedPrivileges
       LocalStorage.set('authToken', data.token)
       setApiToken(data.token)
     },
@@ -64,7 +65,8 @@ export default {
             .then(response => {
               console.log('Auto Login successful')
               console.log(response)
-              context.commit('userLogIn', {user: response.data, token})
+              response.data.token = token
+              context.commit('userLogIn', response.data)
               resolve(response)
             })
             .catch(error => {
