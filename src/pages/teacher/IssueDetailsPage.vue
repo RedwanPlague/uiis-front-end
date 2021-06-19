@@ -95,8 +95,12 @@ export default {
     ...mapGetters(['user'])
   },
   async created() {
+    this.$q.loading.show({
+      delay: 100 // ms
+    });
     await this.fetchIssueDetails( { issueID: this.$route.params.issueID});
     this.setPageVariables();
+    this.$q.loading.hide();
   },
   watch: {
     async '$route.params' (to, from) {
@@ -126,9 +130,24 @@ export default {
     },
     async submitButtonClicked(e) {
       e.preventDefault();
+
+      const notif = this.$q.notify({
+        message: 'Updating...',
+        position: "bottom-left",
+        group: false, // required to be updatable
+        timeout: 0, // we want to be in control when it gets dismissed
+        spinner: true,
+      });
       this.resolveFlag = false;
       await this.changeIssueStatus();
       this.setPageVariables();
+
+      notif({
+        icon: 'done', // we add an icon
+        spinner: false, // we reset the spinner setting so the icon can be displayed
+        message: 'Updated',
+        timeout: 1500 // we will timeout it in 2.5s
+      });
     },
     async addComment(comment) {
       await this.sendComment({comment});

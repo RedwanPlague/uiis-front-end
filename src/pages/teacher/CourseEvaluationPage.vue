@@ -150,6 +150,10 @@
       }
     },
     async created() {
+      this.$q.loading.show({
+        delay: 100 // ms
+      });
+
       await this.fetchCourseDetails( { courseID: this.$route.params.courseID, session: this.$route.params.courseSession});
       for(let i = 1 ; i <= this.course_data.evalCount ; i++) {
         let new_eval_entry = {
@@ -161,9 +165,7 @@
         new_eval_entry.field += i;
         this.columns.splice(this.columns.length - 1, 0, new_eval_entry);
       }
-
-      this.selected.push(this.student_data[0]);
-      this.selected.push(this.student_data[3]);
+      this.$q.loading.hide();
     },
     watch: {
       async '$route.params' (to, from) {
@@ -334,8 +336,6 @@
       },
       data() {
         return {
-
-          selected: [],
           csvButton: false,
           studentFilter: '',
           submitFlag: false,

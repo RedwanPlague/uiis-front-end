@@ -9,7 +9,7 @@
         :pagination.sync="pagination"
         :filter="unresolvedFilter"
         @row-click="onRowClick"
-        hide-bottom
+        :hide-bottom="allIssues.unresolvedIssues && allIssues.unresolvedIssues.length > 0"
       >
         <template v-slot:top-right>
           <q-input outlined dense debounce="300" v-model="unresolvedFilter" placeholder="Search">
@@ -30,7 +30,7 @@
         :pagination.sync="pagination"
         :filter="resolvedFilter"
         @row-click="onRowClick"
-        hide-bottom
+        :hide-bottom="allIssues.resolvedIssues && allIssues.resolvedIssues.length > 0"
       >
 
         <template v-slot:top-right >
@@ -111,8 +111,11 @@ export default {
     ...mapActions(['fetchIssues']),
   },
   async created() {
+    this.$q.loading.show({
+      delay: 100 // ms
+    });
     await this.fetchIssues();
-    console.log(this.allIssues);
+    this.$q.loading.hide();
   },
   computed: {
     ...mapGetters(['allIssues']),

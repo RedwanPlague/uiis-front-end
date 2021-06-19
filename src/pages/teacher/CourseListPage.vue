@@ -10,7 +10,7 @@
         :pagination.sync="pagination"
         :filter="currentCourseFilter"
         @row-click="onRowClick"
-        hide-bottom
+        :hide-bottom="allCourses.currentCourseSessions && allCourses.currentCourseSessions.length > 0"
       >
         <template v-slot:top-right>
           <q-input outlined dense debounce="300" v-model="currentCourseFilter" placeholder="Search">
@@ -32,7 +32,7 @@
         :pagination.sync="pagination"
         :filter="previousCourseFilter"
         @row-click="onRowClick"
-        hide-bottom
+        :hide-bottom="allCourses.previousCourseSessions && allCourses.previousCourseSessions.length > 0"
       >
 
         <template v-slot:top-right >
@@ -111,7 +111,11 @@ export default {
     ...mapActions(['fetchCourses']),
   },
   async created() {
+    this.$q.loading.show({
+      delay: 100 // ms
+    });
     await this.fetchCourses();
+    this.$q.loading.hide();
   },
   computed: {
     ...mapGetters(['allCourses']),
