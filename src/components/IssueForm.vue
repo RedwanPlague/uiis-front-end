@@ -106,7 +106,8 @@ export default {
   watch: {},
 
   async created() {
-    const audience = (this.$store.getters["scrutinizer/currentCourseInfo"]).audience;
+    const audience = this.$store.getters["scrutinizer/currentCourseInfo"]
+      .audience;
 
     // will be replaced with api call
     // this.audience = [
@@ -128,7 +129,7 @@ export default {
       name: audi.name,
       id: audi.id,
       removable: true, // will change when Sezan/me changes the api
-      ase: false, // also will change
+      ase: false // also will change
     }));
 
     this.audience.push({
@@ -137,6 +138,20 @@ export default {
       removable: false,
       ase: true
     });
+
+    const nije = this.$store.getters["user"];
+
+    const ald = this.audience.find(audi => audi.id === nije.id);
+    if (!ald) {
+      console.log("hemlo");
+      this.audience.push({
+        name: nije.name,
+        id: nije.id,
+        removable: false,
+        ase: true
+      });
+    }
+    else console.log("bemlo");
   }
 };
 </script>

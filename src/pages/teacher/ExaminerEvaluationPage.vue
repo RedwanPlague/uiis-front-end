@@ -5,7 +5,7 @@
         info.courseID + " (" + info.courseTitle + ") - " + "Part " + info.part
       }}
     </h6>
-    <q-checkbox v-model="canEdit" label="Edit" />
+    <q-checkbox v-model="canEdit" v-if="canSave" label="Edit" />
 
     <q-table
       class="table"
@@ -17,7 +17,10 @@
       table-header-class="bg-primary text-white"
     >
       <template v-slot:body="props">
-        <q-tr :props="props">
+        <q-tr
+          :props="props"
+          :class="{ bhul: info.hasForwarded && props.row.editAccess }"
+        >
           <q-td key="studentID" :props="props">
             {{ props.row.studentID }}
           </q-td>
@@ -25,6 +28,7 @@
             <q-input
               type="number"
               :value="props.row.mark"
+              :disable="!canEdit || !props.row.editAccess"
               @change="updateMarks($event, props.row.studentID)"
             ></q-input>
           </q-td>
@@ -38,7 +42,7 @@
         label="Save"
         class="q-ma-md"
         @click="saveMarks"
-        :disable="!info.editAccess"
+        v-if="canSave"
       >
       </q-btn>
       <q-btn
@@ -46,7 +50,7 @@
         label="Submit"
         class="q-ma-md"
         @click="submitMarks"
-        :disable="!info.editAccess"
+        v-if="!info.hasForwarded"
       />
     </div>
   </div>
@@ -80,21 +84,6 @@ export default {
           label: "Mark",
           field: "mark",
           align: "left"
-        }
-      ],
-
-      studentss: [
-        {
-          studentID: "1605002",
-          studentName: "Zawad",
-          mark: 0,
-          editAccess: true
-        },
-        {
-          studentID: "1605003",
-          studentName: "Bishwa",
-          mark: 10,
-          editAccess: true
         }
       ]
     };
@@ -179,8 +168,7 @@ export default {
     async submitMarks() {
       const paise = await this.uploadMarks("forward");
       if (paise) {
-        this.canEdit = false;
-        this.$store.commit("examiner/mutHasEditAccess");
+        this.$store.commit("examiner/mutHasForwarded");
       }
     }
   },
@@ -194,6 +182,13 @@ export default {
     students() {
       console.log(this.info.students);
       return this.info.students ? this.info.students : [];
+    },
+
+    canSave() {
+      for (const stu of this.students) {
+        if (stu.editAccess) return true;
+      }
+      return false;
     }
   },
 
@@ -240,4 +235,11 @@ export default {
   }
 };
 </script>
-<style scoped></style>
+<style scoped>
+.bhul {
+  background: rgba(255,0,0,0.2);
+}
+.bhul.q-table tbody td:after{
+    background: rgba(255,0,0,0.2);
+}
+</style>

@@ -74,7 +74,9 @@ const mutations = {
         course.courseID === state.currentCourse &&
         course.part === state.currentPart
     );
-    curCor.mutHasForwarded = true;
+
+    for(const stu of curCor.students) stu.editAccess = false;
+    curCor.hasForwarded = true;
   }
 };
 
