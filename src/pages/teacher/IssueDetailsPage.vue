@@ -23,7 +23,7 @@
           <span class="header-col-1"><b>Current Audience:</b></span>
           <q-chip v-for="teacher in issueDetails.teachers" :key="teacher._id" color="black" text-color="white" square outline> {{teacher.name}}</q-chip>
         </div>
-        <q-btn v-if="issueDetails.issueCreator  && issueDetails.issueCreator.id === user.id" class="resolve-btn" color="teal" label="Mark As Resolved"  icon="check_circle"  no-caps @click="resolveClicked"/>
+        <q-btn v-if="issueDetails.issueCreator  && issueDetails.issueCreator.id === user.id" class="resolve-btn" color="teal" :label="resolveButtonText"  :icon="resolveButtonIcon"  no-caps @click="resolveClicked"/>
       </div>
     </div>
 
@@ -53,6 +53,18 @@
       imageLink= 'https://avatars.githubusercontent.com/u/32516061?s=80&amp;v=4'
       @submitClicked="addComment"
     />
+
+    <q-dialog v-model="resolveFlag" persistent>
+      <q-card>
+        <q-card-section class="row items-center">
+          <span class="q-ml-sm">Are you sure you want to {{resolveButtonText}}?</span>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="primary" v-close-popup />
+          <q-btn flat :label="resolveButtonText" color="primary" v-close-popup @click="submitButtonClicked"/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -84,6 +96,7 @@ export default {
   },
   async created() {
     await this.fetchIssueDetails( { issueID: this.$route.params.issueID});
+    this.setPageVariables();
   },
   watch: {
     async '$route.params' (to, from) {
@@ -91,15 +104,31 @@ export default {
         return;
       }
       await this.fetchIssueDetails( { issueID: this.$route.params.issueID});
+      this.setPageVariables();
     }
   },
   methods: {
-    ...mapActions(['fetchIssueDetails', 'sendComment']),
+    ...mapActions(['fetchIssueDetails', 'sendComment', 'changeIssueStatus']),
+    setPageVariables() {
 
-    // fixme: incomplete method
+      if(this.issueDetails.status === 'unresolved') {
+        this.resolveButtonIcon= 'check_circle';
+        this.resolveButtonText= 'Mark As Resolved';
+      }
+      else  {
+        this.resolveButtonText = 'Reopen Issue';
+        this.resolveButtonIcon = 'replay';
+      }
+    },
     resolveClicked(e) {
       e.preventDefault();
-
+      this.resolveFlag = true;
+    },
+    async submitButtonClicked(e) {
+      e.preventDefault();
+      this.resolveFlag = false;
+      await this.changeIssueStatus();
+      this.setPageVariables();
     },
     async addComment(comment) {
       await this.sendComment({comment});
@@ -107,6 +136,9 @@ export default {
   },
   data() {
     return {
+      resolveButtonIcon: '',
+      resolveButtonText: '',
+      resolveFlag: false,
       issueEntries: [
         {
           type: 'activity',

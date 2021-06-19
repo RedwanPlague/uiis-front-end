@@ -11,6 +11,11 @@ const getters = {
 };
 
 const actions = {
+  async changeIssueStatus({commit}) {
+    const res = await api.put(`/teacher/issues/${state.issueDetails._id}/changeStatus`);
+    commit('setIssueStatus', res.data.status);
+    commit('setPosts', res.data.posts);
+  },
   async fetchIssues({commit}) {
     const res = await api.get('/teacher/issues');
     commit('setIssues', res.data);
@@ -28,9 +33,10 @@ const actions = {
 };
 
 const mutations = {
-  setIssues: (state, issues) => (state.issues = issues),
-  setIssueDetails: (state, issueDetails) => (state.issueDetails = issueDetails),
-  setPosts: (state, posts) => (state.issueDetails.posts = posts)
+  setIssueStatus: (state, status) => state.issueDetails.status = status,
+  setIssues: (state, issues) => state.issues = issues,
+  setIssueDetails: (state, issueDetails) => state.issueDetails = issueDetails,
+  setPosts: (state, posts) => state.issueDetails.posts = posts
 };
 
 export default {

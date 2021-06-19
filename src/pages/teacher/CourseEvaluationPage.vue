@@ -24,7 +24,7 @@
 
       <div class="button-row" >
         <div class="col" v-show="showEditButton">
-        <q-btn :icon='buttonIcon' size='md' color="primary" :label="buttonText" class="" @click="toggleEditMode" ></q-btn>
+        <q-btn :icon='buttonIcon' size='md' color="primary" :label="buttonText" @click="toggleEditMode" ></q-btn>
       </div>
       <div class="col csv-button" v-show="!course_data.hasForwarded">
           <q-btn
@@ -314,12 +314,14 @@
             });
           }
         }
-        if( !this.course_data.hasForwarded && this.editMode ) {
+        if( this.editMode ) {
           this.buttonIcon =  'done';
           this.buttonText = 'Save';
-          this.columns.forEach( (cell,index) => {
-            if(index >= 2) cell.classes = 'bg-white-1';
-          } );
+          if( !this.course_data.hasForwarded) {
+            this.columns.forEach((cell, index) => {
+              if (index >= 2) cell.classes = 'bg-white-1';
+            });
+          }
         }
         else {
           this.buttonIcon =  'edit';

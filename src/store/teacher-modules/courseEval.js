@@ -23,7 +23,8 @@ function validate_student_output_data(student_data) {
       }
       entry.evalMarks.push({
         evalID: i,
-        mark: student['eval_'+i]
+        mark: student['eval_'+i],
+        editAccess: student.editAccess
       });
     }
     formatted_data.push(entry);
@@ -63,7 +64,10 @@ const actions = {
         entry['eval_' + evalulation.evalID] = evalulation.mark;
         entry.editAccess |= evalulation.editAccess;
       });
-      if(entry.editAccess) commit('setEditButton', true );
+      if(entry.editAccess) {
+        console.log(entry);
+        commit('setEditButton', true );
+      }
       formatted_data.push(entry)
     });
     return formatted_data;
@@ -100,6 +104,8 @@ const actions = {
   },
   async setHasForwarded({commit}) {
     commit('setHasForwarded', true);
+    commit('removeEditAccess');
+    commit('setEditButton', false);
   },
   async saveStudentData() {
 
@@ -125,6 +131,11 @@ const mutations = {
   clearSelectedStudentsList: state => state.selected_students = [],
   addToSelectedStudents: (state, student) => state.selected_students.push(student),
   setHasForwarded:(state, hasForwarded) => state.course_data.hasForwarded = hasForwarded,
+  removeEditAccess: (state) => {
+    state.student_data.forEach(entry => {
+      entry.editAccess = false;
+    });
+  },
   setCourseDetails: (state, courseDetails) => {
     state.course_data = courseDetails.teacher_details;
     state.student_data = courseDetails.student_details;
