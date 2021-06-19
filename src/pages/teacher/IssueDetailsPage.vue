@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" v-show="pageLoaded">
 
     <div class="issue-header">
       <div class="issue-header-row">
@@ -23,11 +23,11 @@
           <span class="header-col-1"><b>Current Audience:</b></span>
           <q-chip v-for="teacher in issueDetails.teachers" :key="teacher._id" color="black" text-color="white" square outline> {{teacher.name}}</q-chip>
         </div>
-        <q-btn v-if="issueDetails.issueCreator  && issueDetails.issueCreator.id === user.id" class="resolve-btn" color="teal" :label="resolveButtonText"  :icon="resolveButtonIcon"  no-caps @click="resolveClicked"/>
+        <q-btn v-if="issueDetails.issueCreator  && issueDetails.issueCreator.id === user.id" :disable="buttonLoading" class="resolve-btn" color="teal" :label="resolveButtonText"  :icon="resolveButtonIcon"  no-caps @click="resolveClicked"/>
       </div>
     </div>
 
-    <q-separator class="bg-blue-2" inset="true"/>
+    <q-separator class="bg-blue-2 separator" inset="true"/>
 
 
     <div v-for="(issue,index) in issueDetails.posts" :key="index">
@@ -57,7 +57,7 @@
     <q-dialog v-model="resolveFlag" persistent>
       <q-card>
         <q-card-section class="row items-center">
-          <span class="q-ml-sm">Are you sure you want to {{resolveButtonText}}?</span>
+          <span class="q-ml-sm">Are you sure you want to {{resolveButtonText.toLowerCase()}}?</span>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn flat label="Cancel" color="primary" v-close-popup />
@@ -95,12 +95,16 @@ export default {
     ...mapGetters(['user'])
   },
   async created() {
+    this.pageLoaded =  false;
     this.$q.loading.show({
-      delay: 100 // ms
+      delay: 100, // ms
+      message: 'Loading...',
+      messageColor: 'white'
     });
     await this.fetchIssueDetails( { issueID: this.$route.params.issueID});
     this.setPageVariables();
     this.$q.loading.hide();
+    this.pageLoaded =  true;
   },
   watch: {
     async '$route.params' (to, from) {
@@ -139,8 +143,11 @@ export default {
         spinner: true,
       });
       this.resolveFlag = false;
+
+      this.buttonLoading = true;
       await this.changeIssueStatus();
       this.setPageVariables();
+      this.buttonLoading = false;
 
       notif({
         icon: 'done', // we add an icon
@@ -148,6 +155,7 @@ export default {
         message: 'Updated',
         timeout: 1500 // we will timeout it in 2.5s
       });
+
     },
     async addComment(comment) {
       await this.sendComment({comment});
@@ -155,6 +163,9 @@ export default {
   },
   data() {
     return {
+      pageLoaded: '',
+      buttonLoading: false,
+
       resolveButtonIcon: '',
       resolveButtonText: '',
       resolveFlag: false,
@@ -202,6 +213,11 @@ export default {
 </script>
 
 <style scoped>
+
+.separator {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
 
 .resolve-btn {
   margin-right: 35px;

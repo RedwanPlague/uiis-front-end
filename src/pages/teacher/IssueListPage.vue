@@ -1,5 +1,5 @@
 <template>
-  <q-page  class="container">
+  <q-page  class="container" v-show="pageLoaded">
     <div class="q-pa-md table">
       <q-table
         title="Unresolved Issues"
@@ -56,6 +56,7 @@ export default {
   name: "IssueListPage",
   data () {
     return {
+      pageLoaded:'',
       unresolvedFilter: '',
       resolvedFilter: '',
       pagination: {
@@ -111,11 +112,15 @@ export default {
     ...mapActions(['fetchIssues']),
   },
   async created() {
+    this.pageLoaded = false;
     this.$q.loading.show({
-      delay: 100 // ms
+      delay: 100,
+      message: 'Loading...',
+      messageColor: 'white'
     });
     await this.fetchIssues();
     this.$q.loading.hide();
+    this.pageLoaded = true;
   },
   computed: {
     ...mapGetters(['allIssues']),

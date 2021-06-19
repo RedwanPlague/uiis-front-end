@@ -64,6 +64,7 @@ img {
   flex-wrap: wrap;
   margin-left: 30px;
   margin-top: 20px;
+  margin-bottom: 20px;
   /*padding-left: -20px;*/
   /*padding-top: 50px;*/
 }

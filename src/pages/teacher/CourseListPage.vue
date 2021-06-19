@@ -1,5 +1,5 @@
 <template>
-  <q-page  class="container">
+  <q-page  class="container" v-show="pageLoaded">
     <div class="q-pa-md table">
       <q-table
         title="Current Courses"
@@ -58,6 +58,8 @@ export default {
   name: "ClassPage",
   data () {
     return {
+      pageLoaded: '',
+
       currentCourseFilter: '',
       previousCourseFilter: '',
       pagination: {
@@ -111,11 +113,15 @@ export default {
     ...mapActions(['fetchCourses']),
   },
   async created() {
+    this.pageLoaded = false;
     this.$q.loading.show({
-      delay: 100 // ms
+      delay: 100,
+      message: 'Loading...',
+      messageColor: 'white'
     });
     await this.fetchCourses();
     this.$q.loading.hide();
+    this.pageLoaded = true;
   },
   computed: {
     ...mapGetters(['allCourses']),
