@@ -32,7 +32,7 @@ export default {
     this.parsedActivity = this.activity;
     const activityType = this.activity.split(' ')[0];
 
-    if(activityType === 'has') {
+    if(activityType === 'has' || activityType === 'updated') {
       this.topSlotIcon = 'edit';
       const id = this.activity.lastIndexOf(" ");
       this.parsedActivity =  this.activity.substr(0, id) + '<b>' + this.activity.substr(id) + '</b>';
