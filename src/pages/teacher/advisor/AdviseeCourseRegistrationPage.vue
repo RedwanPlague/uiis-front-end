@@ -134,9 +134,9 @@
           </q-card-section>
 
           <q-card-actions align="right">
-            <q-btn class="bg-secondary text-white" label="Approve" @click="approve" v-close-popup />
-            <q-btn class="bg-secondary text-white" label="Reject" @click="reject" v-close-popup />
-            <q-btn class="bg-primary text-white" label="Back" v-close-popup />
+            <q-btn class="bg-positive text-white" label="Approve" @click="approve" v-close-popup />
+            <q-btn class="bg-negative text-white" label="Reject" @click="reject" v-close-popup />
+            <q-btn class="bg-secondary text-white" label="Back" v-close-popup />
           </q-card-actions>
         </q-card>
       </q-dialog>
@@ -178,7 +178,7 @@
           </q-card-section>
 
           <q-card-actions align="right">
-            <q-btn class="bg-primary text-white" label="Back" v-close-popup />
+            <q-btn class="bg-secondary text-white" label="Back" v-close-popup />
           </q-card-actions>
         </q-card>
       </q-dialog>

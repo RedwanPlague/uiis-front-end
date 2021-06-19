@@ -1,67 +1,74 @@
 <template>
   <q-page padding>
     <div class="q-pa-md">
-      <div class="text-h5">Grades</div><br />
-      <div class="text-subtitle2">
-        <p>
-          <strong>Student ID:</strong> {{ getStudent.id }}
-        </p>
-        <p>
-          <strong>Name:</strong> {{ getStudent.name }}
-        </p>
-        <p>
-          <strong>Department:</strong> {{ getStudent.department }}
-        </p>
+      <q-card bordered>
+        <q-card-section>
+          <div class="text-h5">Grades</div><br />
+          <div class="text-subtitle2">
+            <p>
+              <strong>Student ID:</strong> {{ getStudent.id }}
+            </p>
+            <p>
+              <strong>Name:</strong> {{ getStudent.name }}
+            </p>
+            <p>
+              <strong>Department:</strong> {{ getStudent.department }}
+            </p>
 
-        <div v-if="$route.query.filter === 'semester'">
-          <strong>Level/Term:</strong> {{ $route.query.level }}/{{ $route.query.term }}
-        </div>
-        <div v-else-if="$route.query.filter === 'grade'">
-          <strong>Grade:</strong> {{ $route.query.gradeLetter }}
-        </div>
-      </div><br />
-
-      <q-table
-        bordered
-        :data="getAvailableGrades"
-        :columns="getGradeColumns"
-        row-key="courseID"
-        separator="cell"
-      /><br />
-
-      <div v-if="$route.query.filter === 'semester'" class="row">
-        <div class="text-subtitle2">
-          <p>
-            <strong>Registered Credit Hours in this Term:</strong> {{ getTotalCreditHour().toFixed(2) }}
-          </p>
-          <p>
-            <strong>Credit Hours Earned in this Term:</strong> {{ getTotalCreditHourObtained().toFixed(2) }}
-          </p>
-          <p>
-            <strong>Total Credit Hours:</strong> {{ getTotalCreditHoursCompleted().toFixed(2) }}
-          </p>
-        </div>
-
-        <q-space />
-
-        <q-card>
-          <q-card-section>
-            <div class="text-subtitle2">
-              <p>
-                <strong>Obtained GPA:</strong> {{ getGPA().toFixed(2) }}
-              </p>
-              <p>
-                <strong>Current CGPA:</strong> {{ getCGPA().toFixed(2) }}
-              </p>
+            <div v-if="$route.query.filter === 'semester'">
+              <strong>Level/Term:</strong> {{ $route.query.level }}/{{ $route.query.term }}
             </div>
-          </q-card-section>
-        </q-card>
-      </div><br />
+            <div v-else-if="$route.query.filter === 'grade'">
+              <strong>Grade:</strong> {{ $route.query.gradeLetter }}
+            </div>
+          </div>
+        </q-card-section>
 
-      <div class="row">
-        <q-space />
-        <q-btn class="bg-primary text-white" label="Back" @click="visitInformationPage" />
-      </div>
+        <q-separator />
+
+        <q-card-section>
+          <q-table
+            bordered
+            :data="getAvailableGrades"
+            :columns="getGradeColumns"
+            row-key="courseID"
+            separator="cell"
+          />
+        </q-card-section>
+
+        <q-card-section v-if="$route.query.filter === 'semester'" class="row">
+          <div class="text-subtitle2">
+            <p>
+              <strong>Registered Credit Hours in this Term:</strong> {{ getTotalCreditHour().toFixed(2) }}
+            </p>
+            <p>
+              <strong>Credit Hours Earned in this Term:</strong> {{ getTotalCreditHourObtained().toFixed(2) }}
+            </p>
+            <p>
+              <strong>Total Credit Hours:</strong> {{ getTotalCreditHoursCompleted().toFixed(2) }}
+            </p>
+          </div>
+
+          <q-space />
+
+          <q-card>
+            <q-card-section>
+              <div class="text-subtitle2">
+                <p>
+                  <strong>Obtained GPA:</strong> {{ getGPA().toFixed(2) }}
+                </p>
+                <p>
+                  <strong>Current CGPA:</strong> {{ getCGPA().toFixed(2) }}
+                </p>
+              </div>
+            </q-card-section>
+          </q-card>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn class="bg-primary text-white" label="Back" @click="visitInformationPage" />
+        </q-card-actions>
+      </q-card>
     </div>
   </q-page>
 </template>

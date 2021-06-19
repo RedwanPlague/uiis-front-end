@@ -42,7 +42,7 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn class="bg-primary text-white" label="Edit" v-close-popup />
+          <q-btn class="bg-primary text-white" label="Edit" />
         </q-card-actions>
       </q-card>
     </div>

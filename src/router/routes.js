@@ -83,8 +83,16 @@ const routes = [
         component: () => import('pages/teacher/advisor/AdviseeConversationPage.vue')
       },
 
-      { path: 'head/course_registration', component: () => import('pages/teacher/head/HeadCourseRegistrationPage.vue') },
-      { path: 'head/result_evaluation', component: () => import('pages/teacher/head/HeadResultEvaluationPage.vue') },
+      {
+        path: 'head/course_registration',
+        name: 'headCourseRegistration',
+        component: () => import('pages/teacher/head/HeadCourseRegistrationPage.vue')
+      },
+      {
+        path: 'head/result_evaluation',
+        name: 'headResultEvaluation',
+        component: () => import('pages/teacher/head/HeadResultEvaluationPage.vue')
+      },
 
       { path: 'examiner', component: () => import('pages/teacher/examiner/ExaminerPage.vue') },
       { path: 'examiner/:courseID', name: "examiner-evaluation-page", component: () => import('pages/teacher/examiner/ExaminerEvaluationPage.vue') },
