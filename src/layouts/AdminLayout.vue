@@ -165,7 +165,7 @@ export default {
       links.push({
         title: 'Fees',
         icon: 'school',
-        link: { name: 'AdminDuesAssignPage' }
+        link: { name: 'AdminFeeAssignPage' }
       })
       links.push({
         title: 'Fines',
@@ -206,6 +206,11 @@ export default {
       }
 
       this.quickLinks = links
+    }
+  },
+  created() {
+    if (this.user) {
+      this.buildLinks()
     }
   },
   watch: {

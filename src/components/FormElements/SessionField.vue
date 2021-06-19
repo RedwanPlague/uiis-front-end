@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import {dateToMonthYear, monthYearToDate} from 'src/utils/dateFormatters'
+import {dateToMonthYear} from 'src/utils/dateFormatters'
 import {apiFetch} from 'src/utils/apiWrappers'
 
 export default {
@@ -52,10 +52,13 @@ export default {
     readonly: {
       type: Boolean,
       default: false
+    },
+    generic: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
-    monthYearToDate,
     checkValue (val, reason/*, details*/) {
       if (reason === 'month') {
         this.$refs.monthPicker.hide()
@@ -67,10 +70,22 @@ export default {
         .then(response => {
           this.$emit('input', dateToMonthYear(response.data.session))
         })
+    },
+    preLoad() {
+      if (this.generic) {
+        this.$emit('input', dateToMonthYear(new Date()))
+      } else {
+        this.fetchCurrentSession()
+      }
     }
   },
   created() {
-    this.fetchCurrentSession()
+    this.preLoad()
+  },
+  watch: {
+    generic() {
+      this.preLoad()
+    }
   }
 }
 </script>

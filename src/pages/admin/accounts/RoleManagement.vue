@@ -2,6 +2,13 @@
   <q-page padding>
     <div class="text-h5 q-my-md">
       Manage Roles
+      <q-btn
+        v-if="roleToEdit"
+        :icon="viewing ? 'edit' : 'visibility'"
+        :color="viewing ? 'primary' : 'black'"
+        @click="viewing = !viewing"
+        flat dense
+      />
     </div>
     <div class="row q-col-gutter-md q-pb-sm">
       <role-picker
@@ -23,6 +30,7 @@
         v-model="privileges"
         label="Privileges"
         multiple
+        :readonly="viewing"
       />
       <div class="col-12">
         <q-btn label="Update" type="submit" color="primary" unelevated/>

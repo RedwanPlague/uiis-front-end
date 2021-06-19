@@ -56,14 +56,14 @@ export default {
       ]
     },
     {
-      path: 'dues',
-      name: 'AdminDuesAssignPage',
-      component: () => import('pages/admin/singles/DuesAssignment'),
+      path: 'fees',
+      name: 'AdminFeeAssignPage',
+      component: () => import('pages/admin/dues/FeeAssignment'),
     },
     {
       path: 'fines',
       name: 'AdminFineAssignPage',
-      component: () => import('pages/admin/singles/FineAssignment'),
+      component: () => import('pages/admin/dues/FineAssignment'),
     },
     {
       path: 'slots',
