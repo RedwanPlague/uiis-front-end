@@ -3,7 +3,8 @@ import { api } from "boot/axios";
 const state = {
   currentSession: "2021",
   courses: [],
-  currentCourse: null
+  currentCourse: null,
+  currentPart: null
 };
 
 const getters = {
@@ -11,11 +12,12 @@ const getters = {
     return state.courses.map(course => ({
       courseID: course.courseID,
       courseTitle: course.courseTitle,
-      part: course.part,
+      part: course.part
     }));
   },
 
   currentCourse: state => state.currentCourse,
+  currentPart: state => state.currentPart,
 
   currentCourseInfo: state =>
     state.courses.find(course => course.courseID === state.currentCourse),
@@ -27,10 +29,15 @@ const mutations = {
   mutCurCourse: (state, currentCourse) => {
     state.currentCourse = currentCourse;
   },
+  mutCurPart: (state, currentPart) => {
+    state.currentPart = currentPart;
+  },
 
   mutSingleMark: (state, payload) => {
     const curCourse = state.courses.find(
-      course => course.courseID === state.currentCourse
+      course =>
+        course.courseID === state.currentCourse &&
+        course.part === state.currentPart
     );
     const student = curCourse.students.find(
       student => student.studentID === payload.studentID
@@ -40,17 +47,19 @@ const mutations = {
   },
 
   mutAllCourses: (state, allCourses) => {
-    for(const cr of allCourses) {
+    for (const cr of allCourses) {
       cr.totalMarks = cr.editAccess = cr.students = null;
     }
 
     state.courses = allCourses;
-
   },
 
   mutSingleCourse: (state, payload) => {
-    let curCor = state.courses.find(cour => cour.courseID === state.currentCourse);
-    for(const prop in payload) {
+    let curCor = state.courses.find(
+      cour =>
+        cour.courseID === state.currentCourse && cour.part === state.currentPart
+    );
+    for (const prop in payload) {
       curCor[prop] = payload[prop];
     }
   },
@@ -61,7 +70,9 @@ const mutations = {
 
   mutHasForwarded: state => {
     const curCor = state.courses.find(
-      course => course.courseID === state.currentCourse
+      course =>
+        course.courseID === state.currentCourse &&
+        course.part === state.currentPart
     );
     curCor.mutHasForwarded = true;
   }
@@ -79,7 +90,9 @@ const actions = {
     const session = context.state.currentSession;
 
     const curCor = context.state.courses.find(
-      cr => cr.courseID === context.state.currentCourse
+      cr =>
+        cr.courseID === context.state.currentCourse &&
+        cr.part === context.state.currentPart
     );
 
     const courseInfo = (
