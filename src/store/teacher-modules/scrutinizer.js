@@ -167,6 +167,14 @@ const actions = {
         )
       ).data;
 
+      const eligi = (
+        await api.get(
+          `/teacher/issues/${context.state.currentCourse}/${context.state.currentSession}/eligibleList`
+        )
+      ).data;
+
+      course.audience = eligi;
+
       context.commit("mutSingleCourse", course);
       context.commit("mutCourseLoading", false);
 

@@ -11,7 +11,7 @@ const getters = {
     return state.courses.map(course => ({
       courseID: course.courseID,
       courseTitle: course.courseTitle,
-      part: course.part
+      part: course.part,
     }));
   },
 
@@ -59,11 +59,11 @@ const mutations = {
     state.currentSession = currentSession;
   },
 
-  mutHasEditAccess: state => {
+  mutHasForwarded: state => {
     const curCor = state.courses.find(
       course => course.courseID === state.currentCourse
     );
-    curCor.hasEditAccess = false;
+    curCor.mutHasForwarded = true;
   }
 };
 
@@ -72,32 +72,6 @@ const actions = {
     const session = context.state.currentSession;
 
     const shob = await api.get(`/teacher/examiner/${session}`);
-
-    // const courseSum = shob.data.toRet;
-    // console.log(courseSum);
-
-    // const shobCourses = [];
-
-    // for(const cr of courseSum) {
-    //   //console.log(`/teacher/examiner/${cr.courseID}/${session}?part=${cr.part}`);
-    //   const courseInfo = (await api.get(
-    //     `/teacher/examiner/${cr.courseID}/${session}?part=${cr.part}`,
-    //   )).data;
-
-    //   console.log(courseInfo);
-
-    //   const newCourse = {
-    //     courseID: cr.courseID,
-    //     courseTitle: cr.courseTitle,
-    //     part: cr.part,
-    //     totalMarks: courseInfo.totalMarks,
-    //     hasEditAccess: courseInfo.editAccess,
-    //     students: courseInfo.students,
-    //   };
-
-    //   shobCourses.push(newCourse);
-    // }
-
     context.commit("mutAllCourses", shob.data.toRet);
   },
 
