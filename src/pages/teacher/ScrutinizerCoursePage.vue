@@ -17,9 +17,9 @@
           transition-prev="slide-right"
           transition-next="slide-left"
           animated
-          swipeable
           padding
           arrows
+          draggable="false"
           control-color="primary"
           height="100%"
         >
@@ -36,32 +36,45 @@
                 :columns="teacherInfo.mathas"
                 separator="cell"
                 row-key="studentID"
+                :selected-rows-label="getSelectedString"
+                selection="multiple"
+                :selected.sync="selected"
+                table-header-class="bg-primary text-white"
+                
                 class="table"
               >
               </q-table>
+              <IssueForm :details="teacherInfo.issueDetails"/>
             </div>
           </q-carousel-slide>
           <q-carousel-slide
-            name="term-final"
+            v-for="(examinerInfo, index) in allTfInfo"
+            :key="index"
+            :name="examinerInfo.fakeExaminerID"
             class="column no-wrap flex-center"
           >
             <div class="q-mt-md text-center">
               <q-table
-                title="Term Final"
-                :data="tfInfo.deho"
-                :columns="tfInfo.mathas"
+                :title="examinerInfo.examinerName"
+                :data="examinerInfo.deho"
+                :columns="examinerInfo.mathas"
                 separator="cell"
                 row-key="studentID"
+                :selected-rows-label="getSelectedString"
+                selection="multiple"
+                :selected.sync="selected"
+                table-header-class="bg-primary text-white"
                 class="table"
               >
               </q-table>
+              <IssueForm :details="examinerInfo.issueDetails"/>
             </div>
           </q-carousel-slide>
         </q-carousel>
 
         <div class="row justify-center">
           <q-btn
-            v-show="!(!canEdit || hasApprovedResult || !allCompleted)"
+            v-show="!(!canEdit || hasForwarded)"
             class="q-mt-xl submit-btn"
             color="primary"
             label="Forward to department head"
@@ -85,11 +98,24 @@ export default {
     return {
       canEdit: true,
       slide: null,
-      courseLoading: true
+      courseLoading: true,
+      selected: []
     };
   },
 
+  components: {
+    IssueForm: () => import("components/IssueForm")
+  },
+
   methods: {
+    getSelectedString() {
+      return this.selected.length === 0
+        ? ""
+        : `${this.selected.length} students${
+            this.selected.length > 1 ? "s" : ""
+          } selected`;
+    },
+
     ...mapActions("scrutinizer", ["fillSingleCourse"]),
 
     async forwardResult() {
@@ -97,8 +123,8 @@ export default {
       await api.put(
         `/teacher/scrutinizer/${this.info.courseID}/${this.currentSession}/approve`
       );
-      this.$store.commit("scrutinizer/mutHasApprovedResult");
-      console.log(this.hasApprovedResult);
+      this.$store.commit("scrutinizer/mutHasForwarded");
+      console.log(this.hasForwarded);
 
       this.$q.notify({
         icon: "done",
@@ -118,7 +144,7 @@ export default {
       tfTotal: "tfTotal",
       tfStudent: "tfStudent",
       //courseLoading: "courseLoading",
-      hasApprovedResult: "hasApprovedResult",
+      hasForwarded: "hasForwarded",
       currentSession: "currentSession"
     }),
 
@@ -164,7 +190,6 @@ export default {
           label: `Student ID`,
           field: "studentID",
           sortable: true,
-          headerClasses: "bg-primary text-white",
           align: "center"
         };
 
@@ -176,7 +201,6 @@ export default {
           field: "attendance",
           sortable: true,
           align: "center",
-          headerClasses: "bg-primary text-white"
         };
 
         mathas.push(att);
@@ -191,7 +215,6 @@ export default {
             field: `eval_${evall.evalID}`,
             sortable: true,
             align: "center",
-            headerClasses: "bg-primary text-white"
           };
 
           mathas.push(dhukbe);
@@ -220,59 +243,82 @@ export default {
         const teacherName = this.info.names[teacher.teacher];
         const fakeTeacherID = "teacher-" + teacher.teacher;
 
-        shob.push({ fakeTeacherID, teacherName, mathas, deho });
+        const issueDetails = {
+          courseID: this.info.courseID,
+          evalType: "course-eval",
+          part: teacher.part,
+          evalOwner: teacher.teacher,
+          evalOwnerName: this.info.names[teacher.teacher],
+          allStudentSelected: this.selected.length === this.info.students.length,
+          students: this.selected.map(stu => stu.studentID),
+          teachers: ["t1", "t2"],
+        };
+
+        shob.push({ fakeTeacherID, teacherName, mathas, deho, issueDetails });
       }
 
       return shob;
     },
 
-    tfInfo() {
-      const mathas = [];
-      const deho = [];
-
-      const stu = {
-        name: "studentID",
-        label: `Student ID`,
-        field: "studentID",
-        sortable: true,
-        headerClasses: "bg-primary text-white",
-        align: "center"
-      };
-
-      mathas.push(stu);
+    allTfInfo() {
+      const shob = [];
 
       for (const examiner of this.info.examiners) {
-        const dhukbe = {
-          name: `tf_${examiner.teacher}_${examiner.part}`,
-          label: `${this.info.names[examiner.teacher]} - Part ${
-            examiner.part
-          } (${this.tfTotal(examiner.teacher, examiner.part)})`,
-          field: `tf_${examiner.teacher}_${examiner.part}`,
+        const mathas = [];
+        const deho = [];
+
+        const stu = {
+          name: "studentID",
+          label: `Student ID`,
+          field: "studentID",
           sortable: true,
-          align: "center",
-          headerClasses: "bg-primary text-white"
+          align: "center"
         };
 
-        mathas.push(dhukbe);
-      }
+        mathas.push(stu);
 
-      for (const regi of this.info.students) {
-        const notun = {};
+        const partMark = {
+          name: "mark",
+          label: `Mark`,
+          field: "mark",
+          sortable: true,
+          align: "center",
+        };
 
-        notun["studentID"] = regi.student.id;
+        mathas.push(partMark);
 
-        for (const examiner of this.info.examiners) {
-          notun[`tf_${examiner.teacher}_${examiner.part}`] = this.tfStudent(
+        for (const regi of this.info.students) {
+          const notun = {};
+
+          notun["studentID"] = regi.student.id;
+
+          notun["mark"] = this.tfStudent(
             examiner.teacher,
             examiner.part,
             regi.student.id
           );
+
+          deho.push(notun);
         }
 
-        deho.push(notun);
+        const examinerName = this.info.names[examiner.teacher];
+        const fakeExaminerID = "examiner-" + examiner.teacher;
+        const issueDetails = {
+          courseID: this.info.courseID,
+          evalType: "term-final-eval",
+          part: examiner.part,
+          evalOwner: examiner.teacher,
+          evalOwnerName: this.info.names[examiner.teacher],
+          allStudentSelected: this.selected.length === this.info.students.length,
+          students: this.selected.map(stu => stu.studentID),
+          teachers: ["t1", "t2"],
+        };
+        
+
+        shob.push({ fakeExaminerID, examinerName, mathas, deho, issueDetails });
       }
 
-      return { mathas, deho };
+      return shob;
     },
 
     labels() {
@@ -281,10 +327,12 @@ export default {
         value: "teacher-" + teacher.teacher
       }));
 
-      teachers.push({
-        label: "Term Final",
-        value: "term-final"
-      });
+      const examiners = this.info.examiners.map(examiner => ({
+        label: `Term Final - Part ${examiner.part}`,
+        value: "examiner-" + examiner.teacher
+      }));
+
+      teachers.push(...examiners);
 
       return teachers;
     }
@@ -310,14 +358,17 @@ export default {
       this.courseLoading = false;
 
       this.$q.loading.hide();
+    },
+
+    slide(to) {
+      this.selected = [];
     }
   },
 
   async created() {
     this.courseLoading = true;
-    // if (this.$store.getters["allCourses"].length == 0)
-      if(!this.allCourses || this.allCourses.length === 0)
-        await this.$store.dispatch("scrutinizer/fillCourses");
+    if (!this.allCourses || this.allCourses.length === 0)
+      await this.$store.dispatch("scrutinizer/fillCourses");
 
     this.$store.commit("scrutinizer/mutCurCourse", this.$route.params.courseID);
 

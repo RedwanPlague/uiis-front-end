@@ -16,9 +16,9 @@ const getters = {
   currentSession: state => state.currentSession,
   courseLoading: state => state.courseLoading,
 
-  hasApprovedResult: (state, getters) => {
+  hasForwarded: (state, getters) => {
     const info = getters.currentCourseInfo;
-    return info.hasApprovedResult;
+    return info.hasForwarded;
   },
 
   allCourses: state => state.courses,
@@ -39,7 +39,6 @@ const getters = {
       const teacher = info.teachers.find(
         teacher => teacher.teacher === teacherID
       );
-      if (teacher.editAcess) throw new Error();
 
       const student = info.students.find(regi => regi.student.id === studentID);
       const section = student.attendanceMarks.find(
@@ -140,9 +139,9 @@ const mutations = {
     state.courseLoading = loading;
   },
 
-  mutHasApprovedResult: (state) => {
+  mutHasForwarded: (state) => {
     let curCor = state.courses.find(course => course.courseID === state.currentCourse);
-    curCor.hasApprovedResult = true;
+    curCor.hasForwarded = true;
   }
 };
 
@@ -167,6 +166,14 @@ const actions = {
           `/teacher/scrutinizer/${context.state.currentCourse}/${context.state.currentSession}`
         )
       ).data;
+
+      const eligi = (
+        await api.get(
+          `/teacher/issues/${context.state.currentCourse}/${context.state.currentSession}/eligibleList`
+        )
+      ).data;
+
+      course.audience = eligi;
 
       context.commit("mutSingleCourse", course);
       context.commit("mutCourseLoading", false);
