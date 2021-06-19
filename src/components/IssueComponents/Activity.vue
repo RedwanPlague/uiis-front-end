@@ -6,13 +6,17 @@
     <div class="text-bubble">
       <div class="bubble-single-slot">
         <span class="top-icon"><q-icon :name="topSlotIcon" style="font-size: 20px" ></q-icon></span>
-        <span><b>{{userName}}</b> {{ activity }} on {{date}}</span>
+        <span><b>{{userName}}</b></span>&nbsp;
+        <span v-html="this.parsedActivity"></span>
+        <span> on {{convertedDate}}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import {parseIssueDate} from "src/utils/dateParser";
+
 export default {
   name: "Activity",
   props: {
@@ -22,16 +26,26 @@ export default {
     activity: String
   },
   created() {
+
+    if(this.date) this.convertedDate = parseIssueDate(new Date(this.date));
+
+    this.parsedActivity = this.activity;
     const activityType = this.activity.split(' ')[0];
-    if(activityType === 'has') this.topSlotIcon = 'edit';
+
+    if(activityType === 'has' || activityType === 'updated') {
+      this.topSlotIcon = 'edit';
+      const id = this.activity.lastIndexOf(" ");
+      this.parsedActivity =  this.activity.substr(0, id) + '<b>' + this.activity.substr(id) + '</b>';
+    }
     else if(activityType === 'reopened') this.topSlotIcon = 'report_gmailerrorred';
     else if(activityType === 'created') this.topSlotIcon = 'note_add';
     else if(activityType === 'closed') this.topSlotIcon = 'done_all';
   },
-  date() {
+  data() {
     return {
       topSlotIcon: '',
-      iconSize : '',
+      parsedActivity: '',
+      convertedDate: '',
     }
   }
 }
@@ -64,6 +78,7 @@ img {
   flex-wrap: wrap;
   margin-left: 30px;
   margin-top: 20px;
+  margin-bottom: 20px;
   /*padding-left: -20px;*/
   /*padding-top: 50px;*/
 }

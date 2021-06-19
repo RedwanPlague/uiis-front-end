@@ -1,5 +1,5 @@
 <template>
-  <q-page class="container">
+  <q-page class="container" v-show="pageLoaded">
 
     <h5>Januray {{ course_data.session }} {{ course_data.courseID }}: {{ course_data.courseName }}</h5>
 
@@ -24,7 +24,7 @@
 
       <div class="button-row" >
         <div class="col" v-show="showEditButton">
-        <q-btn :icon='buttonIcon' size='md' color="primary" :label="buttonText" @click="toggleEditMode" ></q-btn>
+        <q-btn :icon='buttonIcon' :disable="editButtonLoading" size='md' color="primary" :label="buttonText" @click="toggleEditMode" ></q-btn>
       </div>
       <div class="col csv-button" v-show="!course_data.hasForwarded">
           <q-btn
@@ -150,8 +150,11 @@
       }
     },
     async created() {
+      this.pageLoaded = false;
       this.$q.loading.show({
-        delay: 100 // ms
+        delay: 100, // ms
+        message: 'Loading...',
+        messageColor: 'white'
       });
 
       await this.fetchCourseDetails( { courseID: this.$route.params.courseID, session: this.$route.params.courseSession});
@@ -166,6 +169,7 @@
         this.columns.splice(this.columns.length - 1, 0, new_eval_entry);
       }
       this.$q.loading.hide();
+      this.pageLoaded = true;
     },
     watch: {
       async '$route.params' (to, from) {
@@ -285,6 +289,8 @@
 
         if(!this.editMode) {
 
+          this.editButtonLoading = true;
+
           const notif = this.$q.notify({
             message: `Saving Evaluation`,
             position: "bottom-left",
@@ -293,6 +299,8 @@
             spinner: true,
           });
           const ret = await this.saveStudentData();
+
+          this.editButtonLoading = false;
 
 
           if(ret.error) {
@@ -336,6 +344,9 @@
       },
       data() {
         return {
+          pageLoaded: '',
+          editButtonLoading: false,
+
           csvButton: false,
           studentFilter: '',
           submitFlag: false,

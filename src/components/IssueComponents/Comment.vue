@@ -6,7 +6,7 @@
     <div class="text-bubble">
       <div class="bubble-top-slot">
         <span class="top-icon"><q-icon name="message" style="font-size: 20px;"></q-icon></span>
-        <span><b>{{ userName }}</b> commented on {{ date }}</span>
+        <span><b>{{ userName }}</b> commented on {{ convertedDate }}</span>
       </div>
       <div class="bubble-down-slot" v-html="comment"></div>
     </div>
@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import {parseIssueDate} from "src/utils/dateParser";
+
 export default {
   name: "Comment",
   props: {
@@ -21,6 +23,14 @@ export default {
     userName: String,
     date: String,
     comment: String
+  },
+  created() {
+    if(this.date) this.convertedDate = parseIssueDate(new Date(this.date));
+  },
+  data() {
+    return {
+      convertedDate: '',
+    }
   }
 }
 
@@ -46,6 +56,7 @@ img {
   flex-wrap: wrap;
   margin-left: 30px;
   margin-top: 20px;
+  margin-bottom: 20px;
   /*padding-left: -20px;*/
   /*padding-top: 50px;*/
 }
