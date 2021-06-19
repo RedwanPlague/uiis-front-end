@@ -4,7 +4,10 @@
       <img v-bind:src='imageLink' width="40" height="40" v-bind:alt='userName'>
     </div>
     <div class="text-bubble">
-      <div class="bubble-single-slot"><b>{{userName}}</b> {{ activity }} on {{date}}</div>
+      <div class="bubble-single-slot">
+        <span class="top-icon"><q-icon :name="topSlotIcon" style="font-size: 20px" ></q-icon></span>
+        <span><b>{{userName}}</b> {{ activity }} on {{date}}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -17,11 +20,29 @@ export default {
     userName: String,
     date: String,
     activity: String
+  },
+  created() {
+    const activityType = this.activity.split(' ')[0];
+    if(activityType === 'has') this.topSlotIcon = 'edit';
+    else if(activityType === 'reopened') this.topSlotIcon = 'report_gmailerrorred';
+    else if(activityType === 'created') this.topSlotIcon = 'note_add';
+    else if(activityType === 'closed') this.topSlotIcon = 'done_all';
+  },
+  date() {
+    return {
+      topSlotIcon: '',
+      iconSize : '',
+    }
   }
 }
 </script>
 
 <style scoped>
+
+.top-icon {
+  margin-right: 10px;
+}
+
 img {
   border-radius: 50%;
 }
@@ -29,7 +50,7 @@ img {
   background: #f1f8ff;
   /*border-bottom: #c8e1ff solid 1px;*/
   border-radius: 9px 9px 9px 9px;
-  padding-left:20px;
+  padding-left:10px;
   line-height: 50px;
 }
 

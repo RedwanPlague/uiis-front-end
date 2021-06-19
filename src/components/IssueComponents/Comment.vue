@@ -4,7 +4,10 @@
       <img v-bind:src='imageLink' width="40" height="40" v-bind:alt='userName'>
     </div>
     <div class="text-bubble">
-      <div class="bubble-top-slot"><b>{{ userName }}</b> commented on {{ date }}</div>
+      <div class="bubble-top-slot">
+        <span class="top-icon"><q-icon name="message" style="font-size: 20px;"></q-icon></span>
+        <span><b>{{ userName }}</b> commented on {{ date }}</span>
+      </div>
       <div class="bubble-down-slot" v-html="comment"></div>
     </div>
   </div>
@@ -24,6 +27,10 @@ export default {
 </script>
 
 <style scoped>
+
+.top-icon {
+  margin-right: 10px;
+}
 
 img {
   border-radius: 50%;
@@ -85,7 +92,7 @@ img {
   background: #f1f8ff;
   border-bottom: #c8e1ff solid 1px;
   border-radius: 9px 9px 0 0;
-  padding-left:20px;
+  padding-left:10px;
   padding-right:20px;
   line-height: 45px;
 }
