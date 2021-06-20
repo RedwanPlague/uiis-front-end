@@ -4,7 +4,7 @@
       <q-card bordered>
         <q-card-section>
           <div class="text-h5">
-            <p>Advisees</p>
+            Advisees
           </div>
         </q-card-section>
 

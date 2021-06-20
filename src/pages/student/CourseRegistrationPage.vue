@@ -3,7 +3,13 @@
     <div class="q-pa-md">
       <q-card bordered>
         <q-card-section>
-          <div class="text-h5">Course Registration Information</div><br />
+          <div class="text-h5">
+            Course Registration Information
+
+            <q-chip v-if="!getCurrentSession.isRegistrationPeriodRunning" color="negative" text-color="white">
+              Course Registration Period is Over
+            </q-chip>
+          </div><br />
           <div class="text-subtitle2">
             <p>
               <strong>Student ID:</strong> {{ getStudent.id }}
