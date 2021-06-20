@@ -5,7 +5,7 @@
     @input="$emit('input', $event)"
     :label="label"
     outlined
-    :rules="[() => this.$route.name === 'AdminAccountEditPage' || !!value || `Please Enter a ${label}`]"
+    :rules="[() => !required || !!value || `Please Enter a ${label}`]"
   >
     <template v-slot:append>
       <q-btn
@@ -33,7 +33,12 @@ export default {
       default: ''
     },
     classes: {
-      type: [Object, String]
+      type: [Object, String],
+      default: ''
+    },
+    required: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {

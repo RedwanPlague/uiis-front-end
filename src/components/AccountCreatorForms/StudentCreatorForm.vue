@@ -31,7 +31,7 @@
         v-model="advisor"
         required
       />
-      <password-maker-field classes="col-6" v-model="password"/>
+      <password-maker-field classes="col-6" v-model="password" required/>
       <div class="col-12">
         <q-btn type="submit" label="Create" color="primary" unelevated :loading="createLoading"/>
         <q-btn type="reset" label="Reset" color="primary" flat/>

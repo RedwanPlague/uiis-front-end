@@ -1,8 +1,22 @@
+import store from 'src/store'
+import {PRIVILEGES} from 'src/utils/constants'
+
+const has = store.getters.userHasPrivilege
+
+const prevent = (satisfy, next) => {
+  satisfy ? next() : next({ name: 'AdminHome' })
+}
+
 export default {
 
   path: '/admin',
   component: () => import('layouts/AdminLayout'),
   children: [
+    {
+      path: '',
+      name: 'AdminHome',
+      component: () => import('pages/admin/singles/AdminHome')
+    },
     {
       path: 'account',
       component: () => import('pages/admin/accounts/Wrapper'),
@@ -10,22 +24,34 @@ export default {
         {
           path: 'create',
           name: 'AdminAccountCreationPage',
-          component: () => import('pages/admin/accounts/Creation')
+          component: () => import('pages/admin/accounts/Creation'),
+          beforeEnter(to, from, next) {
+            prevent(has(PRIVILEGES.ACCOUNT_CREATION), next)
+          }
         },
         {
           path: 'search',
           name: 'AdminAccountSearchPage',
-          component: () => import('pages/admin/accounts/Search')
+          component: () => import('pages/admin/accounts/Search'),
+          beforeEnter(to, from, next) {
+            prevent(has(PRIVILEGES.ACCOUNT_CREATION) || has(PRIVILEGES.ACCOUNT_UPDATE), next)
+          }
         },
         {
           path: 'edit/:userType/:id',
           name: 'AdminAccountEditPage',
-          component: () => import('pages/admin/accounts/Edit')
+          component: () => import('pages/admin/accounts/Edit'),
+          beforeEnter(to, from, next) {
+            prevent(has(PRIVILEGES.ACCOUNT_CREATION) || has(PRIVILEGES.ACCOUNT_UPDATE), next)
+          }
         },
         {
           path: 'role',
           name: 'AdminRoleManagePage',
-          component: () => import('pages/admin/accounts/RoleManagement')
+          component: () => import('pages/admin/accounts/RoleManagement'),
+          beforeEnter(to, from, next) {
+            prevent(has(PRIVILEGES.ROLE_CREATION) || has(PRIVILEGES.ROLE_CREATION), next)
+          }
         },
       ]
     },
@@ -36,22 +62,41 @@ export default {
         {
           path: 'create',
           name: 'AdminCourseCreationPage',
-          component: () => import('pages/admin/courses/Creation')
+          component: () => import('pages/admin/courses/Creation'),
+          beforeEnter(to, from, next) {
+            prevent(has(PRIVILEGES.COURSE_CREATION), next)
+          }
         },
         {
           path: 'search',
           name: 'AdminCourseSearchPage',
-          component: () => import('pages/admin/courses/Search')
+          component: () => import('pages/admin/courses/Search'),
+          beforeEnter(to, from, next) {
+            prevent(has(PRIVILEGES.COURSE_CREATION) || has(PRIVILEGES.COURSE_UPDATE), next)
+          }
         },
         {
           path: 'edit/:courseID/:syllabusID',
           name: 'AdminCourseEditPage',
-          component: () => import('pages/admin/courses/Edit')
+          component: () => import('pages/admin/courses/Edit'),
+          beforeEnter(to, from, next) {
+            prevent(has(PRIVILEGES.COURSE_CREATION) || has(PRIVILEGES.COURSE_UPDATE), next)
+          }
         },
         {
           path: 'assign',
           name: 'AdminCourseAssignPage',
-          component: () => import('pages/admin/courses/Assignment')
+          component: () => import('pages/admin/courses/Assignment'),
+          beforeEnter(to, from, next) {
+            prevent(
+              has(PRIVILEGES.COURSE_SESSION_CREATION) ||
+              has(PRIVILEGES.COURSE_UPDATE) ||
+              has(PRIVILEGES.COURSE_SESSION_ALLOT_SCHEDULE) ||
+              has(PRIVILEGES.COURSE_SESSION_ASSIGN_TEACHER) ||
+              has(PRIVILEGES.COURSE_SESSION_ASSIGN_EXAMINER) ||
+              has(PRIVILEGES.COURSE_SESSION_ASSIGN_SCRUTINIZER)
+            , next)
+          }
         }
       ]
     },
@@ -69,28 +114,38 @@ export default {
       path: 'slots',
       name: 'AdminSlotManagePage',
       component: () => import('pages/admin/singles/SlotManagement'),
+      beforeEnter(to, from, next) {
+        prevent(has(PRIVILEGES.SLOT_CREATION) || has(PRIVILEGES.SLOT_UPDATE), next)
+      }
     },
     {
       path: 'session',
       name: 'AdminSessionAssignPage',
       component: () => import('pages/admin/singles/SessionAssignment'),
+      beforeEnter(to, from, next) {
+        prevent(has(PRIVILEGES.CURRENT_SESSION_UPDATE), next)
+      }
     },
     {
       path: 'departments',
       name: 'AdminDeptManagePage',
       component: () => import('pages/admin/singles/DeptManagement'),
+      beforeEnter(to, from, next) {
+        prevent(has(PRIVILEGES.DEPARTMENT_CREATION) || has(PRIVILEGES.DEPARTMENT_UPDATE), next)
+      }
     },
     {
       path: 'halls',
       name: 'AdminHallManagePage',
       component: () => import('pages/admin/singles/HallManagement'),
+      beforeEnter(to, from, next) {
+        prevent(has(PRIVILEGES.HALL_CREATION) || has(PRIVILEGES.HALL_UPDATE), next)
+      }
     },
   ],
-  // beforeEnter(to, from, next) {
-  //   if (store.getters.user) {
-  //     next()
-  //   } else {
-  //     next({ name: 'Index' })
-  //   }
-  // }
+  beforeEnter(to, from, next) {
+    store.dispatch('userTryAutoLogIn')
+      .then(() => next())
+      .catch(() => next({name: 'Index'}))
+  }
 }

@@ -1,11 +1,11 @@
 <template>
   <q-page padding>
-    <!-- content -->
+    <div class="absolute-center text-h2">Welcome Home</div>
   </q-page>
 </template>
 
 <script>
 export default {
-  // name: 'PageName',
+  name: 'AdminHome',
 }
 </script>

@@ -10,7 +10,7 @@
       <quick-link v-for="child in children" :key="child.title" v-bind="child"/>
     </q-expansion-item>
 
-    <q-item v-else clickable v-ripple :to="link" exact-active-class="text-bold">
+    <q-item v-else clickable v-ripple :to="link" exact exact-active-class="text-bold">
       <q-item-section v-if="icon" avatar>
         <q-icon :name="icon"/>
       </q-item-section>
@@ -39,7 +39,7 @@ export default {
   props: {
     title: {
       type: String,
-      required: true
+      default: ''
     },
     link: {
       type: [Object, String],

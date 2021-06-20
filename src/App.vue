@@ -1,6 +1,6 @@
 <template>
   <div id="q-app">
-    <router-view />
+    <router-view/>
   </div>
 </template>
 
@@ -15,11 +15,11 @@ export default {
     ])
   },
   created() {
-    this.userTryAutoLogIn().then().catch(() => {
+    // this.userTryAutoLogIn().then().catch(() => {
       // if (this.$route.name !== 'Index') {
       //   this.$router.replace({name: 'Index'})
       // }
-    })
+    // })
   }
 }
 </script>

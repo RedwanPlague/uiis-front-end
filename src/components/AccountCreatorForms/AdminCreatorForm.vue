@@ -18,7 +18,7 @@
         outlined
         :rules="[() => !!id || 'Please Enter an ID']"
       />
-      <password-maker-field classes="col-6" v-model="password"/>
+      <password-maker-field classes="col-6" v-model="password" required/>
       <div class="col-6"></div>
       <privilege-picker
         classes="col-12"

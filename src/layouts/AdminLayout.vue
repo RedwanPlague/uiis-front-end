@@ -41,6 +41,7 @@
     </q-header>
 
     <q-drawer
+      v-if="user"
       v-model="leftDrawerOpen"
       show-if-above
       bordered
@@ -93,6 +94,12 @@ export default {
     buildLinks() {
       const links = []
       const has = this.userHasPrivilege
+
+      links.push({
+        title: 'Home',
+        icon: 'school',
+        link: { name: 'AdminHome' }
+      })
 
       const accountLinks = []
       if (has(PRIVILEGES.ACCOUNT_CREATION)) {
@@ -213,10 +220,5 @@ export default {
       this.buildLinks()
     }
   },
-  watch: {
-    user() {
-      this.buildLinks()
-    }
-  }
 }
 </script>
