@@ -96,8 +96,8 @@ const routes = [
         component: () => import('pages/teacher/head/HeadResultEvaluationPage.vue')
       },
 
-      { path: 'examiner', component: () => import('src/pages/teacher/ExaminerPage.vue') },
-      { path: 'examiner/:courseID/:part', name: "examiner-evaluation-page", component: () => import('src/pages/teacher/ExaminerEvaluationPage.vue') },
+      { path: 'examiner', component: () => import('src/pages/teacher/examiner/ExaminerPage.vue') },
+      { path: 'examiner/:courseID/:part', name: "examiner-evaluation-page", component: () => import('src/pages/teacher/examiner/ExaminerEvaluationPage.vue') },
 
       { path: 'scrutinizer', component: () => import('pages/teacher/scrutinizer/ScrutinizerPage.vue') },
       { path: 'scrutinizer/:courseID', name: "scrutinizer-course-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerCoursePage.vue') },

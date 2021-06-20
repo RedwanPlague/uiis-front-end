@@ -67,10 +67,10 @@
                 class="table"
               >
               </q-table>
+              <IssueForm
+                :details="examinerInfo.issueDetails"
+              />
             </div>
-            <IssueForm
-              :details="examinerInfo.issueDetails"
-            />
           </q-carousel-slide>
         </q-carousel>
 
