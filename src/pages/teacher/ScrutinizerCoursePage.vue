@@ -1,15 +1,15 @@
 <template>
   <q-page class="container">
-    <div class="q-pa-sm">
+    <div class="q-pa-sm" v-if="!loading">
       <div class="row justify-center q-mb-md">
-        <h6 class="q-mb-none">
+        <h6 class="q-mb-sm">
           {{ info.courseID + " - " + info.courseTitle }}
         </h6>
       </div>
 
-      <div v-if="!courseLoading">
+      <div>
         <div class="row justify-center">
-          <q-btn-toggle glossy v-model="slide" :options="labels" />
+          <q-btn-toggle glossy v-model="slide" :options="labels" no-caps />
         </div>
 
         <q-carousel
@@ -17,8 +17,6 @@
           transition-prev="slide-right"
           transition-next="slide-left"
           animated
-          padding
-          arrows
           draggable="false"
           control-color="primary"
           height="100%"
@@ -29,7 +27,7 @@
             :name="teacherInfo.fakeTeacherID"
             class="column no-wrap flex-center"
           >
-            <div class="q-mt-md text-center">
+            <div class="text-center">
               <q-table
                 :title="teacherInfo.teacherName"
                 :data="teacherInfo.deho"
@@ -39,12 +37,12 @@
                 :selected-rows-label="getSelectedString"
                 selection="multiple"
                 :selected.sync="selected"
+                :pagination="initialPagination"
                 table-header-class="bg-primary text-white"
-                
                 class="table"
               >
               </q-table>
-              <IssueForm :details="teacherInfo.issueDetails"/>
+              <IssueForm :details="teacherInfo.issueDetails" />
             </div>
           </q-carousel-slide>
           <q-carousel-slide
@@ -53,29 +51,33 @@
             :name="examinerInfo.fakeExaminerID"
             class="column no-wrap flex-center"
           >
-            <div class="q-mt-md text-center">
+            <div class="text-center">
               <q-table
                 :title="examinerInfo.examinerName"
                 :data="examinerInfo.deho"
                 :columns="examinerInfo.mathas"
                 separator="cell"
+                padding
                 row-key="studentID"
                 :selected-rows-label="getSelectedString"
                 selection="multiple"
                 :selected.sync="selected"
+                :pagination="initialPagination"
                 table-header-class="bg-primary text-white"
                 class="table"
               >
               </q-table>
-              <IssueForm :details="examinerInfo.issueDetails"/>
             </div>
+            <IssueForm
+              :details="examinerInfo.issueDetails"
+            />
           </q-carousel-slide>
         </q-carousel>
 
         <div class="row justify-center">
           <q-btn
-            v-show="!(!canEdit || hasForwarded)"
-            class="q-mt-xl submit-btn"
+            v-show="!(!canEdit || hasForwarded || barse)"
+            class="submit-btn q-mt-sm"
             color="primary"
             label="Forward to department head"
             @click="forwardResult"
@@ -83,6 +85,7 @@
         </div>
       </div>
     </div>
+    <div v-else></div>
   </q-page>
 </template>
 
@@ -98,8 +101,16 @@ export default {
     return {
       canEdit: true,
       slide: null,
-      courseLoading: true,
-      selected: []
+      loading: true,
+      selected: [],
+      initialPagination: {
+        sortBy: "desc",
+        descending: false,
+        page: 1,
+        rowsPerPage: null
+        // rowsNumber: xx if getting data from a server
+      },
+      barse: false
     };
   },
 
@@ -108,6 +119,11 @@ export default {
   },
 
   methods: {
+    setBarse(barse) {
+      this.barse = barse;
+      console.log(this.barse);
+    },
+
     getSelectedString() {
       return this.selected.length === 0
         ? ""
@@ -190,7 +206,7 @@ export default {
           label: `Student ID`,
           field: "studentID",
           sortable: true,
-          align: "center"
+          align: "left"
         };
 
         mathas.push(stu);
@@ -200,7 +216,7 @@ export default {
           label: `Attendance Count (${this.attTotal(teacher.teacher)})`,
           field: "attendance",
           sortable: true,
-          align: "center",
+          align: "left"
         };
 
         mathas.push(att);
@@ -214,7 +230,7 @@ export default {
             )})`,
             field: `eval_${evall.evalID}`,
             sortable: true,
-            align: "center",
+            align: "left"
           };
 
           mathas.push(dhukbe);
@@ -249,9 +265,10 @@ export default {
           part: teacher.part,
           evalOwner: teacher.teacher,
           evalOwnerName: this.info.names[teacher.teacher],
-          allStudentSelected: this.selected.length === this.info.students.length,
+          allStudentSelected:
+            this.selected.length === this.info.students.length,
           students: this.selected.map(stu => stu.studentID),
-          teachers: ["t1", "t2"],
+          teachers: ["t1", "t2"]
         };
 
         shob.push({ fakeTeacherID, teacherName, mathas, deho, issueDetails });
@@ -272,7 +289,7 @@ export default {
           label: `Student ID`,
           field: "studentID",
           sortable: true,
-          align: "center"
+          align: "left"
         };
 
         mathas.push(stu);
@@ -282,7 +299,7 @@ export default {
           label: `Mark`,
           field: "mark",
           sortable: true,
-          align: "center",
+          align: "left"
         };
 
         mathas.push(partMark);
@@ -309,11 +326,11 @@ export default {
           part: examiner.part,
           evalOwner: examiner.teacher,
           evalOwnerName: this.info.names[examiner.teacher],
-          allStudentSelected: this.selected.length === this.info.students.length,
+          allStudentSelected:
+            this.selected.length === this.info.students.length,
           students: this.selected.map(stu => stu.studentID),
-          teachers: ["t1", "t2"],
+          teachers: ["t1", "t2"]
         };
-        
 
         shob.push({ fakeExaminerID, examinerName, mathas, deho, issueDetails });
       }
@@ -340,6 +357,7 @@ export default {
 
   watch: {
     async "$route.params"(to, from) {
+      this.loading = true;
       if (!this.$route.params.courseID) {
         return;
       }
@@ -353,9 +371,8 @@ export default {
         delay: 100 // ms
       });
 
-      this.courseLoading = true;
       await this.$store.dispatch("scrutinizer/fillSingleCourse");
-      this.courseLoading = false;
+      this.loading = false;
 
       this.$q.loading.hide();
     },
@@ -366,7 +383,7 @@ export default {
   },
 
   async created() {
-    this.courseLoading = true;
+    this.loading = true;
     if (!this.allCourses || this.allCourses.length === 0)
       await this.$store.dispatch("scrutinizer/fillCourses");
 
@@ -377,11 +394,12 @@ export default {
     });
 
     await this.$store.dispatch("scrutinizer/fillSingleCourse");
-    this.courseLoading = false;
+    this.loading = false;
 
     this.$q.loading.hide();
 
     if (this.labels.length > 0) this.slide = this.labels[0]["value"];
+    this.initialPagination.rowsPerPage = this.info.students.length;
   }
 };
 </script>

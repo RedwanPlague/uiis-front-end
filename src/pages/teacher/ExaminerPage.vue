@@ -1,7 +1,7 @@
 <template>
   <q-page class="container">
     <div class="column items-center">
-      <h6>Current Session: {{ currentSession }}</h6>
+      <h5>Current Session: {{ currentSession }}</h5>
 
       <q-table
         class="table"

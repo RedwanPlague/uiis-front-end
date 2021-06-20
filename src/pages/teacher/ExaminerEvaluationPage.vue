@@ -36,7 +36,7 @@
       </template>
     </q-table>
 
-    <div class="">
+    <div class="btns">
       <q-btn
         color="primary"
         label="Save"
@@ -100,65 +100,78 @@ export default {
     },
 
     async uploadMarks(dhoron) {
-      const courseID = this.info.courseID;
-      const session = this.currentSession;
-      const part = this.info.part;
+      try {
+        const courseID = this.info.courseID;
+        const session = this.currentSession;
+        const part = this.info.part;
 
-      this.probRolls = [];
-      this.info.students.forEach(student => {
-        console.log(student.studentID);
-        console.log(student.mark);
-        console.log(this.info.totalMarks);
+        this.probRolls = [];
+        this.info.students.forEach(student => {
+          console.log(student.studentID);
+          console.log(student.mark);
+          console.log(this.info.totalMarks);
 
-        if (student.mark < 0 || student.mark > this.info.totalMarks)
-          this.probRolls.push(student.studentID);
-      });
-
-      console.log(this.probRolls);
-
-      if (this.probRolls.length) {
-        this.$q.notify({
-          icon: "error",
-          message: `Please recheck the marks of ${this.probRolls.join()}!`,
-          position: "bottom-left",
-          actions: [
-            {
-              label: "Dismiss",
-              color: "yellow",
-              handler: () => {
-                /* ... */
-              }
-            }
-          ]
+          if (student.mark < 0 || student.mark > this.info.totalMarks)
+            this.probRolls.push(student.studentID);
         });
 
-        return false;
-      }
+        console.log(this.probRolls);
 
-      const students = this.info.students.map(student => ({
-        studentID: student.studentID,
-        mark: student.mark ? student.mark : null
-      }));
+        if (this.probRolls.length) {
+          this.$q.notify({
+            icon: "error",
+            message: `Please recheck the marks of ${this.probRolls.join()}!`,
+            position: "bottom-left",
+            actions: [
+              {
+                label: "Dismiss",
+                color: "yellow",
+                handler: () => {
+                  /* ... */
+                }
+              }
+            ]
+          });
 
-      const ashbe = await api.put(
-        `teacher/examiner/${courseID}/${session}/${dhoron}`,
-        {
-          part,
-          students
+          return false;
         }
-      );
 
-      console.log(ashbe);
+        const students = this.info.students.map(student => ({
+          studentID: student.studentID,
+          mark: student.mark ? student.mark : null
+        }));
 
-      const sucMes = dhoron === "save" ? "saved!" : "forwarded!";
+        const sucMes = dhoron === "save" ? "saved!" : "forwarded!";
+        const loadMes = dhoron === "save" ? "saving!" : "forwarding!";
 
-      this.$q.notify({
-        icon: "done",
-        message: sucMes,
-        position: "bottom-left"
-      });
+        const notif = this.$q.notify({
+          spinner: true,
+          message: loadMes,
+          group: false, // required to be updatable
+          timeout: 0, // we want to be in control when it gets dismissed,
+          position: "bottom-left"
+        });
 
-      return true;
+        const ashbe = await api.put(
+          `teacher/examiner/${courseID}/${session}/${dhoron}`,
+          {
+            part,
+            students
+          }
+        );
+
+        console.log(ashbe);
+
+        notif({
+          icon: "done",
+          message: sucMes,
+          position: "bottom-left",
+          spinner: false,
+          timeout: 1500,
+        })
+
+        return true;
+      } catch (e) {}
     },
 
     async saveMarks() {
@@ -201,6 +214,7 @@ export default {
       this.$store.commit("examiner/mutCurCourse", this.$route.params.courseID);
       this.$store.commit("examiner/mutCurPart", this.$route.params.part);
 
+      this.loading = true;
       this.$q.loading.show({
         delay: 100 // ms
       });
@@ -212,6 +226,7 @@ export default {
       consoloe.log(this.students);
 
       this.$q.loading.hide();
+      this.loading = false;
     },
 
     info(to) {
@@ -223,6 +238,7 @@ export default {
     this.$q.loading.show({
       delay: 100 // ms
     });
+    this.loading = true;
 
     if (!this.info) await this.$store.dispatch("examiner/fillCourses");
 
@@ -231,15 +247,19 @@ export default {
 
     await this.$store.dispatch("examiner/fillCurrentCourse");
 
+    this.loading = false;
     this.$q.loading.hide();
   }
 };
 </script>
 <style scoped>
-.bhul {
-  background: rgba(255,0,0,0.2);
+.btns {
+  margin-top: 30px;
 }
-.bhul.q-table tbody td:after{
-    background: rgba(255,0,0,0.2);
+.bhul {
+  background: rgba(255, 0, 0, 0.2);
+}
+.bhul.q-table tbody td:after {
+  background: rgba(255, 0, 0, 0.2);
 }
 </style>
