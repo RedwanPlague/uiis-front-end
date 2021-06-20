@@ -134,7 +134,7 @@
             </div>
             <div v-else :style="dialogStyle">
               <span style="font-size: 1.2em">{{effectCount}}</span> students will be affected by this<br/>
-              Do you with to continue?
+              Do you wish to continue?
             </div>
           </div>
         </q-card-section>
@@ -154,10 +154,12 @@
 </template>
 
 <script>
+import {extract} from 'src/utils/apiDataPreProcessor'
 import {DUE_TYPES} from 'src/utils/constants'
 import SessionField from 'components/FormElements/SessionField'
 import DepartmentPicker from 'components/FormElements/DepartmentPicker'
 import HallPicker from 'components/FormElements/HallPicker'
+import {monthYearToDate} from 'src/utils/dateFormatters'
 
 const dialogStyle = {
   fontSize: '1.2em'
@@ -168,10 +170,10 @@ export default {
   components: {HallPicker, DepartmentPicker, SessionField},
   data() {
     return {
-      feeType: DUE_TYPES.DINING_FEE,
-      amount: 1,
-      deadline: '2021/06/20',
-      delayFine: 1,
+      feeType: null,
+      amount: 1000,
+      deadline: '2021/06/30',
+      delayFine: 200,
       yearMonth: null,
       ids: [],
       dept: null,
@@ -191,19 +193,32 @@ export default {
   computed: {
     allSuccess() {
       return this.effectCount === this.successCount
+    },
+    filterData() {
+      return {
+        ids: this.ids,
+        department: extract(this.dept),
+        hall: extract(this.hall),
+        level: this.level,
+        term: this.term,
+      }
     }
   },
   methods: {
     checkAssignFee() {
+      console.log(this.filterData)
       this.assignDone = false
       this.assignInfoLoading = true
-      this.$adminAPI.get('/currentSession')
+      this.$adminAPI.get('/currentSession', {data: this.filterData})
         .then(response => {
           this.assignInfoLoading = false
+          // this.effectCount = response.data.willAffect
           this.effectCount = 140
           this.showDialog = true
         })
         .catch(error => {
+          console.log('Batch process: fee assignment')
+          console.log(error.response)
           this.assignInfoLoading = false
           this.$q.notify({
             message: 'Failed to load batch process info',
@@ -213,7 +228,17 @@ export default {
     },
     assignFee() {
       this.assignLoading = true
-      this.$adminAPI.get('/currentSession')
+      const data = {
+        amount: this.amount,
+        deadline: monthYearToDate(this.deadline),
+        delayFine: this.delayFine,
+        ids: this.ids,
+        department: extract(this.dept),
+        hall: extract(this.hall),
+        level: this.level,
+        term: this.term,
+      }
+      this.$adminAPI.get('/currentession')
         .then(response => {
           this.assignLoading = false
           this.assignDone = true

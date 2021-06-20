@@ -50,7 +50,7 @@ export default {
           name: 'AdminRoleManagePage',
           component: () => import('pages/admin/accounts/RoleManagement'),
           beforeEnter(to, from, next) {
-            prevent(has(PRIVILEGES.ROLE_CREATION) || has(PRIVILEGES.ROLE_CREATION), next)
+            prevent(has(PRIVILEGES.ROLE_CREATION) || has(PRIVILEGES.ROLE_UPDATE), next)
           }
         },
       ]
