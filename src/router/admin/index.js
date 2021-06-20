@@ -108,7 +108,7 @@ export default {
     {
       path: 'fines',
       name: 'AdminFineAssignPage',
-      component: () => import('pages/admin/dues/FineAssignment'),
+      component: () => import('pages/admin/dues/fines/FineAssignment'),
     },
     {
       path: 'slots',

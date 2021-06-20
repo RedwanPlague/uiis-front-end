@@ -2,11 +2,11 @@
   <q-page padding>
     <div class="row">
       <div class="text-h5 q-my-md col-6">
-        {{label}} Fees
+        Assign Fees
       </div>
-      <div class="col-6">
-        <q-toggle class="q-mt-md float-right" v-model="editMode" label="Edit Mode" color="primary" icon="edit"/>
-      </div>
+      <!--<div class="col-6">-->
+      <!--  <q-toggle class="q-mt-md float-right" v-model="editMode" label="Edit Mode" color="primary" icon="edit"/>-->
+      <!--</div>-->
     </div>
     <div class="row q-col-gutter-md q-pb-sm">
       <q-select
@@ -18,7 +18,7 @@
         :rules="[() => !!feeType || 'Please Select Fee Type']"
       />
     </div>
-    <q-form v-if="feeType" class="row q-col-gutter-md" @submit="assignFee" @reset="resetForm">
+    <q-form v-if="feeType" class="row q-col-gutter-md" @submit="checkAssignFee" @reset="resetForm">
       <session-field
         classes="col-6"
         v-model="yearMonth"
@@ -58,7 +58,7 @@
         outlined
       />
       <div class="col-12 text-h5">
-        Filters for Batch {{label}}
+        Filters for Batch Assign
       </div>
       <q-select
         class="col-12 q-mb-md"
@@ -87,57 +87,143 @@
         outlined
       />
       <div class="col-12 q-mt-md">
-        <q-btn
-          :label="label"
-          type="submit" color="primary" unelevated
-          :loading="(editMode && createLoading) || (!editMode && editLoading)"
-        />
+        <q-btn label="Assign" type="submit" color="primary" unelevated :loading="assignInfoLoading"/>
         <q-btn label="Reset" type="reset" color="primary" flat/>
       </div>
     </q-form>
     <div style="min-height: 200px"></div>
+    <q-dialog v-model="showDialog">
+      <q-card>
+        <q-card-section>
+          <div v-if="assignDone">
+            <q-icon name="analytics" size="lg"/>
+            <span class="text-h5 vertical-middle q-ml-sm">Batch Process Result</span>
+          </div>
+          <div v-else>
+            <q-icon name="info" size="lg"/>
+            <span class="text-h5 vertical-middle q-ml-sm">Attention</span>
+          </div>
+        </q-card-section>
+        <q-separator/>
+        <q-card-section>
+          <div style="height: 120px; width: 500px">
+            <div v-if="assignDone">
+              <q-markup-table flat dense separator="cell" class="q-mb-md">
+                <tbody>
+                <tr>
+                  <td :style="dialogStyle">Total:</td>
+                  <td :style="dialogStyle">{{effectCount}}</td>
+                </tr>
+                <tr>
+                  <td :style="dialogStyle">Successful:</td>
+                  <td :style="{...dialogStyle, color: 'green'}">
+                    {{successCount}}
+                  </td>
+                </tr>
+                <tr>
+                  <td :style="dialogStyle">Failed:</td>
+                  <td :style="{...dialogStyle, color: 'red'}">
+                    {{effectCount - successCount}}
+                  </td>
+                </tr>
+                </tbody>
+              </q-markup-table>
+              <span v-if="!allSuccess" :style="dialogStyle">
+                Try again to complete the batch process
+              </span>
+            </div>
+            <div v-else :style="dialogStyle">
+              <span style="font-size: 1.2em">{{effectCount}}</span> students will be affected by this<br/>
+              Do you with to continue?
+            </div>
+          </div>
+        </q-card-section>
+        <q-card-actions align="right">
+          <div v-if="assignDone">
+            <q-btn flat label="OK" color="primary" v-close-popup/>
+          </div>
+          <div v-else>
+            <q-btn unelevated label="Continue" color="primary" @click="assignFee"/>
+            <q-btn flat label="Cancel" color="primary" v-close-popup/>
+          </div>
+        </q-card-actions>
+        <q-inner-loading :showing="assignLoading"/>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
 <script>
 import {DUE_TYPES} from 'src/utils/constants'
 import SessionField from 'components/FormElements/SessionField'
-import creator from 'src/mixins/creator'
-import edit from 'src/mixins/edit'
 import DepartmentPicker from 'components/FormElements/DepartmentPicker'
 import HallPicker from 'components/FormElements/HallPicker'
+
+const dialogStyle = {
+  fontSize: '1.2em'
+}
 
 export default {
   name: 'FeeAssignment',
   components: {HallPicker, DepartmentPicker, SessionField},
-  mixins: [
-    creator,
-    edit
-  ],
   data() {
     return {
       feeType: DUE_TYPES.DINING_FEE,
-      amount: null,
-      deadline: null,
-      delayFine: null,
+      amount: 1,
+      deadline: '2021/06/20',
+      delayFine: 1,
       yearMonth: null,
       ids: [],
       dept: null,
       hall: null,
       level: null,
       term: null,
-      editMode: false,
+      effectCount: 0,
+      successCount: 0,
+      showDialog: false,
+      assignInfoLoading: false,
+      assignLoading: false,
+      assignDone: false,
+      dialogStyle,
       DUE_TYPES
     }
   },
   computed: {
-    label() {
-      return this.editMode ? 'Update' : 'Assign'
+    allSuccess() {
+      return this.effectCount === this.successCount
     }
   },
   methods: {
+    checkAssignFee() {
+      this.assignDone = false
+      this.assignInfoLoading = true
+      this.$adminAPI.get('/currentSession')
+        .then(response => {
+          this.assignInfoLoading = false
+          this.effectCount = 140
+          this.showDialog = true
+        })
+        .catch(error => {
+          this.assignInfoLoading = false
+          this.$q.notify({
+            message: 'Failed to load batch process info',
+            type: 'negative'
+          })
+        })
+    },
     assignFee() {
-
+      this.assignLoading = true
+      this.$adminAPI.get('/currentSession')
+        .then(response => {
+          this.assignLoading = false
+          this.assignDone = true
+          this.successCount = this.effectCount
+        })
+        .catch(error => {
+          this.assignLoading = false
+          this.assignDone = true
+          this.successCount = 80
+        })
     },
     resetForm() {
 
