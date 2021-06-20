@@ -1,5 +1,5 @@
 import {adminAPI, api} from "boot/axios";
-import {LocalStorage} from "quasar";
+import {LocalStorage, Notify} from "quasar";
 
 const setApiToken = (token) => {
   adminAPI.defaults.headers.common['Authorization'] = 'Bearer ' + token
@@ -52,6 +52,10 @@ export default {
           .catch(error => {
             console.log('Login failed')
             console.log(error.response)
+            Notify.create({
+              message: 'Failed to Log In',
+              type: 'negative'
+            })
             reject(error)
           })
       })
