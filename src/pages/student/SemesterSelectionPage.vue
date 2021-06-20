@@ -32,7 +32,7 @@
 import { mapGetters, mapActions } from 'vuex';
 
 export default {
-  name: "SemesterSelection",
+  name: "SemesterSelectionPage",
 
   data() {
     return {
@@ -45,9 +45,10 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchStudentBasicInfo', 'generateAvailableSemesters']),
+    ...mapActions(['fetchStudentIDInfo', 'fetchStudentProfileInfo', 'generateAvailableSemesters', 'clearAvailableGrades']),
 
     onSemesterClick() {
+      this.clearAvailableGrades();
       this.$router.push({ name: 'studentGrades', params: {},
         query: {
           filter: 'semester',
@@ -58,11 +59,12 @@ export default {
     }
   },
 
-  computed: mapGetters(['getStudent', 'getAvailableSemesters']),
+  computed: mapGetters(['getID', 'getStudent', 'getAvailableSemesters']),
 
   async created() {
     try {
-      await this.fetchStudentBasicInfo();
+      await this.fetchStudentIDInfo();
+      await this.fetchStudentProfileInfo(this.getID.id);
       this.generateAvailableSemesters({
         level: this.getStudent.level,
         term: this.getStudent.term

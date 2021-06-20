@@ -40,11 +40,11 @@
             <img alt="" class="profile-photo" src="https://discourse.disneyheroesgame.com/uploads/default/original/3X/c/2/c23f54aea2065f106e4dbb8218d0ce2d7853351c.png" />
           </div>
         </q-card-section>
-      </q-card><br />
 
-      <div >
-        <q-btn color="primary" text-color="white" label="Edit" />
-      </div>
+        <q-card-actions align="right">
+          <q-btn class="bg-primary text-white" label="Edit" />
+        </q-card-actions>
+      </q-card>
     </div>
   </q-page>
 </template>
@@ -62,14 +62,15 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchStudentProfileInfo'])
+    ...mapActions(['fetchStudentIDInfo', 'fetchStudentProfileInfo'])
   },
 
-  computed: mapGetters(['getStudent']),
+  computed: mapGetters(['getID', 'getStudent']),
 
   async created() {
     try {
-      await this.fetchStudentProfileInfo();
+      await this.fetchStudentIDInfo();
+      await this.fetchStudentProfileInfo(this.getID.id);
     } catch(error) {
       console.log(error);
     }

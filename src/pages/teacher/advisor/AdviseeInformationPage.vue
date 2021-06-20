@@ -8,22 +8,28 @@
               <div class="text-h5">Advisee Information</div><br />
               <div class="text-subtitle2">
                 <p>
-                  <strong>Student ID:</strong> {{ getAdvisee.id }}
+                  <strong>Student ID:</strong> {{ getStudent.id }}
                 </p>
                 <p>
-                  <strong>Name:</strong> {{ getAdvisee.name }}
+                  <strong>Name:</strong> {{ getStudent.name }}
                 </p>
                 <p>
-                  <strong>Level/Term:</strong> {{ getAdvisee.level }}/{{ getAdvisee.term }}
+                  <strong>Level/Term:</strong> {{ getStudent.level }}/{{ getStudent.term }}
                 </p>
                 <p>
-                  <strong>Department:</strong> {{ getAdvisee.department }}
+                  <strong>Department:</strong> {{ getStudent.department }}
                 </p>
                 <p>
-                  <strong>Contact Number:</strong> {{ getAdvisee.contactNumber }}
+                  <strong>Hall:</strong> {{ getStudent.hall }}
                 </p>
                 <p>
-                  <strong>Email Address:</strong> {{ getAdvisee.email }}
+                  <strong>Contact Number:</strong> {{ getStudent.contactNumber }}
+                </p>
+                <p>
+                  <strong>Email Address:</strong> {{ getStudent.email }}
+                </p>
+                <p>
+                  <strong>Residential Address:</strong> {{ getStudent.residentialAddress }}
                 </p>
               </div>
             </div>
@@ -104,12 +110,13 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchAdvisee', 'generateAvailableSemesters']),
+    ...mapActions(['fetchStudentProfileInfo', 'generateAvailableSemesters', 'clearAvailableGrades']),
 
     onSemesterClick() {
+      this.clearAvailableGrades();
       this.$router.push({ name: 'adviseeGrades',
         params: {
-          studentID: this.getAdvisee.id
+          studentID: this.getStudent.id
         },
         query: {
           filter: 'semester',
@@ -120,9 +127,10 @@ export default {
     },
 
     onGradeClick() {
+      this.clearAvailableGrades();
       this.$router.push({ name: 'adviseeGrades',
         params: {
-          studentID: this.getAdvisee.id
+          studentID: this.getStudent.id
         },
         query: {
           filter: 'grade',
@@ -136,14 +144,14 @@ export default {
     }
   },
 
-  computed: mapGetters(['getAdvisee', 'getAvailableSemesters', 'getGradeLetters']),
+  computed: mapGetters(['getStudent', 'getAvailableSemesters', 'getGradeLetters']),
 
   async created() {
     try {
-      await this.fetchAdvisee(this.$route.params.studentID);
+      await this.fetchStudentProfileInfo(this.$route.params.studentID);
       this.generateAvailableSemesters({
-        level: this.getAdvisee.level,
-        term: this.getAdvisee.term
+        level: this.getStudent.level,
+        term: this.getStudent.term
       });
     } catch(error) {
       console.log(error);
