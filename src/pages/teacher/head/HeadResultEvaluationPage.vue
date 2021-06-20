@@ -2,10 +2,11 @@
   <q-page padding>
     <div class="q-pa-sm absolute-center">
       <h3>
-        Department Head Course Registration Approval
+        Department Head Final Result Evaluation
       </h3>
       <p>
-        Head will approve students' course registration applications.
+        Head will approve final result and forward it to Exam Comptroller
+        Office.
       </p>
     </div>
   </q-page>
@@ -13,7 +14,7 @@
 
 <script>
 export default {
-  name: "HeadPage"
+  name: "HeadResultEvaluationPage"
 };
 </script>
 

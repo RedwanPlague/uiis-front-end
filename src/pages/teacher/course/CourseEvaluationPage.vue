@@ -1,5 +1,5 @@
 <template>
-  <q-page class="container">
+  <q-page class="container" v-show="pageLoaded">
 
     <h5>Januray {{ course_data.session }} {{ course_data.courseID }}: {{ course_data.courseName }}</h5>
 
@@ -24,7 +24,7 @@
 
       <div class="button-row" >
         <div class="col" v-show="showEditButton">
-        <q-btn :icon='buttonIcon' size='md' color="primary" :label="buttonText" class="" @click="toggleEditMode" ></q-btn>
+        <q-btn :icon='buttonIcon' :disable="editButtonLoading" size='md' color="primary" :label="buttonText" @click="toggleEditMode" ></q-btn>
       </div>
       <div class="col csv-button" v-show="!course_data.hasForwarded">
           <q-btn
@@ -122,7 +122,7 @@
   const {mapGetters, mapActions} = createNamespacedHelpers('courseEval');
 
   import { mapMultiRowFields } from 'vuex-map-fields';
-  import parseCSV from '../../utils/csvParser';
+  import parseCSV from '../../../utils/csvParser';
 
   let eval_column_entry = {
     name: 'eval_',
@@ -150,6 +150,13 @@
       }
     },
     async created() {
+      this.pageLoaded = false;
+      this.$q.loading.show({
+        delay: 100, // ms
+        message: 'Loading...',
+        messageColor: 'white'
+      });
+
       await this.fetchCourseDetails( { courseID: this.$route.params.courseID, session: this.$route.params.courseSession});
       for(let i = 1 ; i <= this.course_data.evalCount ; i++) {
         let new_eval_entry = {
@@ -161,9 +168,8 @@
         new_eval_entry.field += i;
         this.columns.splice(this.columns.length - 1, 0, new_eval_entry);
       }
-
-      this.selected.push(this.student_data[0]);
-      this.selected.push(this.student_data[3]);
+      this.$q.loading.hide();
+      this.pageLoaded = true;
     },
     watch: {
       async '$route.params' (to, from) {
@@ -283,6 +289,8 @@
 
         if(!this.editMode) {
 
+          this.editButtonLoading = true;
+
           const notif = this.$q.notify({
             message: `Saving Evaluation`,
             position: "bottom-left",
@@ -291,6 +299,8 @@
             spinner: true,
           });
           const ret = await this.saveStudentData();
+
+          this.editButtonLoading = false;
 
 
           if(ret.error) {
@@ -314,12 +324,14 @@
             });
           }
         }
-        if( !this.course_data.hasForwarded && this.editMode ) {
+        if( this.editMode ) {
           this.buttonIcon =  'done';
           this.buttonText = 'Save';
-          this.columns.forEach( (cell,index) => {
-            if(index >= 2) cell.classes = 'bg-white-1';
-          } );
+          if( !this.course_data.hasForwarded) {
+            this.columns.forEach((cell, index) => {
+              if (index >= 2) cell.classes = 'bg-white-1';
+            });
+          }
         }
         else {
           this.buttonIcon =  'edit';
@@ -332,8 +344,9 @@
       },
       data() {
         return {
+          pageLoaded: '',
+          editButtonLoading: false,
 
-          selected: [],
           csvButton: false,
           studentFilter: '',
           submitFlag: false,

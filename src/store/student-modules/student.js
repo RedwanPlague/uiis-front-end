@@ -3,39 +3,37 @@ import { api } from "boot/axios";
 const url = "/student";
 
 const state = {
+  id: {},
   student: {},
 
   availableSemesters: [],
 
   grades: [],
-  availableGrades: []
+  availableGrades: [],
+
+  courseRegistrations: [],
+  availableCourseRegistrations: []
 };
 
 const getters = {
+  getID: (state) => state.id,
   getStudent: (state) => state.student,
 
   getAvailableSemesters: (state) => state.availableSemesters,
 
   getGrades: (state) => state.grades,
-  getAvailableGrades: (state) => state.availableGrades
+  getAvailableGrades: (state) => state.availableGrades,
+
+  getCourseRegistrations: (state) => state.courseRegistrations,
+  getAvailableCourseRegistrations: (state) => state.availableCourseRegistrations
 };
 
 const actions = {
-  /* getting student basic info (id, level, term) */
-  async fetchStudentBasicInfo({ commit }, id) {
+  /* getting student ID info (id) */
+  async fetchStudentIDInfo({ commit }) {
     try {
-      const response = await api.get(url+'/basic'+id);
-      commit('mutateStudent', response.data);
-    } catch(err) {
-      this.error = err.message;
-    }
-  },
-
-  /* getting student home info (id, name, level, term, department, hall) */
-  async fetchStudentHomeInfo({ commit }, id) {
-    try {
-      const response = await api.get(url+'/home'+id);
-      commit('mutateStudent', response.data);
+      const response = await api.get(url+'/id');
+      commit('mutateID', response.data);
     } catch(err) {
       this.error = err.message;
     }
@@ -44,17 +42,7 @@ const actions = {
   /* getting student profile info (id, name, level, term, department, hall, contactNumber, email, residentialAddress) */
   async fetchStudentProfileInfo({ commit }, id) {
     try {
-      const response = await api.get(url+'/profile'+id);
-      commit('mutateStudent', response.data);
-    } catch(err) {
-      this.error = err.message;
-    }
-  },
-
-  /* getting student profile info (id, name, department, totalCreditHoursCompleted, cgpa) */
-  async fetchStudentGradesProfileInfo({ commit }, id) {
-    try {
-      const response = await api.get(url+'/grades_profile'+id);
+      const response = await api.get(url+'/profile/'+id);
       commit('mutateStudent', response.data);
     } catch(err) {
       this.error = err.message;
@@ -124,16 +112,52 @@ const actions = {
   /* clearing available grades for tabulation purpose in grades page */
   clearAvailableGrades({ commit }) {
     commit('mutateAvailableGrades', []);
+  },
+
+  /* getting specific student's course registrations information */
+  async fetchCourseRegistrations({ commit }, params) {
+    try {
+      const response = await api.get(url+'/registrations/'+params.id, {
+        params: {
+          level: params.level,
+          term: params.term
+        }
+      });
+      commit('mutateCourseRegistrations', response.data);
+    } catch(err) {
+      this.error = err.message;
+    }
+  },
+
+  /* generating specific student's list of available course registrations for tabulation purpose in course registration page */
+  generateAvailableCourseRegistrations({ commit }) {
+    let availableCourseRegistrations = [];
+
+    for(let i=0; i<state.courseRegistrations.length; i++) {
+      availableCourseRegistrations[i] = {
+        courseID: state.courseRegistrations[i].courseSession.course.courseID,
+        syllabusID: state.courseRegistrations[i].courseSession.course.syllabusID,
+        title: state.courseRegistrations[i].courseSession.course.title,
+        credit: state.courseRegistrations[i].courseSession.course.credit,
+        status: state.courseRegistrations[i].status,
+        _id: state.courseRegistrations[i]._id
+      };
+    }
+    commit('mutateAvailableCourseRegistrations', availableCourseRegistrations);
   }
 };
 
 const mutations = {
+  mutateID: (state, id) => (state.id = id),
   mutateStudent: (state, student) => (state.student = student),
 
   mutateAvailableSemesters: (state, availableSemesters) => (state.availableSemesters = availableSemesters),
 
   mutateGrades: (state, grades) => (state.grades = grades),
-  mutateAvailableGrades: (state, availableGrades) => (state.availableGrades = availableGrades)
+  mutateAvailableGrades: (state, availableGrades) => (state.availableGrades = availableGrades),
+
+  mutateCourseRegistrations: (state, courseRegistrations) => (state.courseRegistrations = courseRegistrations),
+  mutateAvailableCourseRegistrations: (state, availableCourseRegistrations) => (state.availableCourseRegistrations = availableCourseRegistrations)
 };
 
 export default {

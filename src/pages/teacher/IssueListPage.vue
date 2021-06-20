@@ -1,5 +1,5 @@
 <template>
-  <q-page  class="container">
+  <q-page  class="container" v-show="pageLoaded">
     <div class="q-pa-md table">
       <q-table
         title="Unresolved Issues"
@@ -9,7 +9,7 @@
         :pagination.sync="pagination"
         :filter="unresolvedFilter"
         @row-click="onRowClick"
-        hide-bottom
+        :hide-bottom="allIssues.unresolvedIssues && allIssues.unresolvedIssues.length > 0"
       >
         <template v-slot:top-right>
           <q-input outlined dense debounce="300" v-model="unresolvedFilter" placeholder="Search">
@@ -30,7 +30,7 @@
         :pagination.sync="pagination"
         :filter="resolvedFilter"
         @row-click="onRowClick"
-        hide-bottom
+        :hide-bottom="allIssues.resolvedIssues && allIssues.resolvedIssues.length > 0"
       >
 
         <template v-slot:top-right >
@@ -56,6 +56,7 @@ export default {
   name: "IssueListPage",
   data () {
     return {
+      pageLoaded:'',
       unresolvedFilter: '',
       resolvedFilter: '',
       pagination: {
@@ -111,8 +112,15 @@ export default {
     ...mapActions(['fetchIssues']),
   },
   async created() {
+    this.pageLoaded = false;
+    this.$q.loading.show({
+      delay: 100,
+      message: 'Loading...',
+      messageColor: 'white'
+    });
     await this.fetchIssues();
-    console.log(this.allIssues);
+    this.$q.loading.hide();
+    this.pageLoaded = true;
   },
   computed: {
     ...mapGetters(['allIssues']),

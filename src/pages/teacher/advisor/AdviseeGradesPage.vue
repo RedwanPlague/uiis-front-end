@@ -18,6 +18,9 @@
             <div v-if="$route.query.filter === 'semester'">
               <strong>Level/Term:</strong> {{ $route.query.level }}/{{ $route.query.term }}
             </div>
+            <div v-else-if="$route.query.filter === 'grade'">
+              <strong>Grade:</strong> {{ $route.query.gradeLetter }}
+            </div>
           </div>
         </q-card-section>
 
@@ -63,7 +66,7 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn class="bg-primary text-white" label="Back" @click="visitSemesterSelectionPage" />
+          <q-btn class="bg-primary text-white" label="Back" @click="visitInformationPage" />
         </q-card-actions>
       </q-card>
     </div>
@@ -74,7 +77,7 @@
 import { mapGetters, mapActions } from 'vuex';
 
 export default {
-  name: "GradesPage",
+  name: "AdviseeGradesPage",
 
   data() {
     return {
@@ -83,7 +86,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchStudentIDInfo', 'fetchStudentProfileInfo', 'fetchGrades', 'generateAvailableGrades']),
+    ...mapActions(['fetchStudentProfileInfo', 'fetchGrades', 'generateAvailableGrades']),
 
     getTotalCreditHourObtained() {
       let totalCredit = 0.0;
@@ -126,12 +129,16 @@ export default {
       return 0.0;
     },
 
-    visitSemesterSelectionPage() {
-      this.$router.push({ name: 'semesterSelection', params: {}, query: {} });
+    visitInformationPage() {
+      this.$router.push({ name: 'adviseeInformation',
+        params: {
+          studentID: this.getStudent.id
+        },
+        query: {} });
     }
   },
 
-  computed: mapGetters(['getID', 'getStudent', 'getGrades', 'getAvailableGrades', 'getGradeColumns']),
+  computed: mapGetters(['getStudent', 'getGrades', 'getAvailableGrades', 'getGradeColumns']),
 
   async created() {
     try {
@@ -144,14 +151,19 @@ export default {
         spinner: true
       });
 
-      await this.fetchStudentIDInfo();
-      await this.fetchStudentProfileInfo(this.getID.id);
+      await this.fetchStudentProfileInfo(this.$route.params.studentID);
       if(this.$route.query.filter === 'semester') {
         await this.fetchGrades({
           id: this.getStudent.id,
           filter: this.$route.query.filter,
           level: this.$route.query.level,
           term: this.$route.query.term
+        });
+      } else if(this.$route.query.filter === 'grade') {
+        await this.fetchGrades({
+          id: this.getStudent.id,
+          filter: this.$route.query.filter,
+          gradeLetter: this.$route.query.gradeLetter
         });
       }
       this.generateAvailableGrades();

@@ -1,7 +1,7 @@
 <template>
   <q-page class="container">
     <div class="column items-center">
-      <h6>Current Session: {{ currentSession }}</h6>
+      <h5>Current Session: {{ currentSession }}</h5>
 
       <q-table
         class="table"
@@ -11,6 +11,7 @@
         row-key="courseID"
         separator="cell"
         @row-click="onRowClick"
+        table-header-class="bg-primary text-white"
       />
     </div>
   </q-page>
@@ -35,7 +36,6 @@ export default {
           required: true,
           align: "left",
           sortable: true,
-          headerClasses: 'bg-primary text-white'
         },
         {
           name: "courseTitle",
@@ -44,7 +44,6 @@ export default {
           required: true,
           align: "left",
           sortable: true,
-          headerClasses: 'bg-primary text-white'
         },
         {
           name: "part",
@@ -52,7 +51,6 @@ export default {
           field: "part",
           required: true,
           align: "left",
-          headerClasses: 'bg-primary text-white'
         }
       ]
     };
@@ -72,7 +70,8 @@ export default {
       this.$router.push({
         name: "examiner-evaluation-page",
         params: {
-          courseID: row.courseID
+          courseID: row.courseID,
+          part: row.part,
         }
       });
     }
