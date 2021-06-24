@@ -34,7 +34,7 @@
         type="number"
         min="0"
         outlined
-        :rules="[() => !!amount || 'Please Enter Fee Amount']"
+        :rules="[() => !!amount || 'Please Enter Fee Amount', noNegative(amount)]"
       />
       <q-input class="col-6" label="Deadline" outlined v-model="deadline" mask="date" :rules="['date']">
         <template v-slot:append>
@@ -56,6 +56,7 @@
         type="number"
         min="0"
         outlined
+        :rules="[() => !!delayFine || 'Please Enter Delay Fine', noNegative(delayFine)]"
       />
       <div class="col-12 text-h5">
         Filters for Batch Assign
@@ -154,12 +155,12 @@
 </template>
 
 <script>
+import {noNegative} from 'src/utils/utilities'
 import {extract} from 'src/utils/apiDataPreProcessor'
 import {DUE_TYPES} from 'src/utils/constants'
 import SessionField from 'components/FormElements/SessionField'
 import DepartmentPicker from 'components/FormElements/DepartmentPicker'
 import HallPicker from 'components/FormElements/HallPicker'
-import {monthYearToDate} from 'src/utils/dateFormatters'
 
 const dialogStyle = {
   fontSize: '1.2em'
@@ -171,11 +172,11 @@ export default {
   data() {
     return {
       feeType: null,
-      amount: 1000,
-      deadline: '2021/06/30',
-      delayFine: 200,
+      amount: null,
+      deadline: null,
+      delayFine: null,
       yearMonth: null,
-      ids: [],
+      ids: null,
       dept: null,
       hall: null,
       level: null,
@@ -196,6 +197,7 @@ export default {
     },
     filterData() {
       return {
+        dueType: this.feeType,
         ids: this.ids,
         department: extract(this.dept),
         hall: extract(this.hall),
@@ -205,20 +207,17 @@ export default {
     }
   },
   methods: {
+    noNegative,
     checkAssignFee() {
-      console.log(this.filterData)
       this.assignDone = false
       this.assignInfoLoading = true
-      this.$adminAPI.get('/currentSession', {data: this.filterData})
+      this.$adminAPI.post('/due/batchInfo', this.filterData)
         .then(response => {
           this.assignInfoLoading = false
-          // this.effectCount = response.data.willAffect
-          this.effectCount = 140
+          this.effectCount = response.data.willAffect
           this.showDialog = true
         })
         .catch(error => {
-          console.log('Batch process: fee assignment')
-          console.log(error.response)
           this.assignInfoLoading = false
           this.$q.notify({
             message: 'Failed to load batch process info',
@@ -230,28 +229,37 @@ export default {
       this.assignLoading = true
       const data = {
         amount: this.amount,
-        deadline: monthYearToDate(this.deadline),
+        deadline: new Date(this.deadline),
         delayFine: this.delayFine,
-        ids: this.ids,
-        department: extract(this.dept),
-        hall: extract(this.hall),
-        level: this.level,
-        term: this.term,
+        ...this.filterData
       }
-      this.$adminAPI.get('/currentession')
+      if (this.feeType === DUE_TYPES.DINING_FEE) {
+        data.yearMonth = new Date(this.yearMonth).toString()
+      } else {
+        data.session = new Date(this.yearMonth).toString()
+      }
+      this.$adminAPI.post('/due/upsert', data)
         .then(response => {
           this.assignLoading = false
           this.assignDone = true
-          this.successCount = this.effectCount
+          this.successCount = response.data.duesModified
         })
         .catch(error => {
           this.assignLoading = false
           this.assignDone = true
-          this.successCount = 80
+          this.successCount = 0
         })
     },
     resetForm() {
-
+      this.amount = null
+      this.deadline = null
+      this.delayFine = null
+      this.yearMonth = null
+      this.ids = null
+      this.dept = null
+      this.hall = null
+      this.level = null
+      this.term = null
     }
   }
 }

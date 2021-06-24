@@ -21,9 +21,14 @@ const deepCopy = obj => {
   return JSON.parse(JSON.stringify(obj))
 }
 
+const noNegative = value => {
+  return () => !value || parseFloat(value) >= 0 || 'Negative value not allowed'
+}
+
 export {
   isEmpty,
   deepEqual,
   numEqual,
-  deepCopy
+  deepCopy,
+  noNegative
 }

@@ -29,25 +29,15 @@ const hour24ToSeconds = hour24 => {
   return 60 * (60 * h + m)
 }
 
-const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
-const monthYearToDate = monthYear => {
-  const [m, y] = monthYear.split(' ')
-  const date = new Date()
-  date.setTime(0)
-  date.setMonth(months.indexOf(m))
-  date.setFullYear(y)
-  return date
-}
-
 const dateToMonthYear = date => {
-  date = new Date(date)
-  return months[date.getMonth()] + ' ' + date.getFullYear()
+  return new Intl.DateTimeFormat('en', {
+    month: 'short',
+    year: 'numeric'
+  }).format(new Date(date))
 }
 
 export {
   secondsToAMPM,
-  monthYearToDate,
   dateToMonthYear,
   secondsToHour24,
   hour24ToSeconds

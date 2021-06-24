@@ -102,13 +102,40 @@ export default {
     },
     {
       path: 'fees',
-      name: 'AdminFeeAssignPage',
-      component: () => import('pages/admin/dues/FeeAssignment'),
+      component: () => import('pages/admin/dues/fees/Wrapper'),
+      children: [
+        {
+          path: 'assign',
+          name: 'AdminFeeAssignPage',
+          component: () => import ('pages/admin/dues/fees/FeeAssignment')
+        },
+        {
+          path: 'search',
+          name: 'AdminFeeSearchPage',
+          component: () => import ('pages/admin/dues/fees/FeeSearch')
+        },
+      ]
     },
     {
       path: 'fines',
-      name: 'AdminFineAssignPage',
-      component: () => import('pages/admin/dues/fines/FineAssignment'),
+      component: () => import('pages/admin/dues/fines/Wrapper'),
+      children: [
+        {
+          path: 'assign',
+          name: 'AdminFineAssignPage',
+          component: () => import('pages/admin/dues/fines/FineAssignment'),
+        },
+        {
+          path: 'search',
+          name: 'AdminFineSearchPage',
+          component: () => import('pages/admin/dues/fines/FineSearch'),
+        },
+        {
+          path: 'edit',
+          name: 'AdminFineEditPage',
+          component: () => import('pages/admin/dues/fines/FineEdit'),
+        },
+      ]
     },
     {
       path: 'slots',

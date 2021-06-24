@@ -18,7 +18,6 @@
 </template>
 
 <script>
-import {monthYearToDate} from 'src/utils/dateFormatters'
 import SessionField from 'components/FormElements/SessionField'
 import edit from 'src/mixins/edit'
 
@@ -34,7 +33,7 @@ export default {
   methods: {
     assignSession() {
       this.callEditApi('/currentSession/update', {
-        session: monthYearToDate(this.date).toString()
+        session: new Date(this.date).toString()
       }, 'Session')
     },
     resetForm() {

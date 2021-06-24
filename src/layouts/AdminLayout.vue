@@ -169,15 +169,46 @@ export default {
         })
       }
 
-      links.push({
-        title: 'Fees',
+      const dueLinks = []
+
+      const feeLinks = []
+      feeLinks.push({
+        title: 'Batch Assign',
         icon: 'school',
         link: { name: 'AdminFeeAssignPage' }
       })
-      links.push({
-        title: 'Fines',
+      feeLinks.push({
+        title: 'Search',
+        icon: 'school',
+        link: { name: 'AdminFeeSearchPage' }
+      })
+      dueLinks.push({
+        title: 'Fees',
+        icon: 'school',
+        children: feeLinks
+      })
+
+      const fineLinks = []
+      fineLinks.push({
+        title: 'Assign',
         icon: 'school',
         link: { name: 'AdminFineAssignPage' }
+      })
+      fineLinks.push({
+        title: 'Search',
+        icon: 'school',
+        link: { name: 'AdminFineSearchPage' }
+      })
+      dueLinks.push({
+        title: 'Fines',
+        icon: 'school',
+        children: fineLinks
+      })
+
+      links.push({
+        title: 'Dues',
+        icon: 'school',
+        children: dueLinks
       })
 
       if (has(PRIVILEGES.SLOT_CREATION) || has(PRIVILEGES.SLOT_UPDATE)) {

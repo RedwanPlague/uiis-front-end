@@ -1,5 +1,6 @@
 import {adminAPI} from 'boot/axios'
 import {process} from 'src/utils/apiDataPreProcessor'
+import {Notify} from 'quasar'
 
 export default {
   data() {
@@ -19,7 +20,7 @@ export default {
             this.searchLoading = false
             this.tableData = response.data
             this.showResults = true
-              console.log(`${name} search results loaded`)
+            console.log(`${name} search results loaded`)
             console.log(response)
             resolve(response)
           })
@@ -27,6 +28,10 @@ export default {
             this.searchLoading = false
             console.log(`Search failed for ${name}`)
             console.log(error.response)
+            Notify.create({
+              message: 'Failed to load search results',
+              type: 'negative'
+            })
             reject(error)
           })
       })

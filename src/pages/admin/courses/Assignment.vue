@@ -301,7 +301,6 @@ import SlotPicker from 'components/FormElements/SlotPicker'
 import DayOfWeekPicker from 'components/FormElements/DayOfWeekPicker'
 import SessionField from 'components/FormElements/SessionField'
 import edit from 'src/mixins/edit'
-import {monthYearToDate} from 'src/utils/dateFormatters'
 import {deepCopy, deepEqual, numEqual} from 'src/utils/utilities'
 import {PRIVILEGES} from 'src/utils/constants'
 import {mapGetters} from 'vuex'
@@ -367,7 +366,7 @@ export default {
       return this.courseToEdit ? this.courseToEdit.value.syllabusID : null
     },
     sessionStr() {
-      return this.sessionToEdit ? monthYearToDate(this.sessionToEdit).toString() : null
+      return this.sessionToEdit ? new Date(this.sessionToEdit).toString() : null
     },
     identifier() {
       return `${this.courseID}/${this.syllabusID}/${this.sessionStr}`

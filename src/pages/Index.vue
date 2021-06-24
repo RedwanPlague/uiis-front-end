@@ -5,6 +5,7 @@
         <q-input
           v-model="id"
           label="Username"
+          autocomplete="username"
           outlined
           :rules="[() => !!id || 'Please Enter a Username']"
         ></q-input>
@@ -12,6 +13,7 @@
           :type="passwordShow ? 'text' : 'password'"
           v-model="password"
           label="Password"
+          autocomplete="current-password"
           outlined
           :rules="[() => !!password || 'Please Enter a Password']"
         >
@@ -58,7 +60,7 @@ export default {
         .then((user) => {
           this.loginLoading = false
           if (user.userType === 'admin') {
-            this.$router.replace({ name: 'AdminAccountCreationPage' })
+            this.$router.replace({ name: 'AdminHome' })
           }
           else if(user.userType === 'teacher') {
             this.$router.replace({name: 'home'});
