@@ -41,6 +41,10 @@ export default {
             this.oldDataLoading = false
             console.log(`Failed to load Old data for ${name}`)
             console.log(error.response)
+            this.$q.notify({
+              message: `Failed to load data for ${name}`,
+              type: 'negative'
+            })
             reject(error)
           })
       })

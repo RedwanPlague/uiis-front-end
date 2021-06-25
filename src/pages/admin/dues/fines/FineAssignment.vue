@@ -9,7 +9,7 @@
         v-model="fineType"
         label="Fine Type"
         outlined
-        :options="Object.values(FINE_TYPES)"
+        :options="fineOptions"
         :rules="[() => !!fineType || 'Please Select Fine Type']"
       />
     </div>
@@ -77,6 +77,7 @@
 import {FINE_TYPES} from 'src/utils/constants'
 import creator from 'src/mixins/creator'
 import {noNegative} from 'src/utils/utilities'
+import {fineOptions} from 'src/utils/privilegedConstants'
 
 export default {
   name: 'FineAssignment',
@@ -92,7 +93,8 @@ export default {
       delayFine: null,
       description: null,
       descLimit: 200,
-      FINE_TYPES
+      FINE_TYPES,
+      fineOptions
     }
   },
   computed: {

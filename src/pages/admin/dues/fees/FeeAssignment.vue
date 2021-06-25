@@ -14,7 +14,7 @@
         v-model="feeType"
         label="Fee Type"
         outlined
-        :options="Object.values(DUE_TYPES)"
+        :options="feeOptions"
         :rules="[() => !!feeType || 'Please Select Fee Type']"
       />
     </div>
@@ -161,6 +161,7 @@ import {DUE_TYPES} from 'src/utils/constants'
 import SessionField from 'components/FormElements/SessionField'
 import DepartmentPicker from 'components/FormElements/DepartmentPicker'
 import HallPicker from 'components/FormElements/HallPicker'
+import {feeOptions} from 'src/utils/privilegedConstants'
 
 const dialogStyle = {
   fontSize: '1.2em'
@@ -188,7 +189,8 @@ export default {
       assignLoading: false,
       assignDone: false,
       dialogStyle,
-      DUE_TYPES
+      DUE_TYPES,
+      feeOptions
     }
   },
   computed: {
@@ -217,7 +219,7 @@ export default {
           this.effectCount = response.data.willAffect
           this.showDialog = true
         })
-        .catch(error => {
+        .catch(() => {
           this.assignInfoLoading = false
           this.$q.notify({
             message: 'Failed to load batch process info',
@@ -244,7 +246,7 @@ export default {
           this.assignDone = true
           this.successCount = response.data.duesModified
         })
-        .catch(error => {
+        .catch(() => {
           this.assignLoading = false
           this.assignDone = true
           this.successCount = 0

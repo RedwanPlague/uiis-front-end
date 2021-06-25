@@ -162,6 +162,7 @@ export default {
       courseID: this.loadCourseID,
       syllabusID: this.loadSyllabusID
     }, 'Course')
+      .catch(() => {})
   }
 }
 </script>

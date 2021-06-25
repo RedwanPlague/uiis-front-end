@@ -83,6 +83,7 @@ export default {
     this.fetchOldData('/account/teacher/list', {
       id: this.loadID
     }, 'Teacher Account')
+      .catch(() => {})
   }
 }
 </script>

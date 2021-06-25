@@ -114,7 +114,14 @@ export default {
           name: 'AdminFeeSearchPage',
           component: () => import ('pages/admin/dues/fees/FeeSearch')
         },
-      ]
+      ],
+      beforeEnter(to, from, next) {
+        prevent(
+          has(PRIVILEGES.LEVEL_CHANGING_FEE_MANAGEMENT) ||
+          has(PRIVILEGES.EXAM_FEE_MANAGEMENT) ||
+          has(PRIVILEGES.DINING_FEE_MANAGEMENT)
+        , next)
+      }
     },
     {
       path: 'fines',
@@ -135,7 +142,14 @@ export default {
           name: 'AdminFineEditPage',
           component: () => import('pages/admin/dues/fines/FineEdit'),
         },
-      ]
+      ],
+      beforeEnter(to, from, next) {
+        prevent(
+          has(PRIVILEGES.LIBRARY_FINE_MANAGEMENT) ||
+          has(PRIVILEGES.LAB_FINE_MANAGEMENT) ||
+          has(PRIVILEGES.DISCIPLINARY_FINE_MANAGEMENT)
+        , next)
+      }
     },
     {
       path: 'slots',

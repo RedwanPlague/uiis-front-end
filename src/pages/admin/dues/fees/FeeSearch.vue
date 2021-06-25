@@ -18,7 +18,7 @@
         v-model="feeType"
         label="Fee Type"
         outlined
-        :options="Object.values(DUE_TYPES)"
+        :options="feeOptions"
         :rules="[() => !!feeType || 'Please Select Fee Type']"
       />
       <session-field
@@ -73,6 +73,7 @@
 import SessionField from 'components/FormElements/SessionField'
 import {DUE_TYPES, DUE_STATUS} from 'src/utils/constants'
 import columnMerger from 'src/utils/columnMerger'
+import {feeOptions} from 'src/utils/privilegedConstants'
 
 const moneyFormat = val => `৳ ${val}`
 const dateFormat = val => new Intl.DateTimeFormat('en', {month: 'short', day: 'numeric', year: 'numeric'}).format(new Date(val))
@@ -100,8 +101,8 @@ export default {
   },
   data() {
     return {
-      ids: ['1605001', '1605002', '1605003', '1605004'],
-      feeType: DUE_TYPES.LEVEL_CHANGING_FEE,
+      ids: [],
+      feeType: null,
       yearMonth: null,
       showResults: false,
       resultsLoading: false,
@@ -110,6 +111,7 @@ export default {
       selected: [],
       DUE_TYPES,
       DUE_STATUS,
+      feeOptions,
       columns,
     }
   },

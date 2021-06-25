@@ -1,14 +1,25 @@
 <template>
   <q-page padding>
-    <div class="text-h5 q-my-md">
-      {{label}} Fine Details
-      <q-btn
-        v-if="status === DUE_STATUS.PENDING"
-        :icon="viewing ? 'edit' : 'visibility'"
-        :color="viewing ? 'primary' : 'black'"
-        @click="viewing = !viewing"
-        flat dense
-      />
+    <div class="row">
+      <div class="col-6 text-h5 q-my-md">
+        {{label}} Fine
+        <q-btn
+          v-if="status === DUE_STATUS.PENDING"
+          :icon="viewing ? 'edit' : 'visibility'"
+          :color="viewing ? 'primary' : 'black'"
+          @click="viewing = !viewing"
+          flat dense
+        />
+      </div>
+      <div class="col-6">
+        <q-btn
+          class="q-mt-md float-right"
+          icon="delete" flat color="red"
+          @click="deleteFine"
+        >
+          <q-tooltip content-style="font-size: 1em; background-color: red">delete this fine</q-tooltip>
+        </q-btn>
+      </div>
     </div>
     <q-form v-if="fineType" class="row q-col-gutter-md" @submit="updateFine" @reset="resetForm">
       <q-select
@@ -17,7 +28,7 @@
         label="Fine Type"
         outlined
         readonly
-        :options="Object.values(FINE_TYPES)"
+        :options="fineOptions"
         :rules="[() => !!fineType || 'Please Select Fine Type']"
       />
       <q-input
@@ -97,6 +108,7 @@
 import {FINE_TYPES, DUE_STATUS} from 'src/utils/constants'
 import edit from 'src/mixins/edit'
 import {noNegative} from 'src/utils/utilities'
+import {fineOptions} from 'src/utils/privilegedConstants'
 
 export default {
   name: 'FineAssignment',
@@ -114,7 +126,8 @@ export default {
       description: null,
       descLimit: 200,
       FINE_TYPES,
-      DUE_STATUS
+      DUE_STATUS,
+      fineOptions
     }
   },
   computed: {
@@ -129,8 +142,8 @@ export default {
     noNegative,
     updateFine() {
       this.callEditApi('/fine/update/'+this.fineID, {
-        fineType: this.fineType,
-        issuedTo: this.ids,
+        // fineType: this.fineType,
+        // issuedTo: this.issuedTo,
         amount: this.amount,
         deadline: new Date(this.deadline),
         delayFine: this.delayFine,
@@ -138,12 +151,25 @@ export default {
       }, 'Fine')
         .catch(() => {})
     },
+    deleteFine() {
+      this.$adminAPI.delete('/fine/delete/'+this.fineID)
+        .then(() => {
+          this.$router.replace({name: 'AdminFineSearchPage'})
+        })
+        .catch(() => {
+          this.$q.notify({
+            message: 'Failed to delete fine, Try Again',
+            type: 'negative'
+          })
+        })
+    },
     resetForm() {
       this.loadOldDataIntoForm()
     }
   },
   created() {
     this.fetchOldData('/fine/get/'+this.fineID, {}, 'Fine')
+      .catch(() => {})
   }
 }
 </script>

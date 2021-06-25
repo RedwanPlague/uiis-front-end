@@ -182,11 +182,17 @@ export default {
         icon: 'school',
         link: { name: 'AdminFeeSearchPage' }
       })
-      dueLinks.push({
-        title: 'Fees',
-        icon: 'school',
-        children: feeLinks
-      })
+      if (
+        has(PRIVILEGES.LEVEL_CHANGING_FEE_MANAGEMENT) ||
+        has(PRIVILEGES.EXAM_FEE_MANAGEMENT) ||
+        has(PRIVILEGES.DINING_FEE_MANAGEMENT)
+      ) {
+        dueLinks.push({
+          title: 'Fees',
+          icon: 'school',
+          children: feeLinks
+        })
+      }
 
       const fineLinks = []
       fineLinks.push({
@@ -199,17 +205,25 @@ export default {
         icon: 'school',
         link: { name: 'AdminFineSearchPage' }
       })
-      dueLinks.push({
-        title: 'Fines',
-        icon: 'school',
-        children: fineLinks
-      })
+      if (
+        has(PRIVILEGES.LIBRARY_FINE_MANAGEMENT) ||
+        has(PRIVILEGES.LAB_FINE_MANAGEMENT) ||
+        has(PRIVILEGES.DISCIPLINARY_FINE_MANAGEMENT)
+      ) {
+        dueLinks.push({
+          title: 'Fines',
+          icon: 'school',
+          children: fineLinks
+        })
+      }
 
-      links.push({
-        title: 'Dues',
-        icon: 'school',
-        children: dueLinks
-      })
+      if (dueLinks.length > 0) {
+        links.push({
+          title: 'Dues',
+          icon: 'school',
+          children: dueLinks
+        })
+      }
 
       if (has(PRIVILEGES.SLOT_CREATION) || has(PRIVILEGES.SLOT_UPDATE)) {
         links.push({

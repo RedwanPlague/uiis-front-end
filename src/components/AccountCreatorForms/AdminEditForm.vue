@@ -105,6 +105,7 @@ export default {
     this.fetchOldData('account/admin/list', {
       id: this.loadID
     }, 'Admin account')
+      .catch(() => {})
   }
 }
 </script>

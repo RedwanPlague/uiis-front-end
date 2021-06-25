@@ -95,7 +95,7 @@ export default {
   ],
   data() {
     return {
-      id: 1605004,
+      id: null,
       clearLoading: false,
       selected: [],
       DUE_STATUS,
