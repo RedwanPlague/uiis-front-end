@@ -1,5 +1,5 @@
 <template>
-  <q-page  class="container">
+  <q-page  class="container" v-show="pageLoaded">
     <div class="q-pa-md table">
       <q-table
         title="Current Courses"
@@ -10,7 +10,7 @@
         :pagination.sync="pagination"
         :filter="currentCourseFilter"
         @row-click="onRowClick"
-        hide-bottom
+        :hide-bottom="allCourses.currentCourseSessions && allCourses.currentCourseSessions.length > 0"
       >
         <template v-slot:top-right>
           <q-input outlined dense debounce="300" v-model="currentCourseFilter" placeholder="Search">
@@ -32,7 +32,7 @@
         :pagination.sync="pagination"
         :filter="previousCourseFilter"
         @row-click="onRowClick"
-        hide-bottom
+        :hide-bottom="allCourses.previousCourseSessions && allCourses.previousCourseSessions.length > 0"
       >
 
         <template v-slot:top-right >
@@ -51,12 +51,15 @@
 
 <script>
 
-  import { mapGetters, mapActions } from 'vuex';
+  import {createNamespacedHelpers} from 'vuex';
+  const {mapGetters, mapActions} = createNamespacedHelpers('courses');
 
 export default {
   name: "ClassPage",
   data () {
     return {
+      pageLoaded: '',
+
       currentCourseFilter: '',
       previousCourseFilter: '',
       pagination: {
@@ -110,7 +113,15 @@ export default {
     ...mapActions(['fetchCourses']),
   },
   async created() {
+    this.pageLoaded = false;
+    this.$q.loading.show({
+      delay: 100,
+      message: 'Loading...',
+      messageColor: 'white'
+    });
     await this.fetchCourses();
+    this.$q.loading.hide();
+    this.pageLoaded = true;
   },
   computed: {
     ...mapGetters(['allCourses']),

@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lff">
+  <q-layout view="lhh Lpr lff">
     <q-header elevated>
       <q-toolbar>
         <q-btn
@@ -14,20 +14,6 @@
         <q-toolbar-title>
           UIIS
         </q-toolbar-title>
-
-        <!--
-          <q-btn
-            round
-            color="primary"
-            style="font-size: 30px"
-            unelevated
-            stack
-            padding="0px"
-            dense
-          >
-            <q-icon name="account_circle" style="font-size:60px"></q-icon>
-          </q-btn>
-        -->
 
         <q-btn-dropdown v-if="user" color="primary" text-color="white" :label="user.name" dense flat no-caps>
           <q-list>
@@ -79,14 +65,6 @@
           v-bind="menuOption"
         />
 
-<!--        <q-expansion-item :content-inset-level="0.5" icon="class" label="Courses" default-closed>-->
-<!--          <SidebarOption-->
-<!--            v-for="menuOption in menuOptionsCourseTeacher"-->
-<!--            :key="menuOption.title"-->
-<!--            v-bind="menuOption"-->
-<!--          />-->
-<!--        </q-expansion-item>-->
-
         <q-expansion-item :content-inset-level="0.5" icon="school" label="Advisor" default-closed>
           <SidebarOption
             v-for="menuOption in menuOptionsAdvisor"
@@ -111,6 +89,11 @@
 
         <SidebarOption
           v-for="menuOption in menuOptionsScrutinizer"
+          :key="menuOption.title"
+          v-bind="menuOption"
+        />
+        <SidebarOption
+          v-for="menuOption in menuOptionsIssues"
           :key="menuOption.title"
           v-bind="menuOption"
         />
@@ -196,6 +179,14 @@ const menuOptionsScrutinizer = [
   }
 ];
 
+const menuOptionsIssues = [
+  {
+    title: "Result Issues",
+    icon: "error",
+    path: "/teacher/issues"
+  }
+];
+
 export default {
   name: "TeacherLayout",
   components: { SidebarOption },
@@ -211,8 +202,13 @@ export default {
       menuOptionsAdvisor,
       menuOptionsHead,
       menuOptionsExaminer,
-      menuOptionsScrutinizer
+      menuOptionsScrutinizer,
+      menuOptionsIssues
     };
   }
 };
 </script>
+
+<style scoped>
+
+</style>

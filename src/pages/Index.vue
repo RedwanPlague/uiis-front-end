@@ -63,7 +63,10 @@ export default {
             this.$router.replace({ name: 'AdminHome' })
           }
           else if(user.userType === 'teacher') {
-            this.$router.replace({name: 'home'});
+            this.$router.replace({name: 'teacherHome'});
+          }
+          else if(user.userType === 'student') {
+            this.$router.replace({name: 'studentHome'});
           }
         })
         .catch(error => {
