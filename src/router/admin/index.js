@@ -131,7 +131,7 @@ export default {
           component: () => import('pages/admin/dues/fines/FineSearch'),
         },
         {
-          path: 'edit',
+          path: 'edit/:fineID',
           name: 'AdminFineEditPage',
           component: () => import('pages/admin/dues/fines/FineEdit'),
         },

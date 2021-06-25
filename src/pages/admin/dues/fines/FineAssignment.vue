@@ -14,12 +14,14 @@
       />
     </div>
     <q-form v-if="fineType" class="row q-col-gutter-md" @submit="assignFine" @reset="resetForm">
-      <q-input
-        class="col-6"
-        v-model="id"
-        label="Student ID"
+      <q-select
+        class="col-12"
+        v-model="ids"
+        label="Student ID(s)"
+        multiple use-chips use-input clearable
+        new-value-mode="add-unique"
         outlined
-        :rules="[() => !!id || 'Please Enter an ID']"
+        :rules="[() => (!!ids && ids.length > 0) || 'Please Enter at least one Student ID']"
       />
       <q-input
         class="col-6"
@@ -63,7 +65,7 @@
           () => !descTooLong || `Maximum ${descLimit} characters allowed`
         ]"
       />
-      <div class="col-12 q-mt-lg">
+      <div class="col-12">
         <q-btn label="Assign" color="primary" unelevated @click="assignFine" :loading="createLoading"/>
         <q-btn label="Reset" color="primary" flat @click="resetForm"/>
       </div>
@@ -84,7 +86,7 @@ export default {
   data() {
     return {
       fineType: null,
-      id: null,
+      ids: null,
       amount: null,
       deadline: null,
       delayFine: null,
@@ -101,10 +103,18 @@ export default {
   methods: {
     noNegative,
     assignFine() {
-
+      this.callCreateApi('/fine/assign', {
+        fineType: this.fineType,
+        ids: this.ids,
+        amount: this.amount,
+        deadline: new Date(this.deadline),
+        delayFine: this.delayFine,
+        description: this.description
+      }, 'Fine')
+        .catch(() => {})
     },
     resetForm() {
-      this.id = null
+      this.ids = null
       this.amount = null
       this.deadline = null
       this.delayFine = null

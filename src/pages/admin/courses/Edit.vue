@@ -91,7 +91,7 @@
         outlined
         :readonly="viewing"
       />
-      <div class="col-12">
+      <div class="col-12" v-if="!viewing">
         <q-btn label="Update" type="submit" color="primary" unelevated/>
         <q-btn label="Reset" type="reset" color="primary" flat/>
       </div>

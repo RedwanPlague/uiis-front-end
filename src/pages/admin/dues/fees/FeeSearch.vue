@@ -38,7 +38,7 @@
       <q-separator class="q-my-sm"/>
       <q-table
         title="Results"
-        :data="dues"
+        :data="fees"
         :columns="columns"
         flat
         wrap-cells
@@ -79,7 +79,6 @@ const dateFormat = val => new Intl.DateTimeFormat('en', {month: 'short', day: 'n
 
 const columns = [
   {name: 'issuedTo', label: 'Student ID', field: 'issuedTo', align: 'center'},
-  {name: 'dueType', label: 'Due Type', field: 'dueType', align: 'center'},
   {name: 'amount', label: 'Initial Amount', field: 'amount', align: 'center', format: moneyFormat},
   {name: 'deadline', label: 'Deadline', field: 'deadline', align: 'center', format: dateFormat},
   // {name: 'delayFine', label: 'Delay Fine', field: 'delayFine', align: 'center', format: moneyFormat},
@@ -107,7 +106,7 @@ export default {
       showResults: false,
       resultsLoading: false,
       clearLoading: false,
-      dues: [],
+      fees: [],
       selected: [],
       DUE_TYPES,
       DUE_STATUS,
@@ -132,7 +131,7 @@ export default {
   },
   methods: {
     getSelectedString () {
-      return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.dues.length}`
+      return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.fees.length}`
     },
     onSelect() {
       this.selected = this.selected.filter(x => x.status === DUE_STATUS.PENDING)
@@ -141,7 +140,7 @@ export default {
       this.resultsLoading = true
       this.$adminAPI.post('/due/getDue', {...this.partialData, ids: this.ids})
         .then(response => {
-          this.dues = response.data.sort((a, b) => a.status > b.status ? -1 : 1)
+          this.fees = response.data.sort((a, b) => a.status > b.status ? -1 : 1)
           this.resultsLoading = false
           this.showResults = true
         })
@@ -158,7 +157,7 @@ export default {
       this.$adminAPI.post('/due/clearDue', {...this.partialData, ids: this.selectedIDs})
         .then(() => {
           this.clearLoading = false
-          this.dues = this.dues.map(x => {
+          this.fees = this.fees.map(x => {
             if (this.selectedIDs.includes(x.issuedTo)) {
               x.status = DUE_STATUS.CLEARED
             }
@@ -169,7 +168,7 @@ export default {
         .catch(() => {
           this.clearLoading = false
           this.$q.notify({
-            message: 'Failed to clear selected dues',
+            message: 'Failed to clear selected fees',
             type: 'negative'
           })
         })

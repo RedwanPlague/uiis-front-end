@@ -451,11 +451,11 @@ export default {
     },
     updateCourseSession() {
       this.updateEvaluationDetails()
-      setTimeout(() => this.updateList('teachers'), 200)
-      setTimeout(() => this.updateList('schedule'), 400)
-      setTimeout(() => this.updateList('examiners'), 600)
-      setTimeout(() => this.updateList('scrutinizers'), 800)
-      setTimeout(() => this.updateList('resultAccessHolders'), 1000)
+      this.updateList('teachers')
+      this.updateList('schedule')
+      this.updateList('examiners')
+      this.updateList('scrutinizers')
+      this.updateList('resultAccessHolders')
     },
     showErrorNotification(error) {
       const message = `Failed to load Course data`

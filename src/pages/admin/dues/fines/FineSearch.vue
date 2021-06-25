@@ -3,7 +3,7 @@
     <div class="text-h5 q-my-md">
       Search Fines
     </div>
-    <q-form class="row q-col-gutter-md" @submit="loadFines" @reset="resetForm">
+    <div class="row q-col-gutter-md">
       <q-input
         class="col-6"
         v-model="id"
@@ -12,19 +12,20 @@
         :rules="[() => !!id || 'Please Enter Student ID']"
       >
         <template v-slot:append>
-          <q-btn icon="search" flat color="primary" :disable="!id"/>
+          <q-btn icon="search" flat color="primary" :disable="!id" @click="loadFines"/>
         </template>
       </q-input>
-    </q-form>
+    </div>
     <div v-if="showResults" class="q-mt-lg">
       <q-separator class="q-my-sm"/>
       <q-table
         title="Results"
-        :data="dues"
+        :data="tableData"
         :columns="columns"
         flat
         wrap-cells
-        row-key="issuedTo"
+        row-key="id"
+        @row-click="onRowClick"
         :selected-rows-label="getSelectedString"
         :selected.sync="selected"
         selection="multiple"
@@ -40,33 +41,45 @@
             {{props.value}}
           </q-td>
         </template>
+        <template v-slot:body-cell-description="props">
+          <q-td :props="props">
+            {{props.value}}
+            <q-tooltip content-style="font-size: 1.1em; background-color: black" max-width="50vw">
+              {{props.row.description}}
+            </q-tooltip>
+          </q-td>
+        </template>
       </q-table>
       <q-btn
         label="Clear Selected" color="primary" unelevated @click="clearFines"
         :loading="clearLoading" :disable="selected.length === 0"
       />
     </div>
-    <q-inner-loading :showing="resultsLoading"/>
+    <q-inner-loading :showing="searchLoading"/>
     <div style="min-height: 200px"></div>
   </q-page>
 </template>
 
 <script>
-import {DUE_TYPES, DUE_STATUS} from 'src/utils/constants'
+import {DUE_STATUS} from 'src/utils/constants'
 import columnMerger from 'src/utils/columnMerger'
+import search from 'src/mixins/search'
 
 const moneyFormat = val => `৳ ${val}`
 const dateFormat = val => new Intl.DateTimeFormat('en', {month: 'short', day: 'numeric', year: 'numeric'}).format(new Date(val))
 
+const maxLen = 20
+const descFormat = val => val.slice(0, maxLen).trim() + (val.length > maxLen ? '...' : '')
+
 const columns = [
-  {name: 'issuedTo', label: 'Student ID', field: 'issuedTo', align: 'center'},
-  {name: 'dueType', label: 'Due Type', field: 'dueType', align: 'center'},
+  {name: 'fineType', label: 'Fine Type', field: 'fineType', align: 'center'},
   {name: 'amount', label: 'Initial Amount', field: 'amount', align: 'center', format: moneyFormat},
   {name: 'deadline', label: 'Deadline', field: 'deadline', align: 'center', format: dateFormat},
   // {name: 'delayFine', label: 'Delay Fine', field: 'delayFine', align: 'center', format: moneyFormat},
   {name: 'currentAmount', label: 'Current Amount', field: 'currentAmount', align: 'center', format: moneyFormat},
   // {name: 'issueDate', label: 'Issue Date', field: 'issueDate', align: 'center', format: dateFormat},
   {name: 'status', label: 'Status', field: 'status', align: 'center', sortable: true},
+  {name: 'description', label: 'Description', field: 'description', align: 'center', format: descFormat}
 ]
 
 const commonAttr = {
@@ -77,67 +90,43 @@ columnMerger(columns, commonAttr)
 
 export default {
   name: 'FineSearch',
+  mixins: [
+    search
+  ],
   data() {
     return {
-      id: null,
-      feeType: DUE_TYPES.LEVEL_CHANGING_FEE,
-      yearMonth: null,
-      showResults: false,
-      resultsLoading: false,
+      id: 1605004,
       clearLoading: false,
-      dues: [],
       selected: [],
-      DUE_TYPES,
       DUE_STATUS,
       columns,
     }
   },
   computed: {
-    partialData() {
-      const data = {
-        dueType: this.feeType
-      }
-      if (this.feeType === DUE_TYPES.DINING_FEE) {
-        data.yearMonth = new Date(this.yearMonth).toString()
-      } else {
-        data.session = new Date(this.yearMonth).toString()
-      }
-      return data
-    },
     selectedIDs() {
-      return this.selected.map(x => x.issuedTo)
+      return this.selected.map(x => x.id)
     }
   },
   methods: {
     getSelectedString () {
-      return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.dues.length}`
+      return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.tableData.length}`
     },
     onSelect() {
       this.selected = this.selected.filter(x => x.status === DUE_STATUS.PENDING)
     },
     loadFines() {
-      this.resultsLoading = true
-      this.$adminAPI.post('/due/getDue', {...this.partialData, ids: this.ids})
-        .then(response => {
-          this.dues = response.data.sort((a, b) => a.status > b.status ? -1 : 1)
-          this.resultsLoading = false
-          this.showResults = true
-        })
-        .catch(() => {
-          this.resultsLoading = false
-          this.$q.notify({
-            message: 'Failed to load due list, Try Again',
-            type: 'negative'
-          })
-        })
+      this.callSearchApi('/fine/list/'+this.id, {}, 'Fine')
+        .then(() => this.tableData = this.tableData.sort((a, b) => a.status > b.status ? -1 : 1))
     },
     clearFines() {
       this.clearLoading = true
-      this.$adminAPI.post('/due/clearDue', {...this.partialData, ids: this.selectedIDs})
+      this.$adminAPI.post('/fine/clear', {
+        ids: this.selected.map(x => x.id)
+      })
         .then(() => {
           this.clearLoading = false
-          this.dues = this.dues.map(x => {
-            if (this.selectedIDs.includes(x.issuedTo)) {
+          this.tableData = this.tableData.map(x => {
+            if (this.selectedIDs.includes(x.id)) {
               x.status = DUE_STATUS.CLEARED
             }
             return x
@@ -147,15 +136,19 @@ export default {
         .catch(() => {
           this.clearLoading = false
           this.$q.notify({
-            message: 'Failed to clear selected dues',
+            message: 'Failed to clear selected fines',
             type: 'negative'
           })
         })
     },
-    resetForm() {
-      this.ids = []
-      this.feeType = null
-      this.yearMonth = null
+    onRowClick(event, row) {
+      const routeData = this.$router.resolve({
+        name: 'AdminFineEditPage',
+        params: {
+          fineID: row.id,
+        }
+      })
+      window.open(routeData.href, '_blank')
     }
   }
 }
