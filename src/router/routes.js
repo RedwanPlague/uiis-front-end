@@ -1,4 +1,5 @@
 import admin from 'src/router/admin'
+import store from 'src/store'
 
 const routes = [
   {
@@ -37,8 +38,18 @@ const routes = [
         path: 'semester_selection/grades',
         name: 'studentGrades',
         component: () => import('src/pages/student/GradesPage.vue')
+      },
+      {
+        path: 'dues',
+        name: 'DueViewPage',
+        component: () => import('src/pages/student/DueView')
       }
-    ]
+    ],
+    beforeEnter(to, from, next) {
+      store.dispatch('userTryAutoLogIn')
+        .then(() => next())
+        .catch(() => next({name: 'Index'}))
+    }
   },
 
   {
