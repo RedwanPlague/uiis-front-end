@@ -78,6 +78,7 @@ const feeColumns = [
     align: 'center', format: monthYearFormat},
   {name: 'amount', label: 'Initial Amount', field: 'amount', align: 'center', format: moneyFormat},
   {name: 'deadline', label: 'Deadline', field: 'deadline', align: 'center', format: dateFormat},
+  {name: 'delayFine', label: 'Delay Fine', field: 'delayFine', align: 'center', format: moneyFormat},
   {name: 'currentAmount', label: 'Current Amount', field: 'currentAmount', align: 'center', format: moneyFormat},
   {name: 'action', label: 'Action', field: 'action', align: 'center'},
 ]
@@ -90,6 +91,7 @@ const fineColumns = [
   {name: 'fineType', label: 'Type', field: 'fineType', align: 'center'},
   {name: 'amount', label: 'Initial Amount', field: 'amount', align: 'center', format: moneyFormat},
   {name: 'deadline', label: 'Deadline', field: 'deadline', align: 'center', format: dateFormat},
+  {name: 'delayFine', label: 'Delay Fine', field: 'delayFine', align: 'center', format: moneyFormat},
   {name: 'currentAmount', label: 'Current Amount', field: 'currentAmount', align: 'center', format: moneyFormat},
   {name: 'description', label: 'Description', field: 'description', align: 'center', format: descFormat},
   {name: 'action', label: 'Action', align: 'center'},
