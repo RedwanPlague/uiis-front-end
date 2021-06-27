@@ -152,13 +152,19 @@ export default {
         `/teacher/${this.ke}/${this.info.courseID}/${this.currentSession}/approve`
       );
       this.$store.commit("scrutinizer/mutHasForwarded");
-      console.log(this.hasForwarded);
 
       this.$q.notify({
         icon: "done",
         message: "Result Forwarded to Department Head",
         position: "bottom-left"
       });
+    },
+
+    porerjon() {
+      if(this.ke === "head") return "ECO";
+      else if(this.ke === "scrutinizer") return "Internal";
+      else if(this.ke === "internal") return "Department Head";
+      else return "Janina";
     },
 
     async toiri() {
@@ -211,10 +217,7 @@ export default {
     }),
 
     forwardLabel() {
-      if(this.ke === "head") return "Forward to ECO";
-      else if(this.ke === "scrutinizer") return "Forward to Internal";
-      else if(this.ke === "internal") return "Forward to Department Head";
-      else return "Janina";
+      return `Forward to ${this.porerjon()}`;
     },
 
     allCompleted() {
