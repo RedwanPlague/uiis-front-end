@@ -115,7 +115,12 @@ const routes = [
 
       { path: 'issues', name: 'issue_list', component: () => import('src/pages/teacher/IssueListPage.vue') },
       { path: 'issues/:issueID', name: 'issue_details', component: () => import('pages/teacher/IssueDetailsPage.vue') }
-    ]
+    ],
+    beforeEnter(to, from, next) {
+      store.dispatch('userTryAutoLogIn')
+        .then(() => next())
+        .catch(() => next({name: 'Index'}))
+    }
   },
 
   admin,
