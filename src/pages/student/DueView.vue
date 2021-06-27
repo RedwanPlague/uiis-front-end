@@ -1,6 +1,9 @@
 <template>
   <q-page padding>
-    <div class="text-h5 q-my-sm">Pending Dues</div>
+    <div class="text-h5 q-my-sm">
+      Pending Dues
+      <q-btn @click="createSession" label="create"/>
+    </div>
     <div v-if="showResults">
       <q-separator class="q-mb-sm"/><q-separator/>
       <q-table
@@ -104,6 +107,15 @@ export default {
     }
   },
   methods: {
+    createSession() {
+      this.$adminAPI.get('/student/due/test')
+        .then(response => {
+          console.log(response)
+        })
+        .catch(error => {
+          console.log(error.response)
+        })
+    },
     loadDues() {
       this.callSearchApi('/student/due/list', {}, 'Dues List').catch(() => {})
     },
