@@ -4,7 +4,7 @@
     <div class="issue-header">
       <div class="issue-header-row">
         <h4>{{ issueDetails.title }}</h4>
-        <q-chip  v-if="issueDetails.courseSession" style="margin-top: 56px; margin-left: 20px; " color="teal" text-color="white">{{ issueDetails.courseSession.course.courseID }}:
+        <q-chip square icon-right="arrow_forward" v-if="issueDetails.courseSession" clickable style="margin-top: 56px; margin-left: 20px;" color="teal" text-color="white" @click="courseChipClicked">{{ issueDetails.courseSession.course.courseID }}:
           {{ issueDetails.courseSession.course.title }} </q-chip>
       </div>
 
@@ -117,6 +117,10 @@ export default {
   },
   methods: {
     ...mapActions(['fetchIssueDetails', 'sendComment', 'changeIssueStatus']),
+
+    courseChipClicked(e) {
+      console.log(e);
+    },
     setPageVariables() {
 
       if(this.issueDetails.status === 'unresolved') {
