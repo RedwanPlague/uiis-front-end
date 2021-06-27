@@ -41,8 +41,13 @@ const routes = [
       },
       {
         path: 'dues',
-        name: 'DueViewPage',
-        component: () => import('src/pages/student/DueView')
+        name: 'StudentDueViewPage',
+        component: () => import('pages/student/dues/ViewList')
+      },
+      {
+        path: 'dues/status/:status',
+        name: 'StudentDueStatusPage',
+        component: () => import('pages/student/dues/PaymentStatus')
       }
     ],
     beforeEnter(to, from, next) {

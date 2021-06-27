@@ -1,8 +1,7 @@
 <template>
   <q-page padding>
     <div class="text-h5 q-my-sm">
-      Pending Dues
-      <q-btn @click="createSession" label="create"/>
+      Unpaid Dues
     </div>
     <div v-if="showResults">
       <q-separator class="q-mb-sm"/><q-separator/>
@@ -13,19 +12,20 @@
         flat
         wrap-cells
         row-key="_id"
+        no-data-label="You have no unpaid fees"
       >
         <template v-slot:body-cell-yearMonth="props">
           <q-td :props="props">
             {{props.value}}<br/>
-            (<span v-if="props.row.dueType === DUE_TYPES.DINING_FEE">dining month</span>
-            <span v-else>session</span>)
+            <span style="font-size: 0.9em">
+              <span v-if="props.row.dueType === DUE_TYPES.DINING_FEE">(dining month)</span>
+              <span v-else>(session)</span>
+            </span>
           </q-td>
         </template>
         <template v-slot:body-cell-action="props">
           <q-td :props="props">
-            <a href="https://www.bkash.com" style="text-decoration: none; color: green">
-              Pay <q-icon name="payments"/>
-            </a>
+            <payment-initiator :row="props.row" type="due"/>
           </q-td>
         </template>
       </q-table>
@@ -37,6 +37,7 @@
         flat
         wrap-cells
         row-key="_id"
+        no-data-label="You have no unpaid Fines"
       >
         <template v-slot:body-cell-description="props">
           <q-td :props="props" class="cursor-pointer">
@@ -48,13 +49,12 @@
         </template>
         <template v-slot:body-cell-action="props">
           <q-td :props="props">
-            <a href="https://www.bkash.com" style="text-decoration: none; color: green">
-              Pay <q-icon name="payments"/>
-            </a>
+            <payment-initiator :row="props.row" type="fine"/>
           </q-td>
         </template>
       </q-table>
     </div>
+    <q-inner-loading :showing="searchLoading"/>
   </q-page>
 </template>
 
@@ -62,6 +62,7 @@
 import search from 'src/mixins/search'
 import columnMerger from 'src/utils/columnMerger'
 import {DUE_TYPES} from 'src/utils/constants'
+import PaymentInitiator from 'components/PaymentInitiator'
 
 const moneyFormat = val => `৳ ${val}`
 const dateFormat = val => new Intl.DateTimeFormat('en', {month: 'short', day: 'numeric', year: 'numeric'}).format(new Date(val))
@@ -96,6 +97,7 @@ columnMerger(fineColumns, commonAttr)
 
 export default {
   name: 'DueView',
+  components: {PaymentInitiator},
   mixins: [
     search
   ],
@@ -107,15 +109,6 @@ export default {
     }
   },
   methods: {
-    createSession() {
-      this.$adminAPI.get('/student/due/test')
-        .then(response => {
-          console.log(response)
-        })
-        .catch(error => {
-          console.log(error.response)
-        })
-    },
     loadDues() {
       this.callSearchApi('/student/due/list', {}, 'Dues List').catch(() => {})
     },
@@ -125,3 +118,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.money {
+  color: #118C4F;
+}
+</style>
