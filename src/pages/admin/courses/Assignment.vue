@@ -23,57 +23,59 @@
       </div>
     </div>
     <q-form v-if="courseDataLoaded && !!courseToEdit">
-      <q-separator/>
-      <q-expansion-item
-        label="Evaluation Details"
-        header-class="text-h6 q-pl-none"
-      >
-        <div class="row q-col-gutter-md q-mb-md q-pt-md">
-          <q-input
-            class="col-6"
-            v-model="totalEvalCount"
-            label="Total Evaluation Count"
-            type="number"
-            outlined
-            :rules="[() => !!totalEvalCount || 'Please Fill this Field']"
-          />
-          <q-input
-            class="col-6"
-            v-model="consideredEvalCount"
-            label="Considered Evaluation Count"
-            type="number"
-            outlined
-            :rules="[() => !!consideredEvalCount || 'Please Fill this Field']"
-          />
-          <q-input
-            class="col-6"
-            v-model="totalMarks"
-            label="Total Marks"
-            type="number"
-            outlined
-            :rules="[() => !!totalMarks || 'Please Fill this Field']"
-          />
-          <q-input
-            class="col-6"
-            v-model="perEvalWeight"
-            label="Per Evaluation Weight"
-            type="number"
-            outlined
-            suffix="%"
-            :rules="[() => !!perEvalWeight || 'Please Fill this Field']"
-          />
-          <q-input
-            class="col-6"
-            v-model="attendanceWeight"
-            label="Attendance Weight"
-            type="number"
-            suffix="%"
-            outlined
-            :rules="[() => !!attendanceWeight || 'Please Fill this Field']"
-          />
-        </div>
-      </q-expansion-item>
-      <q-separator class="q-mb-lg"/>
+      <div v-if="userHasPrivilege(PRIVILEGES.COURSE_SESSION_UPDATE)">
+        <q-separator/>
+        <q-expansion-item
+          label="Evaluation Details"
+          header-class="text-h6 q-pl-none"
+        >
+          <div class="row q-col-gutter-md q-mb-md q-pt-md">
+            <q-input
+              class="col-6"
+              v-model="totalEvalCount"
+              label="Total Evaluation Count"
+              type="number"
+              outlined
+              :rules="[() => !!totalEvalCount || 'Please Fill this Field']"
+            />
+            <q-input
+              class="col-6"
+              v-model="consideredEvalCount"
+              label="Considered Evaluation Count"
+              type="number"
+              outlined
+              :rules="[() => !!consideredEvalCount || 'Please Fill this Field']"
+            />
+            <q-input
+              class="col-6"
+              v-model="totalMarks"
+              label="Total Marks"
+              type="number"
+              outlined
+              :rules="[() => !!totalMarks || 'Please Fill this Field']"
+            />
+            <q-input
+              class="col-6"
+              v-model="perEvalWeight"
+              label="Per Evaluation Weight"
+              type="number"
+              outlined
+              suffix="%"
+              :rules="[() => !!perEvalWeight || 'Please Fill this Field']"
+            />
+            <q-input
+              class="col-6"
+              v-model="attendanceWeight"
+              label="Attendance Weight"
+              type="number"
+              suffix="%"
+              outlined
+              :rules="[() => !!attendanceWeight || 'Please Fill this Field']"
+            />
+          </div>
+        </q-expansion-item>
+        <q-separator class="q-mb-lg"/>
+      </div>
       <div v-if="userHasPrivilege(PRIVILEGES.COURSE_SESSION_ASSIGN_TEACHER)">
         <q-separator/>
         <q-expansion-item

@@ -82,7 +82,7 @@ const columns = [
   {name: 'issuedTo', label: 'Student ID', field: 'issuedTo', align: 'center'},
   {name: 'amount', label: 'Initial Amount', field: 'amount', align: 'center', format: moneyFormat},
   {name: 'deadline', label: 'Deadline', field: 'deadline', align: 'center', format: dateFormat},
-  // {name: 'delayFine', label: 'Delay Fine', field: 'delayFine', align: 'center', format: moneyFormat},
+  {name: 'delayFine', label: 'Delay Fine', field: 'delayFine', align: 'center', format: moneyFormat},
   {name: 'currentAmount', label: 'Current Amount', field: 'currentAmount', align: 'center', format: moneyFormat},
   // {name: 'issueDate', label: 'Issue Date', field: 'issueDate', align: 'center', format: dateFormat},
   {name: 'status', label: 'Status', field: 'status', align: 'center', sortable: true},

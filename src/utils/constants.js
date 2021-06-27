@@ -1,15 +1,15 @@
 const PRIVILEGES = Object.freeze({
   ACCOUNT_CREATION: 'account-creation',
-  ACCOUNT_DELETION: 'account-deletion',
+  // ACCOUNT_DELETION: 'account-deletion',
   ACCOUNT_UPDATE: 'account-update',
 
   COURSE_CREATION: 'course-creation',
   COURSE_UPDATE: 'course-update',
-  COURSE_DELETION: 'course-deletion',
+  // COURSE_DELETION: 'course-deletion',
 
   CURRENT_SESSION_UPDATE: 'current-session-update',
 
-  COURSE_SESSION_CREATION: 'course-session-creation',
+  // COURSE_SESSION_CREATION: 'course-session-creation',
   COURSE_SESSION_UPDATE: 'course-session-update',
   COURSE_SESSION_ASSIGN_EXAMINER: 'course-session-assign-examiner',
   COURSE_SESSION_ASSIGN_TEACHER: 'course-session-assign-teacher',
@@ -22,7 +22,7 @@ const PRIVILEGES = Object.freeze({
 
   ROLE_CREATION: 'role-creation',
   ROLE_UPDATE: 'role-update',
-  ROLE_DELETION: 'role-deletion',
+  // ROLE_DELETION: 'role-deletion',
 
   DEPARTMENT_CREATION: 'department-creation',
   DEPARTMENT_UPDATE: 'department-update',

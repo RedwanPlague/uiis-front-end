@@ -46,7 +46,7 @@
           />
         </div>
       </div>
-      <div class="row">
+      <div class="row" v-if="canCreate">
         <div class="col-3"></div>
         <q-btn
           class="col-6" color="primary"
@@ -69,6 +69,8 @@ import TeacherPicker from 'components/FormElements/TeacherPicker'
 import creator from 'src/mixins/creator'
 import edit from 'src/mixins/edit'
 import {extract} from 'src/utils/apiDataPreProcessor'
+import {mapGetters} from 'vuex'
+import {PRIVILEGES} from 'src/utils/constants'
 
 export default {
   name: 'DeptManagement',
@@ -82,6 +84,17 @@ export default {
       departments: [],
       deptList: [],
       dataLoading: false,
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'userHasPrivilege'
+    ]),
+    canCreate() {
+      return this.userHasPrivilege(PRIVILEGES.DEPARTMENT_CREATION)
+    },
+    canUpdate() {
+      return this.userHasPrivilege(PRIVILEGES.DEPARTMENT_UPDATE)
     }
   },
   methods: {

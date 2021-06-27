@@ -48,7 +48,7 @@
             @click="localRemoveSlot(idx)"
           />
           <q-btn
-            v-else-if="canUpdate"
+            v-else
             :icon="slot.viewing ? 'edit' : 'visibility'"
             :color="slot.viewing ? 'primary' : 'black'"
             @click="slot.viewing = !slot.viewing"

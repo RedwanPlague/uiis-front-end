@@ -55,6 +55,7 @@
       </q-table>
     </div>
     <q-inner-loading :showing="searchLoading"/>
+    <div style="min-height: 200px"></div>
   </q-page>
 </template>
 
