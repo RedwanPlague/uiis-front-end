@@ -6,7 +6,7 @@
     <div class="text-bubble button-row">
       <div class="bubble-top-slot">Add a comment:</div>
       <div class="bubble-down-slot">
-        <q-editor toolbar-toggle-color="blue" class="text-editor" v-model="editorText" min-height="5rem" />
+        <q-editor toolbar-toggle-color="blue" class="text-editor" v-model="editorText" min-height="5rem" placeholder="Add a comment..." />
       </div>
       <q-btn  style="margin-left: 900px; " color="blue-4" label="Comment" no-caps @click="submitButtonClicked" :disable="!editorText"/>
     </div>

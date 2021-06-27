@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import Comment from 'src/components/IssueComponents/Comment';
+import Comment from 'components/IssueComponents/Comment';
 import Activity from "components/IssueComponents/Activity";
 import Editor from "components/IssueComponents/Editor";
 
@@ -158,7 +158,22 @@ export default {
 
     },
     async addComment(comment) {
+
+      const notif = this.$q.notify({
+        message: 'Updating...',
+        position: "bottom-left",
+        group: false, // required to be updatable
+        timeout: 0, // we want to be in control when it gets dismissed
+        spinner: true,
+      });
       await this.sendComment({comment});
+
+      notif({
+        icon: 'done', // we add an icon
+        spinner: false, // we reset the spinner setting so the icon can be displayed
+        message: 'Updated',
+        timeout: 1500 // we will timeout it in 2.5s
+      });
     }
   },
   data() {
