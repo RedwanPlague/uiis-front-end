@@ -22,9 +22,15 @@
 import { mapGetters, mapActions } from "vuex";
 
 export default {
-  name: "ScrutinizerPage",
+  name: "ScrutinizerPage", // To change
   components: {
     // ScrutinizerTable: () => import("../../components/ScrutinizerTable.vue")
+  },
+  props: {
+    ke: {
+      type: String,
+      required: true
+    }
   },
   data() {
     return {
@@ -52,39 +58,39 @@ export default {
   },
 
   methods: {
-    ...mapActions("scrutinizer", ["fillCourses", "fillSingleCourse"]),
+    ...mapActions("scrutinizer", ["fillCourses", "fillSingleCourse"]), // To change
 
     async onRowClick(evt, row) {
-      // this.$store.commit("scrutinizer/mutCurCourse", row.courseID);
-
-      // this.$q.loading.show({
-      //   delay: 100 // ms
-      // });
-      // this.$q.loading.hide();
-
-      // await this.$store.dispatch("scrutinizer/fillSingleCourse");
-
-      // this.$q.loading.hide();
-
       this.$router.push({
-        name: "scrutinizer-course-page",
+        name: "scrutinizer-course-page", // To change
         params: {
           courseID: row.courseID
         }
       });
+    },
+
+    async toiri() {
+      this.$store.commit("scrutinizer/mutKe", this.ke); // To change
+
+      this.$q.loading.show({
+        delay: 100 // ms
+      });
+
+      await this.$store.dispatch("scrutinizer/fillCourses"); // To change
+      this.$q.loading.hide();
     }
   },
 
   computed: {
-    ...mapGetters("scrutinizer", ["currentSession", "allCourses"]),
+    ...mapGetters("scrutinizer", ["currentSession", "allCourses",]), // To change
 
     currentCourse: {
       get() {
-        return this.$store.getters["scrutinizer/currentCourse"];
+        return this.$store.getters["scrutinizer/currentCourse"]; // To change
       },
 
       set(curCourse) {
-        this.$store.commit("scrutinizer/mutCurCourse", curCourse);
+        this.$store.commit("scrutinizer/mutCurCourse", curCourse); // To change
       }
     }
   },
@@ -93,18 +99,15 @@ export default {
     async currentCourse(newVal, oldVal) {
       //await this.fillSingleCourse();
       //console.log("hemlo");
+    },
+
+    async "$route.params"(to, from) {
+      await this.toiri();
     }
   },
 
   async created() {
-    // API call
-
-    this.$q.loading.show({
-      delay: 100 // ms
-    });
-
-    await this.$store.dispatch("scrutinizer/fillCourses");
-    this.$q.loading.hide();
+    await this.toiri();
   }
 };
 </script>

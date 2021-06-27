@@ -114,6 +114,13 @@ export default {
     };
   },
 
+  props: {
+    ke: {
+      type: String,
+      required: true
+    }
+  },
+
   components: {
     IssueForm: () => import("components/IssueForm")
   },
@@ -137,7 +144,7 @@ export default {
     async forwardResult() {
       this.canEdit = false;
       await api.put(
-        `/teacher/scrutinizer/${this.info.courseID}/${this.currentSession}/approve`
+        `/teacher/${this.ke}/${this.info.courseID}/${this.currentSession}/approve`
       );
       this.$store.commit("scrutinizer/mutHasForwarded");
       console.log(this.hasForwarded);
@@ -147,6 +154,30 @@ export default {
         message: "Result Forwarded to Department Head",
         position: "bottom-left"
       });
+    },
+
+    async toiri() {
+      this.loading = true;
+      if (!this.$route.params.courseID) {
+        return;
+      }
+
+      this.$store.commit(
+        "scrutinizer/mutCurCourse",
+        this.$route.params.courseID
+      );
+
+      this.$q.loading.show({
+        delay: 100 // ms
+      });
+
+      await this.$store.dispatch("scrutinizer/fillSingleCourse");
+      this.loading = false;
+
+      this.$q.loading.hide();
+
+      if (this.labels.length > 0) this.slide = this.labels[0]["value"];
+      this.initialPagination.rowsPerPage = this.info.students.length;
     }
   },
 
@@ -161,7 +192,7 @@ export default {
       tfStudent: "tfStudent",
       //courseLoading: "courseLoading",
       hasForwarded: "hasForwarded",
-      currentSession: "currentSession"
+      currentSession: "currentSession",
     }),
 
     allCompleted() {
@@ -357,24 +388,7 @@ export default {
 
   watch: {
     async "$route.params"(to, from) {
-      this.loading = true;
-      if (!this.$route.params.courseID) {
-        return;
-      }
-
-      this.$store.commit(
-        "scrutinizer/mutCurCourse",
-        this.$route.params.courseID
-      );
-
-      this.$q.loading.show({
-        delay: 100 // ms
-      });
-
-      await this.$store.dispatch("scrutinizer/fillSingleCourse");
-      this.loading = false;
-
-      this.$q.loading.hide();
+      await this.toiri();
     },
 
     slide(to) {
@@ -383,23 +397,7 @@ export default {
   },
 
   async created() {
-    this.loading = true;
-    if (!this.allCourses || this.allCourses.length === 0)
-      await this.$store.dispatch("scrutinizer/fillCourses");
-
-    this.$store.commit("scrutinizer/mutCurCourse", this.$route.params.courseID);
-
-    this.$q.loading.show({
-      delay: 100 // ms
-    });
-
-    await this.$store.dispatch("scrutinizer/fillSingleCourse");
-    this.loading = false;
-
-    this.$q.loading.hide();
-
-    if (this.labels.length > 0) this.slide = this.labels[0]["value"];
-    this.initialPagination.rowsPerPage = this.info.students.length;
+    await this.toiri();
   }
 };
 </script>
