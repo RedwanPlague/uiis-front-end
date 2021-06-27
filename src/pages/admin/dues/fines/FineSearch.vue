@@ -24,7 +24,7 @@
         :columns="columns"
         flat
         wrap-cells
-        row-key="id"
+        row-key="_id"
         @row-click="onRowClick"
         :selected-rows-label="getSelectedString"
         :selected.sync="selected"
@@ -104,7 +104,7 @@ export default {
   },
   computed: {
     selectedIDs() {
-      return this.selected.map(x => x.id)
+      return this.selected.map(x => x._id)
     }
   },
   methods: {
@@ -121,12 +121,12 @@ export default {
     clearFines() {
       this.clearLoading = true
       this.$adminAPI.post('/fine/clear', {
-        ids: this.selected.map(x => x.id)
+        ids: this.selected.map(x => x._id)
       })
         .then(() => {
           this.clearLoading = false
           this.tableData = this.tableData.map(x => {
-            if (this.selectedIDs.includes(x.id)) {
+            if (this.selectedIDs.includes(x._id)) {
               x.status = DUE_STATUS.CLEARED
             }
             return x
@@ -145,7 +145,7 @@ export default {
       const routeData = this.$router.resolve({
         name: 'AdminFineEditPage',
         params: {
-          fineID: row.id,
+          fineID: row._id,
         }
       })
       window.open(routeData.href, '_blank')

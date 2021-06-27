@@ -54,6 +54,7 @@
             </q-item>
           </q-list>
         </q-btn-dropdown>
+        <q-btn v-else flat label="SIGN IN" :to="{ name: 'Index' }"/>
       </q-toolbar>
     </q-header>
 
@@ -116,6 +117,11 @@ const menuOptions = [
     title: "View Grades",
     icon: "grading",
     path: "/student/semester_selection"
+  },
+  {
+    title: 'Dues',
+    icon: 'school',
+    path: '/student/dues'
   }
 ];
 

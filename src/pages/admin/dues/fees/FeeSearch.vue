@@ -42,7 +42,7 @@
         :columns="columns"
         flat
         wrap-cells
-        row-key="issuedTo"
+        row-key="_id"
         :selected-rows-label="getSelectedString"
         :selected.sync="selected"
         selection="multiple"

@@ -29,7 +29,7 @@ export default {
             console.log(`Search failed for ${name}`)
             console.log(error.response)
             Notify.create({
-              message: 'Failed to load search results',
+              message: `Failed to load ${name}. Try Again`,
               type: 'negative'
             })
             reject(error)

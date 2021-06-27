@@ -1,4 +1,5 @@
 import admin from 'src/router/admin'
+import store from 'src/store'
 
 const routes = [
   {
@@ -37,8 +38,18 @@ const routes = [
         path: 'semester_selection/grades',
         name: 'studentGrades',
         component: () => import('src/pages/student/GradesPage.vue')
+      },
+      {
+        path: 'dues',
+        name: 'DueViewPage',
+        component: () => import('src/pages/student/DueView')
       }
-    ]
+    ],
+    beforeEnter(to, from, next) {
+      store.dispatch('userTryAutoLogIn')
+        .then(() => next())
+        .catch(() => next({name: 'Index'}))
+    }
   },
 
   {
@@ -102,9 +113,14 @@ const routes = [
       { path: 'scrutinizer', component: () => import('pages/teacher/scrutinizer/ScrutinizerPage.vue') },
       { path: 'scrutinizer/:courseID', name: "scrutinizer-course-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerCoursePage.vue') },
 
-      { path: 'issues', name: 'issue_list', component: () => import('pages/teacher/issues/IssueListPage.vue') },
-      { path: 'issues/:issueID', name: 'issue_details', component: () => import('pages/teacher/issues/IssueDetailsPage.vue') }
-    ]
+      { path: 'issues', name: 'issue_list', component: () => import('src/pages/teacher/IssueListPage.vue') },
+      { path: 'issues/:issueID', name: 'issue_details', component: () => import('pages/teacher/IssueDetailsPage.vue') }
+    ],
+    beforeEnter(to, from, next) {
+      store.dispatch('userTryAutoLogIn')
+        .then(() => next())
+        .catch(() => next({name: 'Index'}))
+    }
   },
 
   admin,
