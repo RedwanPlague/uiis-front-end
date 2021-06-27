@@ -62,9 +62,12 @@ export default {
 
     async onRowClick(evt, row) {
       this.$router.push({
-        name: "scrutinizer-course-page", // To change
+        name: `${this.ke}-course-page`,
         params: {
           courseID: row.courseID
+        },
+        props: {
+          ke: this.ke
         }
       });
     },

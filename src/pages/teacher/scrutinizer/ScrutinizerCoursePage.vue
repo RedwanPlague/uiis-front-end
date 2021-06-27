@@ -79,8 +79,9 @@
             v-show="!(!canEdit || hasForwarded || barse)"
             class="submit-btn q-mt-sm"
             color="primary"
-            label="Forward to department head"
+            :label="forwardLabel"
             @click="forwardResult"
+            no-caps
           />
         </div>
       </div>
@@ -118,6 +119,10 @@ export default {
     ke: {
       type: String,
       required: true
+    },
+    initLabel: {
+      type: String,
+      required: false,
     }
   },
 
@@ -171,12 +176,22 @@ export default {
         delay: 100 // ms
       });
 
-      await this.$store.dispatch("scrutinizer/fillSingleCourse");
+      try {
+        await this.$store.dispatch("scrutinizer/fillSingleCourse");
+      } catch (error) {
+        console.log(error); 
+      }
+
+      
       this.loading = false;
 
       this.$q.loading.hide();
 
-      if (this.labels.length > 0) this.slide = this.labels[0]["value"];
+      if (this.labels.length > 0) {
+        if(this.initLabel) this.slide = this.initLabel;
+        else this.slide = this.labels[0]["value"];
+      }
+
       this.initialPagination.rowsPerPage = this.info.students.length;
     }
   },
@@ -194,6 +209,13 @@ export default {
       hasForwarded: "hasForwarded",
       currentSession: "currentSession",
     }),
+
+    forwardLabel() {
+      if(this.ke === "head") return "Forward to ECO";
+      else if(this.ke === "scrutinizer") return "Forward to Internal";
+      else if(this.ke === "internal") return "Forward to Department Head";
+      else return "Janina";
+    },
 
     allCompleted() {
       console.log(this.info);
@@ -350,7 +372,7 @@ export default {
         }
 
         const examinerName = this.info.names[examiner.teacher];
-        const fakeExaminerID = "examiner-" + examiner.teacher;
+        const fakeExaminerID = "examiner-" + examiner.part + "-" + examiner.teacher;
         const issueDetails = {
           courseID: this.info.courseID,
           evalType: "term-final-eval",
@@ -377,7 +399,7 @@ export default {
 
       const examiners = this.info.examiners.map(examiner => ({
         label: `Term Final - Part ${examiner.part}`,
-        value: "examiner-" + examiner.teacher
+        value: "examiner-" + examiner.part + "-" + examiner.teacher,
       }));
 
       teachers.push(...examiners);
