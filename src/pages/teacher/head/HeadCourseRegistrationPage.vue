@@ -4,7 +4,7 @@
       <q-card bordered>
         <q-card-section>
           <div class="text-h5">
-            <p>Course Registration Applications</p>
+            Course Registration Applications
           </div>
         </q-card-section>
 
@@ -17,26 +17,72 @@
             v-bind="advisor"
           >
             <q-item>
-              <q-table
-                :title="getStudents.filter(student => student.advisor._id === advisor)[0].advisor.name"
-                dense bordered
-                :data="getStudents.filter(student => student.advisor._id === advisor)"
-                :columns="applicationColumns"
-                row-key="id"
-                selection="multiple"
-                :selected.sync="selected"
-                separator="cell"
-                @row-click="onRowClick"
-                class="full-width"
-              />
+              <q-card bordered class="full-width">
+                <q-card-section>
+                  <div class="text-h6">
+                    {{ getStudents.filter(student => student.advisor._id === advisor)[0].advisor.name }}
+                  </div>
+                </q-card-section>
+
+                <q-separator />
+
+                <q-card-section v-if="getStudents.filter(student => (student.advisor._id === advisor) && (student.status === 'waiting')).length !== 0">
+                  <p>
+                    <q-chip color="info" text-color="white">
+                      Waiting
+                    </q-chip>
+                  </p>
+
+                  <q-table
+                    dense bordered
+                    :data="getStudents.filter(student => (student.advisor._id === advisor) && (student.status === 'waiting'))"
+                    :columns="applicationColumns"
+                    row-key="id"
+                    selection="multiple"
+                    :selected.sync="selected"
+                    separator="cell"
+                    @row-click="onRowClick"
+                    class="full-width"
+                  />
+                </q-card-section>
+
+                <q-card-section v-if="getStudents.filter(student => (student.advisor._id === advisor) && (student.status !== 'waiting')).length !== 0">
+                  <p>
+                    <q-chip color="warning" text-color="white">
+                      Pending
+                    </q-chip>
+
+                    <q-chip v-if="!getCurrentSession.isRegistrationPeriodRunning" color="negative" text-color="white">
+                      Course Registration Period is Over
+                    </q-chip>
+                  </p>
+
+                  <q-table
+                    dense bordered
+                    :data="getStudents.filter(student => (student.advisor._id === advisor) && (student.status !== 'waiting'))"
+                    :columns="applicationColumns"
+                    row-key="id"
+                    separator="cell"
+                    @row-click="onRowClick"
+                    class="full-width"
+                  />
+                </q-card-section>
+              </q-card>
             </q-item>
           </q-list>
         </q-card-section>
 
-        <q-card-actions align="right">
-          <q-btn class="bg-positive text-white" label="Approve" @click="approve" />
-          <q-btn class="bg-negative text-white" label="Reject" @click="reject" />
-        </q-card-actions>
+        <div v-if="getStudents.length === 0" class="absolute-center">
+          <h3>
+            Course Registration Process is Completed for This Semester.
+          </h3>
+        </div>
+        <div v-else>
+          <q-card-actions align="right">
+            <q-btn class="bg-positive text-white" label="Approve" @click="approve" />
+            <q-btn class="bg-negative text-white" label="Reject" @click="reject" />
+          </q-card-actions>
+        </div>
       </q-card>
 
       <q-dialog v-model="courseRegistrationInfoDialogBox" full-width>
@@ -137,6 +183,13 @@ export default {
           label: 'Term',
           field: 'term',
           sortable: true
+        },
+        {
+          name: 'status',
+          align: 'left',
+          label: 'Status',
+          field: 'status',
+          sortable: true
         }
       ],
 
@@ -146,7 +199,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchStudents', 'generateUniqueAdvisors', 'fetchStudentProfileInfo', 'fetchCourseRegistrations']),
+    ...mapActions(['fetchStudents', 'generateUniqueAdvisors', 'fetchStudentProfileInfo', 'fetchCourseRegistrations', 'fetchCurrentSession']),
 
     generateCourseRegistrations() {
       this.courseRegistrations = [];
@@ -265,12 +318,13 @@ export default {
     }
   },
 
-  computed: mapGetters(['getStudents', 'getUniqueAdvisors', 'getStudent', 'getCourseRegistrations', 'getRegistrationColumns']),
+  computed: mapGetters(['getStudents', 'getUniqueAdvisors', 'getStudent', 'getCourseRegistrations', 'getRegistrationColumns', 'getCurrentSession']),
 
   async created() {
     try {
       await this.fetchStudents();
       this.generateUniqueAdvisors();
+      await this.fetchCurrentSession();
     } catch(error) {
       console.log(error);
     }

@@ -73,7 +73,7 @@
           />
         </q-expansion-item>
 
-        <q-expansion-item :content-inset-level="0.5" icon="school" label="Department Head" default-closed>
+        <q-expansion-item v-if="this.getHead.head === user.id" :content-inset-level="0.5" icon="school" label="Department Head" default-closed>
           <SidebarOption
             v-for="menuOption in menuOptionsHead"
             :key="menuOption.title"
@@ -112,7 +112,7 @@
 <script>
 import SidebarOption from "components/SidebarOption";
 
-import { mapGetters, mapActions} from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 const menuOptionsTeacher = [
   {
@@ -189,15 +189,16 @@ const menuOptionsIssues = [
 
 export default {
   name: "TeacherLayout",
-  components: { SidebarOption },
-  computed: {
-    ...mapGetters(['user']),
+
+  components: {
+    SidebarOption
   },
-  methods: {
-  },
+
   data() {
     return {
       leftDrawerOpen: false,
+
+      /* sidebar menu options */
       menuOptionsTeacher,
       menuOptionsAdvisor,
       menuOptionsHead,
@@ -205,6 +206,22 @@ export default {
       menuOptionsScrutinizer,
       menuOptionsIssues
     };
+  },
+
+  computed: mapGetters(['user', 'getHead']),
+
+  methods: {
+    ...mapActions(['fetchHead'])
+  },
+
+  async created() {
+    try {
+      if(this.user) {
+        await this.fetchHead(this.user.department);
+      }
+    } catch(error) {
+      console.log(error);
+    }
   }
 };
 </script>

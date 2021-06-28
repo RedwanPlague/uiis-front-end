@@ -4,7 +4,7 @@
       <q-card bordered>
         <q-card-section>
           <div class="text-h5">
-            <p>Registered</p>
+            Registered
           </div>
         </q-card-section>
 
@@ -28,7 +28,7 @@
       <q-card bordered>
         <q-card-section>
           <div class="text-h5">
-            <p>Waiting for Head's Approval</p>
+            Waiting for Head's Approval
           </div>
         </q-card-section>
 
@@ -52,7 +52,7 @@
       <q-card bordered>
         <q-card-section>
           <div class="text-h5">
-            <p>Waiting for Advisor's Approval</p>
+            Waiting for Advisor's Approval
           </div>
         </q-card-section>
 
@@ -76,7 +76,11 @@
       <q-card bordered>
         <q-card-section>
           <div class="text-h5">
-            <p>Not Applied for Registration</p>
+            Not Applied for Registration
+
+            <q-chip v-if="!getCurrentSession.isRegistrationPeriodRunning" color="negative" text-color="white">
+              Course Registration Period is Over
+            </q-chip>
           </div>
         </q-card-section>
 
@@ -204,7 +208,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchAdvisees', 'fetchStudentProfileInfo', 'fetchCourseRegistrations']),
+    ...mapActions(['fetchAdvisees', 'fetchStudentProfileInfo', 'fetchCourseRegistrations', 'fetchCurrentSession']),
 
     generateCourseRegistrations() {
       this.courseRegistrations = [];
@@ -312,11 +316,12 @@ export default {
     }
   },
 
-  computed: mapGetters(['getAdvisees', 'getStudent', 'getCourseRegistrations', 'getRegistrationColumns']),
+  computed: mapGetters(['getAdvisees', 'getStudent', 'getCourseRegistrations', 'getRegistrationColumns', 'getCurrentSession']),
 
   async created() {
     try {
       await this.fetchAdvisees();
+      await this.fetchCurrentSession();
     } catch(error) {
       console.log(error);
     }
