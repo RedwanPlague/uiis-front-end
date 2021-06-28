@@ -120,8 +120,8 @@ const routes = [
       { path: 'internal/:courseID', name: "internal-course-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerCoursePage.vue'), props: { ke: "internal" } },
 
 
-      { path: 'issues', name: 'issue_list', component: () => import('src/pages/teacher/IssueListPage.vue') },
-      { path: 'issues/:issueID', name: 'issue_details', component: () => import('pages/teacher/IssueDetailsPage.vue') }
+      { path: 'issues', name: 'issue_list', component: () => import('src/pages/teacher/issues/IssueListPage.vue') },
+      { path: 'issues/:issueID', name: 'issue_details', component: () => import('pages/teacher/issues/IssueDetailsPage.vue') }
     ],
 
     beforeEnter(to, from, next) {

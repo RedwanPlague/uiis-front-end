@@ -120,7 +120,7 @@ const menuOptions = [
   },
   {
     title: 'Dues',
-    icon: 'school',
+    icon: 'payments',
     path: '/student/dues'
   }
 ];
