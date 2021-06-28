@@ -163,6 +163,12 @@ export default {
     const audience = this.$store.getters["scrutinizer/currentCourseInfo"] // CHANGE HOBE
       .audience;
 
+    const nije = this.$store.getters["user"];
+
+    console.log("audience->");
+
+    console.log(audience);
+
     this.audience = audience.map(audi => ({
       name: audi.name,
       id: audi.id,
@@ -170,14 +176,20 @@ export default {
       ase: false
     }));
 
-    this.audience.push({
-      name: this.details.evalOwnerName,
-      id: this.details.evalOwner,
-      removable: false,
-      ase: true
-    });
+    const aldd = this.audience.find(audi => audi.id === this.details.evalOwner);
+    if (!aldd) {
+      this.audience.push({
+        name: this.details.evalOwnerName,
+        id: this.details.evalOwner,
+        removable: false,
+        ase: true
+      });
+    }
+    else  {
+      aldd.removable = false;
+      aldd.ase = true;
+    }
 
-    const nije = this.$store.getters["user"];
 
     const ald = this.audience.find(audi => audi.id === nije.id);
     if (!ald) {
@@ -187,6 +199,10 @@ export default {
         removable: false,
         ase: true
       });
+    }
+    else  {
+      ald.removable = false;
+      ald.ase = true;
     }
   },
 

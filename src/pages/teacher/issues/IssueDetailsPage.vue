@@ -4,7 +4,7 @@
     <div class="issue-header">
       <div class="issue-header-row">
         <h4>{{ issueDetails.title }}</h4>
-        <q-btn :label="issueDetails.courseSession.course.courseID +  ': ' +  issueDetails.courseSession.course.title"  icon-right="mdi-open-in-new" style="height: 35px; margin-top: 52px; margin-left: 20px;" color="teal" text-color="white" @click="courseChipClicked" no-caps/>
+        <q-btn v-if="issueDetails.courseSession" :label="issueDetails.courseSession.course.courseID +  ': ' +  issueDetails.courseSession.course.title"  icon-right="mdi-open-in-new" style="height: 35px; margin-top: 52px; margin-left: 20px;" color="teal" text-color="white" @click="courseChipClicked" no-caps/>
       </div>
 
       <div class="issue-header-row">
@@ -22,7 +22,7 @@
           <span class="header-col-1"><b>Current Audience:</b></span>
           <q-chip v-for="teacher in issueDetails.teachers" :key="teacher._id" color="black" text-color="white" square outline> {{teacher.name}}</q-chip>
         </div>
-        <q-btn v-if="issueDetails.issueCreator  && issueDetails.issueCreator.id === user.id" :disable="buttonLoading" class="resolve-btn" color="teal" :label="resolveButtonText"  :icon="resolveButtonIcon"  no-caps @click="resolveClicked"/>
+        <q-btn v-if="issueDetails.issueCreator  && issueDetails.issueCreator._id === user.id" :disable="buttonLoading" class="resolve-btn" color="teal" :label="resolveButtonText"  :icon="resolveButtonIcon"  no-caps @click="resolveClicked"/>
       </div>
     </div>
 
@@ -118,7 +118,6 @@ export default {
     ...mapActions(['fetchIssueDetails', 'sendComment', 'changeIssueStatus']),
 
     courseChipClicked(e) {
-
       console.log(this.issueDetails.role);
       if(this.issueDetails.role === 'course') {
         const routeData = this.$router.resolve( {
@@ -141,12 +140,25 @@ export default {
         window.open(routeData.href, '_blank');
       }
       else if(this.issueDetails.role === 'scrutinizer') {
+        // const initLabel = this.issueDetails.part === '-' ? `teacher-${this.issueDetails.evalOwner._id}` : `examiner-${this.issueDetails.part}-${this.issueDetails.evalOwner._id}`;
         const routeData = this.$router.resolve( {
           name: 'scrutinizer-course-page',
           params: {
             courseID: this.issueDetails.courseSession.course.courseID,
           }
         });
+        console.log(routeData);
+        window.open(routeData.href, '_blank');
+      }
+      else if(this.issueDetails.role === 'internal') {
+        // const initLabel = this.issueDetails.part === '-' ? `teacher-${this.issueDetails.evalOwner._id}` : `examiner-${this.issueDetails.part}-${this.issueDetails.evalOwner._id}`
+        const routeData = this.$router.resolve( {
+          name: 'internal-course-page',
+          params: {
+            courseID: this.issueDetails.courseSession.course.courseID,
+          }
+        });
+        console.log(routeData);
         window.open(routeData.href, '_blank');
       }
       else console.log("Not found");

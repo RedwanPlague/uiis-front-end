@@ -18,7 +18,7 @@ const actions = {
   /* getting head id of specified department */
   async fetchHead({ commit }, department) {
     try {
-      const response = await api.get('/teacher/head/'+department);
+      const response = await api.get('/teacher/head/department/'+department);
       commit('mutateHead', response.data);
     } catch(err) {
       this.error = err.message;

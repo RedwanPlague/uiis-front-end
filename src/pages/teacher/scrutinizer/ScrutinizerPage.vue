@@ -56,6 +56,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import {api} from "boot/axios";
 
 export default {
   name: "ScrutinizerPage", // To change
@@ -108,6 +109,7 @@ export default {
     },
 
     async toiri() {
+      this.selected = [];
       this.$store.commit("scrutinizer/mutKe", this.ke); // To change
 
       this.$q.loading.show({
@@ -134,9 +136,10 @@ export default {
     },
 
     async forwardResults() {
-      for (const cr of selected) {
+      for (const cr of this.selected) {
+        console.log(cr);
         await api.put(
-          `/teacher/${this.ke}/${this.info.courseID}/${this.currentSession}/approve`
+          `/teacher/${this.ke}/${cr.courseID}/${this.currentSession}/approve`
         );
       }
 

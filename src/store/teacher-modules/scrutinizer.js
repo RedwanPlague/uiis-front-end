@@ -137,9 +137,13 @@ const mutations = {
   mutSingleCourse(state, payload) {
     let curCor = state.courses.find(course => course.courseID === state.currentCourse);
 
+
     for(const prop in payload) {
       curCor[prop] = payload[prop];
     }
+
+    console.log("curCor->");
+    console.log(curCor);
   },
 
   mutCourseLoading: (state, loading) => {
@@ -167,18 +171,27 @@ const actions = {
 
   async fillSingleCourse(context) {
     try {
+
+      if(context.state.courses.length === 0) {
+        await context.dispatch("fillCourses"); // To change
+      }
       context.commit("mutCourseLoading", true);
+
       const course = (
         await api.get(
           `/teacher/${context.state.ke}/${context.state.currentCourse}/${context.state.currentSession}`
         )
       ).data;
 
+
       const eligi = (
         await api.get(
           `/teacher/issues/${context.state.currentCourse}/${context.state.currentSession}/eligibleList`
         )
       ).data;
+
+      console.log("eligi->");
+      console.log(eligi);
 
       course.audience = eligi;
 

@@ -72,7 +72,7 @@
           </q-list>
         </q-card-section>
 
-        <div v-if="getStudents.length === 0" class="absolute-center">
+        <div v-if="getStudents.length === 0 && pageLoaded" class="absolute-center">
           <h3>
             Course Registration Process is Completed for This Semester.
           </h3>
@@ -148,6 +148,8 @@ export default {
 
   data() {
     return {
+
+      pageLoaded: false,
       /* for displaying selected student's course registration information */
       courseRegistrations: [],
       courseRegistrationInfoDialogBox: false,
@@ -322,9 +324,11 @@ export default {
 
   async created() {
     try {
+      this.pageLoaded = false;
       await this.fetchStudents();
       this.generateUniqueAdvisors();
       await this.fetchCurrentSession();
+      this.pageLoaded = true;
     } catch(error) {
       console.log(error);
     }

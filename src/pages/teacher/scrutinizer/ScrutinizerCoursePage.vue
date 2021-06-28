@@ -133,7 +133,6 @@ export default {
   methods: {
     setBarse(barse) {
       this.barse = barse;
-      console.log(this.barse);
     },
 
     getSelectedString() {
@@ -169,6 +168,18 @@ export default {
 
     async toiri() {
       this.loading = true;
+
+      console.log("initLAbel = ");
+      console.log(this.$route.props);
+
+      console.log("route -> ");
+      console.log(this.$route);
+
+      console.log("ke->");
+      console.log(this.ke);
+
+
+      this.$store.commit("scrutinizer/mutKe", this.ke); // To change
       if (!this.$route.params.courseID) {
         return;
       }
@@ -185,10 +196,10 @@ export default {
       try {
         await this.$store.dispatch("scrutinizer/fillSingleCourse");
       } catch (error) {
-        console.log(error); 
+        console.log(error);
       }
 
-      
+
       this.loading = false;
 
       this.$q.loading.hide();
@@ -199,6 +210,7 @@ export default {
       }
 
       this.initialPagination.rowsPerPage = this.info.students.length;
+
     }
   },
 
@@ -221,7 +233,6 @@ export default {
     },
 
     allCompleted() {
-      console.log(this.info);
       for (const regi of this.info.students) {
         for (const teacher of this.info.teachers) {
           if (this.attStudent(teacher.teacher, regi.student.id) === "NA")
