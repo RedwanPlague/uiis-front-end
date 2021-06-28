@@ -107,7 +107,7 @@
         </q-card-section>
         <q-separator/>
         <q-card-section>
-          <div style="height: 120px; width: 500px">
+          <div style="height: 140px; width: 500px">
             <div v-if="assignDone">
               <q-markup-table flat dense separator="cell" class="q-mb-md">
                 <tbody>
@@ -141,7 +141,13 @@
         </q-card-section>
         <q-card-actions align="right">
           <div v-if="assignDone">
-            <q-btn flat label="OK" color="primary" v-close-popup/>
+            <div v-if="!allSuccess">
+              <q-btn unelevated label="Try Again" color="primary" @click="assignFee"/>
+              <q-btn flat label="Cancel" color="primary" v-close-popup/>
+            </div>
+            <div v-else>
+              <q-btn flat label="OK" color="primary" v-close-popup/>
+            </div>
           </div>
           <div v-else>
             <q-btn unelevated label="Continue" color="primary" @click="assignFee"/>
