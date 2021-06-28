@@ -206,7 +206,7 @@ export default {
     filterData() {
       return {
         dueType: this.feeType,
-        ids: this.ids,
+        ids: (!!this.ids && this.ids.length > 0) ? this.ids : null,
         department: extract(this.dept),
         hall: extract(this.hall),
         level: this.level,

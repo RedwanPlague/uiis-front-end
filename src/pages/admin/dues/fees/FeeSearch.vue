@@ -141,7 +141,10 @@ export default {
     },
     loadFees() {
       this.resultsLoading = true
-      this.$adminAPI.post('/due/getDue', {...this.partialData, ids: this.ids})
+      this.$adminAPI.post('/due/getDue', {
+        ...this.partialData,
+        ids: (!!this.ids && this.ids.length > 0) ? this.ids : null,
+      })
         .then(response => {
           this.fees = response.data.sort((a, b) => a.status > b.status ? -1 : 1)
           this.resultsLoading = false
