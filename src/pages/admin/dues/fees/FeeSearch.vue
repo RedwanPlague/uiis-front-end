@@ -11,8 +11,9 @@
         multiple use-chips use-input clearable
         new-value-mode="add-unique"
         outlined
-        :rules="[() => (!!ids && ids.length > 0) || 'Please Enter at least one Student ID']"
+        :rules="[() => !!columns || 'Dummy Text']"
       />
+<!--      :rules="[() => (!!ids && ids.length > 0) || 'Please Enter at least one Student ID']"-->
       <q-select
         class="col-6"
         v-model="feeType"
@@ -101,7 +102,7 @@ export default {
   },
   data() {
     return {
-      ids: [],
+      ids: null,
       feeType: null,
       yearMonth: null,
       showResults: false,
@@ -176,7 +177,7 @@ export default {
         })
     },
     resetForm() {
-      this.ids = []
+      this.ids = null
       this.feeType = null
       this.yearMonth = null
     }
