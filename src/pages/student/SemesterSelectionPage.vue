@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <div class="q-pa-md">
+    <div v-if="isPageLoaded" class="q-pa-md">
       <q-card style="width: 500px; margin-left: auto; margin-right: auto;" bordered>
         <q-card-section>
           <div class="text-h5">View Grades</div><br />
@@ -36,6 +36,8 @@ export default {
 
   data() {
     return {
+      isPageLoaded: false,
+
       /* for keeping track of selected semester */
       selectedSemester: {},
 
@@ -63,12 +65,21 @@ export default {
 
   async created() {
     try {
+      this.$q.loading.show({
+        delay: 100,
+        message: 'Loading...',
+        messageColor: 'white'
+      });
+
       await this.fetchStudentIDInfo();
       await this.fetchStudentProfileInfo(this.getID.id);
       this.generateAvailableSemesters({
         level: this.getStudent.level,
         term: this.getStudent.term
       });
+
+      this.$q.loading.hide();
+      this.isPageLoaded = !this.isPageLoaded;
     } catch(error) {
       console.log(error);
     }

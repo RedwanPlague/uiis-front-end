@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <div class="q-pa-md">
+    <div v-if="isPageLoaded" class="q-pa-md">
       <q-card bordered>
         <q-card-section>
           <div class="text-h5">
@@ -199,6 +199,8 @@ export default {
 
   data() {
     return {
+      isPageLoaded: false,
+
       /* for showing selected Advisee information in dialog box */
       selectedAdvisee: {},
       courseRegistrations: [],
@@ -320,8 +322,17 @@ export default {
 
   async created() {
     try {
+      this.$q.loading.show({
+        delay: 100,
+        message: 'Loading...',
+        messageColor: 'white'
+      });
+
       await this.fetchAdvisees();
       await this.fetchCurrentSession();
+
+      this.$q.loading.hide();
+      this.isPageLoaded = !this.isPageLoaded;
     } catch(error) {
       console.log(error);
     }

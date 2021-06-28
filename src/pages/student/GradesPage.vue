@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <div class="q-pa-md">
+    <div v-if="isPageLoaded" class="q-pa-md">
       <q-card bordered>
         <q-card-section>
           <div class="text-h5">Grades</div><br />
@@ -78,7 +78,7 @@ export default {
 
   data() {
     return {
-
+      isPageLoaded: false
     };
   },
 
@@ -135,13 +135,10 @@ export default {
 
   async created() {
     try {
-      const loading = this.$q.notify({
-        message: `Loading Grades`,
-        position: "bottom-left",
-        color: 'info',
-        group: false, // required to be updatable
-        timeout: 0, // we want to be in control when it gets dismissed
-        spinner: true
+      this.$q.loading.show({
+        delay: 100,
+        message: 'Loading...',
+        messageColor: 'white'
       });
 
       await this.fetchStudentIDInfo();
@@ -156,13 +153,8 @@ export default {
       }
       this.generateAvailableGrades();
 
-      loading({
-        color: 'positive',
-        icon: 'done', // we add an icon
-        spinner: false, // we reset the spinner setting so the icon can be displayed
-        message: 'Grades Loaded',
-        timeout: 1500 // we will timeout it in 2.5s
-      });
+      this.$q.loading.hide();
+      this.isPageLoaded = !this.isPageLoaded;
     } catch(error) {
       console.log(error);
     }
