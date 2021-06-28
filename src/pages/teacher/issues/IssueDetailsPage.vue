@@ -4,8 +4,7 @@
     <div class="issue-header">
       <div class="issue-header-row">
         <h4>{{ issueDetails.title }}</h4>
-        <q-chip square icon-right="arrow_forward" v-if="issueDetails.courseSession" clickable style="margin-top: 56px; margin-left: 20px;" color="teal" text-color="white" @click="courseChipClicked">{{ issueDetails.courseSession.course.courseID }}:
-          {{ issueDetails.courseSession.course.title }} </q-chip>
+        <q-btn :label="issueDetails.courseSession.course.courseID +  ': ' +  issueDetails.courseSession.course.title"  icon-right="mdi-open-in-new" style="height: 35px; margin-top: 52px; margin-left: 20px;" color="teal" text-color="white" @click="courseChipClicked" no-caps/>
       </div>
 
       <div class="issue-header-row">
@@ -119,7 +118,38 @@ export default {
     ...mapActions(['fetchIssueDetails', 'sendComment', 'changeIssueStatus']),
 
     courseChipClicked(e) {
-      console.log(e);
+
+      console.log(this.issueDetails.role);
+      if(this.issueDetails.role === 'course') {
+        const routeData = this.$router.resolve( {
+          name: 'course_page',
+          params: {
+            courseID: this.issueDetails.courseSession.course.courseID,
+            courseSession: 2021
+          }
+        });
+        window.open(routeData.href, '_blank');
+      }
+      else if(this.issueDetails.role === 'examiner') {
+        const routeData = this.$router.resolve( {
+          name: 'examiner-evaluation-page',
+          params: {
+            courseID: this.issueDetails.courseSession.course.courseID,
+            part: this.issueDetails.part
+          }
+        });
+        window.open(routeData.href, '_blank');
+      }
+      else if(this.issueDetails.role === 'scrutinizer') {
+        const routeData = this.$router.resolve( {
+          name: 'scrutinizer-course-page',
+          params: {
+            courseID: this.issueDetails.courseSession.course.courseID,
+          }
+        });
+        window.open(routeData.href, '_blank');
+      }
+      else console.log("Not found");
     },
     setPageVariables() {
 
