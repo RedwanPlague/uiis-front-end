@@ -246,10 +246,10 @@ export default {
           this.assignDone = true
           this.successCount = response.data.duesModified
         })
-        .catch(() => {
+        .catch(error => {
           this.assignLoading = false
           this.assignDone = true
-          this.successCount = 0
+          this.successCount = error.response.data.duesModified
         })
     },
     resetForm() {
