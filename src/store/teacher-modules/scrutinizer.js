@@ -1,6 +1,7 @@
 import { api } from "boot/axios";
 
 const state = {
+  ke: null,
   currentSession: "2021",
   courses: [],
   currentCourse: null,
@@ -8,6 +9,8 @@ const state = {
 };
 
 const getters = {
+  ke: state => state.ke,
+
   currentCourse: state => state.currentCourse,
 
   currentCourseInfo: state =>
@@ -119,6 +122,10 @@ const getters = {
 };
 
 const mutations = {
+  mutKe: (state, ke) => {
+    state.ke = ke;
+  },
+
   mutAllCourses: (state, allCourses) => {
     state.courses = allCourses;
   },
@@ -150,7 +157,7 @@ const actions = {
     try {
       context.commit("mutAllCourses", []);
       const courses = (
-        await api.get(`/teacher/scrutinizer/${context.state.currentSession}`)
+        await api.get(`/teacher/${context.state.ke}/${context.state.currentSession}`)
       ).data.toRet;
       context.commit("mutAllCourses", courses);
     } catch (error) {
@@ -163,7 +170,7 @@ const actions = {
       context.commit("mutCourseLoading", true);
       const course = (
         await api.get(
-          `/teacher/scrutinizer/${context.state.currentCourse}/${context.state.currentSession}`
+          `/teacher/${context.state.ke}/${context.state.currentCourse}/${context.state.currentSession}`
         )
       ).data;
 

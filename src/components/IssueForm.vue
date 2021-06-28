@@ -116,7 +116,6 @@ export default {
   },
 
   methods: {
-
     onClick() {
       this.expanded = !this.expanded;
     },
@@ -161,14 +160,14 @@ export default {
   },
 
   async created() {
-    const audience = this.$store.getters["scrutinizer/currentCourseInfo"]
+    const audience = this.$store.getters["scrutinizer/currentCourseInfo"] // CHANGE HOBE
       .audience;
 
     this.audience = audience.map(audi => ({
       name: audi.name,
       id: audi.id,
-      removable: true, // will change when Sezan/me changes the api
-      ase: false // also will change
+      removable: true,
+      ase: false
     }));
 
     this.audience.push({
@@ -182,14 +181,13 @@ export default {
 
     const ald = this.audience.find(audi => audi.id === nije.id);
     if (!ald) {
-      console.log("hemlo");
       this.audience.push({
         name: nije.name,
         id: nije.id,
         removable: false,
         ase: true
       });
-    } else console.log("bemlo");
+    }
   },
 
   computed: {

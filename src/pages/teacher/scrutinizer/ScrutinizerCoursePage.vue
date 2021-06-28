@@ -79,8 +79,9 @@
             v-show="!(!canEdit || hasForwarded || barse)"
             class="submit-btn q-mt-sm"
             color="primary"
-            label="Forward to department head"
+            :label="forwardLabel"
             @click="forwardResult"
+            no-caps
           />
         </div>
       </div>
@@ -114,6 +115,17 @@ export default {
     };
   },
 
+  props: {
+    ke: {
+      type: String,
+      required: true
+    },
+    initLabel: {
+      type: String,
+      required: false,
+    }
+  },
+
   components: {
     IssueForm: () => import("components/IssueForm")
   },
@@ -137,16 +149,56 @@ export default {
     async forwardResult() {
       this.canEdit = false;
       await api.put(
-        `/teacher/scrutinizer/${this.info.courseID}/${this.currentSession}/approve`
+        `/teacher/${this.ke}/${this.info.courseID}/${this.currentSession}/approve`
       );
       this.$store.commit("scrutinizer/mutHasForwarded");
-      console.log(this.hasForwarded);
 
       this.$q.notify({
         icon: "done",
         message: "Result Forwarded to Department Head",
         position: "bottom-left"
       });
+    },
+
+    porerjon() {
+      if(this.ke === "head") return "ECO";
+      else if(this.ke === "scrutinizer") return "Internal";
+      else if(this.ke === "internal") return "Department Head";
+      else return "Janina";
+    },
+
+    async toiri() {
+      this.loading = true;
+      if (!this.$route.params.courseID) {
+        return;
+      }
+
+      this.$store.commit(
+        "scrutinizer/mutCurCourse",
+        this.$route.params.courseID
+      );
+
+      this.$q.loading.show({
+        delay: 100 // ms
+      });
+
+      try {
+        await this.$store.dispatch("scrutinizer/fillSingleCourse");
+      } catch (error) {
+        console.log(error); 
+      }
+
+      
+      this.loading = false;
+
+      this.$q.loading.hide();
+
+      if (this.labels.length > 0) {
+        if(this.initLabel) this.slide = this.initLabel;
+        else this.slide = this.labels[0]["value"];
+      }
+
+      this.initialPagination.rowsPerPage = this.info.students.length;
     }
   },
 
@@ -161,8 +213,12 @@ export default {
       tfStudent: "tfStudent",
       //courseLoading: "courseLoading",
       hasForwarded: "hasForwarded",
-      currentSession: "currentSession"
+      currentSession: "currentSession",
     }),
+
+    forwardLabel() {
+      return `Forward to ${this.porerjon()}`;
+    },
 
     allCompleted() {
       console.log(this.info);
@@ -319,7 +375,7 @@ export default {
         }
 
         const examinerName = this.info.names[examiner.teacher];
-        const fakeExaminerID = "examiner-" + examiner.teacher;
+        const fakeExaminerID = "examiner-" + examiner.part + "-" + examiner.teacher;
         const issueDetails = {
           courseID: this.info.courseID,
           evalType: "term-final-eval",
@@ -346,7 +402,7 @@ export default {
 
       const examiners = this.info.examiners.map(examiner => ({
         label: `Term Final - Part ${examiner.part}`,
-        value: "examiner-" + examiner.teacher
+        value: "examiner-" + examiner.part + "-" + examiner.teacher,
       }));
 
       teachers.push(...examiners);
@@ -357,24 +413,7 @@ export default {
 
   watch: {
     async "$route.params"(to, from) {
-      this.loading = true;
-      if (!this.$route.params.courseID) {
-        return;
-      }
-
-      this.$store.commit(
-        "scrutinizer/mutCurCourse",
-        this.$route.params.courseID
-      );
-
-      this.$q.loading.show({
-        delay: 100 // ms
-      });
-
-      await this.$store.dispatch("scrutinizer/fillSingleCourse");
-      this.loading = false;
-
-      this.$q.loading.hide();
+      await this.toiri();
     },
 
     slide(to) {
@@ -383,23 +422,7 @@ export default {
   },
 
   async created() {
-    this.loading = true;
-    if (!this.allCourses || this.allCourses.length === 0)
-      await this.$store.dispatch("scrutinizer/fillCourses");
-
-    this.$store.commit("scrutinizer/mutCurCourse", this.$route.params.courseID);
-
-    this.$q.loading.show({
-      delay: 100 // ms
-    });
-
-    await this.$store.dispatch("scrutinizer/fillSingleCourse");
-    this.loading = false;
-
-    this.$q.loading.hide();
-
-    if (this.labels.length > 0) this.slide = this.labels[0]["value"];
-    this.initialPagination.rowsPerPage = this.info.students.length;
+    await this.toiri();
   }
 };
 </script>
