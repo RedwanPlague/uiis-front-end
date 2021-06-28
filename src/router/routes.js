@@ -115,17 +115,19 @@ const routes = [
       { path: 'scrutinizer', component: () => import('pages/teacher/scrutinizer/ScrutinizerPage.vue'), props: { ke: "scrutinizer" } },
       { path: 'scrutinizer/:courseID', name: "scrutinizer-course-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerCoursePage.vue'), props: { ke: "scrutinizer",} },
 
+
       { path: 'internal', component: () => import('pages/teacher/scrutinizer/ScrutinizerPage.vue'), props: { ke: "internal" } },
       { path: 'internal/:courseID', name: "internal-course-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerCoursePage.vue'), props: { ke: "internal" } },
 
 
-      { path: 'issues', name: 'issue_list', component: () => import('pages/teacher/issues/IssueListPage.vue') },
-      { path: 'issues/:issueID', name: 'issue_details', component: () => import('pages/teacher/issues/IssueDetailsPage.vue') }
+      { path: 'issues', name: 'issue_list', component: () => import('src/pages/teacher/IssueListPage.vue') },
+      { path: 'issues/:issueID', name: 'issue_details', component: () => import('pages/teacher/IssueDetailsPage.vue') }
     ],
+
     beforeEnter(to, from, next) {
       store.dispatch('userTryAutoLogIn')
         .then(() => next())
-        .catch(() => next({ name: 'Index' }))
+        .catch(() => next({name: 'Index'}))
     }
   },
 

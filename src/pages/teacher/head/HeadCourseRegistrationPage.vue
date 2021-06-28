@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <div class="q-pa-md">
+    <div v-if="isPageLoaded" class="q-pa-md">
       <q-card bordered>
         <q-card-section>
           <div class="text-h5">
@@ -148,8 +148,7 @@ export default {
 
   data() {
     return {
-
-      pageLoaded: false,
+      isPageLoaded: false,
       /* for displaying selected student's course registration information */
       courseRegistrations: [],
       courseRegistrationInfoDialogBox: false,
@@ -324,11 +323,19 @@ export default {
 
   async created() {
     try {
-      this.pageLoaded = false;
+
+      this.$q.loading.show({
+        delay: 100,
+        message: 'Loading...',
+        messageColor: 'white'
+      });
+
       await this.fetchStudents();
       this.generateUniqueAdvisors();
       await this.fetchCurrentSession();
-      this.pageLoaded = true;
+
+      this.$q.loading.hide();
+      this.isPageLoaded = !this.isPageLoaded;
     } catch(error) {
       console.log(error);
     }

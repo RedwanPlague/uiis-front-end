@@ -59,44 +59,51 @@
           Teacher Side
         </q-item-label>
 
-        <SidebarOption
-          v-for="menuOption in menuOptionsTeacher"
-          :key="menuOption.title"
-          v-bind="menuOption"
-        />
-
-        <q-expansion-item :content-inset-level="0.5" icon="school" label="Advisor" default-closed>
+        <div v-if="isMenuOptionsLoaded">
           <SidebarOption
-            v-for="menuOption in menuOptionsAdvisor"
+            v-for="menuOption in menuOptionsTeacher"
             :key="menuOption.title"
             v-bind="menuOption"
           />
-        </q-expansion-item>
 
-        <q-expansion-item v-if="this.getHead.head === user.id" :content-inset-level="0.5" icon="school" label="Department Head" default-closed>
+          <q-expansion-item :content-inset-level="0.5" icon="school" label="Advisor" default-closed>
+            <SidebarOption
+              v-for="menuOption in menuOptionsAdvisor"
+              :key="menuOption.title"
+              v-bind="menuOption"
+            />
+          </q-expansion-item>
+
+          <q-expansion-item v-if="this.getHead.head === user.id" :content-inset-level="0.5" icon="school" label="Department Head" default-closed>
+            <SidebarOption
+              v-for="menuOption in menuOptionsHead"
+              :key="menuOption.title"
+              v-bind="menuOption"
+            />
+          </q-expansion-item>
+
           <SidebarOption
-            v-for="menuOption in menuOptionsHead"
+            v-for="menuOption in menuOptionsExaminer"
             :key="menuOption.title"
             v-bind="menuOption"
           />
-        </q-expansion-item>
 
-        <SidebarOption
-          v-for="menuOption in menuOptionsExaminer"
-          :key="menuOption.title"
-          v-bind="menuOption"
-        />
-
-        <SidebarOption
-          v-for="menuOption in menuOptionsScrutinizer"
-          :key="menuOption.title"
-          v-bind="menuOption"
-        />
-        <SidebarOption
-          v-for="menuOption in menuOptionsIssues"
-          :key="menuOption.title"
-          v-bind="menuOption"
-        />
+          <SidebarOption
+            v-for="menuOption in menuOptionsScrutinizer"
+            :key="menuOption.title"
+            v-bind="menuOption"
+          />
+          <SidebarOption
+            v-for="menuOption in menuOptionsInternal"
+            :key="menuOption.title"
+            v-bind="menuOption"
+          />
+          <SidebarOption
+            v-for="menuOption in menuOptionsIssues"
+            :key="menuOption.title"
+            v-bind="menuOption"
+          />
+        </div>
       </q-list>
     </q-drawer>
 
@@ -174,8 +181,16 @@ const menuOptionsExaminer = [
 const menuOptionsScrutinizer = [
   {
     title: "Scrutinizer",
-    icon: "auto_stories",
+    icon: "check_circle_outline",
     path: "/teacher/scrutinizer"
+  }
+];
+
+const menuOptionsInternal = [
+  {
+    title: "Internal",
+    icon: "check_circle",
+    path: "/teacher/internal"
   }
 ];
 
@@ -196,6 +211,8 @@ export default {
 
   data() {
     return {
+      isMenuOptionsLoaded: false,
+
       leftDrawerOpen: false,
 
       /* sidebar menu options */
@@ -204,6 +221,7 @@ export default {
       menuOptionsHead,
       menuOptionsExaminer,
       menuOptionsScrutinizer,
+      menuOptionsInternal,
       menuOptionsIssues
     };
   },
@@ -219,6 +237,7 @@ export default {
       if(this.user) {
         await this.fetchHead(this.user.department);
       }
+      this.isMenuOptionsLoaded = !this.isMenuOptionsLoaded;
     } catch(error) {
       console.log(error);
     }
