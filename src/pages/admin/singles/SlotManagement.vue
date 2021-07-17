@@ -83,6 +83,7 @@ import {PRIVILEGES} from 'src/utils/constants'
 
 export default {
   name: 'SlotManagement',
+  title: 'Manage Slots',
   mixins: [
     creator,
     edit

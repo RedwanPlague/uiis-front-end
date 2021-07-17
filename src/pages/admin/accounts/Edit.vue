@@ -40,14 +40,11 @@ import AdminEditForm from 'components/AccountCreatorForms/AdminEditForm'
 
 export default {
   name: 'AccountEdit',
+  title: 'Edit Account',
   components: {
     StudentEditForm,
     TeacherEditForm,
     AdminEditForm
-  },
-  data() {
-    return {
-    }
   },
   computed: {
     userType() {

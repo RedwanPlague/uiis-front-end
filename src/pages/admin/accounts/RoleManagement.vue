@@ -52,6 +52,7 @@ import {PRIVILEGES} from 'src/utils/constants'
 
 export default {
   name: 'RoleManagement',
+  title: 'Manage Roles',
   components: {
     PrivilegePicker,
     RolePicker

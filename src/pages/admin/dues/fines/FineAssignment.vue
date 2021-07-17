@@ -81,6 +81,7 @@ import {fineOptions} from 'src/utils/privilegedConstants'
 
 export default {
   name: 'FineAssignment',
+  title: 'Assign Fines',
   mixins: [
     creator
   ],

@@ -37,6 +37,7 @@ import AdminSearchForm from 'components/AccountCreatorForms/AdminSearchForm'
 
 export default {
   name: 'AccountSearch',
+  title: 'Search for Accounts',
   components: {
     StudentSearchForm,
     TeacherSearchForm,

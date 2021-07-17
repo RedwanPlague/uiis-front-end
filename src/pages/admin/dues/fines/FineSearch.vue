@@ -90,6 +90,7 @@ columnMerger(columns, commonAttr)
 
 export default {
   name: 'FineSearch',
+  title: 'Search for Fines',
   mixins: [
     search
   ],

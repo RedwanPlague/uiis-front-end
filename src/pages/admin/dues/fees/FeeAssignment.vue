@@ -175,6 +175,7 @@ const dialogStyle = {
 
 export default {
   name: 'FeeAssignment',
+  title: 'Assign Fees',
   components: {HallPicker, DepartmentPicker, SessionField},
   data() {
     return {

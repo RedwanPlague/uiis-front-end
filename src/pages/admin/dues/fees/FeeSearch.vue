@@ -97,6 +97,7 @@ columnMerger(columns, commonAttr)
 
 export default {
   name: 'FeeSearch',
+  title: 'Search for Fees',
   components: {
     SessionField
   },

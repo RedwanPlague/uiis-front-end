@@ -109,6 +109,7 @@ import {extract} from 'src/utils/apiDataPreProcessor'
 
 export default {
   name: 'CourseEdit',
+  title: 'Edit Course',
   components: {
     CoursePicker,
     DepartmentPicker

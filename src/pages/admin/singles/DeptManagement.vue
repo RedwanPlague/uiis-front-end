@@ -74,6 +74,7 @@ import {PRIVILEGES} from 'src/utils/constants'
 
 export default {
   name: 'DeptManagement',
+  title: 'Manage Departments',
   components: {TeacherPicker},
   mixins: [
     creator,

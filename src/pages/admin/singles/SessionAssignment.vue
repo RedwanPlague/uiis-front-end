@@ -23,6 +23,7 @@ import edit from 'src/mixins/edit'
 
 export default {
   name: 'SessionAssigner',
+  title: 'Current Session',
   components: {SessionField},
   mixins: [edit],
   data() {

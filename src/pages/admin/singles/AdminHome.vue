@@ -7,5 +7,6 @@
 <script>
 export default {
   name: 'AdminHome',
+  title: 'Admin Home'
 }
 </script>

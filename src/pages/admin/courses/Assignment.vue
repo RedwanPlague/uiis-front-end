@@ -328,6 +328,7 @@ const listDefaults = {
 
 export default {
   name: 'CourseAssignment',
+  title: 'Assign Course Details',
   components: {
     SessionField,
     DayOfWeekPicker,

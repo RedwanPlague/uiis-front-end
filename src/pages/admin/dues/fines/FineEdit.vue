@@ -111,7 +111,8 @@ import {noNegative} from 'src/utils/utilities'
 import {fineOptions} from 'src/utils/privilegedConstants'
 
 export default {
-  name: 'FineAssignment',
+  name: 'FineEdit',
+  title: 'Edit Fines',
   mixins: [
     edit
   ],
