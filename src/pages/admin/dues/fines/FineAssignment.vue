@@ -66,8 +66,8 @@
         ]"
       />
       <div class="col-12">
-        <q-btn label="Assign" color="primary" unelevated @click="assignFine" :loading="createLoading"/>
-        <q-btn label="Reset" color="primary" flat @click="resetForm"/>
+        <q-btn label="Assign" color="primary" unelevated type="submit" :loading="createLoading"/>
+        <q-btn label="Reset" color="primary" flat type="reset"/>
       </div>
     </q-form>
   </q-page>
