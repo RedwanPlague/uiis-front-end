@@ -28,7 +28,7 @@
             <q-space />
 
             <!-- we should be working on images -->
-            <img alt="" class="profile-photo" src="https://discourse.disneyheroesgame.com/uploads/default/original/3X/c/2/c23f54aea2065f106e4dbb8218d0ce2d7853351c.png" />
+            <img alt="" class="profile-photo" src="https://cdn.ttgtmedia.com/rms/computerweekly/3_ImitationGame_Cumberbatch.jpg" />
           </div>
         </q-card-section>
 
@@ -38,6 +38,7 @@
           <p>
             <strong>Contact Number:</strong>
             <q-input
+              clearable
               outlined
               v-model="contactNumber"
               type="tel"
@@ -47,6 +48,7 @@
           <p>
             <strong>Email Address:</strong>
             <q-input
+              clearable
               outlined
               v-model="email"
               type="email"
@@ -56,6 +58,7 @@
           <p>
             <strong>Residential Address:</strong>
             <q-input
+              clearable
               outlined
               v-model="residentialAddress"
               :placeholder="getStudent.residentialAddress"
@@ -65,6 +68,7 @@
 
         <q-card-actions align="right">
           <q-btn class="bg-primary text-white" label="Submit" @click="submit"/>
+          <q-btn class="bg-secondary text-white" label="Back" @click="isEditOn = !isEditOn"/>
         </q-card-actions>
       </q-card>
 
@@ -104,12 +108,12 @@
             <q-space />
 
             <!-- we should be working on images -->
-            <img alt="" class="profile-photo" src="https://discourse.disneyheroesgame.com/uploads/default/original/3X/c/2/c23f54aea2065f106e4dbb8218d0ce2d7853351c.png" />
+            <img alt="" class="profile-photo" src="https://cdn.ttgtmedia.com/rms/computerweekly/3_ImitationGame_Cumberbatch.jpg" />
           </div>
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn class="bg-primary text-white" label="Edit" @click="edit"/>
+          <q-btn class="bg-primary text-white" label="Edit" @click="isEditOn = !isEditOn"/>
         </q-card-actions>
       </q-card>
     </div>
@@ -118,7 +122,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { api } from "boot/axios";
+import { api } from 'boot/axios';
 
 export default {
   name: "PersonalProfilePage",
@@ -141,6 +145,10 @@ export default {
 
     async submit() {
       try {
+        this.contactNumber = (this.contactNumber === '')? this.getStudent.contactNumber: this.contactNumber;
+        this.email = (this.email === '')? this.getStudent.email: this.email;
+        this.residentialAddress = (this.residentialAddress === '')? this.getStudent.residentialAddress: this.residentialAddress;
+
         await api.patch('/student/profile/edit', {
           contactNumber: this.contactNumber,
           email: this.email,
@@ -163,10 +171,6 @@ export default {
       } catch(error) {
         console.log(error);
       }
-    },
-
-    edit() {
-      this.isEditOn = !this.isEditOn;
     }
   },
 

@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <div class="q-pa-sm absolute-center">
+    <div class="q-pa-sm">
       <h3>
         Advisee Conversation
       </h3>

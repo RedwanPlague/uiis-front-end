@@ -66,7 +66,7 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn class="bg-primary text-white" label="Back" @click="visitInformationPage" />
+          <q-btn class="bg-secondary text-white" label="Back" @click="visitInformationPage" />
         </q-card-actions>
       </q-card>
     </div>

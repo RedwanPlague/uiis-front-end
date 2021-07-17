@@ -1,26 +1,23 @@
 <template>
   <q-page padding>
     <div v-if="isPageLoaded" class="q-pa-md">
-      <q-card bordered>
+      <q-card bordered style="width: 700px; margin-left: auto; margin-right: auto;">
         <q-card-section>
           <div class="row q-gutter-lg">
             <div>
-              <div class="text-h5">Home</div><br />
+              <div class="text-h5">Advisor</div><br />
               <div class="text-subtitle2">
                 <p>
-                  <strong>Student ID:</strong> {{ getStudent.id }}
+                  <strong>Name:</strong> {{ getTeacher.advisor.name }}
                 </p>
                 <p>
-                  <strong>Name:</strong> {{ getStudent.name }}
+                  <strong>Contact Number:</strong> {{ getTeacher.advisor.contactNumber }}
                 </p>
                 <p>
-                  <strong>Level/Term:</strong> {{ getStudent.level }}/{{ getStudent.term }}
+                  <strong>Email:</strong> {{ getTeacher.advisor.email }}
                 </p>
                 <p>
-                  <strong>Department:</strong> {{ getStudent.department }}
-                </p>
-                <p>
-                  <strong>Residential Hall:</strong> {{ getStudent.hall }}
+                  <strong>Department:</strong> {{ getTeacher.advisor.department }}
                 </p>
               </div>
             </div>
@@ -28,14 +25,8 @@
             <q-space />
 
             <!-- we should be working on images -->
-            <img alt="" class="profile-photo" src="https://cdn.ttgtmedia.com/rms/computerweekly/3_ImitationGame_Cumberbatch.jpg" />
+            <img alt="" class="profile-photo" src="https://upload.wikimedia.org/wikipedia/commons/a/a1/Alan_Turing_Aged_16.jpg" />
           </div>
-        </q-card-section>
-
-        <q-separator /><br />
-
-        <q-card-section>
-          <div class="text-h5">Class Routine</div><br />
         </q-card-section>
       </q-card>
     </div>
@@ -46,7 +37,7 @@
 import { mapGetters, mapActions } from 'vuex';
 
 export default {
-  name: "Home",
+  name: "AdvisorInformationPage",
 
   data() {
     return {
@@ -55,10 +46,10 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchStudentIDInfo', 'fetchStudentProfileInfo'])
+    ...mapActions(['fetchAdvisorProfileInfo'])
   },
 
-  computed: mapGetters(['getID', 'getStudent']),
+  computed: mapGetters(['getTeacher']),
 
   async created() {
     try {
@@ -68,8 +59,7 @@ export default {
         messageColor: 'white'
       });
 
-      await this.fetchStudentIDInfo();
-      await this.fetchStudentProfileInfo(this.getID.id);
+      await this.fetchAdvisorProfileInfo();
 
       this.$q.loading.hide();
       this.isPageLoaded = !this.isPageLoaded;
