@@ -3,7 +3,7 @@
     <div class="text-h5 q-my-md">
       Search Fines
     </div>
-    <div class="row q-col-gutter-md">
+    <q-form class="row q-col-gutter-md" @submit="loadFines">
       <q-input
         class="col-6"
         v-model="id"
@@ -15,7 +15,7 @@
           <q-btn icon="search" flat color="primary" :disable="!id" @click="loadFines"/>
         </template>
       </q-input>
-    </div>
+    </q-form>
     <div v-if="showResults" class="q-mt-lg">
       <q-separator class="q-my-sm"/>
       <q-table
