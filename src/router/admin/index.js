@@ -183,6 +183,14 @@ export default {
         prevent(has(PRIVILEGES.HALL_CREATION) || has(PRIVILEGES.HALL_UPDATE), next)
       }
     },
+    {
+      path: 'thesis',
+      name: 'AdminThesisClearance',
+      component: () => import('pages/admin/singles/ThesisClearance'),
+      // beforeEnter(to, from, next) {
+      //   prevent(has(PRIVILEGES.HALL_CREATION) || has(PRIVILEGES.HALL_UPDATE), next)
+      // }
+    }
   ],
   beforeEnter(to, from, next) {
     store.dispatch('userTryAutoLogIn')
