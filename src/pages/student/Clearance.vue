@@ -7,7 +7,10 @@
             You have received clearance
           </div>
           <div v-else>
-            Your clearance application is pending
+            Your clearance application is pending<br/>
+            <span class="text-small">
+              Waiting for Thesis hard copy submission approval
+            </span>
           </div>
         </div>
         <div v-else>
@@ -17,11 +20,13 @@
       </div>
       <div v-else>
         You are not eligible for clearance
-        <div v-if="!minCreditDone">
-          Minimum credit requirement not fulfilled
-        </div>
-        <div v-else-if="!duesCleared">
-          All dues are not cleared
+        <div class="text-small" style="color: red">
+          <span v-if="!minCreditDone">
+            Minimum credit requirement not fulfilled
+          </span>
+          <span v-else-if="!duesCleared">
+            You have pending dues
+          </span>
         </div>
       </div>
     </div>
@@ -36,7 +41,7 @@ export default {
     return {
       minCreditDone: true,
       duesCleared: true,
-      thesisSubmitted: true,
+      thesisSubmitted: false,
       hasApplied: false
     }
   },
@@ -52,3 +57,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.text-small {
+  font-size: 0.8em;
+}
+</style>
