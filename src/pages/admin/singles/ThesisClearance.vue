@@ -34,13 +34,23 @@ export default {
   methods: {
     permit() {
       this.permitLoading = true
-      setTimeout(() => {
-        this.permitLoading = false
-        this.$q.notify({
-          message: 'Thesis Clearance Permitted for Selected Students',
-          type: 'positive'
+      this.$adminAPI.post('/clearance/thesis/clear', {
+        ids: this.ids
+      })
+        .then(() => {
+          this.permitLoading = false
+          this.$q.notify({
+            message: 'Thesis Clearance Permitted for Selected Students',
+            type: 'positive'
+          })
         })
-      }, 1000)
+        .catch(() => {
+          this.permitLoading = false
+          this.$q.notify({
+            message: 'Failed to Permit Thesis Clearance Selected Students',
+            type: 'negative'
+          })
+        })
     },
     resetForm() {
       this.ids = null
