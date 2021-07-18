@@ -72,6 +72,26 @@
               />
             </div>
           </q-carousel-slide>
+
+        <q-carousel-slide
+            name="full-results"
+            class="column no-wrap flex-center"
+          >
+            <div class="text-center">
+              <q-table
+                title="Consolidated Results"
+                :data="fullResultsInfo.deho"
+                :columns="fullResultsInfo.mathas"
+                separator="cell"
+                padding
+                row-key="studentID"
+                :pagination="initialPagination"
+                table-header-class="bg-primary text-white"
+                class="table"
+              >
+              </q-table>
+            </div>
+          </q-carousel-slide>
         </q-carousel>
 
         <div class="row justify-center">
@@ -218,8 +238,11 @@ export default {
     ...mapGetters("scrutinizer", {
       info: "currentCourseInfo",
       attTotal: "attTotal",
+      attFullTotal: "attFullTotal",
       attStudent: "attStudent",
+      attFullStudent: "attFullStudent",
       evalTotal: "evalTotal",
+      evalFullTotal: "evalFullTotal",
       evalStudent: "evalStudent",
       tfTotal: "tfTotal",
       tfStudent: "tfStudent",
@@ -405,6 +428,55 @@ export default {
       return shob;
     },
 
+    fullResultsInfo() {
+      const mathas = [];
+      const deho = [];
+
+      const stu = {
+        name: "studentID",
+        label: `Student ID`,
+        field: "studentID",
+        sortable: true,
+        align: "left"
+      };
+
+      mathas.push(stu);
+
+      const att = {
+        name: "attendance",
+        label: `Attendance (${this.attFullTotal})`,
+        field: "attendance",
+        sortable: true,
+        align: "left"
+      };
+
+      mathas.push(att);
+
+      const evals = {
+        name: "evals",
+        label: `Evaluations (${this.evalFullTotal})`,
+        field: "evals",
+        sortable: true,
+        align: "left"
+      };
+
+      mathas.push(evals);
+
+
+      for (const regi of this.info.students) {
+        const notun = {};
+
+        notun["studentID"] = regi.student.id;
+        notun["attendance"] = this.attFullStudent(
+          regi.student.id
+        );
+
+        deho.push(notun);
+      }
+
+      return {mathas, deho};
+    },
+
     labels() {
       const teachers = this.info.teachers.map(teacher => ({
         label: this.info.names[teacher.teacher],
@@ -417,6 +489,11 @@ export default {
       }));
 
       teachers.push(...examiners);
+
+      teachers.push({
+        label: `Full Results`,
+        value: `full-results`,
+      });
 
       return teachers;
     }

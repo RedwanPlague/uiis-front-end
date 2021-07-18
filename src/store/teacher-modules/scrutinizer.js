@@ -26,6 +26,11 @@ const getters = {
 
   allCourses: state => state.courses,
 
+  attFullTotal: (state, getters) => {
+    const info = getters.currentCourseInfo;
+    return Number(info.credit) * Number(info.attendanceWeight);
+  },
+
   attTotal: (state, getters) => teacherID => {
     const info = getters.currentCourseInfo;
 
@@ -56,6 +61,32 @@ const getters = {
     }
   },
 
+  attFullStudent: (state, getters) => (studentID) => {
+    const info = getters.currentCourseInfo;
+    let tot = 0;
+    let chilo = 0;
+
+    try {
+
+      for(const teacher of info.teachers) {
+        tot += teacher.classCount;
+      }
+
+      const student = info.students.find(regi => regi.student.id === studentID);
+      student.attendanceMarks.forEach(
+        sec => {
+          chilo += sec.mark;
+        }
+      );
+
+      const pabe = chilo/tot < 0.6? 0: Math.ceil((chilo/tot)*info.attendanceWeight)*info.credit;
+      return pabe;
+
+    } catch (error) {
+      return "NA";
+    }
+  },
+
   evalTotal: (state, getters) => (teacherID, evalID) => {
     const info = getters.currentCourseInfo;
 
@@ -65,6 +96,11 @@ const getters = {
 
     const section = teacher.evalDescriptions.find(sec => sec.evalID === evalID);
     return section.totalMarks;
+  },
+
+  evalFullTotal: (state, getters) => {
+    const info = getters.currentCourseInfo;
+    return Math.round(Number(info.perEvalWeight) * Number(info.consideredEvalCount) * Number(info.credit));
   },
 
   evalStudent: (state, getters) => (teacherID, evalID, studentID) => {
@@ -138,7 +174,7 @@ const mutations = {
     let curCor = state.courses.find(course => course.courseID === state.currentCourse);
 
 
-    for(const prop in payload) {
+    for (const prop in payload) {
       curCor[prop] = payload[prop];
     }
 
@@ -172,7 +208,7 @@ const actions = {
   async fillSingleCourse(context) {
     try {
 
-      if(context.state.courses.length === 0) {
+      if (context.state.courses.length === 0) {
         await context.dispatch("fillCourses"); // To change
       }
       context.commit("mutCourseLoading", true);
