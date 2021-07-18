@@ -85,6 +85,7 @@ const actions = {
           }
         });
       }
+
       commit('mutateGrades', response.data);
     } catch(err) {
       this.error = err.message;

@@ -18,6 +18,7 @@ import student from './student-modules/student';
 
 import grades from './utility-modules/grades';
 import registrations from './utility-modules/registrations';
+import routine from './utility-modules/routine';
 
 /* loading Vuex */
 Vue.use(Vuex);
@@ -40,7 +41,8 @@ const store = new Vuex.Store({
     student,
 
     grades,
-    registrations
+    registrations,
+    routine
   },
 
   /*

@@ -35,7 +35,15 @@
         <q-separator /><br />
 
         <q-card-section>
-          <div class="text-h5">Class Routine</div><br />
+          <div class="text-h5">Class Roster</div><br />
+
+          <q-table
+            bordered
+            :data="getClassRoutine"
+            :columns="this.getClassRoutineColumns"
+            row-key="day"
+            separator="cell"
+          />
         </q-card-section>
       </q-card>
     </div>
@@ -55,10 +63,10 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchTeacherProfileInfo'])
+    ...mapActions(['fetchTeacherProfileInfo', 'fetchCurrentSession', 'generateClassRoutineColumns', 'fetchCurrentCourses', 'generateClassRoutine'])
   },
 
-  computed: mapGetters(['getTeacher']),
+  computed: mapGetters(['getTeacher', 'getCurrentSession', 'getClassRoutineColumns', 'getClassRoutine']),
 
   async created() {
     try {
@@ -69,6 +77,16 @@ export default {
       });
 
       await this.fetchTeacherProfileInfo();
+
+      await this.generateClassRoutineColumns();
+      await this.fetchCurrentSession();
+      await this.fetchCurrentCourses({
+        caller: 'teacher',
+        session: this.getCurrentSession.session
+      });
+      this.generateClassRoutine({
+        caller: 'teacher'
+      });
 
       this.$q.loading.hide();
       this.isPageLoaded = !this.isPageLoaded;
