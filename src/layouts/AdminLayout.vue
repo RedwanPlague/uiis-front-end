@@ -228,7 +228,7 @@ export default {
       links.push({
         title: 'Thesis Clearance',
         icon: 'school',
-        link: { name: 'AdminThesisClearance' }
+        link: { name: 'AdminThesisClearancePage' }
       })
 
       if (has(PRIVILEGES.SLOT_CREATION) || has(PRIVILEGES.SLOT_UPDATE)) {

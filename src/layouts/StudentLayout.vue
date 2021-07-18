@@ -122,7 +122,12 @@ const menuOptions = [
     title: 'Dues',
     icon: 'school',
     path: '/student/dues'
-  }
+  },
+  {
+    title: 'Clearance',
+    icon: 'school',
+    path: '/student/clearance'
+  },
 ];
 
 export default {

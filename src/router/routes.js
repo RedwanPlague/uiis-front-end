@@ -48,6 +48,11 @@ const routes = [
         path: 'dues/status/:status',
         name: 'StudentDueStatusPage',
         component: () => import('pages/student/dues/PaymentStatus')
+      },
+      {
+        path: 'clearance',
+        name: 'StudentClearancePage',
+        component: () => import('pages/student/Clearance')
       }
     ],
     beforeEnter(to, from, next) {
