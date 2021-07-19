@@ -92,6 +92,26 @@
               </q-table>
             </div>
           </q-carousel-slide>
+
+          <q-carousel-slide
+            name="statistics"
+            class="column no-wrap flex-center"
+          >
+            <div class="text-center">
+              <q-table
+                title="Statistics"
+                :data="statisticsInfo.deho"
+                :columns="statisticsInfo.mathas"
+                separator="cell"
+                padding
+                row-key="studentID"
+                :pagination="initialPagination"
+                table-header-class="bg-primary text-white"
+                class="table"
+              >
+              </q-table>
+            </div>
+          </q-carousel-slide>
         </q-carousel>
 
         <div class="row justify-center">
@@ -254,6 +274,9 @@ export default {
       percentStudent: "percentStudent",
       gpaStudent: "gpaStudent",
       gradeStudent: "gradeStudent",
+      gradeList: "gradeList",
+      countGrade: "countGrade",
+      percentGrade: "percentGrade",
       //courseLoading: "courseLoading",
       hasForwarded: "hasForwarded",
       currentSession: "currentSession",
@@ -542,6 +565,57 @@ export default {
       return {mathas, deho};
     },
 
+    statisticsInfo() {
+      const mathas = [];
+      const deho = [];
+
+      mathas.push({
+        name: "gpa",
+        label: `GPA`,
+        field: "gpa",
+        sortable: true,
+        align: "left"
+      });
+
+      mathas.push({
+        name: "grade",
+        label: `Grade`,
+        field: "grade",
+        sortable: true,
+        align: "left"
+      });
+
+      mathas.push({
+        name: "numofstu",
+        label: `Number of Students`,
+        field: "numofstu",
+        sortable: true,
+        align: "left"
+      });
+
+      mathas.push({
+        name: "percentage",
+        label: `Percentage (%)`,
+        field: "percentage",
+        sortable: true,
+        align: "left"
+      });
+
+      this.gradeList.forEach(grade => {
+        const notun = {
+          "gpa": grade.gpa,
+          "grade": grade.grade,
+          "numofstu": this.countGrade(grade.grade),
+          "percentage": this.percentGrade(grade.grade),
+        };
+
+        deho.push(notun);
+      })
+
+      return {mathas, deho};
+
+    },
+
     labels() {
       const teachers = this.info.teachers.map(teacher => ({
         label: this.info.names[teacher.teacher],
@@ -558,6 +632,11 @@ export default {
       teachers.push({
         label: `Full Results`,
         value: `full-results`,
+      });
+
+      teachers.push({
+        label: `Statistics`,
+        value: `statistics`,
       });
 
       return teachers;

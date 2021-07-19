@@ -1,5 +1,18 @@
 import { api } from "boot/axios";
 
+const grades = [
+  {start: 80, end: 100, gpa: 4.00, grade: "A+"},
+  {start: 75, end: 79, gpa: 3.75, grade: "A"},
+  {start: 70, end: 74, gpa: 3.50, grade: "A-"},
+  {start: 65, end: 69, gpa: 3.25, grade: "B+"},
+  {start: 60, end: 64, gpa: 3.00, grade: "B"},
+  {start: 55, end: 59, gpa: 2.75, grade: "B-"},
+  {start: 50, end: 54, gpa: 2.50, grade: "C+"},
+  {start: 45, end: 49, gpa: 2.25, grade: "C"},
+  {start: 40, end: 44, gpa: 2.00, grade: "D"},
+  {start: 0, end: 39, gpa: 0.00, grade: "F"},
+];
+
 const state = {
   ke: null,
   currentSession: "2021",
@@ -250,32 +263,35 @@ const getters = {
 
   gpaStudent: (state, getters) => (studentID) => {
     const percent = getters["percentStudent"](studentID);
+    const hergrade = grades.find(grade => percent >= grade.start && percent <= grade.end);
 
-    if(percent >= 80) return 4.00;
-    else if(percent >= 75) return 3.75;
-    else if(percent >= 70) return 3.50;
-    else if(percent >= 65) return 3.25;
-    else if(percent >= 60) return 3.00;
-    else if(percent >= 55) return 2.75;
-    else if(percent >= 50) return 2.50;
-    else if(percent >= 45) return 2.25;
-    else if(percent >= 40) return 2.00;
-    else return 0;
+    return hergrade.gpa;
   },
 
   gradeStudent: (state, getters) => (studentID) => {
     const percent = getters["percentStudent"](studentID);
+    const hergrade = grades.find(grade => percent >= grade.start && percent <= grade.end);
 
-    if(percent >= 80) return "A+";
-    else if(percent >= 75) return "A";
-    else if(percent >= 70) return "A-";
-    else if(percent >= 65) return "B+";
-    else if(percent >= 60) return "B";
-    else if(percent >= 55) return "B-";
-    else if(percent >= 50) return "C+";
-    else if(percent >= 45) return "C";
-    else if(percent >= 40) return "D";
-    else return "F";
+    return hergrade.grade;
+  },
+
+  gradeList: (state, getters) => grades,
+
+  countGrade: (state, getters) => (letter) => {
+    const info = getters.currentCourseInfo;
+
+    let mot = 0;
+    info.students.forEach(regi => {
+      mot += (getters["gradeStudent"](regi.student.id)) == letter;
+    })
+
+    return mot;
+  },
+
+  percentGrade: (state, getters) => (letter) => {
+    const info = getters.currentCourseInfo;
+    const percent = getters["countGrade"](letter)/info.students.length*100;
+    return (Math.round(percent * 100) / 100).toFixed(2);
   },
 };
 
