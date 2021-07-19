@@ -68,7 +68,7 @@ const getters = {
 
     try {
 
-      for(const teacher of info.teachers) {
+      for (const teacher of info.teachers) {
         tot += teacher.classCount;
       }
 
@@ -79,7 +79,7 @@ const getters = {
         }
       );
 
-      const pabe = chilo/tot < 0.6? 0: Math.ceil((chilo/tot)*info.attendanceWeight)*info.credit;
+      const pabe = chilo / tot < 0.6 ? 0 : Math.ceil((chilo / tot) * info.attendanceWeight) * info.credit;
       return pabe;
 
     } catch (error) {
@@ -119,6 +119,34 @@ const getters = {
 
       if (!isNaN(section.mark)) return section.mark;
       else throw new Error();
+    } catch (error) {
+      return "NA";
+    }
+  },
+
+  evalFullStudent: (state, getters) => (studentID) => {
+    const info = getters.currentCourseInfo;
+    const student = info.students.find(regi => regi.student.id === studentID);
+    const shob = [];
+
+    try {
+      info.teachers.forEach(teacher => {
+        teacher.evalDescriptions.forEach(ed => {
+          const section = student.evalMarks.find(
+            sec => sec.teacher === teacher.teacher && sec.evalID === ed.evalID
+          );
+          shob.push(Number(section.mark) / Number(ed.totalMarks));
+        });
+      });
+
+      shob.sort((a, b) => b - a);
+
+      let mot = 0;
+      for (let i = 0; i < Number(info.consideredEvalCount); i++)
+        mot += shob[i] * Number(info.perEvalWeight) * Number(info.credit);
+
+      return Math.ceil(mot);
+
     } catch (error) {
       return "NA";
     }

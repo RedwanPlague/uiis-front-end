@@ -244,6 +244,7 @@ export default {
       evalTotal: "evalTotal",
       evalFullTotal: "evalFullTotal",
       evalStudent: "evalStudent",
+      evalFullStudent: "evalFullStudent",
       tfTotal: "tfTotal",
       tfStudent: "tfStudent",
       //courseLoading: "courseLoading",
@@ -468,6 +469,9 @@ export default {
 
         notun["studentID"] = regi.student.id;
         notun["attendance"] = this.attFullStudent(
+          regi.student.id
+        );
+        notun["evals"] = this.evalFullStudent(
           regi.student.id
         );
 
