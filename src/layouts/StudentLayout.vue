@@ -109,6 +109,11 @@ const menuOptions = [
     path: "/student/profile"
   },
   {
+    title: "Advisor",
+    icon: "supervisor_account",
+    path: "/student/advisor"
+  },
+  {
     title: "Course Registration",
     icon: "how_to_reg",
     path: "/student/course_registration"
@@ -120,7 +125,7 @@ const menuOptions = [
   },
   {
     title: 'Dues',
-    icon: 'school',
+    icon: 'payments',
     path: '/student/dues'
   }
 ];

@@ -1,59 +1,78 @@
 <template>
   <q-page padding>
-    <div class="text-h5 q-my-sm">
-      Pending Dues
-      <q-btn @click="createSession" label="create"/>
-    </div>
-    <div v-if="showResults">
-      <q-separator class="q-mb-sm"/><q-separator/>
-      <q-table
-        title="Fees"
-        :data="tableData.dues"
-        :columns="feeColumns"
-        flat
-        wrap-cells
-        row-key="_id"
-      >
-        <template v-slot:body-cell-yearMonth="props">
-          <q-td :props="props">
-            {{props.value}}<br/>
-            (<span v-if="props.row.dueType === DUE_TYPES.DINING_FEE">dining month</span>
-            <span v-else>session</span>)
-          </q-td>
-        </template>
-        <template v-slot:body-cell-action="props">
-          <q-td :props="props">
-            <a href="https://www.bkash.com" style="text-decoration: none; color: green">
-              Pay <q-icon name="payments"/>
-            </a>
-          </q-td>
-        </template>
-      </q-table>
-      <q-separator class="q-mb-sm"/><q-separator/>
-      <q-table
-        title="Fines"
-        :data="tableData.fines"
-        :columns="fineColumns"
-        flat
-        wrap-cells
-        row-key="_id"
-      >
-        <template v-slot:body-cell-description="props">
-          <q-td :props="props" class="cursor-pointer">
-            {{props.value}}
-            <q-tooltip content-style="font-size: 1.1em; background-color: black" max-width="50vw">
-              {{props.row.description}}
-            </q-tooltip>
-          </q-td>
-        </template>
-        <template v-slot:body-cell-action="props">
-          <q-td :props="props">
-            <a href="https://www.bkash.com" style="text-decoration: none; color: green">
-              Pay <q-icon name="payments"/>
-            </a>
-          </q-td>
-        </template>
-      </q-table>
+    <div v-if="isPageLoaded" class="q-pa-md">
+      <q-card bordered>
+        <q-card-section class="text-h5">
+          <div class="row q-gutter-lg">
+            <p> Dues </p>
+
+            <q-space />
+
+            <q-btn class="bg-primary text-white" @click="createSession" label="create"/>
+          </div>
+        </q-card-section>
+
+        <q-card-section>
+          <div v-if="showResults">
+            <q-table
+              bordered
+              title="Fees"
+              :data="tableData.dues"
+              :columns="feeColumns"
+              wrap-cells
+              row-key="_id"
+              separator="cell"
+            >
+              <template v-slot:body-cell-yearMonth="props">
+                <q-td :props="props">
+                  {{props.value}}<br/>
+                  (<span v-if="props.row.dueType === DUE_TYPES.DINING_FEE">dining month</span>
+                  <span v-else>session</span>)
+                </q-td>
+              </template>
+
+              <template v-slot:body-cell-action="props">
+                <q-td :props="props">
+                  <a href="https://www.bkash.com" style="text-decoration: none; color: green">
+                    Pay <q-icon name="payments"/>
+                  </a>
+                </q-td>
+              </template>
+            </q-table>
+          </div>
+        </q-card-section>
+
+        <q-card-section>
+          <div v-if="showResults">
+            <q-table
+              bordered
+              title="Fines"
+              :data="tableData.fines"
+              :columns="fineColumns"
+              wrap-cells
+              row-key="_id"
+              separator="cell"
+            >
+              <template v-slot:body-cell-description="props">
+                <q-td :props="props" class="cursor-pointer">
+                  {{props.value}}
+                  <q-tooltip content-style="font-size: 1.1em; background-color: black" max-width="50vw">
+                    {{props.row.description}}
+                  </q-tooltip>
+                </q-td>
+              </template>
+
+              <template v-slot:body-cell-action="props">
+                <q-td :props="props">
+                  <a href="https://www.bkash.com" style="text-decoration: none; color: green">
+                    Pay <q-icon name="payments"/>
+                  </a>
+                </q-td>
+              </template>
+            </q-table>
+          </div>
+        </q-card-section>
+      </q-card>
     </div>
   </q-page>
 </template>
@@ -72,16 +91,17 @@ const descFormat = val => val.slice(0, maxLen).trim() + (val.length > maxLen ? '
 
 const feeColumns = [
   {name: 'dueType', label: 'Type', field: 'dueType', align: 'center'},
-  {name: 'yearMonth', label: 'For', field: row => row.session || row.yearMonth,
-    align: 'center', format: monthYearFormat},
+  {name: 'yearMonth', label: 'For', field: row => row.session || row.yearMonth, align: 'center', format: monthYearFormat},
   {name: 'amount', label: 'Initial Amount', field: 'amount', align: 'center', format: moneyFormat},
   {name: 'deadline', label: 'Deadline', field: 'deadline', align: 'center', format: dateFormat},
   {name: 'currentAmount', label: 'Current Amount', field: 'currentAmount', align: 'center', format: moneyFormat},
   {name: 'action', label: 'Action', field: 'action', align: 'center'},
 ]
+
 const commonAttr = {
   style: 'font-size: 1.02em;', headerStyle: 'font-size: 1.02em;'
 }
+
 columnMerger(feeColumns, commonAttr)
 
 const fineColumns = [
@@ -92,20 +112,25 @@ const fineColumns = [
   {name: 'description', label: 'Description', field: 'description', align: 'center', format: descFormat},
   {name: 'action', label: 'Action', align: 'center'},
 ]
+
 columnMerger(fineColumns, commonAttr)
 
 export default {
   name: 'DueView',
+
   mixins: [
     search
   ],
+
   data() {
     return {
+      isPageLoaded: false,
       feeColumns,
       fineColumns,
       DUE_TYPES
     }
   },
+
   methods: {
     createSession() {
       this.$adminAPI.get('/student/due/test')
@@ -116,12 +141,23 @@ export default {
           console.log(error.response)
         })
     },
+
     loadDues() {
       this.callSearchApi('/student/due/list', {}, 'Dues List').catch(() => {})
     },
   },
+
   created() {
+    // this.$q.loading.show({
+    //   delay: 100,
+    //   message: 'Loading...',
+    //   messageColor: 'white'
+    // });
+
     this.loadDues()
+
+    // this.$q.loading.hide();
+    this.isPageLoaded = !this.isPageLoaded;
   }
 }
 </script>

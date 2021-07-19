@@ -6,7 +6,7 @@
           <div class="text-h5">
             Course Registration Information
 
-            <q-chip v-if="!getCurrentSession.isRegistrationPeriodRunning" color="negative" text-color="white">
+            <q-chip v-if="!this.getCurrentSession.isRegistrationPeriodRunning" color="negative" text-color="white">
               Course Registration Period is Over
             </q-chip>
           </div><br />

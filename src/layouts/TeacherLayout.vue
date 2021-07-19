@@ -66,7 +66,7 @@
             v-bind="menuOption"
           />
 
-          <q-expansion-item :content-inset-level="0.5" icon="school" label="Advisor" default-closed>
+          <q-expansion-item :content-inset-level="0.5" icon="supervisor_account" label="Advisor" default-closed>
             <SidebarOption
               v-for="menuOption in menuOptionsAdvisor"
               :key="menuOption.title"
@@ -74,7 +74,7 @@
             />
           </q-expansion-item>
 
-          <q-expansion-item v-if="this.getHead.head === user.id" :content-inset-level="0.5" icon="school" label="Department Head" default-closed>
+          <q-expansion-item v-if="this.getHead.head === user.id" :content-inset-level="0.5" icon="supervised_user_circle" label="Department Head" default-closed>
             <SidebarOption
               v-for="menuOption in menuOptionsHead"
               :key="menuOption.title"
@@ -149,11 +149,6 @@ const menuOptionsAdvisor = [
     title: "Course Registration",
     icon: "app_registration",
     path: "/teacher/advisor/course_registration"
-  },
-  {
-    title: "Conversation",
-    icon: "question_answer",
-    path: "/teacher/advisor/conversation"
   }
 ];
 

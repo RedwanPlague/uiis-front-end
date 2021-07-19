@@ -25,6 +25,11 @@ const routes = [
         component: () => import('src/pages/student/PersonalProfilePage.vue')
       },
       {
+        path: 'advisor',
+        name: 'advisorProfile',
+        component: () => import('src/pages/student/AdvisorInformationPage')
+      },
+      {
         path: 'course_registration',
         name: 'courseRegistration',
         component: () => import('pages/student/CourseRegistrationPage.vue')
@@ -89,11 +94,6 @@ const routes = [
         path: 'advisor/course_registration',
         name: 'adviseeCourseRegistration',
         component: () => import('pages/teacher/advisor/AdviseeCourseRegistrationPage')
-      },
-      {
-        path: 'advisor/conversation',
-        name: 'adviseeConversation',
-        component: () => import('pages/teacher/advisor/AdviseeConversationPage.vue')
       },
 
       {

@@ -28,7 +28,7 @@
             <q-space />
 
             <!-- we should be working on images -->
-            <img alt="" class="profile-photo" src="https://discourse.disneyheroesgame.com/uploads/default/original/3X/c/2/c23f54aea2065f106e4dbb8218d0ce2d7853351c.png" />
+            <img alt="" class="profile-photo" src="https://cdn.ttgtmedia.com/rms/computerweekly/3_ImitationGame_Cumberbatch.jpg" />
           </div>
         </q-card-section>
 
@@ -36,6 +36,14 @@
 
         <q-card-section>
           <div class="text-h5">Class Routine</div><br />
+
+          <q-table
+            bordered
+            :data="this.getClassRoutine"
+            :columns="this.getClassRoutineColumns"
+            row-key="day"
+            separator="cell"
+          />
         </q-card-section>
       </q-card>
     </div>
@@ -55,10 +63,10 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchStudentIDInfo', 'fetchStudentProfileInfo'])
+    ...mapActions(['fetchStudentIDInfo', 'fetchStudentProfileInfo', 'generateClassRoutineColumns', 'fetchCurrentCourses', 'generateClassRoutine'])
   },
 
-  computed: mapGetters(['getID', 'getStudent']),
+  computed: mapGetters(['getID', 'getStudent', 'getClassRoutineColumns', 'getClassRoutine']),
 
   async created() {
     try {
@@ -70,6 +78,14 @@ export default {
 
       await this.fetchStudentIDInfo();
       await this.fetchStudentProfileInfo(this.getID.id);
+
+      await this.generateClassRoutineColumns();
+      await this.fetchCurrentCourses({
+        caller: 'student'
+      });
+      this.generateClassRoutine({
+        caller: 'student'
+      });
 
       this.$q.loading.hide();
       this.isPageLoaded = !this.isPageLoaded;
