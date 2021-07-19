@@ -189,14 +189,14 @@ export default {
     async toiri() {
       this.loading = true;
 
-      console.log("initLAbel = ");
-      console.log(this.$route.props);
+      // console.log("initLAbel = ");
+      // console.log(this.$route.props);
 
-      console.log("route -> ");
-      console.log(this.$route);
+      // console.log("route -> ");
+      // console.log(this.$route);
 
-      console.log("ke->");
-      console.log(this.ke);
+      // console.log("ke->");
+      // console.log(this.ke);
 
 
       this.$store.commit("scrutinizer/mutKe", this.ke); // To change
@@ -246,7 +246,14 @@ export default {
       evalStudent: "evalStudent",
       evalFullStudent: "evalFullStudent",
       tfTotal: "tfTotal",
+      tfFullTotalPerPart: "tfFullTotalPerPart",
       tfStudent: "tfStudent",
+      tfFullStudent: "tfFullStudent",
+      fullTotal: "fullTotal",
+      fullStudent: "fullStudent",
+      percentStudent: "percentStudent",
+      gpaStudent: "gpaStudent",
+      gradeStudent: "gradeStudent",
       //courseLoading: "courseLoading",
       hasForwarded: "hasForwarded",
       currentSession: "currentSession",
@@ -463,6 +470,51 @@ export default {
 
       mathas.push(evals);
 
+      for(const examiner of this.info.examiners) {
+        const tfpart = {
+          name: `tf - ${examiner.part}`,
+          label: `Term Final - Part ${examiner.part} (${this.tfFullTotalPerPart})`,
+          field: `tf - ${examiner.part}`,
+          sortable: true,
+          align: "left",
+        };
+
+        mathas.push(tfpart);
+      }
+
+      const total = {
+        name: "total",
+        label: `Total Marks (${this.fullTotal})`,
+        field: "total",
+        sortable: true,
+        align: "left"
+      };
+
+      mathas.push(total);
+
+      mathas.push({
+        name: "percentage",
+        label: `Percentage (100)`,
+        field: "percentage",
+        sortable: true,
+        align: "left"
+      });
+
+      mathas.push({
+        name: "gpa",
+        label: `GPA`,
+        field: "gpa",
+        sortable: true,
+        align: "left"
+      });
+
+      mathas.push({
+        name: "grade",
+        label: `Grade`,
+        field: "grade",
+        sortable: true,
+        align: "left"
+      });
 
       for (const regi of this.info.students) {
         const notun = {};
@@ -474,6 +526,15 @@ export default {
         notun["evals"] = this.evalFullStudent(
           regi.student.id
         );
+
+        for(const section of regi.termFinalMarks) {
+          notun[`tf - ${section.part}`] = this.tfFullStudent(section.part, regi.student.id);
+        }
+
+        notun["total"] = this.fullStudent(regi.student.id);
+        notun["percentage"] = this.percentStudent(regi.student.id);
+        notun["gpa"] = this.gpaStudent(regi.student.id);
+        notun["grade"] = this.gradeStudent(regi.student.id);
 
         deho.push(notun);
       }

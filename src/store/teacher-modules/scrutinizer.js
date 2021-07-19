@@ -79,8 +79,17 @@ const getters = {
         }
       );
 
-      const pabe = chilo / tot < 0.6 ? 0 : Math.ceil((chilo / tot) * info.attendanceWeight) * info.credit;
-      return pabe;
+      const ongsho = chilo / tot;
+      const gun = Number(info.attendanceWeight) * Number(info.credit);
+
+      if(ongsho >= .9) return 10/10*gun;
+      else if(ongsho >= 0.85) return 9/10*gun;
+      else if(ongsho >= 0.80) return 8/10*gun;
+      else if(ongsho >= 0.75) return 7/10*gun;
+      else if(ongsho >= 0.70) return 6/10*gun;
+      else if(ongsho >= 0.65) return 5/10*gun;
+      else if(ongsho >= 0.60) return 4/10*gun;
+      else return 0/10*gun;
 
     } catch (error) {
       return "NA";
@@ -162,6 +171,14 @@ const getters = {
     return examiner.totalMarks;
   },
 
+  tfFullTotalPerPart: (state, getters) => {
+    const info = getters.currentCourseInfo;
+
+    const baki = 100-Number(info.attendanceWeight)-Number(info.perEvalWeight)*Number(info.consideredEvalCount);
+    const perPartPercentage = baki/Number(info.termFinalParts);
+    return perPartPercentage*Number(info.credit);
+  },
+
   tfStudent: (state, getters) => (examinerID, part, studentID) => {
     const info = getters.currentCourseInfo;
 
@@ -182,6 +199,83 @@ const getters = {
     } catch (error) {
       return "NA";
     }
+  },
+
+  tfFullStudent: (state, getters) => (part, studentID) => {
+    const info = getters.currentCourseInfo;
+
+    try {
+      const examiner = info.examiners.find(
+        examiner => examiner.part === part
+      );
+
+      const student = info.students.find(regi => regi.student.id === studentID);
+      const section = student.termFinalMarks.find(
+        sec => sec.part === part
+      );
+
+      const res = Number(section.mark)/Number(examiner.totalMarks)*getters["tfFullTotalPerPart"];
+      return res;
+
+    } catch (error) {
+      return "NA";
+    }
+  },
+
+  fullTotal: (state, getters) => {
+    const info = getters.currentCourseInfo;
+    return 100*Number(info.credit);
+  },
+
+  fullStudent: (state, getters) => (studentID) => {
+    const info = getters.currentCourseInfo;
+    const student = info.students.find(regi => regi.student.id === studentID);
+
+    let mot = getters["attFullStudent"](studentID) + getters["evalFullStudent"](studentID);
+    student.termFinalMarks.forEach(
+      sec => {
+        mot += getters["tfFullStudent"](sec.part, studentID);
+      }
+    );
+
+    return mot;
+  },
+
+  percentStudent: (state, getters) => (studentID) => {
+    const info = getters.currentCourseInfo;
+    const percent = Math.ceil(getters["fullStudent"](studentID)/Number(info.credit));    
+
+    return percent;
+  },
+
+  gpaStudent: (state, getters) => (studentID) => {
+    const percent = getters["percentStudent"](studentID);
+
+    if(percent >= 80) return 4.00;
+    else if(percent >= 75) return 3.75;
+    else if(percent >= 70) return 3.50;
+    else if(percent >= 65) return 3.25;
+    else if(percent >= 60) return 3.00;
+    else if(percent >= 55) return 2.75;
+    else if(percent >= 50) return 2.50;
+    else if(percent >= 45) return 2.25;
+    else if(percent >= 40) return 2.00;
+    else return 0;
+  },
+
+  gradeStudent: (state, getters) => (studentID) => {
+    const percent = getters["percentStudent"](studentID);
+
+    if(percent >= 80) return "A+";
+    else if(percent >= 75) return "A";
+    else if(percent >= 70) return "A-";
+    else if(percent >= 65) return "B+";
+    else if(percent >= 60) return "B";
+    else if(percent >= 55) return "B-";
+    else if(percent >= 50) return "C+";
+    else if(percent >= 45) return "C";
+    else if(percent >= 40) return "D";
+    else return "F";
   },
 };
 
@@ -253,9 +347,6 @@ const actions = {
           `/teacher/issues/${context.state.currentCourse}/${context.state.currentSession}/eligibleList`
         )
       ).data;
-
-      console.log("eligi->");
-      console.log(eligi);
 
       course.audience = eligi;
 
