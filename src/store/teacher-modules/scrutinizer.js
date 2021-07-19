@@ -288,6 +288,8 @@ const getters = {
     return mot;
   },
 
+  totalStudents: (state, getters) => getters.currentCourseInfo.students.length,
+
   percentGrade: (state, getters) => (letter) => {
     const info = getters.currentCourseInfo;
     const percent = getters["countGrade"](letter)/info.students.length*100;

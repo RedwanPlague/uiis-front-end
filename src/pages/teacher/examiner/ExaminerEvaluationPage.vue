@@ -14,6 +14,7 @@
       :columns="columns"
       row-key="studentID"
       separator="cell"
+      :pagination="initialPagination"
       table-header-class="bg-primary text-white"
     >
       <template v-slot:body="props">
@@ -53,6 +54,8 @@
         v-if="!info.hasForwarded"
       />
     </div>
+
+
   </div>
   <div v-else>{{ info }}</div>
 </template>
@@ -69,7 +72,13 @@ export default {
       loading: true,
       canEdit: false,
       probRolls: [],
-
+      initialPagination: {
+        sortBy: "desc",
+        descending: false,
+        page: 1,
+        rowsPerPage: null
+        // rowsNumber: xx if getting data from a server
+      },
       columns: [
         {
           name: "studentID",

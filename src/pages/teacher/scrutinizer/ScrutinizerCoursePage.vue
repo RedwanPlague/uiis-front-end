@@ -104,8 +104,8 @@
                 :columns="statisticsInfo.mathas"
                 separator="cell"
                 padding
-                row-key="studentID"
-                :pagination="initialPagination"
+                row-key="grade"
+                :pagination="gradePagination"
                 table-header-class="bg-primary text-white"
                 class="table"
               >
@@ -149,6 +149,13 @@ export default {
         descending: false,
         page: 1,
         rowsPerPage: null
+        // rowsNumber: xx if getting data from a server
+      },
+      gradePagination: {
+        sortBy: "desc",
+        descending: false,
+        page: 1,
+        rowsPerPage: 10
         // rowsNumber: xx if getting data from a server
       },
       barse: false
@@ -277,6 +284,7 @@ export default {
       gradeList: "gradeList",
       countGrade: "countGrade",
       percentGrade: "percentGrade",
+      totalStudents: "totalStudents",
       //courseLoading: "courseLoading",
       hasForwarded: "hasForwarded",
       currentSession: "currentSession",
@@ -496,7 +504,7 @@ export default {
       for(const examiner of this.info.examiners) {
         const tfpart = {
           name: `tf - ${examiner.part}`,
-          label: `Term Final - Part ${examiner.part} (${this.tfFullTotalPerPart})`,
+          label: `TF - Part ${examiner.part} (${this.tfFullTotalPerPart})`,
           field: `tf - ${examiner.part}`,
           sortable: true,
           align: "left",
@@ -507,7 +515,7 @@ export default {
 
       const total = {
         name: "total",
-        label: `Total Marks (${this.fullTotal})`,
+        label: `Total (${this.fullTotal})`,
         field: "total",
         sortable: true,
         align: "left"
@@ -517,7 +525,7 @@ export default {
 
       mathas.push({
         name: "percentage",
-        label: `Percentage (100)`,
+        label: `% (100)`,
         field: "percentage",
         sortable: true,
         align: "left"
@@ -587,7 +595,7 @@ export default {
 
       mathas.push({
         name: "numofstu",
-        label: `Number of Students`,
+        label: `Number of Students (${this.totalStudents})`,
         field: "numofstu",
         sortable: true,
         align: "left"
@@ -595,7 +603,7 @@ export default {
 
       mathas.push({
         name: "percentage",
-        label: `Percentage (%)`,
+        label: `Percentage (100)`,
         field: "percentage",
         sortable: true,
         align: "left"
