@@ -72,7 +72,7 @@ export default {
           })
           .catch(error => {
             this.editLoading = false
-            const message = `Failed to update ${name}`
+            const message = `Failed to update ${name}, Please Try Again`
             this.$q.notify({
               message,
               type: 'negative'
