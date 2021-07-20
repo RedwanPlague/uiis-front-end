@@ -7,7 +7,11 @@
     :label="label"
     outlined
     :readonly="readonly"
-    :rules="[() => !required || multiple || !!value || `Please Select ${label}`]"
+    :rules="[
+      () => !required || multiple || !!value || `Please Select ${label}`,
+      () => !required || !multiple || (Array.isArray(value) && value.length > 0) ||
+      `Please Select At least one ${label}`
+    ]"
     :use-chips="multiple"
     :multiple="multiple"
     :clearable="multiple"

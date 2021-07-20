@@ -70,7 +70,6 @@
         label="Prerequisites"
         v-model="prerequisites"
         multiple
-        required
       />
       <q-input
         class="col-12 q-pb-md"

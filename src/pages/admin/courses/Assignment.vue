@@ -249,7 +249,7 @@
         </q-expansion-item>
         <q-separator class="q-mb-lg"/>
       </div>
-      <div v-if="userHasPrivilege(PRIVILEGES.COURSE_SESSION_ASSIGN_RESULT_ACCESS_HOLDER)">
+      <div v-if="userHasPrivilege(PRIVILEGES.COURSE_SESSION_ASSIGN_INTERNAL)">
         <q-separator/>
         <q-expansion-item
           label="Assign Internals"

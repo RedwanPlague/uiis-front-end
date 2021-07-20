@@ -84,16 +84,25 @@ export default {
           }
         },
         {
+          path: 'offer',
+          name: 'AdminCourseOfferPage',
+          component: () => import('pages/admin/courses/Offer'),
+          beforeEnter(to, from, next) {
+            prevent(has(PRIVILEGES.COURSE_SESSION_CREATION), next)
+          }
+        },
+        {
           path: 'assign',
           name: 'AdminCourseAssignPage',
           component: () => import('pages/admin/courses/Assignment'),
           beforeEnter(to, from, next) {
             prevent(
               has(PRIVILEGES.COURSE_SESSION_CREATION) ||
-              has(PRIVILEGES.COURSE_UPDATE) ||
+              has(PRIVILEGES.COURSE_SESSION_UPDATE) ||
               has(PRIVILEGES.COURSE_SESSION_ALLOT_SCHEDULE) ||
               has(PRIVILEGES.COURSE_SESSION_ASSIGN_TEACHER) ||
               has(PRIVILEGES.COURSE_SESSION_ASSIGN_EXAMINER) ||
+              has(PRIVILEGES.COURSE_SESSION_ASSIGN_INTERNAL) ||
               has(PRIVILEGES.COURSE_SESSION_ASSIGN_SCRUTINIZER)
             , next)
           }

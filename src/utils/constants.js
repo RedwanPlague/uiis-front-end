@@ -9,7 +9,7 @@ const PRIVILEGES = Object.freeze({
 
   CURRENT_SESSION_UPDATE: 'current-session-update',
 
-  // COURSE_SESSION_CREATION: 'course-session-creation',
+  COURSE_SESSION_CREATION: 'course-session-creation',
   COURSE_SESSION_UPDATE: 'course-session-update',
   COURSE_SESSION_ASSIGN_EXAMINER: 'course-session-assign-examiner',
   COURSE_SESSION_ASSIGN_TEACHER: 'course-session-assign-teacher',

@@ -79,7 +79,6 @@
         label="Prerequisites"
         v-model="prerequisites"
         multiple
-        required
         :readonly="viewing"
       />
       <q-input
