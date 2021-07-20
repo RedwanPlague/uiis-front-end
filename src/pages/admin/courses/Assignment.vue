@@ -9,6 +9,7 @@
         v-model="courseToEdit"
         label="Course to Edit"
         required
+        only-offered
         @input="loadCourseSessionData"
       />
       <session-field

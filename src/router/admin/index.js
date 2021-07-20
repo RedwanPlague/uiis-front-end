@@ -161,6 +161,14 @@ export default {
       }
     },
     {
+      path: 'thesis',
+      name: 'AdminThesisClearancePage',
+      component: () => import('pages/admin/singles/ThesisClearance'),
+      beforeEnter(to, from, next) {
+        prevent(has(PRIVILEGES.THESIS_CLEARANCE), next)
+      }
+    },
+    {
       path: 'slots',
       name: 'AdminSlotManagePage',
       component: () => import('pages/admin/singles/SlotManagement'),
@@ -191,14 +199,6 @@ export default {
       beforeEnter(to, from, next) {
         prevent(has(PRIVILEGES.HALL_CREATION) || has(PRIVILEGES.HALL_UPDATE), next)
       }
-    },
-    {
-      path: 'thesis',
-      name: 'AdminThesisClearancePage',
-      component: () => import('pages/admin/singles/ThesisClearance'),
-      // beforeEnter(to, from, next) {
-      //   prevent(has(PRIVILEGES.HALL_CREATION) || has(PRIVILEGES.HALL_UPDATE), next)
-      // }
     }
   ],
   beforeEnter(to, from, next) {

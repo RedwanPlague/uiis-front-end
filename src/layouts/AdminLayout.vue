@@ -146,11 +146,13 @@ export default {
           link: { name: 'AdminCourseSearchPage' }
         })
       }
-      courseLinks.push({
-        title: 'Offer',
-        icon: 'school',
-        link: { name: 'AdminCourseOfferPage' }
-      })
+      if (has(PRIVILEGES.COURSE_SESSION_CREATION)) {
+        courseLinks.push({
+          title: 'Offer',
+          icon: 'school',
+          link: {name: 'AdminCourseOfferPage'}
+        })
+      }
       if (
         has(PRIVILEGES.COURSE_SESSION_CREATION) ||
         has(PRIVILEGES.COURSE_SESSION_UPDATE) ||
@@ -230,11 +232,13 @@ export default {
         })
       }
 
-      links.push({
-        title: 'Thesis Clearance',
-        icon: 'school',
-        link: { name: 'AdminThesisClearancePage' }
-      })
+      if (has(PRIVILEGES.THESIS_CLEARANCE)) {
+        links.push({
+          title: 'Thesis Clearance',
+          icon: 'school',
+          link: {name: 'AdminThesisClearancePage'}
+        })
+      }
 
       if (has(PRIVILEGES.SLOT_CREATION) || has(PRIVILEGES.SLOT_UPDATE)) {
         links.push({
