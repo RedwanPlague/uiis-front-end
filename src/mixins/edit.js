@@ -61,6 +61,7 @@ export default {
         adminAPI.patch(url, data)
           .then(response => {
             this.editLoading = false
+            this.oldData = deepCopy(data)
             const message = `${name} updated successfully`
             this.$q.notify({
               message,

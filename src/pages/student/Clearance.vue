@@ -27,6 +27,9 @@
           <span v-if="!minCreditDone">
             Minimum credit requirement not fulfilled
           </span>
+          <span v-else-if="!hasGraduated">
+            You have not graduated yet
+          </span>
           <span v-else-if="!duesCleared">
             You have pending dues
           </span>
@@ -46,6 +49,7 @@ export default {
   data() {
     return {
       minCreditDone: false,
+      hasGraduated: false,
       duesCleared: false,
       thesisSubmitted: false,
       hasApplied: false,
@@ -58,7 +62,7 @@ export default {
       'user'
     ]),
     isEligible() {
-      return this.minCreditDone && this.duesCleared
+      return this.minCreditDone && this.hasGraduated && this.duesCleared
     }
   },
   methods: {
