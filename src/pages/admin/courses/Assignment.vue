@@ -178,7 +178,7 @@
         >
           <div class="q-pb-md q-col-gutter-md">
             <div v-for="(item, i) in examiners" :key="i" class="row q-col-gutter-md">
-              <div class="col-7 row">
+              <div class="col-5 row">
                 <span class="col-1 text-h6">{{i+1}}.</span>
                 <teacher-picker
                   classes="col-11"
@@ -188,11 +188,18 @@
                 />
               </div>
               <q-input
-                class="col-4"
+                class="col-3"
                 v-model="item.part"
                 label="Part"
                 outlined
                 :rules="[() => !!item.part || 'Please Assign a Part']"
+              />
+              <q-input
+                class="col-3"
+                v-model="item.totalMarks"
+                label="Total Marks"
+                outlined
+                :rules="[() => !!item.totalMarks || 'Please Assign a Part']"
               />
               <div class="col-1">
                 <q-btn
@@ -322,7 +329,7 @@ const listLabel = {
 const listDefaults = {
   teachers: [{ teacher: null, evalCount: null }],
   schedule: [{ slot: null, room: null, day: null }],
-  examiners: [{ teacher: null, part: null }],
+  examiners: [{ teacher: null, part: null, totalMarks: null }],
   internals: [{ teacher: null }],
   scrutinizers: [{ teacher: null }],
 }
@@ -392,7 +399,8 @@ export default {
       this.schedule.splice(index, 1)
     },
     addExaminer() {
-      this.examiners.push({...listDefaults.examiners[0]})
+      const last = getLast(this.examiners, listDefaults.examiners[0])
+      this.examiners.push({ teacher: null, part: null, totalMarks: last.totalMarks})
     },
     removeExaminer(index) {
       this.examiners.splice(index, 1)
