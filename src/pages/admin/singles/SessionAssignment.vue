@@ -33,18 +33,9 @@ export default {
   },
   methods: {
     assignSession() {
-      this.$adminAPI.post('/currentSession/updateLevelTerm')
-        .then(() => {
-          this.callEditApi('/currentSession/update', {
-            session: new Date(this.date).toString()
-          }, 'Session')
-        })
-        .catch(() => {
-          this.$q.notify({
-            message: 'Failed to Update Level-Term, Please Try Again Later',
-            type: 'negative'
-          })
-        })
+      this.callEditApi('/currentSession/update', {
+        session: new Date(this.date).toString()
+      }, 'Session')
     },
     resetForm() {
       this.date = null
