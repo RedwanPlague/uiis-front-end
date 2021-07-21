@@ -90,6 +90,7 @@ export default {
           this.duesCleared = response.data.duesCleared
           this.thesisSubmitted = response.data.thesisSubmitted
           this.hasApplied = response.data.hasApplied
+          this.hasGraduated = response.data.hasGraduated
         })
         .catch(() => {
           this.statusLoading = false
