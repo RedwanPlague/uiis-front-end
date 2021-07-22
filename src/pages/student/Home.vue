@@ -35,15 +35,35 @@
         <q-separator /><br />
 
         <q-card-section>
-          <div class="text-h5">Class Routine</div><br />
+          <div class="text-h5">
+            Class Routine
+
+            <q-chip v-if="getStudent.status !== 'registered'" color="negative" text-color="white">
+              {{ getStudent.status.charAt(0).toUpperCase()+getStudent.status.slice(1) }}
+            </q-chip>
+          </div><br />
 
           <q-table
             bordered
-            :data="this.getClassRoutine"
+            :data="getClassRoutine"
             :columns="this.getClassRoutineColumns"
             row-key="day"
             separator="cell"
-          />
+          >
+            <template v-slot:body-cell="props">
+              <q-td :props="props">
+                <div v-if="props.value.courseID !== ''">
+                  <strong>{{ props.value.courseID }}</strong>
+                </div>
+                <div v-if="props.value.teachers !== ''">
+                  {{ props.value.teachers }}
+                </div>
+                <div v-if="props.value.room !== ''">
+                  {{ props.value.room }}
+                </div>
+              </q-td>
+            </template>
+          </q-table>
         </q-card-section>
       </q-card>
     </div>

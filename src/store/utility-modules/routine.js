@@ -22,44 +22,42 @@ const actions = {
       let classRoutineColumns = [
         {
           name: 'day',
-          required: true,
           label: 'Day/Period',
-          align: 'left',
-          field: row => row.day,
-          format: val => `${val}`,
+          align: 'center',
+          field: 'day',
           sortable: false
         },
         {
           name: 'periodOne',
-          align: 'left',
+          align: 'center',
           label: 'Period 1',
           field: 'periodOne',
           sortable: false
         },
         {
           name: 'periodTwo',
-          align: 'left',
+          align: 'center',
           label: 'Period 2',
           field: 'periodTwo',
           sortable: false
         },
         {
           name: 'periodThree',
-          align: 'left',
+          align: 'center',
           label: 'Period 3',
           field: 'periodThree',
           sortable: false
         },
         {
           name: 'periodFour',
-          align: 'left',
+          align: 'center',
           label: 'Period 4',
           field: 'periodFour',
           sortable: false
         },
         {
           name: 'periodFive',
-          align: 'left',
+          align: 'center',
           label: 'Period 5',
           field: 'periodFive',
           sortable: false
@@ -104,16 +102,41 @@ const actions = {
   /* generating class routine */
   generateClassRoutine({ commit }, params) {
     let classRoutine = [];
-    const weekdays = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday'];
+    const weekdays = ['sat', 'sun', 'mon', 'tue', 'wed'];
+    const weekdaysDictionary = {'sat': 'Saturday', 'sun': 'Sunday', 'mon': 'Monday', 'tue': 'Tuesday', 'wed': 'Wednesday'};
 
     for(let i=0; i<weekdays.length; i++) {
       classRoutine[i] = {
-        day: weekdays[i],
-        periodOne: '',
-        periodTwo: '',
-        periodThree: '',
-        periodFour: '',
-        periodFive: ''
+        day: {
+          courseID: weekdaysDictionary[weekdays[i]],
+          teachers: '',
+          room: ''
+        },
+        periodOne: {
+          courseID: '',
+          teachers: '',
+          room: ''
+        },
+        periodTwo: {
+          courseID: '',
+          teachers: '',
+          room: ''
+        },
+        periodThree: {
+          courseID: '',
+          teachers: '',
+          room: ''
+        },
+        periodFour: {
+          courseID: '',
+          teachers: '',
+          room: ''
+        },
+        periodFive: {
+          courseID: '',
+          teachers: '',
+          room: ''
+        }
       }
     }
 
@@ -122,11 +145,13 @@ const actions = {
         for(let j=0; j<state.currentCourses[i].schedule.length; j++) {
           const weekday = weekdays.indexOf(state.currentCourses[i].schedule[j].day);
 
-          let schedule = state.currentCourses[i].course.courseID+'\n';
-          schedule += state.currentCourses[i].teachers.map(obj => {
-            return obj.teacher;
-          }).join('/')+'\n';
-          schedule += state.currentCourses[i].schedule[j].room;
+          let schedule = {
+            courseID: state.currentCourses[i].course.courseID,
+            teachers: state.currentCourses[i].teachers.map(obj => {
+              return obj.teacher;
+            }).join('/'),
+            room: state.currentCourses[i].schedule[j].room
+          };
 
           if(state.currentCourses[i].schedule[j].slot === 1) {
             classRoutine[weekday].periodOne = schedule;
@@ -146,11 +171,13 @@ const actions = {
         for(let j=0; j<state.currentCourses[i].courseSession.schedule.length; j++) {
           const weekday = weekdays.indexOf(state.currentCourses[i].courseSession.schedule[j].day);
 
-          let schedule = state.currentCourses[i].courseSession.course.courseID+'\n';
-          schedule += state.currentCourses[i].courseSession.teachers.map(obj => {
-            return obj.teacher;
-          }).join('/')+'\n';
-          schedule += state.currentCourses[i].courseSession.schedule[j].room;
+          let schedule = {
+            courseID: state.currentCourses[i].courseSession.course.courseID,
+            teachers: state.currentCourses[i].courseSession.teachers.map(obj => {
+              return obj.teacher;
+            }).join('/'),
+            room: state.currentCourses[i].courseSession.schedule[j].room
+          };
 
           if(state.currentCourses[i].courseSession.schedule[j].slot === 1) {
             classRoutine[weekday].periodOne = schedule;
