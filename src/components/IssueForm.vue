@@ -165,10 +165,6 @@ export default {
 
     const nije = this.$store.getters["user"];
 
-    console.log("audience->");
-
-    console.log(audience);
-
     this.audience = audience.map(audi => ({
       name: audi.name,
       id: audi.id,

@@ -55,7 +55,7 @@
                   </q-td>
                 </template>
               </q-table>
-              <IssueForm :details="teacherInfo.issueDetails" />
+              <IssueForm v-if="!info.hasForwarded" :details="examinerInfo.issueDetails" />
             </div>
           </q-carousel-slide>
           <q-carousel-slide
@@ -93,7 +93,7 @@
                   </q-td>
                 </template>
               </q-table>
-              <IssueForm :details="examinerInfo.issueDetails" />
+              <IssueForm v-if="!info.hasForwarded" :details="examinerInfo.issueDetails" />
             </div>
           </q-carousel-slide>
 
