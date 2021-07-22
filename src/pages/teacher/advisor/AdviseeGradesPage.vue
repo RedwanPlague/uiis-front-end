@@ -86,7 +86,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchStudentProfileInfo', 'fetchGrades', 'generateAvailableGrades']),
+    ...mapActions(['fetchStudentProfileInfo', 'fetchGrades', 'generateAvailableGrades', 'fetchResults']),
 
     getTotalCreditHourObtained() {
       let totalCredit = 0.0;
@@ -118,15 +118,11 @@ export default {
     },
 
     getTotalCreditHoursCompleted() {
-      /* NOTICE: this should change later */
-      // return this.getStudent.totalCreditHoursCompleted;
-      return 0.0;
+      return this.getResults.results[(this.$route.query.level-1)*2+(this.$route.query.term-1)].totalCreditHoursCompleted;
     },
 
     getCGPA() {
-      /* NOTICE: this should change later */
-      // return this.getStudent.cgpa;
-      return 0.0;
+      return this.getResults.results[(this.$route.query.level-1)*2+(this.$route.query.term-1)].cgpa;
     },
 
     visitInformationPage() {
@@ -138,7 +134,7 @@ export default {
     }
   },
 
-  computed: mapGetters(['getStudent', 'getGrades', 'getAvailableGrades', 'getGradeColumns']),
+  computed: mapGetters(['getStudent', 'getGrades', 'getAvailableGrades', 'getGradeColumns', 'getResults']),
 
   async created() {
     try {
@@ -147,19 +143,6 @@ export default {
         message: 'Loading...',
         messageColor: 'white'
       });
-
-      /*
-        const loading = this.$q.notify({
-          delay: 100,
-          message: `Loading...`,
-          messageColor: 'white',
-          position: "bottom-left",
-          color: 'info',
-          group: false, // required to be updatable
-          timeout: 0, // we want to be in control when it gets dismissed
-          spinner: true
-        });
-      */
 
       await this.fetchStudentProfileInfo(this.$route.params.studentID);
       if(this.$route.query.filter === 'semester') {
@@ -178,15 +161,8 @@ export default {
       }
       this.generateAvailableGrades();
 
-      /*
-        loading({
-          color: 'positive',
-          icon: 'done', // we add an icon
-          spinner: false, // we reset the spinner setting so the icon can be displayed
-          message: 'Grades Loaded',
-          timeout: 1500 // we will timeout it in 2.5s
-        });
-      */
+      await this.fetchResults(this.$route.params.studentID);
+
       this.$q.loading.hide();
       this.isPageLoaded = !this.isPageLoaded;
     } catch(error) {

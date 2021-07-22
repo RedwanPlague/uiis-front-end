@@ -32,9 +32,10 @@
         <q-separator /><br />
 
         <q-card-section>
+          <div class="text-h5">Courses</div><br />
+
           <q-table
             v-if="getStudent.status === 'unregistered'"
-            title="Courses Available"
             bordered
             :data="getAvailableCourseRegistrations"
             :columns="getRegistrationColumns"
@@ -45,7 +46,6 @@
           />
           <q-table
             v-else
-            title="Courses Available"
             bordered
             :data="getAvailableCourseRegistrations"
             :columns="getRegistrationColumns"

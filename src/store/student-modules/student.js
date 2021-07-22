@@ -12,7 +12,9 @@ const state = {
   availableGrades: [],
 
   courseRegistrations: [],
-  availableCourseRegistrations: []
+  availableCourseRegistrations: [],
+
+  results: []
 };
 
 const getters = {
@@ -25,7 +27,9 @@ const getters = {
   getAvailableGrades: (state) => state.availableGrades,
 
   getCourseRegistrations: (state) => state.courseRegistrations,
-  getAvailableCourseRegistrations: (state) => state.availableCourseRegistrations
+  getAvailableCourseRegistrations: (state) => state.availableCourseRegistrations,
+
+  getResults: (state) => state.results
 };
 
 const actions = {
@@ -145,6 +149,16 @@ const actions = {
       };
     }
     commit('mutateAvailableCourseRegistrations', availableCourseRegistrations);
+  },
+
+  /* getting results (totalCreditHoursCompleted & CGPA) */
+  async fetchResults({ commit }, id) {
+    try {
+      const response = await api.get(url+'/grades/results/'+id);
+      commit('mutateResults', response.data);
+    } catch(err) {
+      this.error = err.message;
+    }
   }
 };
 
@@ -158,7 +172,9 @@ const mutations = {
   mutateAvailableGrades: (state, availableGrades) => (state.availableGrades = availableGrades),
 
   mutateCourseRegistrations: (state, courseRegistrations) => (state.courseRegistrations = courseRegistrations),
-  mutateAvailableCourseRegistrations: (state, availableCourseRegistrations) => (state.availableCourseRegistrations = availableCourseRegistrations)
+  mutateAvailableCourseRegistrations: (state, availableCourseRegistrations) => (state.availableCourseRegistrations = availableCourseRegistrations),
+
+  mutateResults: (state, results) => (state.results = results)
 };
 
 export default {
