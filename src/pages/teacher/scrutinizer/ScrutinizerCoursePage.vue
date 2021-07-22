@@ -41,6 +41,19 @@
                 table-header-class="bg-primary text-white"
                 class="table"
               >
+                <template v-slot:body-cell="props">
+                  <q-td
+                    :props="props"
+                    :class="
+                      getTeacherRowClass(
+                        teacherInfo.fakeTeacherID,
+                        props.row.studentID
+                      )
+                    "
+                  >
+                    {{ props.value }}
+                  </q-td>
+                </template>
               </q-table>
               <IssueForm :details="teacherInfo.issueDetails" />
             </div>
@@ -66,14 +79,25 @@
                 table-header-class="bg-primary text-white"
                 class="table"
               >
+                <template v-slot:body-cell="props">
+                  <q-td
+                    :props="props"
+                    :class="
+                      getExaminerRowClass(
+                        examinerInfo.fakeExaminerID,
+                        props.row.studentID
+                      )
+                    "
+                  >
+                    {{ props.value }}
+                  </q-td>
+                </template>
               </q-table>
-              <IssueForm
-                :details="examinerInfo.issueDetails"
-              />
+              <IssueForm :details="examinerInfo.issueDetails" />
             </div>
           </q-carousel-slide>
 
-        <q-carousel-slide
+          <q-carousel-slide
             name="full-results"
             class="column no-wrap flex-center"
           >
@@ -169,7 +193,7 @@ export default {
     },
     initLabel: {
       type: String,
-      required: false,
+      required: false
     }
   },
 
@@ -207,10 +231,33 @@ export default {
     },
 
     porerjon() {
-      if(this.ke === "head") return "ECO";
-      else if(this.ke === "scrutinizer") return "Internal";
-      else if(this.ke === "internal") return "Department Head";
+      if (this.ke === "head") return "ECO";
+      else if (this.ke === "scrutinizer") return "Internal";
+      else if (this.ke === "internal") return "Department Head";
       else return "Janina";
+    },
+
+    getTeacherRowClass(fakeTeacherID, studentID) {
+      const teacherID = fakeTeacherID.slice(8);
+      const section = this.info.teacherColored.find(
+        teacher => teacher.teacher === teacherID
+      );
+
+      if (section.unchangedList.includes(studentID)) return "bhul";
+      else if (section.updatedList.includes(studentID)) return "thik";
+      else return "";
+    },
+
+    getExaminerRowClass(fakeExaminerID, studentID) {
+      const examinerID = fakeExaminerID.split("-")[2];
+      const part = fakeExaminerID.split("-")[1];
+      const section = this.info.examinerColored.find(
+        examiner => examiner.teacher === examinerID && part === examiner.part
+      );
+
+      if (section.unchangedList.includes(studentID)) return "bhul";
+      else if (section.updatedList.includes(studentID)) return "thik";
+      else return "";
     },
 
     async toiri() {
@@ -224,7 +271,6 @@ export default {
 
       // console.log("ke->");
       // console.log(this.ke);
-
 
       this.$store.commit("scrutinizer/mutKe", this.ke); // To change
       if (!this.$route.params.courseID) {
@@ -246,18 +292,16 @@ export default {
         console.log(error);
       }
 
-
       this.loading = false;
 
       this.$q.loading.hide();
 
       if (this.labels.length > 0) {
-        if(this.initLabel) this.slide = this.initLabel;
+        if (this.initLabel) this.slide = this.initLabel;
         else this.slide = this.labels[0]["value"];
       }
 
       this.initialPagination.rowsPerPage = this.info.students.length;
-
     }
   },
 
@@ -287,7 +331,7 @@ export default {
       totalStudents: "totalStudents",
       //courseLoading: "courseLoading",
       hasForwarded: "hasForwarded",
-      currentSession: "currentSession",
+      currentSession: "currentSession"
     }),
 
     forwardLabel() {
@@ -448,7 +492,8 @@ export default {
         }
 
         const examinerName = this.info.names[examiner.teacher];
-        const fakeExaminerID = "examiner-" + examiner.part + "-" + examiner.teacher;
+        const fakeExaminerID =
+          "examiner-" + examiner.part + "-" + examiner.teacher;
         const issueDetails = {
           courseID: this.info.courseID,
           evalType: "term-final-eval",
@@ -501,13 +546,13 @@ export default {
 
       mathas.push(evals);
 
-      for(const examiner of this.info.examiners) {
+      for (const examiner of this.info.examiners) {
         const tfpart = {
           name: `tf - ${examiner.part}`,
           label: `TF - Part ${examiner.part} (${this.tfFullTotalPerPart})`,
           field: `tf - ${examiner.part}`,
           sortable: true,
-          align: "left",
+          align: "left"
         };
 
         mathas.push(tfpart);
@@ -551,15 +596,14 @@ export default {
         const notun = {};
 
         notun["studentID"] = regi.student.id;
-        notun["attendance"] = this.attFullStudent(
-          regi.student.id
-        );
-        notun["evals"] = this.evalFullStudent(
-          regi.student.id
-        );
+        notun["attendance"] = this.attFullStudent(regi.student.id);
+        notun["evals"] = this.evalFullStudent(regi.student.id);
 
-        for(const section of regi.termFinalMarks) {
-          notun[`tf - ${section.part}`] = this.tfFullStudent(section.part, regi.student.id);
+        for (const section of regi.termFinalMarks) {
+          notun[`tf - ${section.part}`] = this.tfFullStudent(
+            section.part,
+            regi.student.id
+          );
         }
 
         notun["total"] = this.fullStudent(regi.student.id);
@@ -570,7 +614,7 @@ export default {
         deho.push(notun);
       }
 
-      return {mathas, deho};
+      return { mathas, deho };
     },
 
     statisticsInfo() {
@@ -611,17 +655,16 @@ export default {
 
       this.gradeList.forEach(grade => {
         const notun = {
-          "gpa": grade.gpa,
-          "grade": grade.grade,
-          "numofstu": this.countGrade(grade.grade),
-          "percentage": this.percentGrade(grade.grade),
+          gpa: grade.gpa,
+          grade: grade.grade,
+          numofstu: this.countGrade(grade.grade),
+          percentage: this.percentGrade(grade.grade)
         };
 
         deho.push(notun);
-      })
+      });
 
-      return {mathas, deho};
-
+      return { mathas, deho };
     },
 
     labels() {
@@ -632,19 +675,19 @@ export default {
 
       const examiners = this.info.examiners.map(examiner => ({
         label: `Term Final - Part ${examiner.part}`,
-        value: "examiner-" + examiner.part + "-" + examiner.teacher,
+        value: "examiner-" + examiner.part + "-" + examiner.teacher
       }));
 
       teachers.push(...examiners);
 
       teachers.push({
         label: `Full Results`,
-        value: `full-results`,
+        value: `full-results`
       });
 
       teachers.push({
         label: `Statistics`,
-        value: `statistics`,
+        value: `statistics`
       });
 
       return teachers;
@@ -676,5 +719,11 @@ export default {
 .table {
   width: 800px;
   margin-top: 30px;
+}
+.bhul {
+  background: rgba(255, 0, 0, 0.2);
+}
+.thik {
+  background: rgba(0, 255, 0, 0.2);
 }
 </style>
