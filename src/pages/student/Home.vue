@@ -35,7 +35,13 @@
         <q-separator /><br />
 
         <q-card-section>
-          <div class="text-h5">Class Routine</div><br />
+          <div class="text-h5">
+            Class Routine
+
+            <q-chip v-if="getStudent.status !== 'registered'" color="negative" text-color="white">
+              {{ getStudent.status.charAt(0).toUpperCase()+getStudent.status.slice(1) }}
+            </q-chip>
+          </div><br />
 
           <q-table
             bordered

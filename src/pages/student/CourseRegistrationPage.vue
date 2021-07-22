@@ -35,7 +35,7 @@
           <div class="text-h5">Courses</div><br />
 
           <q-table
-            v-if="getStudent.status === 'unregistered'"
+            v-if="this.getStudent.status === 'unregistered'"
             bordered
             :data="getAvailableCourseRegistrations"
             :columns="getRegistrationColumns"
@@ -47,7 +47,7 @@
           <q-table
             v-else
             bordered
-            :data="getAvailableCourseRegistrations"
+            :data="this.getAvailableCourseRegistrations"
             :columns="getRegistrationColumns"
             row-key="courseID"
             separator="cell"
