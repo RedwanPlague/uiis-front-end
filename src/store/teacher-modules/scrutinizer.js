@@ -261,7 +261,7 @@ const getters = {
 
   percentStudent: (state, getters) => (studentID) => {
     const info = getters.currentCourseInfo;
-    const percent = Math.ceil(getters["fullStudent"](studentID)/Number(info.credit));    
+    const percent = Math.ceil(getters["fullStudent"](studentID)/Number(info.credit));
 
     return percent;
   },
@@ -369,6 +369,9 @@ const actions = {
         await api.get(`/teacher/${context.state.ke}/${context.state.currentSession}`)
       ).data.toRet;
       context.commit("mutAllCourses", courses);
+      console.log("--*-");
+      console.log(state.courses);
+
     } catch (error) {
       console.log(error);
     }

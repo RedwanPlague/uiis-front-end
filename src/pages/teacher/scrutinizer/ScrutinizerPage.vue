@@ -174,10 +174,13 @@ export default {
       this.$q.loading.show({
         delay: 100 // ms
       });
-
+      console.log("here1");
       await this.$store.dispatch("scrutinizer/fillResPublished"); // To change
+      console.log("here2");
       await this.$store.dispatch("scrutinizer/fillCurrentSession"); // To change
+      console.log("here3");
       await this.$store.dispatch("scrutinizer/fillCourses"); // To change
+      console.log(this.allCourses);
       this.$q.loading.hide();
     },
 
@@ -249,7 +252,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters("scrutinizer", ["currentSession", "allCourses, resultPublished"]), // To change
+    ...mapGetters("scrutinizer", ["currentSession", "allCourses", "resultPublished"]), // To change
 
     currentCourse: {
       get() {

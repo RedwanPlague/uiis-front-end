@@ -118,7 +118,6 @@ export default {
     ...mapActions(['fetchIssueDetails', 'sendComment', 'changeIssueStatus']),
 
     courseChipClicked(e) {
-      console.log(this.issueDetails.role);
       if(this.issueDetails.role === 'course') {
         const routeData = this.$router.resolve( {
           name: 'course_page',
@@ -161,7 +160,11 @@ export default {
         console.log(routeData);
         window.open(routeData.href, '_blank');
       }
-      else console.log("Not found");
+      else {
+        console.log(this.issueDetails.role);
+        console.log("Not found");
+
+      }
     },
     setPageVariables() {
 
