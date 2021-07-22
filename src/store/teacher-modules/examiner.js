@@ -1,7 +1,11 @@
 import { api } from "boot/axios";
 
+const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+
 const state = {
-  currentSession: "2021",
+  currentSession: "May-2022",
   courses: [],
   currentCourse: null,
   currentPart: null
@@ -81,6 +85,13 @@ const mutations = {
 };
 
 const actions = {
+  async fillCurrentSession(context) {
+    const sesObject = await api.get(`/currentSession`);
+    const sesTime = new Date(sesObject.data.session);
+
+    context.commit("mutCurSession", `${monthNames[sesTime.getMonth()]}-${sesTime.getFullYear()}`);
+  },
+  
   async fillCourses(context) {
     const session = context.state.currentSession;
 

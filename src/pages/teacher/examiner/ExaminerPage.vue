@@ -60,6 +60,7 @@ export default {
     this.$q.loading.show({
       delay: 100 // ms
     });
+    await this.$store.dispatch("examiner/fillCurrentSession");
     await this.$store.dispatch("examiner/fillCourses");
     this.$q.loading.hide();
   },

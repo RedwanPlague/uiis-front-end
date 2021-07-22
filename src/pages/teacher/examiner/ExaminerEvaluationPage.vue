@@ -50,12 +50,29 @@
         color="primary"
         label="Submit"
         class="q-ma-md"
-        @click="submitMarks"
+        @click="submitting = true"
         v-if="!info.hasForwarded"
       />
+
+      <q-dialog v-model="submitting" persistent>
+        <q-card>
+          <q-card-section class="row items-center">
+            <span class="q-ml-sm">Are you sure to submit?</span>
+          </q-card-section>
+
+          <q-card-actions align="right">
+            <q-btn flat label="No" color="primary" v-close-popup />
+            <q-btn
+              flat
+              label="yes"
+              color="primary"
+              @click="submitMarks"
+              v-close-popup
+            />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </div>
-
-
   </div>
   <div v-else>{{ info }}</div>
 </template>
@@ -63,12 +80,20 @@
 <script>
 import { mapGetters } from "vuex";
 import { api } from "boot/axios";
+import { ref } from "vue";
 
 export default {
   name: "ExaminerTable",
 
+  setup() {
+    return {
+      //submitting: ref(false)
+    };
+  },
+
   data() {
     return {
+      submitting: false,
       loading: true,
       canEdit: false,
       probRolls: [],
@@ -104,8 +129,6 @@ export default {
         studentID,
         mark: Number(e.target.value)
       });
-
-      console.log(this.students);
     },
 
     async uploadMarks(dhoron) {
@@ -116,15 +139,10 @@ export default {
 
         this.probRolls = [];
         this.info.students.forEach(student => {
-          console.log(student.studentID);
-          console.log(student.mark);
-          console.log(this.info.totalMarks);
 
           if (student.mark < 0 || student.mark > this.info.totalMarks)
             this.probRolls.push(student.studentID);
         });
-
-        console.log(this.probRolls);
 
         if (this.probRolls.length) {
           this.$q.notify({
@@ -169,15 +187,13 @@ export default {
           }
         );
 
-        console.log(ashbe);
-
         notif({
           icon: "done",
           message: sucMes,
           position: "bottom-left",
           spinner: false,
-          timeout: 1500,
-        })
+          timeout: 1500
+        });
 
         return true;
       } catch (e) {}
@@ -202,7 +218,6 @@ export default {
     }),
 
     students() {
-      console.log(this.info.students);
       return this.info.students ? this.info.students : [];
     },
 
@@ -249,7 +264,10 @@ export default {
     });
     this.loading = true;
 
-    if (!this.info) await this.$store.dispatch("examiner/fillCourses");
+    if (!this.info) {
+      await this.$store.dispatch("examiner/fillCurrentSession");
+      await this.$store.dispatch("examiner/fillCourses");
+    }
 
     this.$store.commit("examiner/mutCurCourse", this.$route.params.courseID);
     this.$store.commit("examiner/mutCurPart", this.$route.params.part);
