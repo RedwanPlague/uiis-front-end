@@ -38,6 +38,7 @@
       </div>
     </q-form>
     <q-inner-loading :showing="roleListLoading"/>
+    <div style="min-height: 500px"></div>
   </q-page>
 </template>
 
@@ -51,6 +52,7 @@ import {PRIVILEGES} from 'src/utils/constants'
 
 export default {
   name: 'RoleManagement',
+  title: 'Manage Roles',
   components: {
     PrivilegePicker,
     RolePicker
@@ -73,8 +75,11 @@ export default {
       'roleListLoading'
     ]),
     canCreate() {
+      return this.userHasPrivilege(PRIVILEGES.ROLE_CREATION)
+    },
+    canUpdate() {
       return this.userHasPrivilege(PRIVILEGES.ROLE_UPDATE)
-    }
+    },
   },
   methods: {
     use(data) {

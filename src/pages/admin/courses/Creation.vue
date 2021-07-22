@@ -70,7 +70,6 @@
         label="Prerequisites"
         v-model="prerequisites"
         multiple
-        required
       />
       <q-input
         class="col-12 q-pb-md"
@@ -97,6 +96,7 @@ import {extract} from 'src/utils/apiDataPreProcessor'
 
 export default {
   name: 'CourseCreation',
+  title: 'Create New Course',
   components: {
     CoursePicker,
     DepartmentPicker

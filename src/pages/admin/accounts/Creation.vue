@@ -37,6 +37,7 @@ import AdminCreatorForm from "components/AccountCreatorForms/AdminCreatorForm";
 
 export default {
   name: 'AccountCreation',
+  title: 'Create New Accounts',
   components: {
     StudentCreatorForm,
     TeacherCreatorForm,

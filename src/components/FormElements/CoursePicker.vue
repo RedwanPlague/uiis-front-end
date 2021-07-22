@@ -7,7 +7,11 @@
     :label="label"
     outlined
     :readonly="readonly"
-    :rules="[() => !required || multiple || !!value || `Please Select ${label}`]"
+    :rules="[
+      () => !required || multiple || !!value || `Please Select ${label}`,
+      () => !required || !multiple || (Array.isArray(value) && value.length > 0) ||
+      `Please Select At least one ${label}`
+    ]"
     :use-chips="multiple"
     :multiple="multiple"
     :clearable="multiple"
@@ -30,6 +34,12 @@ import {mapActions, mapGetters} from 'vuex'
 
 export default {
   name: 'CoursePicker',
+  props: {
+    onlyOffered: {
+      type: Boolean,
+      default: false
+    }
+  },
   mixins: [
     picker
   ],
@@ -42,19 +52,29 @@ export default {
     ...mapActions('admin', [
       'fetchCourseList'
     ]),
-    loadCourses() {
-      this.fetchCourseList().then(() => {
-        this.mainList = this.courseList.map(x => {
-          return {
-            value: {
-              courseID: x.courseID,
-              syllabusID: x.syllabusID
-            },
-            label: `${x.courseID}(${x.syllabusID}) - ${x.title}`
-          }
-        })
-        this.fixValue()
+    useData(useList) {
+      this.mainList = useList.map(x => {
+        return {
+          value: {
+            courseID: x.courseID,
+            syllabusID: x.syllabusID
+          },
+          label: `${x.courseID}(${x.syllabusID}) - ${x.title}`
+        }
       })
+      this.fixValue()
+    },
+    loadCourses() {
+      if (this.onlyOffered) {
+        this.$adminAPI.get('/currentSession/coursesToOfferWithTitle').then(response => {
+          this.useData(response.data.coursesToOffer)
+        })
+      }
+      else {
+        this.fetchCourseList().then(() => {
+          this.useData(this.courseList)
+        })
+      }
     },
   },
   created() {

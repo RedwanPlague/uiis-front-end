@@ -146,6 +146,13 @@ export default {
           link: { name: 'AdminCourseSearchPage' }
         })
       }
+      if (has(PRIVILEGES.COURSE_SESSION_CREATION)) {
+        courseLinks.push({
+          title: 'Offer',
+          icon: 'school',
+          link: {name: 'AdminCourseOfferPage'}
+        })
+      }
       if (
         has(PRIVILEGES.COURSE_SESSION_CREATION) ||
         has(PRIVILEGES.COURSE_SESSION_UPDATE) ||
@@ -153,7 +160,7 @@ export default {
         has(PRIVILEGES.COURSE_SESSION_ASSIGN_TEACHER) ||
         has(PRIVILEGES.COURSE_SESSION_ASSIGN_EXAMINER) ||
         has(PRIVILEGES.COURSE_SESSION_ASSIGN_SCRUTINIZER) ||
-        has(PRIVILEGES.COURSE_SESSION_ASSIGN_RESULT_ACCESS_HOLDER)
+        has(PRIVILEGES.COURSE_SESSION_ASSIGN_INTERNAL)
       ) {
         courseLinks.push({
           title: 'Assign',
@@ -222,6 +229,14 @@ export default {
           title: 'Dues',
           icon: 'school',
           children: dueLinks
+        })
+      }
+
+      if (has(PRIVILEGES.THESIS_CLEARANCE)) {
+        links.push({
+          title: 'Thesis Clearance',
+          icon: 'school',
+          link: {name: 'AdminThesisClearancePage'}
         })
       }
 

@@ -110,6 +110,7 @@ columnMerger(columns, commonAttr)
 
 export default {
   name: 'CourseSearch',
+  title: 'Search for Courses',
   components: {
     DepartmentPicker
   },

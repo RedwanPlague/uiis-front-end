@@ -9,6 +9,7 @@
         v-model="courseToEdit"
         label="Course to Edit"
         required
+        only-offered
         @input="loadCourseSessionData"
       />
       <session-field
@@ -23,57 +24,59 @@
       </div>
     </div>
     <q-form v-if="courseDataLoaded && !!courseToEdit">
-      <q-separator/>
-      <q-expansion-item
-        label="Evaluation Details"
-        header-class="text-h6 q-pl-none"
-      >
-        <div class="row q-col-gutter-md q-mb-md q-pt-md">
-          <q-input
-            class="col-6"
-            v-model="totalEvalCount"
-            label="Total Evaluation Count"
-            type="number"
-            outlined
-            :rules="[() => !!totalEvalCount || 'Please Fill this Field']"
-          />
-          <q-input
-            class="col-6"
-            v-model="consideredEvalCount"
-            label="Considered Evaluation Count"
-            type="number"
-            outlined
-            :rules="[() => !!consideredEvalCount || 'Please Fill this Field']"
-          />
-          <q-input
-            class="col-6"
-            v-model="totalMarks"
-            label="Total Marks"
-            type="number"
-            outlined
-            :rules="[() => !!totalMarks || 'Please Fill this Field']"
-          />
-          <q-input
-            class="col-6"
-            v-model="perEvalWeight"
-            label="Per Evaluation Weight"
-            type="number"
-            outlined
-            suffix="%"
-            :rules="[() => !!perEvalWeight || 'Please Fill this Field']"
-          />
-          <q-input
-            class="col-6"
-            v-model="attendanceWeight"
-            label="Attendance Weight"
-            type="number"
-            suffix="%"
-            outlined
-            :rules="[() => !!attendanceWeight || 'Please Fill this Field']"
-          />
-        </div>
-      </q-expansion-item>
-      <q-separator class="q-mb-lg"/>
+      <div v-if="userHasPrivilege(PRIVILEGES.COURSE_SESSION_UPDATE)">
+        <q-separator/>
+        <q-expansion-item
+          label="Evaluation Details"
+          header-class="text-h6 q-pl-none"
+        >
+          <div class="row q-col-gutter-md q-mb-md q-pt-md">
+            <q-input
+              class="col-6"
+              v-model="totalEvalCount"
+              label="Total Evaluation Count"
+              type="number"
+              outlined
+              :rules="[() => !!totalEvalCount || 'Please Fill this Field']"
+            />
+            <q-input
+              class="col-6"
+              v-model="consideredEvalCount"
+              label="Considered Evaluation Count"
+              type="number"
+              outlined
+              :rules="[() => !!consideredEvalCount || 'Please Fill this Field']"
+            />
+            <q-input
+              class="col-6"
+              v-model="totalMarks"
+              label="Total Marks"
+              type="number"
+              outlined
+              :rules="[() => !!totalMarks || 'Please Fill this Field']"
+            />
+            <q-input
+              class="col-6"
+              v-model="perEvalWeight"
+              label="Per Evaluation Weight"
+              type="number"
+              outlined
+              suffix="%"
+              :rules="[() => !!perEvalWeight || 'Please Fill this Field']"
+            />
+            <q-input
+              class="col-6"
+              v-model="attendanceWeight"
+              label="Attendance Weight"
+              type="number"
+              suffix="%"
+              outlined
+              :rules="[() => !!attendanceWeight || 'Please Fill this Field']"
+            />
+          </div>
+        </q-expansion-item>
+        <q-separator class="q-mb-lg"/>
+      </div>
       <div v-if="userHasPrivilege(PRIVILEGES.COURSE_SESSION_ASSIGN_TEACHER)">
         <q-separator/>
         <q-expansion-item
@@ -175,7 +178,7 @@
         >
           <div class="q-pb-md q-col-gutter-md">
             <div v-for="(item, i) in examiners" :key="i" class="row q-col-gutter-md">
-              <div class="col-7 row">
+              <div class="col-5 row">
                 <span class="col-1 text-h6">{{i+1}}.</span>
                 <teacher-picker
                   classes="col-11"
@@ -185,11 +188,18 @@
                 />
               </div>
               <q-input
-                class="col-4"
+                class="col-3"
                 v-model="item.part"
                 label="Part"
                 outlined
                 :rules="[() => !!item.part || 'Please Assign a Part']"
+              />
+              <q-input
+                class="col-3"
+                v-model="item.totalMarks"
+                label="Total Marks"
+                outlined
+                :rules="[() => !!item.totalMarks || 'Please Assign a Part']"
               />
               <div class="col-1">
                 <q-btn
@@ -247,28 +257,28 @@
         </q-expansion-item>
         <q-separator class="q-mb-lg"/>
       </div>
-      <div v-if="userHasPrivilege(PRIVILEGES.COURSE_SESSION_ASSIGN_RESULT_ACCESS_HOLDER)">
+      <div v-if="userHasPrivilege(PRIVILEGES.COURSE_SESSION_ASSIGN_INTERNAL)">
         <q-separator/>
         <q-expansion-item
-          label="Assign Result Access Holders"
+          label="Assign Internals"
           header-class="text-h6 q-pl-none"
         >
           <div class="row q-col-gutter-md q-pt-sm">
             <div
               class="row col-4"
-              v-for="(item, i) in resultAccessHolders"
+              v-for="(item, i) in internals"
               :key="i"
             >
               <teacher-picker
                 classes="col-11"
-                label="Access Holder"
+                label="Internal"
                 v-model="item.teacher"
                 required
               />
               <div class="col-1">
                 <q-btn
                   icon="delete" color="primary" flat dense
-                  @click="removeResultAccessHolder(i)"
+                  @click="removeInternal(i)"
                 />
               </div>
             </div>
@@ -278,7 +288,7 @@
             <q-btn
               class="col-6" color="primary"
               outline icon="add" :ripple="false"
-              @click="addResultAccessHolder"
+              @click="addInternal"
             />
           </div>
         </q-expansion-item>
@@ -313,19 +323,20 @@ const listLabel = {
   teachers: 'Course Teachers',
   schedule: 'Course Schedule',
   examiners: 'Examiners',
-  resultAccessHolders: 'Result Access Holders',
+  internals: 'Internals',
   scrutinizers: 'Scrutinizers',
 }
 const listDefaults = {
   teachers: [{ teacher: null, evalCount: null }],
   schedule: [{ slot: null, room: null, day: null }],
-  examiners: [{ teacher: null, part: null }],
-  resultAccessHolders: [{ teacher: null }],
+  examiners: [{ teacher: null, part: null, totalMarks: null }],
+  internals: [{ teacher: null }],
   scrutinizers: [{ teacher: null }],
 }
 
 export default {
   name: 'CourseAssignment',
+  title: 'Assign Course Details',
   components: {
     SessionField,
     DayOfWeekPicker,
@@ -349,7 +360,7 @@ export default {
       teachers: listDefaults.teachers,
       schedule: listDefaults.schedule,
       examiners: listDefaults.examiners,
-      resultAccessHolders: listDefaults.resultAccessHolders,
+      internals: listDefaults.internals,
       scrutinizers: listDefaults.scrutinizers,
       assignLoading: false,
       PRIVILEGES
@@ -388,7 +399,8 @@ export default {
       this.schedule.splice(index, 1)
     },
     addExaminer() {
-      this.examiners.push({...listDefaults.examiners[0]})
+      const last = getLast(this.examiners, listDefaults.examiners[0])
+      this.examiners.push({ teacher: null, part: null, totalMarks: last.totalMarks})
     },
     removeExaminer(index) {
       this.examiners.splice(index, 1)
@@ -399,11 +411,11 @@ export default {
     removeScrutinizer(index) {
       this.scrutinizers.splice(index, 1)
     },
-    addResultAccessHolder() {
-      this.resultAccessHolders.push({...listDefaults.resultAccessHolders[0]})
+    addInternal() {
+      this.internals.push({...listDefaults.internals[0]})
     },
-    removeResultAccessHolder(index) {
-      this.resultAccessHolders.splice(index, 1)
+    removeInternal(index) {
+      this.internals.splice(index, 1)
     },
     updateEvaluationDetails() {
       if (
@@ -455,7 +467,7 @@ export default {
       this.updateList('schedule')
       this.updateList('examiners')
       this.updateList('scrutinizers')
-      this.updateList('resultAccessHolders')
+      this.updateList('internals')
     },
     showErrorNotification(error) {
       const message = `Failed to load Course data`

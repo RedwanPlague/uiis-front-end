@@ -84,16 +84,25 @@ export default {
           }
         },
         {
+          path: 'offer',
+          name: 'AdminCourseOfferPage',
+          component: () => import('pages/admin/courses/Offer'),
+          beforeEnter(to, from, next) {
+            prevent(has(PRIVILEGES.COURSE_SESSION_CREATION), next)
+          }
+        },
+        {
           path: 'assign',
           name: 'AdminCourseAssignPage',
           component: () => import('pages/admin/courses/Assignment'),
           beforeEnter(to, from, next) {
             prevent(
               has(PRIVILEGES.COURSE_SESSION_CREATION) ||
-              has(PRIVILEGES.COURSE_UPDATE) ||
+              has(PRIVILEGES.COURSE_SESSION_UPDATE) ||
               has(PRIVILEGES.COURSE_SESSION_ALLOT_SCHEDULE) ||
               has(PRIVILEGES.COURSE_SESSION_ASSIGN_TEACHER) ||
               has(PRIVILEGES.COURSE_SESSION_ASSIGN_EXAMINER) ||
+              has(PRIVILEGES.COURSE_SESSION_ASSIGN_INTERNAL) ||
               has(PRIVILEGES.COURSE_SESSION_ASSIGN_SCRUTINIZER)
             , next)
           }
@@ -152,6 +161,14 @@ export default {
       }
     },
     {
+      path: 'thesis',
+      name: 'AdminThesisClearancePage',
+      component: () => import('pages/admin/singles/ThesisClearance'),
+      beforeEnter(to, from, next) {
+        prevent(has(PRIVILEGES.THESIS_CLEARANCE), next)
+      }
+    },
+    {
       path: 'slots',
       name: 'AdminSlotManagePage',
       component: () => import('pages/admin/singles/SlotManagement'),
@@ -182,11 +199,20 @@ export default {
       beforeEnter(to, from, next) {
         prevent(has(PRIVILEGES.HALL_CREATION) || has(PRIVILEGES.HALL_UPDATE), next)
       }
-    },
+    }
   ],
   beforeEnter(to, from, next) {
     store.dispatch('userTryAutoLogIn')
-      .then(() => next())
+      .then(() => {
+        const type = store.getters.user.userType
+        if (type === 'admin') {
+          next()
+        } else if (type === 'student') {
+          next({name: 'studentHome'})
+        } else if (type === 'teacher') {
+          next({name: 'teacherHome'})
+        }
+      })
       .catch(() => next({name: 'Index'}))
   }
 }

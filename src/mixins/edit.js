@@ -22,7 +22,7 @@ export default {
         this[key] = deepCopy(this.oldData[key])
       }
     },
-    fetchOldData(url, params, name) {
+    fetchOldData(url, params, name, take = 0) {
       this.oldDataLoading = true
       return new Promise((resolve, reject) => {
         adminAPI.get(url, { params })
@@ -31,7 +31,12 @@ export default {
               reject({doesNotExist: true})
             }
             this.oldDataLoading = false
-            this.oldData = response.data[0]
+            if (take === 0) {
+              this.oldData = response.data[0]
+            }
+            else {
+              this.oldData = response.data
+            }
             this.loadOldDataIntoForm()
             console.log(`Old data for ${name} loaded`)
             console.log(response)
@@ -56,6 +61,7 @@ export default {
         adminAPI.patch(url, data)
           .then(response => {
             this.editLoading = false
+            this.oldData = deepCopy(data)
             const message = `${name} updated successfully`
             this.$q.notify({
               message,
@@ -67,7 +73,7 @@ export default {
           })
           .catch(error => {
             this.editLoading = false
-            const message = `Failed to update ${name}`
+            const message = `Failed to update ${name}, Please Try Again`
             this.$q.notify({
               message,
               type: 'negative'

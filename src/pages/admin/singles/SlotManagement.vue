@@ -48,7 +48,7 @@
             @click="localRemoveSlot(idx)"
           />
           <q-btn
-            v-else-if="canUpdate"
+            v-else
             :icon="slot.viewing ? 'edit' : 'visibility'"
             :color="slot.viewing ? 'primary' : 'black'"
             @click="slot.viewing = !slot.viewing"
@@ -83,6 +83,7 @@ import {PRIVILEGES} from 'src/utils/constants'
 
 export default {
   name: 'SlotManagement',
+  title: 'Manage Slots',
   mixins: [
     creator,
     edit

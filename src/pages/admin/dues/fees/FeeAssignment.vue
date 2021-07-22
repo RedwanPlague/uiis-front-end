@@ -107,7 +107,7 @@
         </q-card-section>
         <q-separator/>
         <q-card-section>
-          <div style="height: 120px; width: 500px">
+          <div style="height: 140px; width: 500px">
             <div v-if="assignDone">
               <q-markup-table flat dense separator="cell" class="q-mb-md">
                 <tbody>
@@ -141,7 +141,13 @@
         </q-card-section>
         <q-card-actions align="right">
           <div v-if="assignDone">
-            <q-btn flat label="OK" color="primary" v-close-popup/>
+            <div v-if="!allSuccess">
+              <q-btn unelevated label="Try Again" color="primary" @click="assignFee"/>
+              <q-btn flat label="Cancel" color="primary" v-close-popup/>
+            </div>
+            <div v-else>
+              <q-btn flat label="OK" color="primary" v-close-popup/>
+            </div>
           </div>
           <div v-else>
             <q-btn unelevated label="Continue" color="primary" @click="assignFee"/>
@@ -169,6 +175,7 @@ const dialogStyle = {
 
 export default {
   name: 'FeeAssignment',
+  title: 'Assign Fees',
   components: {HallPicker, DepartmentPicker, SessionField},
   data() {
     return {
@@ -200,7 +207,7 @@ export default {
     filterData() {
       return {
         dueType: this.feeType,
-        ids: this.ids,
+        ids: (!!this.ids && this.ids.length > 0) ? this.ids : null,
         department: extract(this.dept),
         hall: extract(this.hall),
         level: this.level,
@@ -246,10 +253,10 @@ export default {
           this.assignDone = true
           this.successCount = response.data.duesModified
         })
-        .catch(() => {
+        .catch(error => {
           this.assignLoading = false
           this.assignDone = true
-          this.successCount = 0
+          this.successCount = error.response.data.duesModified
         })
     },
     resetForm() {

@@ -46,14 +46,33 @@ const routes = [
       },
       {
         path: 'dues',
-        name: 'DueViewPage',
-        component: () => import('src/pages/student/DueView')
+        name: 'StudentDueViewPage',
+        component: () => import('pages/student/dues/ViewList')
+      },
+      {
+        path: 'dues/status/:status',
+        name: 'StudentDueStatusPage',
+        component: () => import('pages/student/dues/PaymentStatus')
+      },
+      {
+        path: 'clearance',
+        name: 'StudentClearancePage',
+        component: () => import('pages/student/Clearance')
       }
     ],
     beforeEnter(to, from, next) {
       store.dispatch('userTryAutoLogIn')
-        .then(() => next())
-        .catch(() => next({ name: 'Index' }))
+        .then(() => {
+          const type = store.getters.user.userType
+          if (type === 'admin') {
+            next({name: 'AdminHome'})
+          } else if (type === 'student') {
+            next()
+          } else if (type === 'teacher') {
+            next({name: 'teacherHome'})
+          }
+        })
+        .catch(() => next({name: 'Index'}))
     }
   },
 
@@ -129,7 +148,16 @@ const routes = [
 
     beforeEnter(to, from, next) {
       store.dispatch('userTryAutoLogIn')
-        .then(() => next())
+        .then(() => {
+          const type = store.getters.user.userType
+          if (type === 'admin') {
+            next({name: 'AdminHome'})
+          } else if (type === 'student') {
+            next({name: 'studentHome'})
+          } else if (type === 'teacher') {
+            next()
+          }
+        })
         .catch(() => next({name: 'Index'}))
     }
   },

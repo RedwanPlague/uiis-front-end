@@ -127,7 +127,12 @@ const menuOptions = [
     title: 'Dues',
     icon: 'payments',
     path: '/student/dues'
-  }
+  },
+  {
+    title: 'Clearance',
+    icon: 'school',
+    path: '/student/clearance'
+  },
 ];
 
 export default {

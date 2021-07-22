@@ -11,8 +11,9 @@
         multiple use-chips use-input clearable
         new-value-mode="add-unique"
         outlined
-        :rules="[() => (!!ids && ids.length > 0) || 'Please Enter at least one Student ID']"
+        :rules="[() => !!columns || 'Dummy Text']"
       />
+<!--      :rules="[() => (!!ids && ids.length > 0) || 'Please Enter at least one Student ID']"-->
       <q-select
         class="col-6"
         v-model="feeType"
@@ -82,7 +83,7 @@ const columns = [
   {name: 'issuedTo', label: 'Student ID', field: 'issuedTo', align: 'center'},
   {name: 'amount', label: 'Initial Amount', field: 'amount', align: 'center', format: moneyFormat},
   {name: 'deadline', label: 'Deadline', field: 'deadline', align: 'center', format: dateFormat},
-  // {name: 'delayFine', label: 'Delay Fine', field: 'delayFine', align: 'center', format: moneyFormat},
+  {name: 'delayFine', label: 'Delay Fine', field: 'delayFine', align: 'center', format: moneyFormat},
   {name: 'currentAmount', label: 'Current Amount', field: 'currentAmount', align: 'center', format: moneyFormat},
   // {name: 'issueDate', label: 'Issue Date', field: 'issueDate', align: 'center', format: dateFormat},
   {name: 'status', label: 'Status', field: 'status', align: 'center', sortable: true},
@@ -96,12 +97,13 @@ columnMerger(columns, commonAttr)
 
 export default {
   name: 'FeeSearch',
+  title: 'Search for Fees',
   components: {
     SessionField
   },
   data() {
     return {
-      ids: [],
+      ids: null,
       feeType: null,
       yearMonth: null,
       showResults: false,
@@ -140,7 +142,10 @@ export default {
     },
     loadFees() {
       this.resultsLoading = true
-      this.$adminAPI.post('/due/getDue', {...this.partialData, ids: this.ids})
+      this.$adminAPI.post('/due/getDue', {
+        ...this.partialData,
+        ids: (!!this.ids && this.ids.length > 0) ? this.ids : null,
+      })
         .then(response => {
           this.fees = response.data.sort((a, b) => a.status > b.status ? -1 : 1)
           this.resultsLoading = false
@@ -176,7 +181,7 @@ export default {
         })
     },
     resetForm() {
-      this.ids = []
+      this.ids = null
       this.feeType = null
       this.yearMonth = null
     }

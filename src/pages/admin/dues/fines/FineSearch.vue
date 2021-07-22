@@ -3,7 +3,7 @@
     <div class="text-h5 q-my-md">
       Search Fines
     </div>
-    <div class="row q-col-gutter-md">
+    <q-form class="row q-col-gutter-md" @submit="loadFines">
       <q-input
         class="col-6"
         v-model="id"
@@ -15,7 +15,7 @@
           <q-btn icon="search" flat color="primary" :disable="!id" @click="loadFines"/>
         </template>
       </q-input>
-    </div>
+    </q-form>
     <div v-if="showResults" class="q-mt-lg">
       <q-separator class="q-my-sm"/>
       <q-table
@@ -75,7 +75,7 @@ const columns = [
   {name: 'fineType', label: 'Fine Type', field: 'fineType', align: 'center'},
   {name: 'amount', label: 'Initial Amount', field: 'amount', align: 'center', format: moneyFormat},
   {name: 'deadline', label: 'Deadline', field: 'deadline', align: 'center', format: dateFormat},
-  // {name: 'delayFine', label: 'Delay Fine', field: 'delayFine', align: 'center', format: moneyFormat},
+  {name: 'delayFine', label: 'Delay Fine', field: 'delayFine', align: 'center', format: moneyFormat},
   {name: 'currentAmount', label: 'Current Amount', field: 'currentAmount', align: 'center', format: moneyFormat},
   // {name: 'issueDate', label: 'Issue Date', field: 'issueDate', align: 'center', format: dateFormat},
   {name: 'status', label: 'Status', field: 'status', align: 'center', sortable: true},
@@ -90,6 +90,7 @@ columnMerger(columns, commonAttr)
 
 export default {
   name: 'FineSearch',
+  title: 'Search for Fines',
   mixins: [
     search
   ],

@@ -1,11 +1,11 @@
 const PRIVILEGES = Object.freeze({
   ACCOUNT_CREATION: 'account-creation',
-  ACCOUNT_DELETION: 'account-deletion',
+  // ACCOUNT_DELETION: 'account-deletion',
   ACCOUNT_UPDATE: 'account-update',
 
   COURSE_CREATION: 'course-creation',
   COURSE_UPDATE: 'course-update',
-  COURSE_DELETION: 'course-deletion',
+  // COURSE_DELETION: 'course-deletion',
 
   CURRENT_SESSION_UPDATE: 'current-session-update',
 
@@ -14,7 +14,7 @@ const PRIVILEGES = Object.freeze({
   COURSE_SESSION_ASSIGN_EXAMINER: 'course-session-assign-examiner',
   COURSE_SESSION_ASSIGN_TEACHER: 'course-session-assign-teacher',
   COURSE_SESSION_ASSIGN_SCRUTINIZER: 'course-session-assign-scrutinizer',
-  COURSE_SESSION_ASSIGN_RESULT_ACCESS_HOLDER: 'course-session-assign-result-access-holder',
+  COURSE_SESSION_ASSIGN_INTERNAL: 'course-session-assign-internal',
   COURSE_SESSION_ALLOT_SCHEDULE: 'course-session-allot-schedule',
 
   SLOT_CREATION: 'slot-creation',
@@ -22,7 +22,7 @@ const PRIVILEGES = Object.freeze({
 
   ROLE_CREATION: 'role-creation',
   ROLE_UPDATE: 'role-update',
-  ROLE_DELETION: 'role-deletion',
+  // ROLE_DELETION: 'role-deletion',
 
   DEPARTMENT_CREATION: 'department-creation',
   DEPARTMENT_UPDATE: 'department-update',
@@ -36,7 +36,9 @@ const PRIVILEGES = Object.freeze({
 
   LIBRARY_FINE_MANAGEMENT: 'library-fine-management',
   LAB_FINE_MANAGEMENT: 'laboratory-fine-management',
-  DISCIPLINARY_FINE_MANAGEMENT: 'disciplinary-fine-management'
+  DISCIPLINARY_FINE_MANAGEMENT: 'disciplinary-fine-management',
+
+  THESIS_CLEARANCE: 'thesis-clearance'
 })
 
 const DUE_TYPES = Object.freeze({
