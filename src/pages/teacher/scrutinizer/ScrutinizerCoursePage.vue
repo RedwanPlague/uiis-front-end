@@ -144,9 +144,28 @@
             class="submit-btn q-mt-sm"
             color="primary"
             :label="forwardLabel"
-            @click="forwardResult"
+            @click="submitting = true"
             no-caps
           />
+
+          <q-dialog v-model="submitting">
+            <q-card>
+              <q-card-section class="row items-center">
+                <span class="q-ml-sm">Are you sure to submit?</span>
+              </q-card-section>
+
+              <q-card-actions align="right">
+                <q-btn flat label="No" color="primary" v-close-popup />
+                <q-btn
+                  flat
+                  label="yes"
+                  color="primary"
+                  @click="forwardResult"
+                  v-close-popup
+                />
+              </q-card-actions>
+            </q-card>
+          </q-dialog>
         </div>
       </div>
     </div>
@@ -164,6 +183,7 @@ export default {
 
   data() {
     return {
+      submitting: false,
       canEdit: true,
       slide: null,
       loading: true,
@@ -218,15 +238,26 @@ export default {
 
     async forwardResult() {
       this.canEdit = false;
+
+      const notif = this.$q.notify({
+        spinner: true,
+        message: "Forwarding",
+        group: false, // required to be updatable
+        timeout: 0, // we want to be in control when it gets dismissed,
+        position: "bottom-left"
+      });
+
       await api.put(
         `/teacher/${this.ke}/${this.info.courseID}/${this.currentSession}/approve`
       );
       this.$store.commit("scrutinizer/mutHasForwarded");
 
-      this.$q.notify({
+      notif({
         icon: "done",
-        message: "Result Forwarded to Department Head",
-        position: "bottom-left"
+        message: `Result Forwarded to ${this.porerjon()}`,
+        position: "bottom-left",
+        spinner: false,
+        timeout: 1500,
       });
     },
 
@@ -262,15 +293,6 @@ export default {
 
     async toiri() {
       this.loading = true;
-
-      // console.log("initLAbel = ");
-      // console.log(this.$route.props);
-
-      // console.log("route -> ");
-      // console.log(this.$route);
-
-      // console.log("ke->");
-      // console.log(this.ke);
 
       this.$store.commit("scrutinizer/mutKe", this.ke); // To change
       if (!this.$route.params.courseID) {

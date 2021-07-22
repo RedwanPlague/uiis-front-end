@@ -5,7 +5,7 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
 ];
 
 const state = {
-  currentSession: "May-2022",
+  currentSession: null,
   courses: [],
   currentCourse: null,
   currentPart: null

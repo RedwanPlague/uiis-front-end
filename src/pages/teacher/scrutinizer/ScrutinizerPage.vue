@@ -43,10 +43,28 @@
           class="submit-btn q-mt-xl"
           color="primary"
           :label="forwardLabel"
-          @click="forwardResults"
+          @click="submitting = true"
           :disable="selected.length === 0"
           no-caps
         />
+        <q-dialog v-model="submitting">
+          <q-card>
+            <q-card-section class="row items-center">
+              <span class="q-ml-sm">Are you sure to submit?</span>
+            </q-card-section>
+
+            <q-card-actions align="right">
+              <q-btn flat label="No" color="primary" v-close-popup />
+              <q-btn
+                flat
+                label="yes"
+                color="primary"
+                @click="forwardResults"
+                v-close-popup
+              />
+            </q-card-actions>
+          </q-card>
+        </q-dialog>
       </div>
 
       <!-- <ScrutinizerTable v-if="currentCourse" :key="currentCourse" /> -->
@@ -56,7 +74,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import {api} from "boot/axios";
+import { api } from "boot/axios";
 
 export default {
   name: "ScrutinizerPage", // To change
@@ -71,6 +89,7 @@ export default {
   },
   data() {
     return {
+      submitting: false,
       columns: [
         {
           name: "courseID",
@@ -116,6 +135,7 @@ export default {
         delay: 100 // ms
       });
 
+      await this.$store.dispatch("scrutinizer/fillCurrentSession"); // To change
       await this.$store.dispatch("scrutinizer/fillCourses"); // To change
       this.$q.loading.hide();
     },
@@ -136,6 +156,14 @@ export default {
     },
 
     async forwardResults() {
+      const notif = this.$q.notify({
+        spinner: true,
+        message: "Forwarding",
+        group: false, // required to be updatable
+        timeout: 0, // we want to be in control when it gets dismissed,
+        position: "bottom-left"
+      });
+
       for (const cr of this.selected) {
         console.log(cr);
         await api.put(
@@ -143,10 +171,12 @@ export default {
         );
       }
 
-      this.$q.notify({
+      notif({
         icon: "done",
         message: `Result Forwarded to ${this.porerjon()}`,
-        position: "bottom-left"
+        position: "bottom-left",
+        spinner: false,
+        timeout: 1500
       });
 
       await this.toiri();
@@ -182,7 +212,7 @@ export default {
 
     forwardLabel() {
       return `Forward to ${this.porerjon()}`;
-    },
+    }
   },
 
   watch: {

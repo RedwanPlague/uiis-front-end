@@ -54,7 +54,7 @@
         v-if="!info.hasForwarded"
       />
 
-      <q-dialog v-model="submitting" persistent>
+      <q-dialog v-model="submitting">
         <q-card>
           <q-card-section class="row items-center">
             <span class="q-ml-sm">Are you sure to submit?</span>

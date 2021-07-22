@@ -13,9 +13,13 @@ const grades = [
   {start: 0, end: 39, gpa: 0.00, grade: "F"},
 ];
 
+const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+
 const state = {
   ke: null,
-  currentSession: "2021",
+  currentSession: null,
   courses: [],
   currentCourse: null,
   courseLoading: false,
@@ -302,6 +306,10 @@ const mutations = {
     state.ke = ke;
   },
 
+  mutCurSession: (state, session) => {
+    state.currentSession = session;
+  },
+
   mutAllCourses: (state, allCourses) => {
     state.courses = allCourses;
   },
@@ -333,6 +341,13 @@ const mutations = {
 };
 
 const actions = {
+  async fillCurrentSession(context) {
+    const sesObject = await api.get(`/currentSession`);
+    const sesTime = new Date(sesObject.data.session);
+
+    context.commit("mutCurSession", `${monthNames[sesTime.getMonth()]}-${sesTime.getFullYear()}`);
+  },
+
   async fillCourses(context) {
     try {
       context.commit("mutAllCourses", []);
@@ -349,6 +364,7 @@ const actions = {
     try {
 
       if (context.state.courses.length === 0) {
+        await context.dispatch("fillCurrentSession"); // To change
         await context.dispatch("fillCourses"); // To change
       }
       context.commit("mutCourseLoading", true);
