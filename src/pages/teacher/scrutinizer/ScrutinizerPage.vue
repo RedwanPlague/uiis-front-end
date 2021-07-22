@@ -79,7 +79,7 @@
           </q-card>
         </q-dialog>
       </div>
-      <div class="row justify-center" v-else>
+      <div class="row justify-center" v-else-if="!resultPublished">
         <q-btn
           class="submit-btn q-mt-xl"
           color="primary"
@@ -175,6 +175,7 @@ export default {
         delay: 100 // ms
       });
 
+      await this.$store.dispatch("scrutinizer/fillResPublished"); // To change
       await this.$store.dispatch("scrutinizer/fillCurrentSession"); // To change
       await this.$store.dispatch("scrutinizer/fillCourses"); // To change
       this.$q.loading.hide();
@@ -248,7 +249,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters("scrutinizer", ["currentSession", "allCourses"]), // To change
+    ...mapGetters("scrutinizer", ["currentSession", "allCourses, resultPublished"]), // To change
 
     currentCourse: {
       get() {

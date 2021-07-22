@@ -20,6 +20,7 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
 const state = {
   ke: null,
   currentSession: null,
+  resultPublished: null,
   courses: [],
   currentCourse: null,
   courseLoading: false,
@@ -299,6 +300,8 @@ const getters = {
     const percent = getters["countGrade"](letter)/info.students.length*100;
     return (Math.round(percent * 100) / 100).toFixed(2);
   },
+
+  resultPublished: (state, getters) => state.resultPublished,
 };
 
 const mutations = {
@@ -308,6 +311,10 @@ const mutations = {
 
   mutCurSession: (state, session) => {
     state.currentSession = session;
+  },
+
+  mutResPublished: (state, resultPublished) => {
+    state.resultPublished = resultPublished;
   },
 
   mutAllCourses: (state, allCourses) => {
@@ -346,6 +353,13 @@ const actions = {
     const sesTime = new Date(sesObject.data.session);
 
     context.commit("mutCurSession", `${monthNames[sesTime.getMonth()]}-${sesTime.getFullYear()}`);
+  },
+
+  async fillResPublished(context) {
+    const resObject = await api.get(`/teacher/eco/result-published`);
+    const resultPublished = resObject.data.resultPublished;
+
+    context.commit("mutResPublished", resultPublished);
   },
 
   async fillCourses(context) {
