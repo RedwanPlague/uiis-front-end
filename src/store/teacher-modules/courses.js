@@ -9,8 +9,26 @@ const getters = {
 };
 
 const actions = {
+
+
   async fetchCourses({commit}) {
     const res = await api.get('/teacher/courses');
+    if(!res.data) return;
+    console.log(res.data);
+
+    if(res.data.currentCourseSessions) {
+      res.data.currentCourseSessions.forEach(entry => {
+        const _date = new Date(entry.session);
+        entry.session = _date.toLocaleString('default', { month: 'long' }) + "-" + _date.getFullYear();
+      });
+    }
+    if(res.data.previousCourseSessions) {
+      res.data.currentCourseSessions.forEach(entry => {
+        const _date = new Date(entry.session);
+        entry.session = _date.toLocaleString('default', { month: 'long' }) + "-" + _date.getFullYear();
+      });
+    }
+    console.log(res);
     commit('setCourses', res.data);
   }
 };

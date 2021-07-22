@@ -1,7 +1,7 @@
 <template>
   <q-page class="container" v-show="pageLoaded">
 
-    <h5>Januray {{ course_data.session }} {{ course_data.courseID }}: {{ course_data.courseName }}</h5>
+    <h5>{{ course_data.session }} {{ course_data.courseID }}: {{ course_data.courseName }}</h5>
 
 
     <q-dialog v-model="csvButton">
@@ -15,8 +15,8 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn class="q-mr-sm" label="Upload" color="primary" v-close-popup no-caps @click="readFile" />
-          <q-btn label="Cancel" color="primary" v-close-popup no-caps/>
+          <q-btn label="Upload" color="primary" v-close-popup no-caps @click="readFile" />
+          <q-btn label="Cancel" color="primary" v-close-popup flat no-caps/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -145,7 +145,7 @@
           return this.course_data.classCount
         },
         set (value) {
-          this.$store.commit('setClassCount', value);
+          this.setClassCount(value);
         }
       }
     },
@@ -180,7 +180,7 @@
       }
     },
     methods: {
-      ...mapActions(['fetchCourseDetails', 'saveStudentData', 'updateEvaluationTable', 'studentDataFilledCheck', 'setHasForwarded']),
+      ...mapActions(['setClassCount', 'fetchCourseDetails', 'saveStudentData', 'updateEvaluationTable', 'studentDataFilledCheck', 'setHasForwarded']),
       loadCSVData(input) {
         let csvData ;
         try {

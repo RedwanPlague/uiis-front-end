@@ -65,7 +65,6 @@ const actions = {
         entry.editAccess |= evalulation.editAccess;
       });
       if(entry.editAccess) {
-        console.log(entry);
         commit('setEditButton', true );
       }
       formatted_data.push(entry)
@@ -123,6 +122,9 @@ const actions = {
 
   updateEvaluationTable({commit}, input) {
     commit('setEvaluationTable', input);
+  },
+  setClassCount({commit}, input) {
+    commit('setClassCount', input);
   }
 };
 
@@ -138,6 +140,8 @@ const mutations = {
   },
   setCourseDetails: (state, courseDetails) => {
     state.course_data = courseDetails.teacher_details;
+    const _date = new Date(state.course_data.session);
+    state.course_data.session = _date.toLocaleString('default', { month: 'long' }) + "-" + _date.getFullYear();
     state.student_data = courseDetails.student_details;
   },
   setClassCount: (state, classCount) => state.course_data.classCount = classCount,
