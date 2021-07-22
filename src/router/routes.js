@@ -109,15 +109,18 @@ const routes = [
       },
       { path: 'head/:courseID', name: "head-course-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerCoursePage.vue'), props: { ke: "head" } },
 
-      { path: 'examiner', component: () => import('src/pages/teacher/examiner/ExaminerPage.vue') },
+      { path: 'examiner', name: "examiner-page", component: () => import('src/pages/teacher/examiner/ExaminerPage.vue') },
       { path: 'examiner/:courseID/:part', name: "examiner-evaluation-page", component: () => import('src/pages/teacher/examiner/ExaminerEvaluationPage.vue') },
 
-      { path: 'scrutinizer', component: () => import('pages/teacher/scrutinizer/ScrutinizerPage.vue'), props: { ke: "scrutinizer" } },
+      { path: 'scrutinizer', name: "scrutinizer-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerPage.vue'), props: { ke: "scrutinizer" } },
       { path: 'scrutinizer/:courseID', name: "scrutinizer-course-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerCoursePage.vue'), props: { ke: "scrutinizer",} },
 
 
-      { path: 'internal', component: () => import('pages/teacher/scrutinizer/ScrutinizerPage.vue'), props: { ke: "internal" } },
-      { path: 'internal/:courseID', name: "internal-course-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerCoursePage.vue'), props: { ke: "internal" } },
+      { path: 'gradesheet-preparer', name: "internal-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerPage.vue'), props: { ke: "internal" } },
+      { path: 'gradesheet-preparer/:courseID', name: "internal-course-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerCoursePage.vue'), props: { ke: "internal" } },
+
+      { path: 'eco', name: "eco-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerPage.vue'), props: { ke: "eco" } },
+      { path: 'eco/:courseID', name: "eco-course-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerCoursePage.vue'), props: { ke: "eco" } },
 
 
       { path: 'issues', name: 'issue_list', component: () => import('src/pages/teacher/issues/IssueListPage.vue') },

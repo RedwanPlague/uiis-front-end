@@ -138,7 +138,7 @@
           </q-carousel-slide>
         </q-carousel>
 
-        <div class="row justify-center">
+        <div v-if="ke != `eco`" class="row justify-center">
           <q-btn
             v-show="!(!canEdit || hasForwarded || barse)"
             class="submit-btn q-mt-sm"

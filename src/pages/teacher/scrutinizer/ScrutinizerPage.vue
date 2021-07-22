@@ -14,8 +14,9 @@
       />
 
       <q-table
+        v-if="ke != `eco`"
         class="table"
-        title="Pending Courses"
+        title="Arrived Courses"
         :data="checkingCourses"
         :columns="columns"
         row-key="courseID"
@@ -26,8 +27,20 @@
         table-header-class="bg-primary text-white"
         @row-click="onRowClick"
       />
+      <q-table
+        v-else
+        class="table"
+        title="Arrived Courses"
+        :data="checkingCourses"
+        :columns="columns"
+        row-key="courseID"
+        separator="cell"
+        table-header-class="bg-primary text-white"
+        @row-click="onRowClick"
+      />
 
       <q-table
+        v-if="ke != `eco`"
         class="table"
         title="Forwarded Courses"
         :data="forwardedCourses"
@@ -38,7 +51,7 @@
         @row-click="onRowClick"
       />
 
-      <div class="row justify-center">
+      <div class="row justify-center" v-if="ke != `eco`">
         <q-btn
           class="submit-btn q-mt-xl"
           color="primary"
@@ -66,8 +79,35 @@
           </q-card>
         </q-dialog>
       </div>
+      <div class="row justify-center" v-else>
+        <q-btn
+          class="submit-btn q-mt-xl"
+          color="primary"
+          label="Publish Results"
+          @click="submitting = true"
+          no-caps
+        />
+        <q-dialog v-model="submitting">
+          <q-card>
+            <q-card-section class="row items-center">
+              <span class="q-ml-sm publish-text"
+                >Are you sure to publish results?</span
+              >
+            </q-card-section>
 
-      <!-- <ScrutinizerTable v-if="currentCourse" :key="currentCourse" /> -->
+            <q-card-actions align="right">
+              <q-btn flat label="No" color="primary" v-close-popup />
+              <q-btn
+                flat
+                label="yes"
+                color="primary"
+                @click="publishResults"
+                v-close-popup
+              />
+            </q-card-actions>
+          </q-card>
+        </q-dialog>
+      </div>
     </div>
   </q-page>
 </template>
@@ -180,6 +220,30 @@ export default {
       });
 
       await this.toiri();
+    },
+
+    async publishResults() {
+      const notif = this.$q.notify({
+        spinner: true,
+        message: "Publishing",
+        group: false, // required to be updatable
+        timeout: 0, // we want to be in control when it gets dismissed,
+        position: "bottom-left"
+      });
+
+      await api.put(
+        `/teacher/${this.ke}/publish`
+      );
+
+      notif({
+        icon: "done",
+        message: `Result published!`,
+        position: "bottom-left",
+        spinner: false,
+        timeout: 1500
+      });
+
+      await this.toiri();
     }
   },
 
@@ -239,5 +303,9 @@ export default {
 }
 .submit-btn {
   margin-bottom: 30px;
+}
+.publish-text {
+  font-weight: bolder;
+  color: red;
 }
 </style>

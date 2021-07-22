@@ -183,9 +183,9 @@ const menuOptionsScrutinizer = [
 
 const menuOptionsInternal = [
   {
-    title: "Internal",
+    title: "Gradesheet Preparer",
     icon: "check_circle",
-    path: "/teacher/internal"
+    path: "/teacher/gradesheet-preparer"
   }
 ];
 
