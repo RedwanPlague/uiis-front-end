@@ -5,6 +5,7 @@ const url = "/student";
 const state = {
   id: {},
   student: {},
+  studentProfilePicture: {},
 
   availableSemesters: [],
 
@@ -20,6 +21,7 @@ const state = {
 const getters = {
   getID: (state) => state.id,
   getStudent: (state) => state.student,
+  getStudentProfilePicture: (state) => state.studentProfilePicture,
 
   getAvailableSemesters: (state) => state.availableSemesters,
 
@@ -48,6 +50,16 @@ const actions = {
     try {
       const response = await api.get(url+'/profile/'+id);
       commit('mutateStudent', response.data);
+    } catch(err) {
+      this.error = err.message;
+    }
+  },
+
+  /* getting student profile picture */
+  async fetchStudentProfilePicture({ commit }, id) {
+    try {
+      const response = await api.get(url+'/profile/picture/'+id);
+      commit('mutateStudentProfilePicture', response.data);
     } catch(err) {
       this.error = err.message;
     }
@@ -165,6 +177,7 @@ const actions = {
 const mutations = {
   mutateID: (state, id) => (state.id = id),
   mutateStudent: (state, student) => (state.student = student),
+  mutateStudentProfilePicture: (state, studentProfilePicture) => (state.studentProfilePicture = studentProfilePicture),
 
   mutateAvailableSemesters: (state, availableSemesters) => (state.availableSemesters = availableSemesters),
 

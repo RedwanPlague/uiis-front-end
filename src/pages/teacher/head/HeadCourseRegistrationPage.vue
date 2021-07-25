@@ -72,17 +72,10 @@
           </q-list>
         </q-card-section>
 
-        <div v-if="getStudents.length === 0 && pageLoaded" class="absolute-center">
-          <h3>
-            Course Registration Process is Completed for This Semester.
-          </h3>
-        </div>
-        <div v-else>
-          <q-card-actions align="right">
-            <q-btn class="bg-positive text-white" label="Approve" @click="approve" />
-            <q-btn class="bg-negative text-white" label="Reject" @click="reject" />
-          </q-card-actions>
-        </div>
+        <q-card-actions align="right">
+          <q-btn class="bg-positive text-white" label="Approve" @click="approve" />
+          <q-btn class="bg-negative text-white" label="Reject" @click="reject" />
+        </q-card-actions>
       </q-card>
 
       <q-dialog v-model="courseRegistrationInfoDialogBox" full-width>
@@ -112,8 +105,7 @@
 
               <q-space />
 
-              <!-- we should be working on images -->
-              <img alt="" class="profile-photo" src="https://cdn.ttgtmedia.com/rms/computerweekly/3_ImitationGame_Cumberbatch.jpg" />
+              <img alt="" class="profile-photo" :src="this.getStudentProfilePicture.display_image_link" />
             </div>
           </q-card-section>
 
@@ -200,7 +192,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchStudents', 'generateUniqueAdvisors', 'fetchStudentProfileInfo', 'fetchCourseRegistrations', 'fetchCurrentSession']),
+    ...mapActions(['fetchStudents', 'generateUniqueAdvisors', 'fetchStudentProfileInfo', 'fetchStudentProfilePicture', 'fetchCourseRegistrations', 'fetchCurrentSession']),
 
     generateCourseRegistrations() {
       this.courseRegistrations = [];
@@ -219,6 +211,7 @@ export default {
     async onRowClick(event, row) {
       try {
         await this.fetchStudentProfileInfo(row.id);
+        await this.fetchStudentProfilePicture(row.id);
         this.courseRegistrations = [];
         this.courseRegistrationInfoDialogBox = true;
 
@@ -319,7 +312,7 @@ export default {
     }
   },
 
-  computed: mapGetters(['getStudents', 'getUniqueAdvisors', 'getStudent', 'getCourseRegistrations', 'getRegistrationColumns', 'getCurrentSession']),
+  computed: mapGetters(['getStudents', 'getUniqueAdvisors', 'getStudent', 'getStudentProfilePicture', 'getCourseRegistrations', 'getRegistrationColumns', 'getCurrentSession']),
 
   async created() {
     try {

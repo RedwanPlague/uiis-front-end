@@ -27,8 +27,7 @@
 
             <q-space />
 
-            <!-- we should be working on images -->
-            <img alt="" class="profile-photo" src="https://cdn.ttgtmedia.com/rms/computerweekly/3_ImitationGame_Cumberbatch.jpg" />
+            <img alt="" class="profile-photo" :src="this.getStudentProfilePicture.display_image_link" />
           </div>
         </q-card-section>
 
@@ -107,8 +106,7 @@
 
             <q-space />
 
-            <!-- we should be working on images -->
-            <img alt="" class="profile-photo" src="https://cdn.ttgtmedia.com/rms/computerweekly/3_ImitationGame_Cumberbatch.jpg" />
+            <img alt="" class="profile-photo" :src="this.getStudentProfilePicture.display_image_link" />
           </div>
         </q-card-section>
 
@@ -141,7 +139,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchStudentIDInfo', 'fetchStudentProfileInfo']),
+    ...mapActions(['fetchStudentIDInfo', 'fetchStudentProfileInfo', 'fetchStudentProfilePicture']),
 
     async submit() {
       try {
@@ -174,7 +172,7 @@ export default {
     }
   },
 
-  computed: mapGetters(['getID', 'getStudent']),
+  computed: mapGetters(['getID', 'getStudent', 'getStudentProfilePicture']),
 
   async created() {
     try {
@@ -186,6 +184,7 @@ export default {
 
       await this.fetchStudentIDInfo();
       await this.fetchStudentProfileInfo(this.getID.id);
+      await this.fetchStudentProfilePicture(this.getID.id);
 
       this.$q.loading.hide();
       this.isPageLoaded = !this.isPageLoaded;

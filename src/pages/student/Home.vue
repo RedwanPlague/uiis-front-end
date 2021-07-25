@@ -27,8 +27,7 @@
 
             <q-space />
 
-            <!-- we should be working on images -->
-            <img alt="" class="profile-photo" src="https://cdn.ttgtmedia.com/rms/computerweekly/3_ImitationGame_Cumberbatch.jpg" />
+            <img alt="" class="profile-photo" :src="this.getStudentProfilePicture.display_image_link" />
           </div>
         </q-card-section>
 
@@ -52,14 +51,20 @@
           >
             <template v-slot:body-cell="props">
               <q-td :props="props">
-                <div v-if="props.value.courseID !== ''">
-                  <strong>{{ props.value.courseID }}</strong>
+                <div v-if="typeof props.value === 'string'">
+                  <strong>{{ props.value }}</strong>
                 </div>
-                <div v-if="props.value.teachers !== ''">
-                  {{ props.value.teachers }}
-                </div>
-                <div v-if="props.value.room !== ''">
-                  {{ props.value.room }}
+
+                <div v-else>
+                  <div v-if="props.value.courseID !== ''">
+                    <strong>{{ props.value.courseID }}</strong>
+                  </div>
+                  <div v-if="props.value.teachers !== ''">
+                    {{ props.value.teachers }}
+                  </div>
+                  <div v-if="props.value.room !== ''">
+                    {{ props.value.room }}
+                  </div>
                 </div>
               </q-td>
             </template>
@@ -83,10 +88,10 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchStudentIDInfo', 'fetchStudentProfileInfo', 'generateClassRoutineColumns', 'fetchCurrentCourses', 'generateClassRoutine'])
+    ...mapActions(['fetchStudentIDInfo', 'fetchStudentProfileInfo', 'fetchStudentProfilePicture', 'generateClassRoutineColumns', 'fetchCurrentCourses', 'generateClassRoutine'])
   },
 
-  computed: mapGetters(['getID', 'getStudent', 'getClassRoutineColumns', 'getClassRoutine']),
+  computed: mapGetters(['getID', 'getStudent', 'getStudentProfilePicture', 'getClassRoutineColumns', 'getClassRoutine']),
 
   async created() {
     try {
@@ -98,6 +103,7 @@ export default {
 
       await this.fetchStudentIDInfo();
       await this.fetchStudentProfileInfo(this.getID.id);
+      await this.fetchStudentProfilePicture(this.getID.id);
 
       await this.generateClassRoutineColumns();
       await this.fetchCurrentCourses({

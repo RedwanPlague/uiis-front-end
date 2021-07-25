@@ -18,8 +18,7 @@
 
             <q-space />
 
-            <!-- we should be working on images -->
-            <img alt="" class="profile-photo" src="https://upload.wikimedia.org/wikipedia/commons/a/a1/Alan_Turing_Aged_16.jpg" />
+            <img alt="" class="profile-photo" :src="this.getTeacherProfilePicture.display_image_link" />
           </div>
         </q-card-section>
 
@@ -89,8 +88,7 @@
 
             <q-space />
 
-            <!-- we should be working on images -->
-            <img alt="" class="profile-photo" src="https://upload.wikimedia.org/wikipedia/commons/a/a1/Alan_Turing_Aged_16.jpg" />
+            <img alt="" class="profile-photo" :src="this.getTeacherProfilePicture.display_image_link" />
           </div>
         </q-card-section>
 
@@ -123,7 +121,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchTeacherProfileInfo']),
+    ...mapActions(['fetchTeacherProfileInfo', 'fetchTeacherProfilePicture']),
 
     async submit() {
       try {
@@ -156,7 +154,7 @@ export default {
     }
   },
 
-  computed: mapGetters(['getTeacher']),
+  computed: mapGetters(['getTeacher', 'getTeacherProfilePicture']),
 
   async created() {
     try {
@@ -167,6 +165,7 @@ export default {
       });
 
       await this.fetchTeacherProfileInfo();
+      await this.fetchTeacherProfilePicture();
 
       this.$q.loading.hide();
       this.isPageLoaded = !this.isPageLoaded;

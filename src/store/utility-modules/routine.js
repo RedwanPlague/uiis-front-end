@@ -22,9 +22,11 @@ const actions = {
       let classRoutineColumns = [
         {
           name: 'day',
+          required: true,
           label: 'Day/Period',
           align: 'center',
-          field: 'day',
+          field: row => row.day,
+          format: val => `${val}`,
           sortable: false
         },
         {
@@ -107,11 +109,7 @@ const actions = {
 
     for(let i=0; i<weekdays.length; i++) {
       classRoutine[i] = {
-        day: {
-          courseID: weekdaysDictionary[weekdays[i]],
-          teachers: '',
-          room: ''
-        },
+        day: weekdaysDictionary[weekdays[i]],
         periodOne: {
           courseID: '',
           teachers: '',

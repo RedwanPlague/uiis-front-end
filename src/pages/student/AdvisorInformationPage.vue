@@ -24,8 +24,7 @@
 
             <q-space />
 
-            <!-- we should be working on images -->
-            <img alt="" class="profile-photo" src="https://upload.wikimedia.org/wikipedia/commons/a/a1/Alan_Turing_Aged_16.jpg" />
+            <img alt="" class="profile-photo" :src="this.getTeacherProfilePicture.advisor.display_image_link" />
           </div>
         </q-card-section>
       </q-card>
@@ -46,10 +45,10 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchAdvisorProfileInfo'])
+    ...mapActions(['fetchAdvisorProfileInfo', 'fetchAdvisorProfilePicture'])
   },
 
-  computed: mapGetters(['getTeacher']),
+  computed: mapGetters(['getTeacher', 'getTeacherProfilePicture']),
 
   async created() {
     try {
@@ -60,6 +59,7 @@ export default {
       });
 
       await this.fetchAdvisorProfileInfo();
+      await this.fetchAdvisorProfilePicture();
 
       this.$q.loading.hide();
       this.isPageLoaded = !this.isPageLoaded;

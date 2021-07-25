@@ -1,11 +1,13 @@
 import { api } from "boot/axios";
 
 const state = {
-  teacher: {}
+  teacher: {},
+  teacherProfilePicture: {}
 };
 
 const getters = {
-  getTeacher: (state) => state.teacher
+  getTeacher: (state) => state.teacher,
+  getTeacherProfilePicture: (state) => state.teacherProfilePicture
 };
 
 const actions = {
@@ -27,11 +29,32 @@ const actions = {
     } catch(err) {
       this.error = err.message;
     }
+  },
+
+  /* getting teacher profile picture */
+  async fetchTeacherProfilePicture({ commit }) {
+    try {
+      const response = await api.get('/teacher/profile/picture');
+      commit('mutateTeacherProfilePicture', response.data);
+    } catch(err) {
+      this.error = err.message;
+    }
+  },
+
+  /* getting advisor profile picture */
+  async fetchAdvisorProfilePicture({ commit }) {
+    try {
+      const response = await api.get('/student/advisor/picture');
+      commit('mutateTeacherProfilePicture', response.data);
+    } catch(err) {
+      this.error = err.message;
+    }
   }
 };
 
 const mutations = {
-  mutateTeacher: (state, teacher) => (state.teacher = teacher)
+  mutateTeacher: (state, teacher) => (state.teacher = teacher),
+  mutateTeacherProfilePicture: (state, teacherProfilePicture) => (state.teacherProfilePicture = teacherProfilePicture)
 };
 
 export default {

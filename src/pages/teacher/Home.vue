@@ -27,8 +27,7 @@
 
             <q-space />
 
-            <!-- we should be working on images -->
-            <img alt="" class="profile-photo" src="https://upload.wikimedia.org/wikipedia/commons/a/a1/Alan_Turing_Aged_16.jpg" />
+            <img alt="" class="profile-photo" :src="this.getTeacherProfilePicture.display_image_link" />
           </div>
         </q-card-section>
 
@@ -46,14 +45,20 @@
           >
             <template v-slot:body-cell="props">
               <q-td :props="props">
-                <div v-if="props.value.courseID !== ''">
-                  <strong>{{ props.value.courseID }}</strong>
+                <div v-if="typeof props.value === 'string'">
+                  <strong>{{ props.value }}</strong>
                 </div>
-                <div v-if="props.value.teachers !== ''">
-                  {{ props.value.teachers }}
-                </div>
-                <div v-if="props.value.room !== ''">
-                  {{ props.value.room }}
+
+                <div v-else>
+                  <div v-if="props.value.courseID !== ''">
+                    <strong>{{ props.value.courseID }}</strong>
+                  </div>
+                  <div v-if="props.value.teachers !== ''">
+                    {{ props.value.teachers }}
+                  </div>
+                  <div v-if="props.value.room !== ''">
+                    {{ props.value.room }}
+                  </div>
                 </div>
               </q-td>
             </template>
@@ -77,10 +82,10 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchTeacherProfileInfo', 'fetchCurrentSession', 'generateClassRoutineColumns', 'fetchCurrentCourses', 'generateClassRoutine'])
+    ...mapActions(['fetchTeacherProfileInfo', 'fetchTeacherProfilePicture', 'fetchCurrentSession', 'generateClassRoutineColumns', 'fetchCurrentCourses', 'generateClassRoutine'])
   },
 
-  computed: mapGetters(['getTeacher', 'getCurrentSession', 'getClassRoutineColumns', 'getClassRoutine']),
+  computed: mapGetters(['getTeacher', 'getTeacherProfilePicture', 'getCurrentSession', 'getClassRoutineColumns', 'getClassRoutine']),
 
   async created() {
     try {
@@ -91,6 +96,7 @@ export default {
       });
 
       await this.fetchTeacherProfileInfo();
+      await this.fetchTeacherProfilePicture();
 
       await this.generateClassRoutineColumns();
       await this.fetchCurrentSession();

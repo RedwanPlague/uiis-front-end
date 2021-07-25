@@ -36,8 +36,7 @@
 
             <q-space />
 
-            <!-- we should be working on images -->
-            <img alt="" class="profile-photo" src="https://cdn.ttgtmedia.com/rms/computerweekly/3_ImitationGame_Cumberbatch.jpg" />
+            <img alt="" class="profile-photo" :src="this.getStudentProfilePicture.display_image_link" />
           </div>
         </q-card-section>
 
@@ -112,7 +111,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchStudentProfileInfo', 'generateAvailableSemesters', 'clearAvailableGrades']),
+    ...mapActions(['fetchStudentProfileInfo', 'fetchStudentProfilePicture', 'generateAvailableSemesters', 'clearAvailableGrades']),
 
     onSemesterClick() {
       this.clearAvailableGrades();
@@ -146,7 +145,7 @@ export default {
     }
   },
 
-  computed: mapGetters(['getStudent', 'getAvailableSemesters', 'getGradeLetters']),
+  computed: mapGetters(['getStudent', 'getStudentProfilePicture', 'getAvailableSemesters', 'getGradeLetters']),
 
   async created() {
     try {
@@ -157,6 +156,7 @@ export default {
       });
 
       await this.fetchStudentProfileInfo(this.$route.params.studentID);
+      await this.fetchStudentProfilePicture(this.$route.params.studentID);
       this.generateAvailableSemesters({
         level: this.getStudent.level,
         term: this.getStudent.term
