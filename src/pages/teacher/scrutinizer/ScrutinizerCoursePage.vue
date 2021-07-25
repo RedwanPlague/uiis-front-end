@@ -35,7 +35,7 @@
                 separator="cell"
                 row-key="studentID"
                 :selected-rows-label="getSelectedString"
-                selection="multiple"
+                :selection="info.hasForwarded? undefined: `multiple`"
                 :selected.sync="selected"
                 :pagination="initialPagination"
                 table-header-class="bg-primary text-white"
@@ -76,7 +76,7 @@
                 padding
                 row-key="studentID"
                 :selected-rows-label="getSelectedString"
-                selection="multiple"
+                :selection="info.hasForwarded? undefined: `multiple`"
                 :selected.sync="selected"
                 :pagination="initialPagination"
                 table-header-class="bg-primary text-white"
@@ -235,7 +235,7 @@ export default {
     getSelectedString() {
       return this.selected.length === 0
         ? ""
-        : `${this.selected.length} students${
+        : `${this.selected.length} student${
             this.selected.length > 1 ? "s" : ""
           } selected`;
     },
