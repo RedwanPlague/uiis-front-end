@@ -759,6 +759,7 @@ export default {
 .table {
   width: 800px;
   margin-top: 30px;
+  margin-bottom: 30px;
 }
 .bhul {
   background: rgba(255, 0, 0, 0.2);

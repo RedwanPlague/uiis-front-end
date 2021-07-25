@@ -79,7 +79,7 @@
           </q-card>
         </q-dialog>
       </div>
-      <div class="row justify-center" v-else-if="!resultPublished">
+      <div class="row justify-center" v-else-if="!resultPublished && incompleteCourses.length === 0">
         <q-btn
           class="submit-btn q-mt-xl"
           color="primary"
@@ -304,6 +304,7 @@ export default {
 .table {
   width: 800px;
   margin-top: 30px;
+  margin-bottom: 30px;
 }
 .submit-btn {
   margin-bottom: 30px;
