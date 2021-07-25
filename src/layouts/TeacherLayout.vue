@@ -39,13 +39,15 @@
       </q-toolbar>
     </q-header>
 
-    <q-footer elevated fixed class="bg-secondary">
-      <q-toolbar>
-        <q-toolbar-title>
-          Footer
-        </q-toolbar-title>
-      </q-toolbar>
-    </q-footer>
+    <!--
+      <q-footer elevated fixed class="bg-secondary">
+        <q-toolbar>
+          <q-toolbar-title>
+            XYZ University of Engineering and Technology
+          </q-toolbar-title>
+        </q-toolbar>
+      </q-footer>
+    -->
 
     <q-drawer
       v-model="leftDrawerOpen"
@@ -83,23 +85,32 @@
           </q-expansion-item>
 
           <SidebarOption
+            v-if="roles.includes('examiner')"
             v-for="menuOption in menuOptionsExaminer"
             :key="menuOption.title"
             v-bind="menuOption"
           />
 
           <SidebarOption
+            v-if="roles.includes('scrutinizer')"
             v-for="menuOption in menuOptionsScrutinizer"
             :key="menuOption.title"
             v-bind="menuOption"
           />
           <SidebarOption
+            v-if="roles.includes('internal')"
             v-for="menuOption in menuOptionsInternal"
             :key="menuOption.title"
             v-bind="menuOption"
           />
           <SidebarOption
             v-for="menuOption in menuOptionsIssues"
+            :key="menuOption.title"
+            v-bind="menuOption"
+          />
+          <SidebarOption
+            v-if="roles.includes('eco')"
+            v-for="menuOption in menuOptionsEco"
             :key="menuOption.title"
             v-bind="menuOption"
           />
@@ -120,6 +131,7 @@
 import SidebarOption from "components/SidebarOption";
 
 import { mapGetters, mapActions } from 'vuex';
+import { api } from "boot/axios";
 
 const menuOptionsTeacher = [
   {
@@ -191,9 +203,17 @@ const menuOptionsInternal = [
 
 const menuOptionsIssues = [
   {
-    title: "Result Issues",
+    title: "Issue Corner",
     icon: "error",
     path: "/teacher/issues"
+  }
+];
+
+const menuOptionsEco = [
+  {
+    title: "Exam Comptroller",
+    icon: 'verified',
+    path: '/teacher/eco'
   }
 ];
 
@@ -210,6 +230,8 @@ export default {
 
       leftDrawerOpen: false,
 
+      roles: [],
+
       /* sidebar menu options */
       menuOptionsTeacher,
       menuOptionsAdvisor,
@@ -217,7 +239,8 @@ export default {
       menuOptionsExaminer,
       menuOptionsScrutinizer,
       menuOptionsInternal,
-      menuOptionsIssues
+      menuOptionsIssues,
+      menuOptionsEco
     };
   },
 
@@ -229,10 +252,14 @@ export default {
 
   async created() {
     try {
+      this.isMenuOptionsLoaded = false;
+
       if(this.user) {
         await this.fetchHead(this.user.department);
+        this.roles = (await api.get('/teacher/roles/whoami')).data;
       }
-      this.isMenuOptionsLoaded = !this.isMenuOptionsLoaded;
+
+      this.isMenuOptionsLoaded = true;
     } catch(error) {
       console.log(error);
     }
