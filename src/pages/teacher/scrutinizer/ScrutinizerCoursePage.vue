@@ -55,7 +55,10 @@
                   </q-td>
                 </template>
               </q-table>
-              <IssueForm v-if="!info.hasForwarded" :details="teacherInfo.issueDetails" />
+              <IssueForm
+                v-if="!info.hasForwarded"
+                :details="teacherInfo.issueDetails"
+              />
             </div>
           </q-carousel-slide>
           <q-carousel-slide
@@ -93,7 +96,10 @@
                   </q-td>
                 </template>
               </q-table>
-              <IssueForm v-if="!info.hasForwarded" :details="examinerInfo.issueDetails" />
+              <IssueForm
+                v-if="!info.hasForwarded"
+                :details="examinerInfo.issueDetails"
+              />
             </div>
           </q-carousel-slide>
 
@@ -202,7 +208,7 @@ export default {
         rowsPerPage: 10
         // rowsNumber: xx if getting data from a server
       },
-      barse: false
+      barse: false,
     };
   },
 
@@ -257,7 +263,7 @@ export default {
         message: `Result Forwarded to ${this.porerjon()}`,
         position: "bottom-left",
         spinner: false,
-        timeout: 1500,
+        timeout: 1500
       });
     },
 
@@ -718,11 +724,23 @@ export default {
 
   watch: {
     async "$route.params"(to, from) {
+      if(to.courseID === from.courseID) return;
       await this.toiri();
     },
 
     slide(to) {
       this.selected = [];
+
+      this.$router.replace({
+        name: `${this.ke}-course-page`,
+        params: {
+          courseID: this.info.courseID
+        },
+        query: {
+          initLabel: this.slide
+        }
+      }).catch(() => {
+      });
     }
   },
 

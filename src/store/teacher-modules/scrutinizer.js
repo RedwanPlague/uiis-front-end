@@ -332,9 +332,6 @@ const mutations = {
     for (const prop in payload) {
       curCor[prop] = payload[prop];
     }
-
-    console.log("curCor->");
-    console.log(curCor);
   },
 
   mutCourseLoading: (state, loading) => {
@@ -369,8 +366,6 @@ const actions = {
         await api.get(`/teacher/${context.state.ke}/${context.state.currentSession}`)
       ).data.toRet;
       context.commit("mutAllCourses", courses);
-      console.log("--*-");
-      console.log(state.courses);
 
     } catch (error) {
       console.log(error);
