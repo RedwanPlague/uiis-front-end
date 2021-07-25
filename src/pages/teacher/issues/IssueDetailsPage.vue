@@ -135,21 +135,27 @@ export default {
         window.open(routeData.href, '_blank');
       }
       else if(this.issueDetails.role === 'scrutinizer') {
-        // const initLabel = this.issueDetails.part === '-' ? `teacher-${this.issueDetails.evalOwner._id}` : `examiner-${this.issueDetails.part}-${this.issueDetails.evalOwner._id}`;
+        const initLabel = this.issueDetails.part === '-' ? `teacher-${this.issueDetails.evalOwner._id}` : `examiner-${this.issueDetails.part}-${this.issueDetails.evalOwner._id}`;
         const routeData = this.$router.resolve( {
           name: 'scrutinizer-course-page',
           params: {
             courseID: this.issueDetails.courseSession.course.courseID,
+          },
+          query: {
+            initLabel
           }
         });
         window.open(routeData.href, '_blank');
       }
       else if(this.issueDetails.role === 'internal') {
-        // const initLabel = this.issueDetails.part === '-' ? `teacher-${this.issueDetails.evalOwner._id}` : `examiner-${this.issueDetails.part}-${this.issueDetails.evalOwner._id}`
+        const initLabel = this.issueDetails.part === '-' ? `teacher-${this.issueDetails.evalOwner._id}` : `examiner-${this.issueDetails.part}-${this.issueDetails.evalOwner._id}`
         const routeData = this.$router.resolve( {
           name: 'internal-course-page',
           params: {
             courseID: this.issueDetails.courseSession.course.courseID,
+          },
+          query: {
+            initLabel
           }
         });
         window.open(routeData.href, '_blank');

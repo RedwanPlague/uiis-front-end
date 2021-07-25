@@ -497,7 +497,7 @@ export default {
 
         const partMark = {
           name: "mark",
-          label: `Mark`,
+          label: `Mark (${this.tfTotal(examiner.teacher, examiner.part)})`,
           field: "mark",
           sortable: true,
           align: "left"
