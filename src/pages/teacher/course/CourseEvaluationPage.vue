@@ -430,7 +430,7 @@
     align-self: center;
   }
   .table {
-    width: 950px;
+    width: 800px;
   }
 
   h5 {
@@ -455,7 +455,5 @@
   .q-table tbody td:after{
     background: rgba(255,0,0,0.2);
   }
-
-
 
 </style>

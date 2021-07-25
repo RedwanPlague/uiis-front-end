@@ -35,7 +35,7 @@
                 separator="cell"
                 row-key="studentID"
                 :selected-rows-label="getSelectedString"
-                selection="multiple"
+                :selection="info.hasForwarded? undefined: `multiple`"
                 :selected.sync="selected"
                 :pagination="initialPagination"
                 table-header-class="bg-primary text-white"
@@ -55,7 +55,10 @@
                   </q-td>
                 </template>
               </q-table>
-              <IssueForm v-if="!info.hasForwarded" :details="examinerInfo.issueDetails" />
+              <IssueForm
+                v-if="!info.hasForwarded"
+                :details="teacherInfo.issueDetails"
+              />
             </div>
           </q-carousel-slide>
           <q-carousel-slide
@@ -73,7 +76,7 @@
                 padding
                 row-key="studentID"
                 :selected-rows-label="getSelectedString"
-                selection="multiple"
+                :selection="info.hasForwarded? undefined: `multiple`"
                 :selected.sync="selected"
                 :pagination="initialPagination"
                 table-header-class="bg-primary text-white"
@@ -93,7 +96,10 @@
                   </q-td>
                 </template>
               </q-table>
-              <IssueForm v-if="!info.hasForwarded" :details="examinerInfo.issueDetails" />
+              <IssueForm
+                v-if="!info.hasForwarded"
+                :details="examinerInfo.issueDetails"
+              />
             </div>
           </q-carousel-slide>
 
@@ -202,7 +208,7 @@ export default {
         rowsPerPage: 10
         // rowsNumber: xx if getting data from a server
       },
-      barse: false
+      barse: false,
     };
   },
 
@@ -229,7 +235,7 @@ export default {
     getSelectedString() {
       return this.selected.length === 0
         ? ""
-        : `${this.selected.length} students${
+        : `${this.selected.length} student${
             this.selected.length > 1 ? "s" : ""
           } selected`;
     },
@@ -257,7 +263,7 @@ export default {
         message: `Result Forwarded to ${this.porerjon()}`,
         position: "bottom-left",
         spinner: false,
-        timeout: 1500,
+        timeout: 1500
       });
     },
 
@@ -718,11 +724,23 @@ export default {
 
   watch: {
     async "$route.params"(to, from) {
+      if(to.courseID === from.courseID) return;
       await this.toiri();
     },
 
     slide(to) {
       this.selected = [];
+
+      this.$router.replace({
+        name: `${this.ke}-course-page`,
+        params: {
+          courseID: this.info.courseID
+        },
+        query: {
+          initLabel: this.slide
+        }
+      }).catch(() => {
+      });
     }
   },
 
@@ -741,6 +759,7 @@ export default {
 .table {
   width: 800px;
   margin-top: 30px;
+  margin-bottom: 30px;
 }
 .bhul {
   background: rgba(255, 0, 0, 0.2);

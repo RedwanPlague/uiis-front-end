@@ -261,7 +261,7 @@ const getters = {
 
   percentStudent: (state, getters) => (studentID) => {
     const info = getters.currentCourseInfo;
-    const percent = Math.ceil(getters["fullStudent"](studentID)/Number(info.credit));    
+    const percent = Math.ceil(getters["fullStudent"](studentID)/Number(info.credit));
 
     return percent;
   },
@@ -332,9 +332,6 @@ const mutations = {
     for (const prop in payload) {
       curCor[prop] = payload[prop];
     }
-
-    console.log("curCor->");
-    console.log(curCor);
   },
 
   mutCourseLoading: (state, loading) => {
@@ -369,6 +366,7 @@ const actions = {
         await api.get(`/teacher/${context.state.ke}/${context.state.currentSession}`)
       ).data.toRet;
       context.commit("mutAllCourses", courses);
+
     } catch (error) {
       console.log(error);
     }

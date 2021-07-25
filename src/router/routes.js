@@ -132,14 +132,14 @@ const routes = [
       { path: 'examiner/:courseID/:part', name: "examiner-evaluation-page", component: () => import('src/pages/teacher/examiner/ExaminerEvaluationPage.vue') },
 
       { path: 'scrutinizer', name: "scrutinizer-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerPage.vue'), props: { ke: "scrutinizer" } },
-      { path: 'scrutinizer/:courseID', name: "scrutinizer-course-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerCoursePage.vue'), props: { ke: "scrutinizer",} },
+      { path: 'scrutinizer/:courseID', name: "scrutinizer-course-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerCoursePage.vue'), props: route => ({ke: "scrutinizer", initLabel: route.query.initLabel}) },
 
 
       { path: 'gradesheet-preparer', name: "internal-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerPage.vue'), props: { ke: "internal" } },
-      { path: 'gradesheet-preparer/:courseID', name: "internal-course-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerCoursePage.vue'), props: { ke: "internal" } },
+      { path: 'gradesheet-preparer/:courseID', name: "internal-course-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerCoursePage.vue'), props: route => ({ke: "internal", initLabel: route.query.initLabel}) },
 
       { path: 'eco', name: "eco-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerPage.vue'), props: { ke: "eco" } },
-      { path: 'eco/:courseID', name: "eco-course-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerCoursePage.vue'), props: { ke: "eco" } },
+      { path: 'eco/:courseID', name: "eco-course-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerCoursePage.vue'), props: route => ( {ke: "eco", initLabel: route.query.initLabel}) },
 
 
       { path: 'issues', name: 'issue_list', component: () => import('src/pages/teacher/issues/IssueListPage.vue') },

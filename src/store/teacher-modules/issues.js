@@ -22,7 +22,12 @@ const actions = {
   },
   async fetchIssueDetails({commit}, {issueID}) {
     const res = await api.get(`/teacher/issues/${issueID}`);
+    if(res.data) {
+      const _date = new Date(res.data.courseSession.session);
+      res.data.courseSession.session = _date.toLocaleString('default', {month: 'long'}) + "-" + _date.getFullYear();
+    }
     commit('setIssueDetails', res.data);
+    console.log(state.issueDetails);
   },
   async sendComment({commit}, {comment}) {
     const res = await api.post(`/teacher/issues/${state.issueDetails._id}/posts/create`, {

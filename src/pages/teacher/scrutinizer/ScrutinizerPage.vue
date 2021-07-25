@@ -79,7 +79,7 @@
           </q-card>
         </q-dialog>
       </div>
-      <div class="row justify-center" v-else-if="!resultPublished">
+      <div class="row justify-center" v-else-if="!resultPublished && incompleteCourses.length === 0">
         <q-btn
           class="submit-btn q-mt-xl"
           color="primary"
@@ -174,10 +174,10 @@ export default {
       this.$q.loading.show({
         delay: 100 // ms
       });
-
       await this.$store.dispatch("scrutinizer/fillResPublished"); // To change
       await this.$store.dispatch("scrutinizer/fillCurrentSession"); // To change
       await this.$store.dispatch("scrutinizer/fillCourses"); // To change
+
       this.$q.loading.hide();
     },
 
@@ -206,7 +206,6 @@ export default {
       });
 
       for (const cr of this.selected) {
-        console.log(cr);
         await api.put(
           `/teacher/${this.ke}/${cr.courseID}/${this.currentSession}/approve`
         );
@@ -249,7 +248,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters("scrutinizer", ["currentSession", "allCourses, resultPublished"]), // To change
+    ...mapGetters("scrutinizer", ["currentSession", "allCourses", "resultPublished"]), // To change
 
     currentCourse: {
       get() {
@@ -301,6 +300,7 @@ export default {
 .table {
   width: 800px;
   margin-top: 30px;
+  margin-bottom: 30px;
 }
 .submit-btn {
   margin-bottom: 30px;
