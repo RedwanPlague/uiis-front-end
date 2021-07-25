@@ -32,7 +32,7 @@
     <div v-for="(issue,index) in issueDetails.posts" :key="index">
       <div v-if="issue.postType === 'activity'">
         <user-activity
-          image-link = "https://avatars.githubusercontent.com/u/31519659?s=80&amp;v=4"
+          :image-link = issue.author.display_image_link
           :user-name = issue.author.name
           :date = issue.date
           :activity= issue.description
@@ -40,16 +40,15 @@
       </div>
       <div v-if="issue.postType === 'comment'">
         <user-comment
-          image-link = "https://avatars.githubusercontent.com/u/32516061?s=80&amp;v=4"
+          :image-link = issue.author.display_image_link
           :user-name = issue.author.name
           :date = issue.date
           :comment= issue.description
         />
       </div>
     </div>
-
     <editor
-      imageLink= 'https://avatars.githubusercontent.com/u/32516061?s=80&amp;v=4'
+      :imageLink= user.display_image_link
       @submitClicked="addComment"
     />
 
@@ -75,9 +74,6 @@ import Editor from "components/IssueComponents/Editor";
 import {createNamespacedHelpers} from 'vuex';
 import { mapGetters } from 'vuex';
 const { mapActions} = createNamespacedHelpers('issues');
-
-const slowDecayImage =  'https://avatars.githubusercontent.com/u/31519659?s=80&amp;v=4';
-const mahirSezImage = 'https://avatars.githubusercontent.com/u/32516061?s=80&amp;v=4';
 
 export default {
   name: "IssuePage.vue",
@@ -123,7 +119,7 @@ export default {
           name: 'course_page',
           params: {
             courseID: this.issueDetails.courseSession.course.courseID,
-            courseSession: 2021
+            courseSession: this.issueDetails.courseSession.session
           }
         });
         window.open(routeData.href, '_blank');
@@ -146,7 +142,6 @@ export default {
             courseID: this.issueDetails.courseSession.course.courseID,
           }
         });
-        console.log(routeData);
         window.open(routeData.href, '_blank');
       }
       else if(this.issueDetails.role === 'internal') {
@@ -157,7 +152,6 @@ export default {
             courseID: this.issueDetails.courseSession.course.courseID,
           }
         });
-        console.log(routeData);
         window.open(routeData.href, '_blank');
       }
       else {
@@ -233,43 +227,6 @@ export default {
       resolveButtonIcon: '',
       resolveButtonText: '',
       resolveFlag: false,
-      issueEntries: [
-        {
-          type: 'activity',
-          imageLink : slowDecayImage,
-          userName: "SlowDecay",
-          date: "June 1",
-          activity: "created this issue",
-        },
-        {
-          type: 'comment',
-          imageLink : slowDecayImage,
-          userName: "SlowDecay",
-          date: "June 1",
-          comment: "Marks diye dei",
-        },
-        {
-          type: 'comment',
-          imageLink : mahirSezImage,
-          userName: "MahirSez",
-          date: "June 2",
-          comment: "No",
-        },
-        {
-          type: 'activity',
-          imageLink : mahirSezImage,
-          userName: "MahirSez",
-          date: "June 3",
-          activity: "updated Marks",
-        },
-        {
-          type: 'comment',
-          imageLink: slowDecayImage,
-          userName: "SlowDecay",
-          date: "June 3",
-          comment: "Bleh bleh bleh",
-        }
-      ],
     }
   }
 }
