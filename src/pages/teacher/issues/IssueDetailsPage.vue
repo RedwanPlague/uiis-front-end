@@ -114,6 +114,7 @@ export default {
     ...mapActions(['fetchIssueDetails', 'sendComment', 'changeIssueStatus']),
 
     courseChipClicked(e) {
+      console.log(this.issueDetails.role);
       if(this.issueDetails.role === 'course') {
         const routeData = this.$router.resolve( {
           name: 'course_page',
@@ -134,22 +135,15 @@ export default {
         });
         window.open(routeData.href, '_blank');
       }
-      else if(this.issueDetails.role === 'scrutinizer') {
-        // const initLabel = this.issueDetails.part === '-' ? `teacher-${this.issueDetails.evalOwner._id}` : `examiner-${this.issueDetails.part}-${this.issueDetails.evalOwner._id}`;
+      else if(this.issueDetails.role) {
+        const initLabel = this.issueDetails.part === '-' ? `teacher-${this.issueDetails.evalOwner._id}` : `examiner-${this.issueDetails.part}-${this.issueDetails.evalOwner._id}`;
         const routeData = this.$router.resolve( {
-          name: 'scrutinizer-course-page',
+          name: `${this.issueDetails.role}-course-page`,
           params: {
             courseID: this.issueDetails.courseSession.course.courseID,
-          }
-        });
-        window.open(routeData.href, '_blank');
-      }
-      else if(this.issueDetails.role === 'internal') {
-        // const initLabel = this.issueDetails.part === '-' ? `teacher-${this.issueDetails.evalOwner._id}` : `examiner-${this.issueDetails.part}-${this.issueDetails.evalOwner._id}`
-        const routeData = this.$router.resolve( {
-          name: 'internal-course-page',
-          params: {
-            courseID: this.issueDetails.courseSession.course.courseID,
+          },
+          query: {
+            initLabel
           }
         });
         window.open(routeData.href, '_blank');

@@ -126,7 +126,7 @@ const routes = [
         component: () => import('pages/teacher/scrutinizer/ScrutinizerPage.vue'),
         props: { ke: "head" }
       },
-      { path: 'head/:courseID', name: "head-course-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerCoursePage.vue'), props: { ke: "head" } },
+      { path: 'head/:courseID', name: "head-course-page", component: () => import('pages/teacher/scrutinizer/ScrutinizerCoursePage.vue'), props: route => ({ke: "head", initLabel: route.query.initLabel}) },
 
       { path: 'examiner', name: "examiner-page", component: () => import('src/pages/teacher/examiner/ExaminerPage.vue') },
       { path: 'examiner/:courseID/:part', name: "examiner-evaluation-page", component: () => import('src/pages/teacher/examiner/ExaminerEvaluationPage.vue') },
