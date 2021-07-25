@@ -68,7 +68,7 @@
             v-bind="menuOption"
           />
 
-          <q-expansion-item :content-inset-level="0.5" icon="supervisor_account" label="Advisor" default-closed>
+          <q-expansion-item v-if="isAdvisor" :content-inset-level="0.5" icon="supervisor_account" label="Advisor" default-closed>
             <SidebarOption
               v-for="menuOption in menuOptionsAdvisor"
               :key="menuOption.title"
@@ -232,6 +232,8 @@ export default {
 
       roles: [],
 
+      isAdvisor: false,
+
       /* sidebar menu options */
       menuOptionsTeacher,
       menuOptionsAdvisor,
@@ -252,11 +254,10 @@ export default {
 
   async created() {
     try {
-      this.isMenuOptionsLoaded = false;
-
       if(this.user) {
         await this.fetchHead(this.user.department);
         this.roles = (await api.get('/teacher/roles/whoami')).data;
+        this.isAdvisor = ((await api.get('/teacher/advisor/advisees')).data.length !== 0);
       }
 
       this.isMenuOptionsLoaded = true;

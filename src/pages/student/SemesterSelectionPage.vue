@@ -11,7 +11,7 @@
               <q-item
                 clickable
                 class="bg-grey-2"
-                v-for="semester in getAvailableSemesters"
+                v-for="semester in availableSemesters"
                 :key="semester.semesterID"
                 v-bind="semester"
                 @click.native="selectedSemester = semester; onSemesterClick();"
@@ -38,6 +38,8 @@ export default {
     return {
       isPageLoaded: false,
 
+      availableSemesters: [],
+
       /* for keeping track of selected semester */
       selectedSemester: {},
 
@@ -47,7 +49,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchStudentIDInfo', 'fetchStudentProfileInfo', 'generateAvailableSemesters', 'clearAvailableGrades']),
+    ...mapActions(['fetchStudentIDInfo', 'fetchStudentProfileInfo', 'clearAvailableGrades', 'fetchResults']),
 
     onSemesterClick() {
       this.clearAvailableGrades();
@@ -61,7 +63,7 @@ export default {
     }
   },
 
-  computed: mapGetters(['getID', 'getStudent', 'getAvailableSemesters']),
+  computed: mapGetters(['getID', 'getStudent', 'getResults']),
 
   async created() {
     try {
@@ -73,10 +75,15 @@ export default {
 
       await this.fetchStudentIDInfo();
       await this.fetchStudentProfileInfo(this.getID.id);
-      this.generateAvailableSemesters({
-        level: this.getStudent.level,
-        term: this.getStudent.term
-      });
+      await this.fetchResults(this.getID.id);
+
+      for(let i=0; i<this.getResults.results.length; i++) {
+        this.availableSemesters[i] = {
+          semesterID: i+1,
+          level: Math.floor(i/2)+1,
+          term: i%2+1
+        };
+      }
 
       this.$q.loading.hide();
       this.isPageLoaded = !this.isPageLoaded;
