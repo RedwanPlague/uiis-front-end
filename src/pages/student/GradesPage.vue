@@ -115,10 +115,16 @@ export default {
     },
 
     getTotalCreditHoursCompleted() {
+      if (this.getResults.results.length == 0) {
+        return 0
+      }
       return this.getResults.results[(this.$route.query.level-1)*2+(this.$route.query.term-1)].totalCreditHoursCompleted;
     },
 
     getCGPA() {
+      if (this.getResults.results.length == 0) {
+        return 0
+      }
       return this.getResults.results[(this.$route.query.level-1)*2+(this.$route.query.term-1)].cgpa;
     },
 

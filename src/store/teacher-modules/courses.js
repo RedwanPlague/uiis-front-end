@@ -23,7 +23,7 @@ const actions = {
       });
     }
     if(res.data.previousCourseSessions) {
-      res.data.currentCourseSessions.forEach(entry => {
+      res.data.previousCourseSessions.forEach(entry => {
         const _date = new Date(entry.session);
         entry.session = _date.toLocaleString('default', { month: 'long' }) + "-" + _date.getFullYear();
       });
