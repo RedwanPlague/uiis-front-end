@@ -111,7 +111,8 @@ export default {
           field: "studentID",
           required: true,
           align: "left",
-          sortable: true
+          sortable: true,
+          sort: (id1, id2) => parseInt(id1.substring(1), 10) - parseInt(id2.substring(1)),
         },
         {
           name: "mark",
