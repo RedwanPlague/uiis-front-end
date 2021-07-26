@@ -64,6 +64,10 @@ const actions = {
         entry['eval_' + evalulation.evalID] = evalulation.mark;
         entry.editAccess |= evalulation.editAccess;
       });
+
+      if(student.evalMarks.length === 0) {
+        entry.editAccess = true;
+      }
       if(entry.editAccess) {
         commit('setEditButton', true );
       }
