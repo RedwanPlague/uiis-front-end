@@ -52,7 +52,7 @@
                 <q-item
                   clickable
                   class="bg-grey-2"
-                  v-for="semester in getAvailableSemesters"
+                  v-for="semester in availableSemesters"
                   :key="semester.semesterID"
                   v-bind="semester"
                   @click.native="selectedSemester = semester; onSemesterClick();"
@@ -102,6 +102,8 @@ export default {
     return {
       isPageLoaded: false,
 
+      availableSemesters: [],
+
       /* for keeping track of selected semester */
       selectedSemester: {},
 
@@ -111,7 +113,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchStudentProfileInfo', 'fetchStudentProfilePicture', 'generateAvailableSemesters', 'clearAvailableGrades']),
+    ...mapActions(['fetchStudentProfileInfo', 'fetchStudentProfilePicture', 'generateAvailableSemesters', 'clearAvailableGrades', 'fetchResults']),
 
     onSemesterClick() {
       this.clearAvailableGrades();
@@ -145,7 +147,7 @@ export default {
     }
   },
 
-  computed: mapGetters(['getStudent', 'getStudentProfilePicture', 'getAvailableSemesters', 'getGradeLetters']),
+  computed: mapGetters(['getStudent', 'getStudentProfilePicture', 'getAvailableSemesters', 'getGradeLetters', 'getResults']),
 
   async created() {
     try {
@@ -157,10 +159,15 @@ export default {
 
       await this.fetchStudentProfileInfo(this.$route.params.studentID);
       await this.fetchStudentProfilePicture(this.$route.params.studentID);
-      this.generateAvailableSemesters({
-        level: this.getStudent.level,
-        term: this.getStudent.term
-      });
+      await this.fetchResults(this.$route.params.studentID);
+
+      for(let i=0; i<this.getResults.results.length; i++) {
+        this.availableSemesters[i] = {
+          semesterID: i+1,
+          level: Math.floor(i/2)+1,
+          term: i%2+1
+        };
+      }
 
       this.$q.loading.hide();
       this.isPageLoaded = !this.isPageLoaded;
