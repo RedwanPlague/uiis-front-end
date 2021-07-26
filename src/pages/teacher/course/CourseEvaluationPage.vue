@@ -393,7 +393,7 @@
               headerClasses: 'bg-primary text-white',
               // style: 'width: 100px',
               sortable: true,
-              sort: (id1, id2) => parseInt(id1.substring(1), 10) - parseInt(id2.substring(1))
+              sort: (id1, id2) => parseInt(id1.substring(1), 10) - parseInt(id2.substring(1), 10)
             },
             {
               name: 'student_name',
