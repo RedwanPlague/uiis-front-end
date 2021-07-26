@@ -40,7 +40,6 @@
       />
 
       <q-table
-        v-if="ke != `eco`"
         class="table"
         title="Forwarded Courses"
         :data="forwardedCourses"
