@@ -269,7 +269,7 @@ export default {
 
     porerjon() {
       if (this.ke === "head") return "ECO";
-      else if (this.ke === "scrutinizer") return "Internal";
+      else if (this.ke === "scrutinizer") return "Gradesheet Preparer";
       else if (this.ke === "internal") return "Department Head";
       else return "Janina";
     },
