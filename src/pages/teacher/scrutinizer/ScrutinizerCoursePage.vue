@@ -551,6 +551,7 @@ export default {
         label: `Student ID`,
         field: "studentID",
         sortable: true,
+        sort: (id1, id2) => parseInt(id1.substring(1), 10) - parseInt(id2.substring(1)),
         align: "left"
       };
 

@@ -132,7 +132,7 @@ const menuOptions = [
   },
   {
     title: 'Clearance',
-    icon: 'school',
+    icon: 'check_circle',
     path: '/student/clearance'
   },
 ];

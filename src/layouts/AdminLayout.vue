@@ -105,28 +105,28 @@ export default {
       if (has(PRIVILEGES.ACCOUNT_CREATION)) {
         accountLinks.push({
           title: 'Create',
-          icon: 'school',
+          icon: 'add_circle_outline',
           link: { name: 'AdminAccountCreationPage' }
         })
       }
       if (has(PRIVILEGES.ACCOUNT_UPDATE)) {
         accountLinks.push({
           title: 'Search',
-          icon: 'school',
+          icon: 'search',
           link: { name: 'AdminAccountSearchPage' }
         })
       }
       if (has(PRIVILEGES.ROLE_CREATION) || has(PRIVILEGES.ROLE_UPDATE)) {
         accountLinks.push({
           title: 'Roles',
-          icon: 'school',
+          icon: 'people_outline',
           link: { name: 'AdminRoleManagePage' }
         })
       }
       if (accountLinks.length > 0) {
         links.push({
           title: 'Accounts',
-          icon: 'school',
+          icon: 'account_circle',
           children: accountLinks
         })
       }
@@ -135,21 +135,21 @@ export default {
       if (has(PRIVILEGES.COURSE_CREATION)) {
         courseLinks.push({
           title: 'Create',
-          icon: 'school',
+          icon: 'add_circle_outline',
           link: { name: 'AdminCourseCreationPage' }
         })
       }
       if (has(PRIVILEGES.COURSE_UPDATE)) {
         courseLinks.push({
           title: 'Search',
-          icon: 'school',
+          icon: 'search',
           link: { name: 'AdminCourseSearchPage' }
         })
       }
       if (has(PRIVILEGES.COURSE_SESSION_CREATION)) {
         courseLinks.push({
           title: 'Offer',
-          icon: 'school',
+          icon: 'notifications_none',
           link: {name: 'AdminCourseOfferPage'}
         })
       }
@@ -164,14 +164,14 @@ export default {
       ) {
         courseLinks.push({
           title: 'Assign',
-          icon: 'school',
+          icon: 'content_copy',
           link: { name: 'AdminCourseAssignPage' }
         })
       }
       if (courseLinks.length > 0) {
         links.push({
           title: 'Courses',
-          icon: 'school',
+          icon: 'class',
           children: courseLinks
         })
       }
@@ -181,12 +181,12 @@ export default {
       const feeLinks = []
       feeLinks.push({
         title: 'Batch Assign',
-        icon: 'school',
+        icon: 'content_copy',
         link: { name: 'AdminFeeAssignPage' }
       })
       feeLinks.push({
         title: 'Search',
-        icon: 'school',
+        icon: 'search',
         link: { name: 'AdminFeeSearchPage' }
       })
       if (
@@ -196,7 +196,7 @@ export default {
       ) {
         dueLinks.push({
           title: 'Fees',
-          icon: 'school',
+          icon: 'payments',
           children: feeLinks
         })
       }
@@ -204,12 +204,12 @@ export default {
       const fineLinks = []
       fineLinks.push({
         title: 'Assign',
-        icon: 'school',
+        icon: 'content_copy',
         link: { name: 'AdminFineAssignPage' }
       })
       fineLinks.push({
         title: 'Search',
-        icon: 'school',
+        icon: 'search',
         link: { name: 'AdminFineSearchPage' }
       })
       if (
@@ -219,7 +219,7 @@ export default {
       ) {
         dueLinks.push({
           title: 'Fines',
-          icon: 'school',
+          icon: 'payments',
           children: fineLinks
         })
       }
@@ -227,7 +227,7 @@ export default {
       if (dueLinks.length > 0) {
         links.push({
           title: 'Dues',
-          icon: 'school',
+          icon: 'payments',
           children: dueLinks
         })
       }
@@ -235,7 +235,7 @@ export default {
       if (has(PRIVILEGES.THESIS_CLEARANCE)) {
         links.push({
           title: 'Thesis Clearance',
-          icon: 'school',
+          icon: 'check_circle',
           link: {name: 'AdminThesisClearancePage'}
         })
       }
@@ -243,7 +243,7 @@ export default {
       if (has(PRIVILEGES.SLOT_CREATION) || has(PRIVILEGES.SLOT_UPDATE)) {
         links.push({
           title: 'Slots',
-          icon: 'school',
+          icon: 'watch_later',
           link: { name: 'AdminSlotManagePage' }
         })
       }
@@ -251,7 +251,7 @@ export default {
       if (has(PRIVILEGES.CURRENT_SESSION_UPDATE)) {
         links.push({
           title: 'Session',
-          icon: 'school',
+          icon: 'hourglass_bottom',
           link: { name: 'AdminSessionAssignPage' }
         })
       }
@@ -267,7 +267,7 @@ export default {
       if (has(PRIVILEGES.HALL_CREATION) || has(PRIVILEGES.HALL_UPDATE)) {
         links.push({
           title: 'Halls',
-          icon: 'school',
+          icon: 'apartment',
           link: { name: 'AdminHallManagePage' }
         })
       }
