@@ -15,12 +15,26 @@
           UIIS
         </q-toolbar-title>
 
-        <q-btn-dropdown v-if="user" icon="person" color="primary" text-color="white" :label="user.name" dense flat no-caps>
+        <q-btn-dropdown
+          v-if="user"
+          icon="person"
+          color="primary"
+          text-color="white"
+          :label="user.name"
+          dense
+          flat
+          no-caps
+        >
           <q-list>
-            <q-item clickable v-close-popup @click="$router.replace('/teacher/profile')" dense>
+            <q-item
+              clickable
+              v-close-popup
+              @click="$router.replace('/teacher/profile')"
+              dense
+            >
               <q-item-section>
                 <q-item-label>
-                  <q-avatar icon="account_circle"/>
+                  <q-avatar icon="account_circle" />
                   Profile
                 </q-item-label>
               </q-item-section>
@@ -29,7 +43,7 @@
             <q-item clickable v-close-popup @click="$router.replace('/')" dense>
               <q-item-section>
                 <q-item-label>
-                  <q-avatar icon="logout"/>
+                  <q-avatar icon="logout" />
                   Logout
                 </q-item-label>
               </q-item-section>
@@ -68,7 +82,13 @@
             v-bind="menuOption"
           />
 
-          <q-expansion-item v-if="isAdvisor" :content-inset-level="0.5" icon="supervisor_account" label="Advisor" default-closed>
+          <q-expansion-item
+            v-if="isAdvisor"
+            :content-inset-level="0.5"
+            icon="supervisor_account"
+            label="Advisor"
+            default-closed
+          >
             <SidebarOption
               v-for="menuOption in menuOptionsAdvisor"
               :key="menuOption.title"
@@ -76,7 +96,13 @@
             />
           </q-expansion-item>
 
-          <q-expansion-item v-if="this.getHead.head === user.id" :content-inset-level="0.5" icon="supervised_user_circle" label="Department Head" default-closed>
+          <q-expansion-item
+            v-if="this.getHead.head === user.id"
+            :content-inset-level="0.5"
+            icon="supervised_user_circle"
+            label="Department Head"
+            default-closed
+          >
             <SidebarOption
               v-for="menuOption in menuOptionsHead"
               :key="menuOption.title"
@@ -84,36 +110,41 @@
             />
           </q-expansion-item>
 
-          <SidebarOption
-            v-if="roles.includes('examiner')"
-            v-for="menuOption in menuOptionsExaminer"
-            :key="menuOption.title"
-            v-bind="menuOption"
-          />
+          <div v-if="roles.includes('examiner')">
+            <SidebarOption
+              v-for="menuOption in menuOptionsExaminer"
+              :key="menuOption.title"
+              v-bind="menuOption"
+            />
+          </div>
 
-          <SidebarOption
-            v-if="roles.includes('scrutinizer')"
-            v-for="menuOption in menuOptionsScrutinizer"
-            :key="menuOption.title"
-            v-bind="menuOption"
-          />
-          <SidebarOption
-            v-if="roles.includes('internal')"
-            v-for="menuOption in menuOptionsInternal"
-            :key="menuOption.title"
-            v-bind="menuOption"
-          />
+          <div v-if="roles.includes('scrutinizer')">
+            <SidebarOption
+              v-for="menuOption in menuOptionsScrutinizer"
+              :key="menuOption.title"
+              v-bind="menuOption"
+            />
+          </div>
+
+          <div v-if="roles.includes('internal')">
+            <SidebarOption
+              v-for="menuOption in menuOptionsInternal"
+              :key="menuOption.title"
+              v-bind="menuOption"
+            />
+          </div>
           <SidebarOption
             v-for="menuOption in menuOptionsIssues"
             :key="menuOption.title"
             v-bind="menuOption"
           />
-          <SidebarOption
-            v-if="roles.includes('eco')"
-            v-for="menuOption in menuOptionsEco"
-            :key="menuOption.title"
-            v-bind="menuOption"
-          />
+          <div v-if="roles.includes('eco')">
+            <SidebarOption
+              v-for="menuOption in menuOptionsEco"
+              :key="menuOption.title"
+              v-bind="menuOption"
+            />
+          </div>
         </div>
       </q-list>
     </q-drawer>
@@ -130,7 +161,7 @@
 <script>
 import SidebarOption from "components/SidebarOption";
 
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions } from "vuex";
 import { api } from "boot/axios";
 
 const menuOptionsTeacher = [
@@ -212,8 +243,8 @@ const menuOptionsIssues = [
 const menuOptionsEco = [
   {
     title: "Exam Comptroller",
-    icon: 'verified',
-    path: '/teacher/eco'
+    icon: "verified",
+    path: "/teacher/eco"
   }
 ];
 
@@ -246,28 +277,27 @@ export default {
     };
   },
 
-  computed: mapGetters(['user', 'getHead']),
+  computed: mapGetters(["user", "getHead"]),
 
   methods: {
-    ...mapActions(['fetchHead'])
+    ...mapActions(["fetchHead"])
   },
 
   async created() {
     try {
-      if(this.user) {
+      if (this.user) {
         await this.fetchHead(this.user.department);
-        this.roles = (await api.get('/teacher/roles/whoami')).data;
-        this.isAdvisor = ((await api.get('/teacher/advisor/advisees')).data.length !== 0);
+        this.roles = (await api.get("/teacher/roles/whoami")).data;
+        this.isAdvisor =
+          (await api.get("/teacher/advisor/advisees")).data.length !== 0;
       }
 
       this.isMenuOptionsLoaded = true;
-    } catch(error) {
+    } catch (error) {
       console.log(error);
     }
   }
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
