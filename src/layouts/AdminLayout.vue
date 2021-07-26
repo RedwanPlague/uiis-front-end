@@ -97,7 +97,7 @@ export default {
 
       links.push({
         title: 'Home',
-        icon: 'school',
+        icon: 'home',
         link: { name: 'AdminHome' }
       })
 

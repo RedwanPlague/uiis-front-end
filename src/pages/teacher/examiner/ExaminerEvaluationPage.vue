@@ -116,7 +116,7 @@ export default {
         },
         {
           name: "mark",
-          label: "Mark",
+          label: "Mark (105)",
           field: "mark",
           align: "left"
         }
