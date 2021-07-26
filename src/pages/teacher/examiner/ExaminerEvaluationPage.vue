@@ -98,7 +98,7 @@ export default {
       canEdit: false,
       probRolls: [],
       initialPagination: {
-        sortBy: "desc",
+        sortBy: "studentID",
         descending: false,
         page: 1,
         rowsPerPage: null

@@ -195,7 +195,7 @@ export default {
       loading: true,
       selected: [],
       initialPagination: {
-        sortBy: "desc",
+        sortBy: "studentID",
         descending: false,
         page: 1,
         rowsPerPage: null
