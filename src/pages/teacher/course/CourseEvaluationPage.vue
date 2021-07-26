@@ -286,6 +286,7 @@
         e.preventDefault();
 
         this.editMode = !this.editMode;
+        console.log("edit mode: " + this.editMode);
 
         if(!this.editMode) {
 
@@ -360,28 +361,28 @@
             rowsPerPage: 0, // 0 means all rows
             ascending: true
           },
-          total_mark_column: [
-            {
-              name: 'Total Mark',
-              label: 'Total Mark',
-              align: 'center',
-              field: 'total_mark',
-              classes: 'bg-grey-1',
-              headerClasses: 'bg-primary text-white',
-              // style: 'width: 100px',
-              sortable: true,
-            },
-            {
-              name: 'Eval - 1',
-              label: 'Student ID',
-              align: 'center',
-              field: 'eval_1',
-              classes: 'bg-grey-1',
-              headerClasses: 'bg-primary text-white',
-              // style: 'width: 100px',
-              sortable: true,
-            },
-          ],
+          // total_mark_column: [
+          //   {
+          //     name: 'Total Mark',
+          //     label: 'Total Mark',
+          //     align: 'center',
+          //     field: 'total_mark',
+          //     classes: 'bg-grey-1',
+          //     headerClasses: 'bg-primary text-white',
+          //     // style: 'width: 100px',
+          //     sortable: true,
+          //   },
+          //   {
+          //     name: 'Eval - 1',
+          //     label: 'Student ID',
+          //     align: 'center',
+          //     field: 'eval_1',
+          //     classes: 'bg-grey-1',
+          //     headerClasses: 'bg-primary text-white',
+          //     // style: 'width: 100px',
+          //     sortable: true,
+          //   },
+          // ],
           columns: [
             {
               name: 'student_id',
@@ -392,6 +393,7 @@
               headerClasses: 'bg-primary text-white',
               // style: 'width: 100px',
               sortable: true,
+              sort: (id1, id2) => parseInt(id1.substring(1), 10) - parseInt(id2.substring(1))
             },
             {
               name: 'student_name',
@@ -430,7 +432,7 @@
     align-self: center;
   }
   .table {
-    width: 800px;
+    /*width: 800px;*/
   }
 
   h5 {

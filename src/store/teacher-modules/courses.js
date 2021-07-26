@@ -14,7 +14,6 @@ const actions = {
   async fetchCourses({commit}) {
     const res = await api.get('/teacher/courses');
     if(!res.data) return;
-    console.log(res.data);
 
     if(res.data.currentCourseSessions) {
       res.data.currentCourseSessions.forEach(entry => {
