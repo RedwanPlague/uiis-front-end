@@ -119,7 +119,8 @@ const actions = {
           title: state.grades[i].courseSession.course.title,
           credit: state.grades[i].courseSession.course.credit,
           gradeLetter: state.grades[i].result.gradeLetter,
-          gradePoint: state.grades[i].result.gradePoint
+          gradePoint: state.grades[i].result.gradePoint,
+          status: state.grades[i].status
         };
       }
     }
