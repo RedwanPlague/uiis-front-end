@@ -269,7 +269,7 @@ export default {
 
     porerjon() {
       if (this.ke === "head") return "ECO";
-      else if (this.ke === "scrutinizer") return "Internal";
+      else if (this.ke === "scrutinizer") return "Gradesheet Preparer";
       else if (this.ke === "internal") return "Department Head";
       else return "Janina";
     },
@@ -407,6 +407,7 @@ export default {
           label: `Student ID`,
           field: "studentID",
           sortable: true,
+          sort: (id1, id2) => parseInt(id1.substring(1), 10) - parseInt(id2.substring(1)),
           align: "left"
         };
 
@@ -490,6 +491,7 @@ export default {
           label: `Student ID`,
           field: "studentID",
           sortable: true,
+          sort: (id1, id2) => parseInt(id1.substring(1), 10) - parseInt(id2.substring(1)),
           align: "left"
         };
 
