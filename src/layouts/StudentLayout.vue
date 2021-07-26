@@ -58,13 +58,15 @@
       </q-toolbar>
     </q-header>
 
-    <q-footer elevated fixed class="bg-secondary">
-      <q-toolbar>
-        <q-toolbar-title>
-          Footer
-        </q-toolbar-title>
-      </q-toolbar>
-    </q-footer>
+    <!--
+      <q-footer elevated fixed class="bg-secondary">
+        <q-toolbar>
+          <q-toolbar-title>
+            Footer
+          </q-toolbar-title>
+        </q-toolbar>
+      </q-footer>
+    -->
 
     <q-drawer
       v-model="leftDrawerOpen"
